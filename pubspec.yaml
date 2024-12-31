@@ -47,3 +47,9 @@ flutter:
     - family: Gilroy
       fonts:
         - asset: assets/fonts/Gilroy-Medium.ttf
+    - family: NotoSansKhmer
+      fonts:
+        - asset: assets/fonts/NotoSansKhmer.ttf
+    - family: KantumruyPro
+      fonts:
+        - asset: assets/fonts/KantumruyPro.ttf

@@ -3,19 +3,19 @@ import 'package:get/get.dart';
 
 class MyFormField extends StatelessWidget {
   final String label;
-  final IconData icon;
+  final IconData? icon;
   final bool disabled;
   final bool password;
   final String? Function(String?)? validator;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   const MyFormField({
     super.key,
     required this.label,
-    required this.icon,
+    this.icon,
     this.disabled = false,
     this.password = false,
     this.validator,
-    required this.controller,
+    this.controller,
   });
 
   @override
@@ -36,7 +36,11 @@ class MyFormField extends StatelessWidget {
       validator: validator,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       obscureText: password ? !isPasswordVisible.value : false,
+      enableSuggestions: false,
       decoration: InputDecoration(
+        labelStyle: context.textTheme.titleMedium!.copyWith(
+          color: Colors.black,
+        ),
         prefixIconColor: disabled ? Colors.grey[500] : null,
         suffixIcon: password
             ? IconButton(
@@ -49,7 +53,7 @@ class MyFormField extends StatelessWidget {
               )
             : null,
         labelText: label.tr,
-        prefixIcon: Icon(icon),
+        prefixIcon: icon != null ? Icon(icon) : null,
       ),
     );
   }

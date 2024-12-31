@@ -5,7 +5,14 @@ import 'package:staff_view_ui/pages/leave/leave_service.dart';
 
 class LeaveController extends GetxController {
   final formKey = GlobalKey<FormState>();
-  final leaveNoController = TextEditingController();
+  final leaveNoController = TextEditingController(text: 'New'.tr);
+  final dateController =
+      TextEditingController(text: DateTime.now().toString().split(' ')[0]);
+
+  final fromDateController =
+      TextEditingController(text: DateTime.now().toString().split(' ')[0]);
+  final toDateController =
+      TextEditingController(text: DateTime.now().toString().split(' ')[0]);
 }
 
 class LeaveTypeController extends GetxController {
