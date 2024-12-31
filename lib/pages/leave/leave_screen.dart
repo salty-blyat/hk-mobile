@@ -1,13 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:staff_view_ui/pages/leave/leave_controller.dart';
 import 'package:staff_view_ui/pages/leave/leave_operation_screen.dart';
 import 'package:staff_view_ui/utils/widgets/calender_box.dart';
 import 'package:staff_view_ui/utils/widgets/year_select.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 
 class LeaveScreen extends StatelessWidget {
-  const LeaveScreen({super.key});
+  LeaveScreen({super.key});
+
+  final LeaveTypeController leaveTypeController =
+      Get.put(LeaveTypeController());
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +90,7 @@ class LeaveScreen extends StatelessWidget {
                                         color: Colors.black,
                                         fontSize: 12,
                                         fontFamilyFallback: [
-                                          'NotoSansKhmer',
+                                          'Kantumruy',
                                           'Gilroy'
                                         ],
                                       ),
