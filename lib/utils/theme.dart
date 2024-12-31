@@ -28,17 +28,17 @@ class AppTheme {
           fontSize: 32.0,
           fontWeight: FontWeight.bold,
           color: primaryColor,
-          fontFamilyFallback: ['Kantumruy', 'Gilroy'],
+          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
         ),
         bodyLarge: TextStyle(
           fontSize: 16.0,
           color: Colors.black,
-          fontFamilyFallback: ['Kantumruy', 'Gilroy'],
+          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
         ),
         bodyMedium: TextStyle(
           fontSize: 14.0,
           color: Colors.black,
-          fontFamilyFallback: ['Kantumruy', 'Gilroy'],
+          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
         ),
       ),
 
@@ -57,14 +57,14 @@ class AppTheme {
           fontSize: 20.0,
           fontWeight: FontWeight.bold,
           color: Colors.white,
-          fontFamilyFallback: ['Kantumruy', 'Gilroy'],
+          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         labelStyle: const TextStyle(
           fontSize: 16.0,
           color: Colors.black,
-          fontFamilyFallback: ['Kantumruy', 'Gilroy'],
+          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
@@ -89,7 +89,7 @@ class AppTheme {
         errorStyle: const TextStyle(
           fontSize: 12.0,
           color: Colors.red,
-          fontFamilyFallback: ['Kantumruy', 'Gilroy'],
+          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
         ),
       ),
 
@@ -104,7 +104,7 @@ class AppTheme {
           ),
           textStyle: const TextStyle(
             fontSize: 16.0,
-            fontFamilyFallback: ['Kantumruy', 'Gilroy'],
+            fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
           ),
         ),
       ),

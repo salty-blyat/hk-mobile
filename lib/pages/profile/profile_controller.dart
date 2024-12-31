@@ -28,7 +28,6 @@ class ProfileController extends GetxController {
       loading.value = false;
       return response;
     } catch (e) {
-      Get.offAllNamed('/login');
       return Staff();
     }
   }
@@ -47,18 +46,20 @@ class ProfileController extends GetxController {
       });
       downloading.value = '';
       isDownloading.value = false;
-      Get.to(() => Scaffold(
-            appBar: AppBar(
-              title: Text(name.tr),
-              leading: IconButton(
-                onPressed: () {
-                  Get.back();
-                },
-                icon: Icon(Icons.arrow_back),
-              ),
+      Get.to(
+        () => Scaffold(
+          appBar: AppBar(
+            title: Text(name.tr),
+            leading: IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: const Icon(Icons.arrow_back),
             ),
-            body: PDFView(filePath: path),
-          ));
+          ),
+          body: PDFView(filePath: path),
+        ),
+      );
     }
   }
 }

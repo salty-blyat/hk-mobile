@@ -82,7 +82,7 @@ class LoginScreen extends StatelessWidget {
                   child: Text(
                     '${'Forgot Password'.tr}?',
                     style: const TextStyle(
-                        fontFamilyFallback: ['Kantumruy', 'Gilroy']),
+                        fontFamilyFallback: ['NotoSansKhmer', 'Gilroy']),
                   ),
                 ),
               ),

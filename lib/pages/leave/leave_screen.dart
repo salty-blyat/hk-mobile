@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:staff_view_ui/models/leave_data_model.dart';
 import 'package:staff_view_ui/pages/leave/leave_operation_screen.dart';
 import 'package:staff_view_ui/utils/widgets/calender_box.dart';
-import 'package:staff_view_ui/utils/widgets/fat_button.dart';
 import 'package:staff_view_ui/utils/widgets/year_select.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 
@@ -22,7 +20,10 @@ class LeaveScreen extends StatelessWidget {
         child: const Icon(CupertinoIcons.add),
       ),
       appBar: AppBar(
-        title: Text('Leave'.tr),
+        title: Text('Leave'.tr,
+            style: context.textTheme.titleLarge!.copyWith(
+              color: Colors.white,
+            )),
       ),
       body: ListView(
         children: [
@@ -38,25 +39,6 @@ class LeaveScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 // Fat button Selection
-                SizedBox(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Obx(
-                      () => Row(
-                        children:
-                            List.generate(leaveDetailData.length, (index) {
-                          return FatButton(
-                            leaveDays: leaveDetailData[index].leaveDays,
-                            leaveTotal: leaveDetailData[index].leaveTotal,
-                            titleLeave: leaveDetailData[index].title,
-                            isSelected: true,
-                            onTap: () {},
-                          );
-                        }),
-                      ),
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
@@ -104,7 +86,7 @@ class LeaveScreen extends StatelessWidget {
                                         color: Colors.black,
                                         fontSize: 12,
                                         fontFamilyFallback: [
-                                          'Kantumruy',
+                                          'NotoSansKhmer',
                                           'Gilroy'
                                         ],
                                       ),

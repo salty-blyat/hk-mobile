@@ -31,6 +31,7 @@ class DioClient {
         return handler.next(response);
       },
       onError: (DioException e, handler) async {
+        print("e: ${e.response?.statusCode}");
         if (e.response?.statusCode == 401) {
           // Attempt to refresh the token
           bool isRefreshed = await _refreshAuthToken();
@@ -58,8 +59,8 @@ class DioClient {
               );
               return handler
                   .resolve(response); // Return the successful response
-            } on DioException catch (error) {
-              return handler.reject(error); // Return the error if retry fails
+            } on DioException catch (e) {
+              return handler.reject(e); //
             }
           } else {
             // Navigate to login page if token refresh fails
@@ -125,8 +126,7 @@ class DioClient {
           await dio.get('$baseUrl/$url', queryParameters: queryParameters);
       return response;
     } on DioException {
-      // Modal.errorDialog('Error', _getResponseMessage(e));
-      return null;
+      rethrow;
     }
   }
 
@@ -135,13 +135,9 @@ class DioClient {
     try {
       Response response = await dio.post('$baseUrl/$url', data: data);
       return response;
-    } on DioException catch (e) {
-      if (e.response?.statusCode != 401) {
-        // Modal.errorDialog('Error', _getResponseMessage(e));
-        return null;
-      }
+    } on DioException {
+      rethrow;
     }
-    return null;
   }
 
   // Example method to make PUT requests
@@ -167,14 +163,17 @@ class DioClient {
   }
 
   String _getResponseMessage(DioException e) {
-    String messageTemplate = e.response!.data['message'].toString().tr;
-    Map<String, dynamic> args = e.response!.data['args'];
+    if (e.response?.data['args'] != null) {
+      String messageTemplate = e.response!.data['message'].toString().tr;
+      Map<String, dynamic> args = e.response!.data['args'];
 
-    args.forEach((key, value) {
-      String placeholder = '{{$key}}';
-      messageTemplate =
-          messageTemplate.replaceAll(placeholder, value.toString());
-    });
-    return messageTemplate;
+      args.forEach((key, value) {
+        String placeholder = '{{$key}}';
+        messageTemplate =
+            messageTemplate.replaceAll(placeholder, value.toString());
+      });
+      return messageTemplate;
+    }
+    return '';
   }
 }
