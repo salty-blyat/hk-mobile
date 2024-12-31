@@ -11,4 +11,7 @@ class LeaveController extends GetxController {
       TextEditingController(text: DateTime.now().toString().split(' ')[0]);
   final toDateController =
       TextEditingController(text: DateTime.now().toString().split(' ')[0]);
+  final totalDaysController = TextEditingController(text: '1');
+  final totalHoursController = TextEditingController(text: '1');
+  final leaveTypeController = TextEditingController(text: '1');
 }
