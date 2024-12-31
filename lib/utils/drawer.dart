@@ -25,33 +25,44 @@ class DrawerWidget extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Container(
-                  height: 64,
-                  width: 64,
-                  margin: const EdgeInsets.only(right: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  child: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        drawerController.auth.value?.profile ?? ''),
-                  ),
-                ),
-               Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(drawerController.auth.value?.fullName ?? '',
-                        style: const TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold)),
-                    Text(drawerController.auth.value?.phone ?? '',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.white,
-                        )),
+                    Container(
+                      height: 64,
+                      width: 64,
+                      margin: const EdgeInsets.only(right: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: CircleAvatar(
+                        backgroundImage:
+                            drawerController.auth.value?.profile?.isNotEmpty ==
+                                    true
+                                ? NetworkImage(
+                                    drawerController.auth.value!.profile ?? '')
+                                : AssetImage('assets/images/man.png')
+                                    as ImageProvider,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(drawerController.auth.value?.fullName ?? '',
+                            style: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold)),
+                        Text(drawerController.auth.value?.phone ?? '',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
+                            )),
+                      ],
+                    ),
                   ],
                 ),
               ],
@@ -67,7 +78,8 @@ class DrawerWidget extends StatelessWidget {
                       color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(4),
                     ),
-                    child: const Icon(CupertinoIcons.create, color: Colors.black87),
+                    child: const Icon(CupertinoIcons.create,
+                        color: Colors.black87),
                   ),
                   title: Text('Edit User'.tr),
                   onTap: () {
@@ -81,7 +93,8 @@ class DrawerWidget extends StatelessWidget {
                       color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(4),
                     ),
-                    child: const Icon(CupertinoIcons.lock, color: Colors.black87),
+                    child:
+                        const Icon(CupertinoIcons.lock, color: Colors.black87),
                   ),
                   title: Text('Change Password'.tr),
                   onTap: () {
@@ -95,8 +108,8 @@ class DrawerWidget extends StatelessWidget {
                       color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(4),
                     ),
-                    child:
-                        const Icon(CupertinoIcons.textformat, color: Colors.black87),
+                    child: const Icon(CupertinoIcons.textformat,
+                        color: Colors.black87),
                   ),
                   title: Text('Language'.tr),
                   onTap: () {
@@ -165,4 +178,3 @@ class DrawerController extends GetxController {
     }
   }
 }
-

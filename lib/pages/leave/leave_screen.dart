@@ -1,15 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:staff_view_ui/models/leave_data_model.dart';
+import 'package:staff_view_ui/pages/leave/leave_controller.dart';
 import 'package:staff_view_ui/pages/leave/leave_operation_screen.dart';
-import 'package:staff_view_ui/utils/widgets/calender_box.dart';
-import 'package:staff_view_ui/utils/widgets/fat_button.dart';
 import 'package:staff_view_ui/utils/widgets/year_select.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 
 class LeaveScreen extends StatelessWidget {
-  const LeaveScreen({super.key});
+  LeaveScreen({super.key});
+
+  final LeaveTypeController leaveTypeController =
+      Get.put(LeaveTypeController());
 
   @override
   Widget build(BuildContext context) {
@@ -38,25 +39,28 @@ class LeaveScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 // Fat button Selection
-                SizedBox(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Obx(
-                      () => Row(
-                        children:
-                            List.generate(leaveDetailData.length, (index) {
-                          return FatButton(
-                            leaveDays: leaveDetailData[index].leaveDays,
-                            leaveTotal: leaveDetailData[index].leaveTotal,
-                            titleLeave: leaveDetailData[index].title,
-                            isSelected: true,
-                            onTap: () {},
-                          );
-                        }),
-                      ),
-                    ),
-                  ),
-                ),
+                // SizedBox(
+                //   child: SingleChildScrollView(
+                //     scrollDirection: Axis.horizontal,
+                //     child: Obx(
+                //       () => Row(
+                //         spacing: 10,
+                //         children:
+                //             List.generate(leaveDetailData.length, (index) {
+                //           return FatButton(
+                //             leaveDays: leaveDetailData[index].leaveDays,
+                //             leaveTotal: leaveDetailData[index].leaveTotal,
+                //             titleLeave: leaveDetailData[index].title,
+                //             isSelected: activeButtonIndex.value == index,
+                //             onTap: () {
+                //               activeButtonIndex.value = index;
+                //             },
+                //           );
+                //         }),
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -71,71 +75,6 @@ class LeaveScreen extends StatelessWidget {
               ),
             ),
           ),
-          Column(
-            children: [
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                child: Row(
-                  children: [
-                    const CalenderBox(),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text('ប្រចាំឆ្នាំ'),
-                                  SizedBox(width: 5),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      color: AppTheme.secondaryColor,
-                                      borderRadius: BorderRadius.circular(3),
-                                    ),
-                                    child: const Text(
-                                      '5 ម៉ោង',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 12,
-                                        fontFamilyFallback: [
-                                          'Kantumruy',
-                                          'Gilroy'
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Text('សុំច្បាប់'),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text('1109'),
-                              const SizedBox(height: 10),
-                              Text('រង់ចាំអនុម័ត'),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Divider(
-                color: Color.fromARGB(255, 217, 217, 217),
-                height: 1,
-              ),
-            ],
-          )
         ],
       ),
     );
