@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:staff_view_ui/pages/absent_exception/absent_exception_screen.dart';
@@ -21,12 +22,20 @@ import 'package:staff_view_ui/app_setting.dart';
 Future<void> main() async {
   await GetStorage.init();
   await AppSetting().initSetting();
-  Locale lang = const Locale("kh", "KH");
   runApp(
     GetMaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: '/menu',
-      locale: lang,
+      supportedLocales: const [
+        Locale("en", "US"),
+        Locale("km", "KH"),
+      ],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      locale: const Locale("kh", "KH"),
       translations: Translate(),
       fallbackLocale: const Locale("en", "US"),
       theme: AppTheme.lightTheme,

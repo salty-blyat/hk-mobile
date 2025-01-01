@@ -113,6 +113,28 @@ class AppTheme {
           ),
         ),
       ),
+      datePickerTheme: const DatePickerThemeData(
+        headerHeadlineStyle: TextStyle(
+          fontSize: 16.0,
+          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
+        ),
+        headerHelpStyle: TextStyle(
+          fontSize: 16.0,
+          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
+        ),
+        dayStyle: TextStyle(
+          fontSize: 16.0,
+          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
+        ),
+        rangePickerHeaderHeadlineStyle: TextStyle(
+          fontSize: 16.0,
+          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
+        ),
+        rangePickerHeaderHelpStyle: TextStyle(
+          fontSize: 16.0,
+          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
+        ),
+      ),
     );
   }
 }

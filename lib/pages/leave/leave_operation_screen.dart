@@ -282,6 +282,7 @@ class LeaveOperationScreen extends StatelessWidget {
 
     DateTimeRange? selectedDate = await showDateRangePicker(
       context: context,
+      locale: const Locale("km", "KH"),
       initialDateRange: DateTimeRange(start: startDate, end: endDate),
       firstDate: DateTime.now().subtract(const Duration(days: 365 * 150)),
       lastDate: DateTime.now().add(const Duration(days: 365)),
