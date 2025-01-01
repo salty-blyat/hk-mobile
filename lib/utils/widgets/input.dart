@@ -8,6 +8,7 @@ class MyFormField extends StatelessWidget {
   final bool password;
   final String? Function(String?)? validator;
   final TextEditingController? controller;
+  final int? maxLines;
   const MyFormField({
     super.key,
     required this.label,
@@ -16,6 +17,7 @@ class MyFormField extends StatelessWidget {
     this.password = false,
     this.validator,
     this.controller,
+    this.maxLines,
   });
 
   @override
@@ -31,6 +33,7 @@ class MyFormField extends StatelessWidget {
 
   Widget _buildFormField(BuildContext context, RxBool isPasswordVisible) {
     return TextFormField(
+      maxLines: maxLines,
       controller: controller,
       enabled: !disabled,
       validator: validator,

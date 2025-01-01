@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
 import 'package:staff_view_ui/pages/leave/leave_type/leave_type_controller.dart';
+import 'package:staff_view_ui/utils/widgets/button.dart';
 import 'package:staff_view_ui/utils/widgets/date_picker.dart';
 import 'package:staff_view_ui/utils/widgets/input.dart';
 
@@ -16,6 +17,13 @@ class LeaveOperationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: MyButton(
+          text: 'Submit',
+          onPressed: () {},
+        ),
+      ),
       appBar: AppBar(
         title: Text(
           'Leave Request'.tr,
@@ -67,34 +75,53 @@ class LeaveOperationScreen extends StatelessWidget {
                         final leaveType = leaveTypeController.leaveTypes[index];
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: controller.leaveType.value ==
-                                      leaveTypeController.leaveTypes[index].id
-                                          .toString()
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Colors.white,
-                              foregroundColor: controller.leaveType.value ==
-                                      leaveTypeController.leaveTypes[index].id
-                                          .toString()
-                                  ? Colors.white
-                                  : Colors.black,
-                              side: BorderSide(
-                                  color: Theme.of(context).colorScheme.primary),
+                          child: Obx(
+                            () => ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    controller.leaveType.value == leaveType.id
+                                        ? Theme.of(context).colorScheme.primary
+                                        : Colors.white,
+                                foregroundColor:
+                                    controller.leaveType.value == leaveType.id
+                                        ? Colors.white
+                                        : Colors.black,
+                                side: BorderSide(
+                                    color:
+                                        Theme.of(context).colorScheme.primary),
+                              ),
+                              onPressed: () {
+                                controller.updateLeaveType(leaveType.id!);
+                              },
+                              child: Text(leaveType.name ?? ''),
                             ),
-                            onPressed: () {
-                              controller.updateLeaveType(leaveTypeController
-                                  .leaveTypes[index].id
-                                  .toString());
-                            },
-                            child: Text(leaveType.name ?? ''),
                           ),
                         );
                       },
                     ),
                   );
                 }),
-                const SizedBox(height: 16),
+                const SizedBox(height: 4),
+                Obx(() {
+                  if (controller.leaveType.value == 0) {
+                    return const SizedBox.shrink();
+                  }
+                  if (leaveTypeController.leaveTypes.isEmpty) {
+                    return const SizedBox.shrink();
+                  }
+                  return Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      leaveTypeController.leaveTypes
+                              .firstWhere((element) =>
+                                  element.id == controller.leaveType.value)
+                              .note ??
+                          '',
+                      style: context.textTheme.bodySmall,
+                    ),
+                  );
+                }),
+                const SizedBox(height: 8),
                 // Request No and Request Date
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,7 +211,7 @@ class LeaveOperationScreen extends StatelessWidget {
                               .toList(),
                           onChanged: (value) {
                             if (value != null) {
-                              controller.updateLeaveType(value);
+                              controller.updateLeaveUnit(value);
                             }
                           },
                           decoration: InputDecoration(
@@ -194,6 +221,48 @@ class LeaveOperationScreen extends StatelessWidget {
                       ),
                     ),
                   ],
+                ),
+                const SizedBox(height: 16),
+                // Balance
+                MyFormField(
+                  label: 'Balance'.tr,
+                  controller: controller.balanceController,
+                  disabled: true,
+                ),
+                const SizedBox(height: 16),
+                // Balance
+                MyFormField(
+                  maxLines: 2,
+                  label: 'Note'.tr,
+                  controller: controller.balanceController,
+                  disabled: true,
+                ),
+                const SizedBox(height: 16),
+                // Balance
+                MyFormField(
+                  label: 'Approver'.tr,
+                  controller: controller.balanceController,
+                  disabled: true,
+                ),
+                const SizedBox(height: 16),
+                GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    height: 90,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(CupertinoIcons.cloud_upload),
+                          Text('Attachment'.tr),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -212,7 +281,6 @@ class LeaveOperationScreen extends StatelessWidget {
         : DateTime.now();
 
     DateTimeRange? selectedDate = await showDateRangePicker(
-      locale: const Locale('km', 'KH'),
       context: context,
       initialDateRange: DateTimeRange(start: startDate, end: endDate),
       firstDate: DateTime.now().subtract(const Duration(days: 365 * 150)),

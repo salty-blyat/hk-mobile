@@ -40,6 +40,11 @@ class AppTheme {
           color: Colors.black,
           fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
         ),
+        bodySmall: TextStyle(
+          fontSize: 12.0,
+          color: Colors.black,
+          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
+        ),
       ),
 
       // Button theme
