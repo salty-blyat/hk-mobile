@@ -24,7 +24,7 @@ class DatePicker extends StatelessWidget {
       controller: controller,
       decoration: InputDecoration(
         labelText: label.tr,
-        labelStyle: context.textTheme.titleMedium!.copyWith(
+        labelStyle: context.textTheme.bodyMedium!.copyWith(
           color: Colors.black,
         ),
         suffixIcon: const Icon(CupertinoIcons.calendar),

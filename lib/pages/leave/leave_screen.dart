@@ -10,8 +10,7 @@ import 'package:staff_view_ui/utils/theme.dart';
 class LeaveScreen extends StatelessWidget {
   LeaveScreen({super.key});
 
-  final LeaveTypeController leaveTypeController =
-      Get.put(LeaveTypeController());
+  final LeaveController controller = Get.put(LeaveController());
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +89,7 @@ class LeaveScreen extends StatelessWidget {
                                         color: Colors.black,
                                         fontSize: 12,
                                         fontFamilyFallback: [
-                                          'Kantumruy',
+                                          'NotoSansKhmer',
                                           'Gilroy'
                                         ],
                                       ),

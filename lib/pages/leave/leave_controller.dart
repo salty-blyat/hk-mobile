@@ -1,42 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:staff_view_ui/models/leave_type_model.dart';
-import 'package:staff_view_ui/pages/leave/leave_service.dart';
 
 class LeaveController extends GetxController {
+  // Form key for validation
   final formKey = GlobalKey<FormState>();
+
+  // Controllers for input fields
   final leaveNoController = TextEditingController(text: 'New'.tr);
   final dateController =
       TextEditingController(text: DateTime.now().toString().split(' ')[0]);
-
   final fromDateController =
       TextEditingController(text: DateTime.now().toString().split(' ')[0]);
   final toDateController =
       TextEditingController(text: DateTime.now().toString().split(' ')[0]);
   final totalDaysController = TextEditingController(text: '1');
   final totalHoursController = TextEditingController(text: '1');
-  final leaveTypeController = TextEditingController(text: '1');
-}
 
-class LeaveTypeController extends GetxController {
-  final LeaveTypeService leaveTypeService = LeaveTypeService();
-  final RxList<LeaveType> leaveType = RxList.empty();
-  final RxBool isLoading = false.obs;
+  // Observable leave type value
+  final leaveType = '0'.obs;
+  final leaveUnit = '1'.obs;
+
   @override
-  void onInit() {
-    super.onInit();
-    getLeaveType();
+  void onClose() {
+    // Dispose controllers when the controller is removed from memory
+    leaveNoController.dispose();
+    dateController.dispose();
+    fromDateController.dispose();
+    toDateController.dispose();
+    totalDaysController.dispose();
+    totalHoursController.dispose();
+    super.onClose();
   }
 
-  Future<void> getLeaveType() async {
-    try {
-      isLoading.value = true;
-      leaveType.value = await leaveTypeService.getLeaveType();
-      print('Leave Types: ${leaveType.value}');
-      isLoading.value = false;
-    } catch (e) {
-      isLoading.value = false;
-      print('Error fetching leave types: $e');
-    }
+  void updateLeaveUnit(String unit) {
+    leaveUnit.value = unit;
+  }
+
+  void updateLeaveType(String type) {
+    leaveType.value = type;
   }
 }

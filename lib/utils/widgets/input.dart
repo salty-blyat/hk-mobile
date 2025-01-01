@@ -38,8 +38,9 @@ class MyFormField extends StatelessWidget {
       obscureText: password ? !isPasswordVisible.value : false,
       enableSuggestions: false,
       decoration: InputDecoration(
-        labelStyle: context.textTheme.titleMedium!.copyWith(
+        labelStyle: context.textTheme.bodyMedium!.copyWith(
           color: Colors.black,
+          fontWeight: FontWeight.normal,
         ),
         prefixIconColor: disabled ? Colors.grey[500] : null,
         suffixIcon: password
