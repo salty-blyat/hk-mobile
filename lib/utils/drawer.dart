@@ -172,7 +172,8 @@ class DrawerController extends GetxController {
           .readFromLocalStorage(Const.authorized['Authorized']!);
       auth.value = authData != null && authData.isNotEmpty
           ? ClientInfo.fromJson(jsonDecode(authData))
-          : ClientInfo(); // Replace with default constructor or handle null case
+          : ClientInfo();
+      // Replace with default constructor or handle null case
     } catch (e) {
       print('Error during initialization: $e');
     }
