@@ -33,7 +33,7 @@ class MyFormField extends StatelessWidget {
 
   Widget _buildFormField(BuildContext context, RxBool isPasswordVisible) {
     return TextFormField(
-      maxLines: maxLines,
+      maxLines: password ? 1 : maxLines,
       controller: controller,
       enabled: !disabled,
       validator: validator,

@@ -9,6 +9,7 @@ import 'package:staff_view_ui/pages/exception/exception_screen.dart';
 import 'package:staff_view_ui/pages/leave/leave_screen.dart';
 import 'package:staff_view_ui/pages/menu/menu_screen.dart';
 import 'package:staff_view_ui/pages/overtime/overtime_screen.dart';
+import 'package:staff_view_ui/pages/privacy_policy/privacy_policy_screen.dart';
 import 'package:staff_view_ui/pages/scan/scan-check/scan_check_screen.dart';
 import 'package:staff_view_ui/pages/scan/scan_screen.dart';
 import 'package:staff_view_ui/pages/working/working_screen.dart';
@@ -43,6 +44,7 @@ Future<void> main() async {
         GetPage(name: '/working', page: () => WorkingScreen()),
         GetPage(name: '/scan-attendance', page: () => ScanScreen()),
         GetPage(name: '/check', page: () => ScanCheckScreen()),
+        GetPage(name: '/privacy-policy', page: () => PrivacyPolicyScreen()),
       ],
     ),
   );
