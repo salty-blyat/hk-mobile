@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/auth/auth_controller.dart';
-import 'package:staff_view_ui/helpers/common_validators.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
-import 'package:staff_view_ui/utils/widgets/input.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -18,15 +17,15 @@ class LoginScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32),
         child: MyButton(
           text: 'Login',
-          onPressed: () => controller.formKey.currentState?.validate() ?? false
-              ? controller.login()
-              : null,
+          loading: controller.loading.value,
+          onPressed: () =>
+              controller.formGroup.valid ? controller.login() : null,
         ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: controller.formKey,
+        child: ReactiveForm(
+          formGroup: controller.formGroup,
           child: ListView(
             children: [
               const SizedBox(height: 100),
@@ -43,19 +42,46 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(
                 height: 32,
               ),
-              MyFormField(
-                label: 'Username',
-                icon: CupertinoIcons.person,
-                controller: controller.username,
-                validator: (value) => CommonValidators.required(value ?? ''),
+              ReactiveTextField<String>(
+                formControlName: 'username',
+                validationMessages: {
+                  ValidationMessage.required: (_) => 'Input is required'.tr,
+                },
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
+                  labelText: 'Username'.tr,
+                  helperText: '',
+                  helperStyle: const TextStyle(height: 0.7),
+                  errorStyle: const TextStyle(height: 0.7),
+                  prefixIcon: const Icon(CupertinoIcons.person),
+                ),
               ),
-              const SizedBox(height: 16),
-              MyFormField(
-                label: 'Password',
-                icon: CupertinoIcons.lock,
-                controller: controller.password,
-                password: true,
-                validator: (value) => CommonValidators.required(value ?? ''),
+              const SizedBox(height: 16.0),
+              Obx(
+                () => ReactiveTextField<String>(
+                  formControlName: 'password',
+                  obscureText: !controller.isPasswordVisible.value,
+                  validationMessages: {
+                    ValidationMessage.required: (_) => 'Input is required'.tr,
+                  },
+                  textInputAction: TextInputAction.done,
+                  decoration: InputDecoration(
+                    labelText: 'Password'.tr,
+                    helperText: '',
+                    helperStyle: const TextStyle(height: 0.7),
+                    errorStyle: const TextStyle(height: 0.7),
+                    prefixIcon: const Icon(CupertinoIcons.lock),
+                    suffixIcon: IconButton(
+                      icon: Icon(controller.isPasswordVisible.value
+                          ? CupertinoIcons.eye_slash
+                          : CupertinoIcons.eye),
+                      onPressed: () {
+                        controller.isPasswordVisible.value =
+                            !controller.isPasswordVisible.value;
+                      },
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(height: 16),
               Obx(() => controller.error.value.isNotEmpty

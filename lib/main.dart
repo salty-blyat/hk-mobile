@@ -20,25 +20,39 @@ import 'package:staff_view_ui/pages/profile/profile_screen.dart';
 import 'package:staff_view_ui/app_setting.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize translation and local storage
+  final Translate translationService = Translate();
+  await translationService.loadTranslations();
   await GetStorage.init();
   await AppSetting().initSetting();
-  runApp(
-    GetMaterialApp(
+
+  runApp(MyApp(translationService: translationService));
+}
+
+class MyApp extends StatelessWidget {
+  final Translate translationService;
+  const MyApp({super.key, required this.translationService});
+
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: '/menu',
       supportedLocales: const [
-        Locale("en", "US"),
-        Locale("km", "KH"),
+        Locale("en", "US"), // English (United States)
+        Locale("km", "KH"), // Khmer (Cambodia)
       ],
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      locale: const Locale("kh", "KH"),
-      translations: Translate(),
-      fallbackLocale: const Locale("en", "US"),
-      theme: AppTheme.lightTheme,
+      locale: const Locale("km", "KH"), // Default locale set to Khmer
+      translations: translationService, // Custom translation class
+      fallbackLocale: const Locale("en", "US"), // Fallback to English
+      theme: AppTheme.lightTheme, // Custom app theme
       getPages: [
         GetPage(name: '/menu', page: () => const MenuScreen()),
         GetPage(name: '/login', page: () => LoginScreen()),
@@ -53,6 +67,6 @@ Future<void> main() async {
         GetPage(name: '/scan-attendance', page: () => ScanScreen()),
         GetPage(name: '/check', page: () => ScanCheckScreen()),
       ],
-    ),
-  );
+    );
+  }
 }
