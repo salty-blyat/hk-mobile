@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 class MyButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
+  final bool loading;
+  final IconData? icon;
   final bool disabled;
 
   const MyButton({
@@ -11,6 +13,8 @@ class MyButton extends StatelessWidget {
     required this.text,
     required this.onPressed,
     this.disabled = false,
+    this.loading = false,
+    this.icon,
   });
 
   @override
@@ -31,7 +35,19 @@ class MyButton extends StatelessWidget {
         ),
       ),
       onPressed: disabled ? null : onPressed,
-      child: Text(text.tr),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (loading)
+            const SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(),
+            ),
+          const SizedBox(width: 8),
+          Text(text.tr),
+        ],
+      ),
     );
   }
 }

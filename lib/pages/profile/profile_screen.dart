@@ -110,7 +110,7 @@ class ProfileScreen extends StatelessWidget {
                     Description(
                         icon: Icons.calendar_month,
                         value:
-                            '${convertToKhmerDate(controller.user.value.joinDate ?? DateTime.now())} (${convertToKhmerTimeAgo(controller.user.value.joinDate ?? DateTime.now(), Get.locale?.languageCode ?? 'kh')})'),
+                            '${convertToKhmerDate(controller.user.value.joinDate ?? DateTime.now())} (${convertToKhmerTimeAgo(controller.user.value.joinDate ?? DateTime.now())})'),
                     const SizedBox(height: 24),
                     Text(
                       'Download'.tr,

@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+
 String convertToKhmerDate(DateTime dateTime) {
   List<String> khmerMonths = [
     'មករា',
@@ -8,9 +10,9 @@ String convertToKhmerDate(DateTime dateTime) {
     'មិថុនា',
     'កក្កដា',
     'សីហា',
+    'កញ្ញា',
     'តុលា',
     'វិច្ឆិកា',
-    'ធ្នូ',
     'ធ្នូ'
   ];
 
@@ -23,38 +25,34 @@ String convertToKhmerDate(DateTime dateTime) {
   return formattedDate;
 }
 
-String convertToKhmerTimeAgo(DateTime targetDate, String lang) {
+String convertToKhmerTimeAgo(DateTime targetDate) {
   DateTime now = DateTime.now();
   Duration diff = now.difference(targetDate);
 
   int dayDiff = diff.inDays;
   if (dayDiff == 0) {
     if (diff.inSeconds < 60) {
-      return lang == 'en' ? 'just now' : 'ឥឡូវនេះ';
+      return 'just now'.tr;
     } else if (diff.inMinutes < 60) {
-      return lang == 'en'
-          ? '${diff.inMinutes} minutes ago'
-          : '${diff.inMinutes} នាទីមុន';
+      return '${diff.inMinutes} ${'minutes ago'.tr}';
     } else if (diff.inHours < 24) {
-      return lang == 'en'
-          ? '${diff.inHours} hours ago'
-          : '${diff.inHours} ម៉ោងមុន';
+      return '${diff.inHours} ${'hours ago'.tr}';
     }
   } else if (dayDiff == 1) {
-    return lang == 'en' ? 'Yesterday' : 'ម្សិលមិញ';
+    return 'yesterday'.tr;
   } else if (dayDiff < 7) {
-    return lang == 'en' ? '$dayDiff days ago' : '$dayDiff ថ្ងៃមុន';
+    return '$dayDiff ${'days ago'.tr}';
   } else if (dayDiff == 7) {
-    return lang == 'en' ? '1 week ago' : '1 សប្តាហ៍មុន';
+    return '1 ${'week ago'.tr}';
   } else if (dayDiff < 31) {
     int weeks = (dayDiff / 7).ceil();
-    return lang == 'en' ? '$weeks weeks ago' : '$weeks សប្តាហ៍មុន';
+    return '$weeks ${'weeks ago'.tr}';
   } else if (dayDiff < 365) {
     int months = (dayDiff / 30).ceil();
-    return lang == 'en' ? '$months months ago' : '$months ខែមុន';
+    return '$months ${'months ago'.tr}';
   } else {
     int years = (dayDiff / 365).ceil();
-    return lang == 'en' ? '$years year ago' : '$years ឆ្នាំមុន';
+    return '$years ${'years ago'.tr}';
   }
   return '';
 }

@@ -168,8 +168,8 @@ class DrawerController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     try {
-      final authData =
-          await authService.readFromLocalStorage('APP_STORAGE_KEY_Authorized');
+      final authData = await authService
+          .readFromLocalStorage(Const.authorized['Authorized']!);
       auth.value = authData != null && authData.isNotEmpty
           ? ClientInfo.fromJson(jsonDecode(authData))
           : ClientInfo(); // Replace with default constructor or handle null case

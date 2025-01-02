@@ -7,6 +7,10 @@ class AppTheme {
   static const Color successColor = Color(0xFF068047);
   static const Color warningColor = Color(0xFFF59E0B);
   static const Color secondaryColor = Color(0xFFEDEEF0);
+  static const TextStyle style = TextStyle(
+    fontSize: 16.0,
+    fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
+  );
   static ThemeData get lightTheme {
     return ThemeData(
       // Primary color
@@ -23,27 +27,38 @@ class AppTheme {
         primary: primaryColor,
       ),
       // Text theme
-      textTheme: const TextTheme(
-        displayLarge: TextStyle(
+      textTheme: TextTheme(
+        displayLarge: style.copyWith(
           fontSize: 32.0,
           fontWeight: FontWeight.bold,
           color: primaryColor,
-          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
         ),
-        bodyLarge: TextStyle(
+        bodyLarge: style.copyWith(
           fontSize: 16.0,
           color: Colors.black,
-          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
         ),
-        bodyMedium: TextStyle(
+        bodyMedium: style.copyWith(
           fontSize: 14.0,
           color: Colors.black,
-          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
         ),
-        bodySmall: TextStyle(
+        bodySmall: style.copyWith(
           fontSize: 12.0,
           color: Colors.black,
-          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
+        ),
+        titleMedium: style.copyWith(
+          fontSize: 16.0,
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+        titleSmall: style.copyWith(
+          fontSize: 14.0,
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+        titleLarge: style.copyWith(
+          fontSize: 22.0,
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
         ),
       ),
 
@@ -54,22 +69,20 @@ class AppTheme {
       ),
 
       // AppBar theme
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         color: primaryColor,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         centerTitle: true,
-        titleTextStyle: TextStyle(
+        titleTextStyle: style.copyWith(
           fontSize: 20.0,
           fontWeight: FontWeight.bold,
           color: Colors.white,
-          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
-        labelStyle: const TextStyle(
+        labelStyle: style.copyWith(
           fontSize: 16.0,
           color: Colors.black,
-          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
@@ -91,11 +104,8 @@ class AppTheme {
           borderRadius: BorderRadius.circular(4),
           borderSide: const BorderSide(color: Colors.red),
         ),
-        errorStyle: const TextStyle(
-          fontSize: 12.0,
-          color: Colors.red,
-          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
-        ),
+        errorStyle: style.copyWith(color: Colors.red, fontSize: 12),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
 
       // ElevatedButton style
@@ -107,32 +117,22 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          textStyle: const TextStyle(
-            fontSize: 16.0,
-            fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
-          ),
+          textStyle: style,
         ),
       ),
-      datePickerTheme: const DatePickerThemeData(
-        headerHeadlineStyle: TextStyle(
-          fontSize: 16.0,
-          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
+      datePickerTheme: DatePickerThemeData(
+        headerHeadlineStyle: style,
+        headerHelpStyle: style,
+        dayStyle: style,
+        weekdayStyle: style,
+        yearStyle: style,
+        rangePickerHeaderHeadlineStyle: style,
+        rangePickerHeaderHelpStyle: style,
+        cancelButtonStyle: ButtonStyle(
+          textStyle: WidgetStateProperty.all(style),
         ),
-        headerHelpStyle: TextStyle(
-          fontSize: 16.0,
-          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
-        ),
-        dayStyle: TextStyle(
-          fontSize: 16.0,
-          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
-        ),
-        rangePickerHeaderHeadlineStyle: TextStyle(
-          fontSize: 16.0,
-          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
-        ),
-        rangePickerHeaderHelpStyle: TextStyle(
-          fontSize: 16.0,
-          fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
+        confirmButtonStyle: ButtonStyle(
+          textStyle: WidgetStateProperty.all(style),
         ),
       ),
     );

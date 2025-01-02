@@ -5,6 +5,7 @@ import 'package:get/route_manager.dart';
 import 'package:staff_view_ui/app_setting.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
+import 'package:staff_view_ui/const.dart';
 
 class DioClient {
   final Dio dio = Dio();
@@ -78,12 +79,12 @@ class DioClient {
 
   // Fetch the access token from secure storage
   Future<String?> _getAccessToken() async {
-    return await secureStorage.read(key: 'accessToken');
+    return await secureStorage.read(key: Const.authorized['AccessToken']!);
   }
 
   // Fetch the refresh token from secure storage
   Future<String?> _getRefreshToken() async {
-    return await secureStorage.read(key: 'refreshToken');
+    return await secureStorage.read(key: Const.authorized['RefreshToken']!);
   }
 
   // Function to refresh the access token
@@ -107,7 +108,8 @@ class DioClient {
       if (response.statusCode == 200) {
         // Save the new access token
         String newAccessToken = response.data['accessToken'];
-        await secureStorage.write(key: 'accessToken', value: newAccessToken);
+        await secureStorage.write(
+            key: Const.authorized['AccessToken']!, value: newAccessToken);
         return true;
       } else {
         return false;

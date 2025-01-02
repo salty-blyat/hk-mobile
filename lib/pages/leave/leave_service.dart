@@ -5,8 +5,7 @@ class LeaveTypeService {
   final dio = DioClient();
   Future<List<LeaveType>> getLeaveType() async {
     final response = await dio
-        .get('/leavetype', queryParameters: {'pageSize': 100, 'pageIndex': 1});
-    print(response?.data);
+        .get('/leavetype', queryParameters: {'pageSize': 50, 'pageIndex': 1});
     return (response?.data['results'] as List)
         .map((e) => LeaveType.fromJson(e))
         .toList();

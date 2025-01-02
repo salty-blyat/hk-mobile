@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart' as dio;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:staff_view_ui/app_setting.dart';
+import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
 
 class AuthService {
@@ -40,7 +41,7 @@ class AuthService {
 
         // Save to secure storage
         await saveToLocalStorage(
-            'APP_STORAGE_KEY_Authorized', jsonEncode(result));
+            Const.authorized['Authorized']!, jsonEncode(result));
 
         await saveToLocalStorage('accessToken', clientInfo.token ?? '');
         await saveToLocalStorage('refreshToken', clientInfo.refreshToken ?? '');
