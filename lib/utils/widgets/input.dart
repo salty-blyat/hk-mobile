@@ -17,7 +17,7 @@ class MyFormField extends StatelessWidget {
     this.password = false,
     this.validator,
     this.controller,
-    this.maxLines,
+    this.maxLines = 1,
   });
 
   @override
