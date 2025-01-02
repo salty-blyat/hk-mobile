@@ -5,6 +5,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
 import 'package:staff_view_ui/pages/leave/leave_type/leave_type_controller.dart';
+import 'package:staff_view_ui/pages/profile/staff_select.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
 import 'package:staff_view_ui/utils/widgets/date_picker.dart';
 
@@ -22,7 +23,9 @@ class LeaveOperationScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: MyButton(
           text: 'Submit',
-          onPressed: () {},
+          onPressed: () {
+            print(controller.formGroup.rawValue);
+          },
         ),
       ),
       appBar: AppBar(
@@ -153,7 +156,10 @@ class LeaveOperationScreen extends StatelessWidget {
         Expanded(
           child: ReactiveTextField<String>(
             formControlName: 'leaveNo',
-            decoration: const InputDecoration(labelText: 'Leave No'),
+            decoration: InputDecoration(
+              labelText: 'Request No'.tr,
+              hintText: 'New'.tr,
+            ),
           ),
         ),
         const SizedBox(width: 16),
@@ -229,7 +235,7 @@ class LeaveOperationScreen extends StatelessWidget {
           final label = controller.leaveUnit.value == '1' ? 'days' : 'hours';
 
           return Expanded(
-            child: ReactiveTextField<String>(
+            child: ReactiveTextField<int>(
               formControlName: controlName,
               decoration: InputDecoration(labelText: 'Total ($label)'.tr),
             ),
@@ -275,12 +281,14 @@ class LeaveOperationScreen extends StatelessWidget {
         ReactiveTextField<String>(
           formControlName: 'note',
           maxLines: 2,
-          decoration: InputDecoration(labelText: 'Note'.tr),
+          decoration: InputDecoration(
+            labelText: 'Note'.tr,
+          ),
         ),
         const SizedBox(height: 16),
-        ReactiveTextField<String>(
-          formControlName: 'approver',
-          decoration: InputDecoration(labelText: 'Approver'.tr),
+        StaffSelect(
+          formControlName: 'approverId',
+          formGroup: controller.formGroup,
         ),
       ],
     );
@@ -323,6 +331,7 @@ class LeaveOperationScreen extends StatelessWidget {
     if (selectedDates != null) {
       controller.formGroup.control('fromDate').value = selectedDates.start;
       controller.formGroup.control('toDate').value = selectedDates.end;
+      controller.calculateTotalDays();
     }
   }
 }

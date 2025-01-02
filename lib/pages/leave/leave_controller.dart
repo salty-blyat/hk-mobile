@@ -1,11 +1,12 @@
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import 'package:staff_view_ui/pages/leave/leave_service.dart';
 
 class LeaveController extends GetxController {
+  final leaveService = LeaveService();
   // Reactive FormGroup with initial values and configurations
   final formGroup = FormGroup({
     'leaveNo': FormControl<String>(
-      value: 'New'.tr,
       validators: [Validators.required],
       disabled: true,
     ),
@@ -23,19 +24,20 @@ class LeaveController extends GetxController {
       validators: [Validators.required],
     ),
     'note': FormControl<String>(),
-    'approver': FormControl<String>(),
-    'totalDays': FormControl<String>(
-      value: '1',
+    'approverId': FormControl<String>(),
+    'totalDays': FormControl<int>(
+      value: 1,
       disabled: true,
     ),
-    'totalHours': FormControl<String>(
-      value: '1',
+    'totalHours': FormControl<int>(
+      value: 0,
       disabled: true,
     ),
     'balance': FormControl<String>(
       value: '0 = 0 - 0',
       disabled: true,
     ),
+    'leaveTypeId': FormControl<int>(),
   });
 
   // Observable state for leave type and unit
@@ -51,6 +53,7 @@ class LeaveController extends GetxController {
   /// Updates the leave type
   void updateLeaveType(int type) {
     leaveType.value = type;
+    formGroup.control('leaveTypeId').value = type;
     // Trigger any additional updates based on leave type selection
   }
 
@@ -59,6 +62,18 @@ class LeaveController extends GetxController {
     formGroup.reset();
     leaveType.value = 0;
     leaveUnit.value = '1';
+  }
+
+  /// Calculates the total days of leave
+  void calculateTotalDays() {
+    final fromDate = formGroup.control('fromDate').value;
+    final toDate = formGroup.control('toDate').value;
+    final totalDays = toDate.difference(fromDate).inDays + 1;
+    formGroup.control('totalDays').value = totalDays;
+  }
+
+  Future<void> submit() async {
+    //
   }
 
   @override

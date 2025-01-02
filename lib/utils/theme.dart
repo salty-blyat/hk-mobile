@@ -47,17 +47,17 @@ class AppTheme {
         ),
         titleMedium: style.copyWith(
           fontSize: 16.0,
-          color: Colors.white,
+          color: Colors.black,
           fontWeight: FontWeight.bold,
         ),
         titleSmall: style.copyWith(
           fontSize: 14.0,
-          color: Colors.white,
+          color: Colors.black,
           fontWeight: FontWeight.bold,
         ),
         titleLarge: style.copyWith(
           fontSize: 22.0,
-          color: Colors.white,
+          color: Colors.black,
           fontWeight: FontWeight.bold,
         ),
       ),
