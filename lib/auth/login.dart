@@ -16,8 +16,7 @@ class LoginScreen extends StatelessWidget {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32),
         child: MyButton(
-          text: 'Login',
-          loading: controller.loading.value,
+          label: 'Login',
           onPressed: () =>
               controller.formGroup.valid ? controller.login() : null,
         ),

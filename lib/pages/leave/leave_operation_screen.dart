@@ -21,12 +21,17 @@ class LeaveOperationScreen extends StatelessWidget {
     return Scaffold(
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: MyButton(
-          text: 'Submit',
-          onPressed: () {
-            print(controller.formGroup.rawValue);
-          },
-        ),
+        child: Obx(() {
+          return MyButton(
+            label: 'Submit',
+            disabled: !controller.formValid.value,
+            onPressed: () {
+              if (controller.formValid.value) {
+                controller.submit();
+              }
+            },
+          );
+        }),
       ),
       appBar: AppBar(
         title: Text(
@@ -155,7 +160,7 @@ class LeaveOperationScreen extends StatelessWidget {
       children: [
         Expanded(
           child: ReactiveTextField<String>(
-            formControlName: 'leaveNo',
+            formControlName: 'requestNo',
             decoration: InputDecoration(
               labelText: 'Request No'.tr,
               hintText: 'New'.tr,
@@ -273,16 +278,16 @@ class LeaveOperationScreen extends StatelessWidget {
   Widget _buildBalanceAndOtherDetails() {
     return Column(
       children: [
-        ReactiveTextField<String>(
+        ReactiveTextField<int>(
           formControlName: 'balance',
           decoration: InputDecoration(labelText: 'Balance'.tr),
         ),
         const SizedBox(height: 16),
         ReactiveTextField<String>(
-          formControlName: 'note',
+          formControlName: 'reason',
           maxLines: 2,
           decoration: InputDecoration(
-            labelText: 'Note'.tr,
+            labelText: 'Reason'.tr,
           ),
         ),
         const SizedBox(height: 16),
@@ -321,8 +326,8 @@ class LeaveOperationScreen extends StatelessWidget {
       context: context,
       locale: Get.locale,
       initialDateRange: DateTimeRange(
-        start: controller.formGroup.control('fromDate').value,
-        end: controller.formGroup.control('toDate').value,
+        start: controller.formGroup.control('fromDate').value ?? DateTime.now(),
+        end: controller.formGroup.control('toDate').value ?? DateTime.now(),
       ),
       firstDate: DateTime(1900),
       lastDate: DateTime(2200),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MyButton extends StatelessWidget {
-  final String text;
+  final String label;
   final VoidCallback onPressed;
   final bool loading;
   final IconData? icon;
@@ -10,7 +10,7 @@ class MyButton extends StatelessWidget {
 
   const MyButton({
     super.key,
-    required this.text,
+    required this.label,
     required this.onPressed,
     this.disabled = false,
     this.loading = false,
@@ -45,7 +45,7 @@ class MyButton extends StatelessWidget {
               child: CircularProgressIndicator(),
             ),
           const SizedBox(width: 8),
-          Text(text.tr),
+          Text(label.tr),
         ],
       ),
     );

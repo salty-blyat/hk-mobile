@@ -12,16 +12,16 @@ Leave _$LeaveFromJson(Map<String, dynamic> json) => Leave(
       totalDays: (json['totalDays'] as num?)?.toInt(),
       fromDate: json['fromDate'] == null
           ? null
-          : DateTime.parse(json['fromDate'] as String),
+          : DateTime.parse(json['fromDate']),
       toDate: json['toDate'] == null
           ? null
-          : DateTime.parse(json['toDate'] as String),
+          : DateTime.parse(json['toDate']),
       requestedDate: json['requestedDate'] == null
           ? null
-          : DateTime.parse(json['requestedDate'] as String),
+          : DateTime.parse(json['requestedDate']),
       approvedDate: json['approvedDate'] == null
           ? null
-          : DateTime.parse(json['approvedDate'] as String),
+          : DateTime.parse(json['approvedDate']),
       reason: json['reason'] as String?,
       attachments: (json['attachments'] as List<dynamic>?)
           ?.map((e) => Attachment.fromJson(e as Map<String, dynamic>))

@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -8,10 +10,32 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/helpers/token_interceptor.dart';
 import 'package:staff_view_ui/models/user_info_model.dart';
 
+enum FilterTypesStaff {
+  DirectFollower(4),
+  AnyFollower(5),
+  AnyStaff(9);
+
+  final int value;
+
+  const FilterTypesStaff(this.value);
+}
+
+enum FilterTypesApprover {
+  DirectManager(1),
+  UpperManager(2),
+  AnyManager(3),
+  AnyStaff(9),
+  SelfApprove(10);
+
+  final int value;
+  const FilterTypesApprover(this.value);
+}
+
 class StaffSelect extends StatelessWidget {
   final String formControlName;
   final String labelText;
   final FormGroup formGroup;
+
   const StaffSelect({
     super.key,
     required this.formControlName,
@@ -21,25 +45,71 @@ class StaffSelect extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ReactiveTextField<String>(
-      formControlName: formControlName,
-      valueAccessor: StaffValueAccessor(),
-      decoration: InputDecoration(
-        labelText: labelText.tr,
-        suffixIcon: const Icon(CupertinoIcons.chevron_down),
+    final StaffSelectController controller = Get.put(StaffSelectController());
+    if (formGroup.control(formControlName).value == null) {
+      controller.selectedStaff.value = '-';
+    } else {
+      if (formGroup.control(formControlName).value != null) {
+        controller.getStaffById(formGroup.control(formControlName).value);
+      }
+    }
+
+    return Obx(
+      () => TextField(
+        controller: TextEditingController(text: controller.selectedStaff.value),
+        decoration: InputDecoration(
+          suffixIcon: const Icon(CupertinoIcons.chevron_down),
+          labelText: labelText.tr,
+          labelStyle: const TextStyle(
+            fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+        readOnly: true,
+        onTap: () async {
+          Staff? result = await Get.to(() => StaffSelectDialog(
+                formControlName: formControlName,
+                formGroup: formGroup,
+              ));
+          if (result != null) {
+            // controller.selectedStaff.value =
+            //     '${result.tittleName} ${result.name} ${result.latinName}';
+            // formGroup.control(formControlName).value = result.id;
+          }
+        },
       ),
-      readOnly: true,
-      onTap: (context) async {
-        var result = await Get.to(() => StaffSelectDialog(
-              formControlName: formControlName,
-              formGroup: formGroup,
-            ));
-        if (result != null) {
-          var staff = Staff.fromJson(json.decode(result));
-          formGroup.control(formControlName).value = staff.id.toString();
-        }
-      },
     );
+    // Column(
+    //   children: [
+    //     Obx(
+    //       () => controller.dropdownItems.isEmpty
+    //           ? const SizedBox.shrink()
+    //           : ReactiveDropdownField<int>(
+    //               formControlName: formControlName,
+    //               items: controller.dropdownItems,
+    //               decoration: InputDecoration(
+    //                 labelText: labelText.tr,
+    //                 labelStyle: const TextStyle(
+    //                   fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
+    //                   fontWeight: FontWeight.normal,
+    //                 ),
+
+    //               ),
+    //               onTap: (value) async {
+    //                 var result = await Get.to(() => StaffSelectDialog(
+    //                       formControlName: formControlName,
+    //                       formGroup: formGroup,
+    //                     ));
+    //                 if (result != null) {
+    //                   controller.addStaff(result.id,
+    //                       '${result.tittleName} ${result.name} ${result.latinName}');
+    //                   formGroup.control(formControlName).value = result.id;
+    //                 }
+    //               },
+    //             ),
+    //     ),
+    //   ],
+    // );
   }
 }
 
@@ -55,8 +125,90 @@ class StaffSelectDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    controller.getStaff();
     return Scaffold(
-      appBar: AppBar(title: Text('Staff'.tr)),
+      appBar: AppBar(
+        title: Container(
+          height: 40,
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.1),
+            border: Border.all(color: Colors.white.withOpacity(0.1)),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: SearchBar(
+            textStyle: WidgetStateProperty.all(
+              const TextStyle(
+                color: Colors.white,
+                fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
+                fontSize: 18,
+              ),
+            ),
+            hintText: 'Search'.tr,
+            hintStyle: WidgetStateProperty.all(
+              TextStyle(
+                  color: Colors.white.withOpacity(0.5),
+                  fontSize: 18,
+                  fontFamilyFallback: const ['NotoSansKhmer', 'Gilroy']),
+            ),
+            leading: const Icon(Icons.search),
+            backgroundColor: WidgetStateProperty.all(Colors.transparent),
+            shadowColor: WidgetStateProperty.all(Colors.transparent),
+            shape: WidgetStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onChanged: (value) {
+              controller.searchText.value = value;
+              controller.staff.clear();
+              controller.currentPage = 1;
+              controller.getStaff();
+            },
+          ),
+        ),
+        actions: [
+          IconButton(
+            iconSize: 30,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            onPressed: () {
+              showMenu(
+                context: context,
+                position: const RelativeRect.fromLTRB(
+                    100, 100, 0, 0), // Adjust position as needed
+                items: FilterTypesApprover.values
+                    .map((e) => PopupMenuItem<FilterTypesApprover>(
+                          value: e,
+                          child: Row(
+                            children: [
+                              Icon(
+                                controller.filterType.value == e
+                                    ? Icons.radio_button_checked
+                                    : Icons.radio_button_unchecked,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary, // Set the icon color
+                                size: 20, // Adjust the icon size
+                              ),
+                              const SizedBox(
+                                  width: 8), // Spacing between icon and text
+                              Text(e.name.tr),
+                            ],
+                          ),
+                        ))
+                    .toList(),
+              ).then((selectedValue) {
+                if (selectedValue != null) {
+                  controller.filterType.value = selectedValue;
+                  controller.staff.clear();
+                  controller.currentPage = 1;
+                  controller.getStaff();
+                }
+              });
+            },
+            icon: const Icon(Icons.menu),
+          ),
+        ],
+      ),
       body: Obx(() {
         if (controller.loading.isTrue && controller.staff.isEmpty) {
           return Skeletonizer(
@@ -70,7 +222,7 @@ class StaffSelectDialog extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('__________________________________'),
-                      Text('______________________________________________',
+                      Text('______________________________',
                           style: TextStyle(fontSize: 12)),
                     ],
                   ),
@@ -130,9 +282,11 @@ class StaffSelectDialog extends StatelessWidget {
                   ],
                 ),
                 onTap: () {
+                  controller.selectedStaff.value =
+                      '${controller.staff[index].tittleName} ${controller.staff[index].name} ${controller.staff[index].latinName}';
                   formGroup.control(formControlName).value =
-                      json.encode(controller.staff[index]);
-                  Get.back(result: json.encode(controller.staff[index]));
+                      controller.staff[index].id;
+                  Get.back(result: controller.staff[index]);
                 },
               );
             },
@@ -144,6 +298,8 @@ class StaffSelectDialog extends StatelessWidget {
 }
 
 class StaffSelectController extends GetxController {
+  final RxString searchText = ''.obs;
+  final RxString selectedStaff = '-'.obs;
   final RxList<Staff> staff = <Staff>[].obs;
   final StaffService staffService = StaffService();
   final RxBool loading = false.obs;
@@ -151,21 +307,58 @@ class StaffSelectController extends GetxController {
   final RxBool hasMore = true.obs;
   int currentPage = 1;
   final int pageSize = 20;
+  final Rx<FilterTypesApprover> filterType =
+      FilterTypesApprover.DirectManager.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    getStaff();
+  Future<void> getStaffById(int id) async {
+    loading.value = true;
+    var filter = [
+      {'field': 'id', 'operator': 'eq', 'value': id}
+    ];
+
+    var response = await staffService.getStaff(queryParameters: {
+      'pageIndex': currentPage,
+      'pageSize': pageSize,
+      'filters': jsonEncode(filter)
+    });
+    if (response.isNotEmpty) {
+      selectedStaff.value =
+          '${response.first.tittleName} ${response.first.name} ${response.first.latinName}';
+    }
+    loading.value = false;
   }
 
   Future<void> getStaff() async {
     loading.value = true;
-    var response =
-        await staffService.getStaff(pageIndex: currentPage, pageSize: pageSize);
+    staff.value = [];
+    var filter = [];
+    if (searchText.value.isNotEmpty) {
+      filter.add({
+        'field': 'search',
+        'operator': 'contains',
+        'value': searchText.value
+      });
+    }
+    if (filterType.value != 0) {
+      filter.add({
+        'field': 'staffFilterTypes',
+        'operator': 'eq',
+        'value': filterType.value.value
+      });
+    }
+
+    var response = await staffService.getStaff(queryParameters: {
+      'pageIndex': currentPage,
+      'pageSize': pageSize,
+      'filters': jsonEncode(filter)
+    });
+
     if (response.isNotEmpty) {
       staff.addAll(response);
+      print('Staff loaded: ${response.length} staff members.');
     } else {
       hasMore.value = false;
+      print('No more staff data available.');
     }
     loading.value = false;
   }
@@ -175,12 +368,25 @@ class StaffSelectController extends GetxController {
 
     loadingMore.value = true;
     currentPage++;
-    var response =
-        await staffService.getStaff(pageIndex: currentPage, pageSize: pageSize);
+    var filter = [
+      {
+        'field': 'staffFilterTypes',
+        'operator': 'eq',
+        'value': filterType.value.value
+      }
+    ];
+    var response = await staffService.getStaff(queryParameters: {
+      'pageIndex': currentPage,
+      'pageSize': pageSize,
+      'filters': jsonEncode(filter)
+    });
+
     if (response.isNotEmpty) {
       staff.addAll(response);
+      print('Loaded more staff: ${response.length} staff members.');
     } else {
       hasMore.value = false;
+      print('No more staff data available.');
     }
     loadingMore.value = false;
   }
@@ -188,10 +394,8 @@ class StaffSelectController extends GetxController {
 
 class StaffService {
   final DioClient dio = DioClient();
-  Future<List<Staff>> getStaff(
-      {required int pageIndex, required int pageSize}) async {
-    var response = await dio.get('/staff',
-        queryParameters: {'pageIndex': pageIndex, 'pageSize': pageSize});
+  Future<List<Staff>> getStaff({Map<String, dynamic>? queryParameters}) async {
+    var response = await dio.get('/staff', queryParameters: queryParameters);
     if (response?.statusCode == 200) {
       return (response?.data['results'] as List)
           .map((e) => Staff.fromJson(e))

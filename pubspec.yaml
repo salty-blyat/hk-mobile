@@ -52,3 +52,6 @@ flutter:
     - family: NotoSansKhmer
       fonts:
         - asset: assets/fonts/NotoSansKhmer.ttf
+    - family: Kantumruy
+      fonts:
+        - asset: assets/fonts/Kantumruy.ttf

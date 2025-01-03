@@ -1,14 +1,17 @@
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/pages/leave/leave_service.dart';
+import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
 class LeaveController extends GetxController {
+  final loading = false.obs;
   final leaveService = LeaveService();
+  final formValid = false.obs;
   // Reactive FormGroup with initial values and configurations
   final formGroup = FormGroup({
-    'leaveNo': FormControl<String>(
-      validators: [Validators.required],
+    'requestNo': FormControl<String>(
       disabled: true,
+      value: null,
     ),
     'date': FormControl<DateTime>(
       value: DateTime.now(),
@@ -23,8 +26,11 @@ class LeaveController extends GetxController {
       value: DateTime.now(),
       validators: [Validators.required],
     ),
-    'note': FormControl<String>(),
-    'approverId': FormControl<String>(),
+    'reason': FormControl<String>(
+      validators: [Validators.required],
+    ),
+    'approverId':
+        FormControl<int>(value: null, validators: [Validators.required]),
     'totalDays': FormControl<int>(
       value: 1,
       disabled: true,
@@ -33,12 +39,32 @@ class LeaveController extends GetxController {
       value: 0,
       disabled: true,
     ),
-    'balance': FormControl<String>(
-      value: '0 = 0 - 0',
+    'balance': FormControl<int>(
+      value: 0,
       disabled: true,
     ),
-    'leaveTypeId': FormControl<int>(),
+    'leaveTypeId': FormControl<int>(
+      value: null,
+      validators: [Validators.required],
+    ),
+    'status': FormControl<int>(
+      value: 74,
+    ),
+    'fromShiftId': FormControl<int>(
+      value: 0,
+    ),
+    'toShiftId': FormControl<int>(
+      value: 0,
+    ),
   });
+
+  @override
+  void onInit() {
+    formGroup.valueChanges.listen((value) {
+      formValid.value = formGroup.valid;
+    });
+    super.onInit();
+  }
 
   // Observable state for leave type and unit
   final leaveType = RxInt(0);
@@ -73,7 +99,39 @@ class LeaveController extends GetxController {
   }
 
   Future<void> submit() async {
-    //
+    Modal.loadingDialog();
+    await leaveService.add({
+      'requestNo': null,
+      'requestedDate': formGroup.control('date').value.toIso8601String(),
+      'fromDate': formGroup.control('fromDate').value.toIso8601String(),
+      'toDate': formGroup.control('toDate').value.toIso8601String(),
+      'reason': formGroup.control('reason').value,
+      'totalDays': formGroup.control('totalDays').value,
+      'totalHours': formGroup.control('totalHours').value,
+      'balance': formGroup.control('balance').value,
+      'leaveTypeId': formGroup.control('leaveTypeId').value,
+      'status': formGroup.control('status').value,
+      'fromShiftId': formGroup.control('fromShiftId').value,
+      'toShiftId': formGroup.control('toShiftId').value,
+    });
+    resetState();
+    Get.back();
+  }
+
+  resetState() {
+    formGroup.resetState({
+      'requestNo': ControlState<String>(value: null),
+      'date': ControlState<DateTime>(value: DateTime.now()),
+      'fromDate': ControlState<DateTime>(value: DateTime.now()),
+      'toDate': ControlState<DateTime>(value: DateTime.now()),
+      'totalDays': ControlState<int>(value: 1),
+      'totalHours': ControlState<int>(value: 0),
+      'balance': ControlState<int>(value: 0),
+      'leaveTypeId': ControlState<int>(value: null),
+      'status': ControlState<int>(value: 74),
+      'fromShiftId': ControlState<int>(value: 0),
+      'toShiftId': ControlState<int>(value: 0),
+    });
   }
 
   @override

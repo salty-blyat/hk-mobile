@@ -24,6 +24,7 @@ class DioClient {
           options.headers['Authorization'] = 'Bearer $token';
           options.headers['Tenant-Code'] = AppSetting.setting['TENANT_CODE'];
           options.headers['App-Code'] = AppSetting.setting['APP_CODE'];
+          options.headers['Content-Type'] = 'application/json';
         }
 
         return handler.next(options); // Continue with the request
@@ -32,7 +33,6 @@ class DioClient {
         return handler.next(response);
       },
       onError: (DioException e, handler) async {
-        print("e: ${e.response?.statusCode}");
         if (e.response?.statusCode == 401) {
           // Attempt to refresh the token
           bool isRefreshed = await _refreshAuthToken();
@@ -138,7 +138,7 @@ class DioClient {
       Response response = await dio.post('$baseUrl/$url', data: data);
       return response;
     } on DioException {
-      rethrow;
+      return null;
     }
   }
 

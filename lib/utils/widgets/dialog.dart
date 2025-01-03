@@ -36,7 +36,7 @@ class Modal {
                   ],
                 ),
                 MyButton(
-                  text: 'Ok'.tr,
+                  label: 'Ok'.tr,
                   onPressed: () {
                     Navigator.of(Get.context!).pop();
                   },
@@ -80,13 +80,22 @@ class Modal {
                   ],
                 ),
                 MyButton(
-                  text: 'Ok'.tr,
+                  label: 'Ok'.tr,
                   onPressed: () => Navigator.of(Get.context!).pop(),
                 ),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  static loadingDialog() {
+    Get.dialog(
+      Dialog.fullscreen(
+        backgroundColor: Colors.white.withOpacity(0.1),
+        child: const Center(child: CircularProgressIndicator()),
       ),
     );
   }
