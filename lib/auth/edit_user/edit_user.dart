@@ -16,7 +16,7 @@ class EditUser extends StatelessWidget {
     print(controller.loading.value);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Change Password'.tr),
+        title: Text('Edit User'.tr),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
