@@ -180,7 +180,7 @@ class ChangePassword extends StatelessWidget {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32),
         child: MyButton(
-          text: 'Save',
+          label: 'Save',
           loading: controller.loading.value,
           onPressed: () => {},
         ),
