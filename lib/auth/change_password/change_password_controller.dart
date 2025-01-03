@@ -37,6 +37,7 @@ class ChangePasswordController extends GetxController {
   }
 
   Future<void> getUserInfo() async {
+    loading.value = true;
     try {
       final authData = await _authService
           .readFromLocalStorage(Const.authorized['Authorized']!);
@@ -46,6 +47,8 @@ class ChangePasswordController extends GetxController {
       changePasswordForm.control('username').value = auth.value?.name;
     } catch (e) {
       print('Error reading from local storage: $e');
+    } finally {
+      loading.value = false;
     }
   }
 }

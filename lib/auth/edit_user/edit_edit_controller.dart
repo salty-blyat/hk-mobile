@@ -32,6 +32,7 @@ class EditUserController extends GetxController {
   }
 
   Future<void> getUserInfo() async {
+    loading.value = true;
     try {
       final authData = await _authService
           .readFromLocalStorage(Const.authorized['Authorized']!);
@@ -44,6 +45,8 @@ class EditUserController extends GetxController {
       editUserForm.control('email').value = auth.value?.email;
     } catch (e) {
       print('Error reading from local storage: $e');
+    } finally {
+      loading.value = false;
     }
   }
 }
