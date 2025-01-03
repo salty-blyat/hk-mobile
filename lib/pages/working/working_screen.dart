@@ -46,7 +46,7 @@ class WorkingScreen extends StatelessWidget {
                 //         color: Colors.white,
                 //         fontSize: 16,
                 //         fontWeight: FontWeight.bold,
-                //         fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'])),
+                //         fontFamilyFallback: ['Kantumruy', 'Gilroy'])),
                 SizedBox(width: 5),
                 Icon(CupertinoIcons.arrow_down_circle,
                     size: 24, color: Colors.white),
@@ -161,7 +161,7 @@ class Tag extends StatelessWidget {
         style: TextStyle(
           color: color,
           fontSize: 10,
-          fontFamilyFallback: const ['NotoSansKhmer', 'Gilroy'],
+          fontFamilyFallback: const ['Kantumruy', 'Gilroy'],
         ),
       ),
     );

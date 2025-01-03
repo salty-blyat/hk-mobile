@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:staff_view_ui/helpers/token_interceptor.dart';
+import 'package:staff_view_ui/models/leave_model.dart';
 
 class LeaveService {
   final dio = DioClient();
@@ -11,5 +12,11 @@ class LeaveService {
       return response?.data;
     }
     return null;
+  }
+
+  Future<List<Leave>> get() async {
+    var response = await dio.get('/leave');
+    print(response?.data);
+    return response?.data;
   }
 }

@@ -134,6 +134,11 @@ class LeaveController extends GetxController {
     });
   }
 
+  Future<void> search() async {
+    var leave = await leaveService.get();
+    print(leave);
+  }
+
   @override
   void onClose() {
     // Dispose of form controls to release resources

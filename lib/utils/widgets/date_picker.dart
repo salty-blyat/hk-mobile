@@ -20,6 +20,7 @@ class DatePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      style: context.textTheme.bodyLarge,
       enabled: enabled,
       controller: controller,
       decoration: InputDecoration(

@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +62,7 @@ class StaffSelect extends StatelessWidget {
           suffixIcon: const Icon(CupertinoIcons.chevron_down),
           labelText: labelText.tr,
           labelStyle: const TextStyle(
-            fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
+            fontFamilyFallback: ['Kantumruy', 'Gilroy'],
             fontWeight: FontWeight.normal,
           ),
         ),
@@ -90,7 +91,7 @@ class StaffSelect extends StatelessWidget {
     //               decoration: InputDecoration(
     //                 labelText: labelText.tr,
     //                 labelStyle: const TextStyle(
-    //                   fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
+    //                   fontFamilyFallback: ['Kantumruy', 'Gilroy'],
     //                   fontWeight: FontWeight.normal,
     //                 ),
 
@@ -139,7 +140,7 @@ class StaffSelectDialog extends StatelessWidget {
             textStyle: WidgetStateProperty.all(
               const TextStyle(
                 color: Colors.white,
-                fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
+                fontFamilyFallback: ['Kantumruy', 'Gilroy'],
                 fontSize: 18,
               ),
             ),
@@ -148,7 +149,7 @@ class StaffSelectDialog extends StatelessWidget {
               TextStyle(
                   color: Colors.white.withOpacity(0.5),
                   fontSize: 18,
-                  fontFamilyFallback: const ['NotoSansKhmer', 'Gilroy']),
+                  fontFamilyFallback: const ['Kantumruy', 'Gilroy']),
             ),
             leading: const Icon(Icons.search),
             backgroundColor: WidgetStateProperty.all(Colors.transparent),
@@ -191,7 +192,8 @@ class StaffSelectDialog extends StatelessWidget {
                               ),
                               const SizedBox(
                                   width: 8), // Spacing between icon and text
-                              Text(e.name.tr),
+                              Text(e.name.tr,
+                                  style: Theme.of(context).textTheme.bodyLarge),
                             ],
                           ),
                         ))
@@ -205,7 +207,7 @@ class StaffSelectDialog extends StatelessWidget {
                 }
               });
             },
-            icon: const Icon(Icons.menu),
+            icon: const Icon(CupertinoIcons.ellipsis_vertical),
           ),
         ],
       ),
@@ -221,8 +223,8 @@ class StaffSelectDialog extends StatelessWidget {
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('__________________________________'),
-                      Text('______________________________',
+                      Text('__________________________'),
+                      Text('_________________________',
                           style: TextStyle(fontSize: 12)),
                     ],
                   ),
@@ -266,7 +268,9 @@ class StaffSelectDialog extends StatelessWidget {
                     Text(
                         '${controller.staff[index].tittleName ?? ''} ${controller.staff[index].name ?? ''} ${controller.staff[index].latinName ?? ''}',
                         style: Theme.of(context).textTheme.bodyLarge),
-                    Row(
+                    ListView(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
                       children: [
                         Text(controller.staff[index].positionName ?? '',
                             style: Theme.of(context).textTheme.bodySmall),
@@ -355,10 +359,9 @@ class StaffSelectController extends GetxController {
 
     if (response.isNotEmpty) {
       staff.addAll(response);
-      print('Staff loaded: ${response.length} staff members.');
+      hasMore.value = response.length == pageSize;
     } else {
       hasMore.value = false;
-      print('No more staff data available.');
     }
     loading.value = false;
   }
@@ -383,10 +386,8 @@ class StaffSelectController extends GetxController {
 
     if (response.isNotEmpty) {
       staff.addAll(response);
-      print('Loaded more staff: ${response.length} staff members.');
     } else {
       hasMore.value = false;
-      print('No more staff data available.');
     }
     loadingMore.value = false;
   }

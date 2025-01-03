@@ -9,7 +9,7 @@ class AppTheme {
   static const Color secondaryColor = Color(0xFFEDEEF0);
   static const TextStyle style = TextStyle(
     fontSize: 16.0,
-    fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
+    fontFamilyFallback: ['Kantumruy', 'Gilroy'],
   );
   static ThemeData get lightTheme {
     return ThemeData(
@@ -34,7 +34,7 @@ class AppTheme {
           color: primaryColor,
         ),
         bodyLarge: style.copyWith(
-          fontSize: 16.0,
+          fontSize: 15.0,
           color: Colors.black,
         ),
         bodyMedium: style.copyWith(
@@ -80,8 +80,20 @@ class AppTheme {
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
+        floatingLabelStyle: style.copyWith(
+          fontSize: 14.0,
+          color: Colors.black,
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 12.0, // Adjust vertical padding
+          horizontal: 12.0, // Adjust horizontal padding
+        ),
         labelStyle: style.copyWith(
           fontSize: 16.0,
+          color: Colors.black,
+        ),
+        counterStyle: style.copyWith(
+          fontSize: 12.0,
           color: Colors.black,
         ),
         enabledBorder: OutlineInputBorder(
@@ -134,6 +146,9 @@ class AppTheme {
         confirmButtonStyle: ButtonStyle(
           textStyle: WidgetStateProperty.all(style),
         ),
+      ),
+      dropdownMenuTheme: DropdownMenuThemeData(
+        textStyle: style.copyWith(fontSize: 14.0),
       ),
     );
   }

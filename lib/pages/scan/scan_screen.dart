@@ -87,7 +87,7 @@ class ScanScreen extends StatelessWidget {
                       ),
                       textStyle: const TextStyle(
                         fontSize: 12.0,
-                        fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
+                        fontFamilyFallback: ['Kantumruy', 'Gilroy'],
                       ),
                     ),
                     onPressed: controller.toggleFlash,
@@ -116,7 +116,7 @@ class ScanScreen extends StatelessWidget {
                       ),
                       textStyle: const TextStyle(
                         fontSize: 12.0,
-                        fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
+                        fontFamilyFallback: ['Kantumruy', 'Gilroy'],
                       ),
                     ),
                     child: Row(

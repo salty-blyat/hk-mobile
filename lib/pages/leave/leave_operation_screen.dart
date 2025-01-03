@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
@@ -38,7 +39,7 @@ class LeaveOperationScreen extends StatelessWidget {
           'Leave Request'.tr,
           style: context.textTheme.titleLarge?.copyWith(
             color: Colors.black,
-            fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
+            fontFamilyFallback: ['Kantumruy', 'Gilroy'],
           ),
         ),
         backgroundColor: Colors.white,
@@ -48,7 +49,7 @@ class LeaveOperationScreen extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: ReactiveForm(
           formGroup: controller.formGroup,
           child: SingleChildScrollView(
@@ -161,6 +162,7 @@ class LeaveOperationScreen extends StatelessWidget {
         Expanded(
           child: ReactiveTextField<String>(
             formControlName: 'requestNo',
+            style: Get.textTheme.bodySmall,
             decoration: InputDecoration(
               labelText: 'Request No'.tr,
               hintText: 'New'.tr,
@@ -179,7 +181,7 @@ class LeaveOperationScreen extends StatelessWidget {
                 icon: Icons.calendar_month,
                 enabled: false,
                 controller: TextEditingController(
-                  text: picker.control.value.toString().split(' ')[0],
+                  text: DateFormat('dd-MM-yyyy').format(picker.control.value!),
                 ),
                 onTap: () => dateRangePicker(context),
               );
@@ -261,7 +263,7 @@ class LeaveOperationScreen extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 16,
                             color: Colors.black,
-                            fontFamilyFallback: ['NotoSansKhmer', 'Gilroy'],
+                            fontFamilyFallback: ['Kantumruy', 'Gilroy'],
                           ),
                         ),
                       ))

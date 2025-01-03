@@ -6,6 +6,7 @@ part 'leave_model.g.dart';
 @JsonSerializable()
 class Leave {
   final String? requestNo;
+  final int? staffId;
   final int? leaveTypeId;
   final int? totalDays;
   final DateTime? fromDate;
@@ -22,8 +23,40 @@ class Leave {
   final int? toShiftId;
   final int? balance;
   final int? totalHours;
+  final int? id;
+  final String? leaveTypeName;
+  final String? leaveTypeCode;
+  final bool? leaveTypeTrackBalance;
+  final String? staffName;
+  final String? staffCode;
+  final int? positionId;
+  final String? positionName;
+  final int? branchId;
+  final String? branchCode;
+  final String? branchName;
+  final int? departmentId;
+  final int? deductDay;
+  final String? statusName;
+  final String? statusNameKh;
+
   Leave({
+    this.id,
+    this.leaveTypeName,
+    this.leaveTypeCode,
+    this.leaveTypeTrackBalance,
+    this.staffName,
+    this.staffCode,
+    this.positionId,
+    this.positionName,
+    this.branchId,
+    this.branchCode,
+    this.branchName,
+    this.departmentId,
+    this.deductDay,
+    this.statusName,
+    this.statusNameKh,
     this.requestNo,
+    this.staffId,
     this.leaveTypeId,
     this.totalDays,
     this.fromDate,
