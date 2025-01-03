@@ -2,13 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
-import 'package:staff_view_ui/auth/auth_controller.dart';
+import 'package:staff_view_ui/auth/change_password/change_password_controller.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
 
 class ChangePassword extends StatelessWidget {
   ChangePassword({super.key});
-  final AuthController controller = Get.put(AuthController());
+  final ChangePasswordController controller =
+      Get.put(ChangePasswordController());
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +82,7 @@ class ChangePassword extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: 'Username'.tr,
                   errorStyle: const TextStyle(height: 0.7),
-                  prefixIcon: const Icon(CupertinoIcons.person),
+                  prefixIcon: const Icon(CupertinoIcons.person_alt_circle),
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
               ),

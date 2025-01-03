@@ -1,0 +1,144 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:reactive_forms/reactive_forms.dart';
+import 'package:staff_view_ui/auth/edit_user/edit_edit_controller.dart';
+import 'package:staff_view_ui/utils/theme.dart';
+import 'package:staff_view_ui/utils/widgets/button.dart';
+
+class EditUser extends StatelessWidget {
+  EditUser({super.key});
+  final EditUserController controller = Get.put(EditUserController());
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Change Password'.tr),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: ReactiveForm(
+          formGroup: controller.editUserForm,
+          child: ListView(
+            children: [
+              const SizedBox(height: 16),
+              Obx(
+                () => Container(
+                  height: 84,
+                  width: 84,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: controller.auth.value?.profile?.isNotEmpty == true
+                      ? CircleAvatar(
+                          child: ClipOval(
+                            child: Image.network(
+                              controller.auth.value!.profile!,
+                              fit: BoxFit.cover,
+                              height: 84,
+                              width: 84,
+                            ),
+                          ),
+                        )
+                      : CircleAvatar(
+                          backgroundColor:
+                              AppTheme.primaryColor.withOpacity(0.8),
+                          child: Text(
+                            controller.auth.value?.fullName
+                                    ?.substring(0, 1)
+                                    .toUpperCase() ??
+                                '',
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Obx(
+                () => Center(
+                  child: Text(
+                    controller.auth.value?.fullName ?? '',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 32),
+              ReactiveTextField<String>(
+                formControlName: 'username',
+                validationMessages: {
+                  ValidationMessage.required: (_) => 'Input is required'.tr,
+                },
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
+                  labelText: 'Username'.tr,
+                  errorStyle: const TextStyle(height: 0.7),
+                  prefixIcon: const Icon(CupertinoIcons.person_alt_circle),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ReactiveTextField<String>(
+                formControlName: 'fullName',
+                validationMessages: {
+                  ValidationMessage.required: (_) => 'Input is required'.tr,
+                },
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
+                  labelText: 'Full Name'.tr,
+                  errorStyle: const TextStyle(height: 0.7),
+                  prefixIcon: const Icon(CupertinoIcons.person),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ReactiveTextField<String>(
+                formControlName: 'phone',
+                validationMessages: {
+                  ValidationMessage.required: (_) => 'Input is required'.tr,
+                },
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
+                  labelText: 'Phone Number'.tr,
+                  errorStyle: const TextStyle(height: 0.7),
+                  prefixIcon: const Icon(CupertinoIcons.phone),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ReactiveTextField<String>(
+                formControlName: 'email',
+                validationMessages: {
+                  ValidationMessage.required: (_) => 'Input is required'.tr,
+                },
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
+                  labelText: 'Email'.tr,
+                  errorStyle: const TextStyle(height: 0.7),
+                  prefixIcon: const Icon(CupertinoIcons.mail),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32),
+        child: MyButton(
+          text: 'Save',
+          loading: controller.loading.value,
+          onPressed: () => {},
+        ),
+      ),
+    );
+  }
+}
