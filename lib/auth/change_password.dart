@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,15 +27,20 @@ class ChangePassword extends StatelessWidget {
                 () => Container(
                   height: 84,
                   width: 84,
-                  margin: const EdgeInsets.only(right: 10),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: controller.auth.value?.profile?.isNotEmpty == true
                       ? CircleAvatar(
-                          backgroundImage:
-                              NetworkImage(controller.auth.value!.profile!),
+                          child: ClipOval(
+                            child: Image.network(
+                              controller.auth.value!.profile!,
+                              fit: BoxFit.cover,
+                              height: 84,
+                              width: 84,
+                            ),
+                          ),
                         )
                       : CircleAvatar(
                           backgroundColor:
@@ -46,7 +49,7 @@ class ChangePassword extends StatelessWidget {
                             controller.auth.value?.fullName
                                     ?.substring(0, 1)
                                     .toUpperCase() ??
-                                'N',
+                                '',
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
