@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/const.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 
 class DrawerWidget extends StatelessWidget {
   DrawerWidget({super.key});
@@ -36,15 +37,33 @@ class DrawerWidget extends StatelessWidget {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(100),
                       ),
-                      child: CircleAvatar(
-                        backgroundImage:
-                            drawerController.auth.value?.profile?.isNotEmpty ==
-                                    true
-                                ? NetworkImage(
-                                    drawerController.auth.value!.profile ?? '')
-                                : AssetImage('assets/images/man.png')
-                                    as ImageProvider,
-                      ),
+                      child: drawerController.auth.value?.profile?.isNotEmpty ==
+                              true
+                          ? CircleAvatar(
+                              child: ClipOval(
+                                child: Image.network(
+                                  drawerController.auth.value!.profile!,
+                                  fit: BoxFit.cover,
+                                  height: 64,
+                                  width: 64,
+                                ),
+                              ),
+                            )
+                          : CircleAvatar(
+                              backgroundColor:
+                                  AppTheme.primaryColor.withOpacity(0.7),
+                              child: Text(
+                                drawerController.auth.value?.fullName
+                                        ?.substring(0, 1)
+                                        .toUpperCase() ??
+                                    '',
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
                     ),
                     const SizedBox(height: 10),
                     Column(

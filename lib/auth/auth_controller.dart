@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
@@ -14,21 +12,14 @@ class AuthController extends GetxController {
   final error = ''.obs;
   final formKey = GlobalKey<FormState>();
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+
+  // Login Form Group
   final FormGroup formGroup = fb.group({
     'username': FormControl<String>(validators: [Validators.required]),
     'password': FormControl<String>(validators: [Validators.required]),
   });
-  final FormGroup changePasswordForm = fb.group({
-    'username':
-        FormControl<String>(validators: [Validators.required], disabled: true),
-    'oldPassword': FormControl<String>(validators: [Validators.required]),
-    'newPassword': FormControl<String>(validators: [Validators.required]),
-    'confirmPassword': FormControl<String>(validators: [Validators.required]),
-  });
+
   final isPasswordVisible = false.obs;
-  final isConfirmPasswordVisible = false.obs;
-  final isOldPasswordVisible = false.obs;
-  final isNewPasswordVisible = false.obs;
 
   Rx<ClientInfo?> auth = Rxn<ClientInfo>();
 
@@ -36,20 +27,6 @@ class AuthController extends GetxController {
   void onInit() {
     super.onInit();
     // logout();
-    getUserInfo();
-  }
-
-  Future<void> getUserInfo() async {
-    try {
-      final authData = await _authService
-          .readFromLocalStorage(Const.authorized['Authorized']!);
-      auth.value = authData != null && authData.isNotEmpty
-          ? ClientInfo.fromJson(jsonDecode(authData))
-          : ClientInfo();
-      changePasswordForm.control('username').value = auth.value?.name;
-    } catch (e) {
-      print('Error reading from local storage: $e');
-    }
   }
 
   login() async {

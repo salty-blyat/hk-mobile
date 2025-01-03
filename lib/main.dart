@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:staff_view_ui/auth/change_password.dart';
+import 'package:staff_view_ui/auth/change_password/change_password.dart';
+import 'package:staff_view_ui/auth/edit_user/edit_user.dart';
 import 'package:staff_view_ui/pages/absent_exception/absent_exception_screen.dart';
 import 'package:staff_view_ui/pages/delegate/delegate_screen.dart';
 import 'package:staff_view_ui/pages/document/document_screen.dart';
@@ -70,6 +71,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/check', page: () => ScanCheckScreen()),
         GetPage(name: '/privacy-policy', page: () => PrivacyPolicyScreen()),
         GetPage(name: '/change-password', page: () => ChangePassword()),
+        GetPage(name: '/edit-user', page: () => EditUser()),
       ],
     );
   }
