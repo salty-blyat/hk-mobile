@@ -32,9 +32,9 @@ class LoginScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: ReactiveForm(
           formGroup: controller.formGroup,
-          child: ListView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 100),
               Image.asset('assets/images/logo.jpg', height: 100),
               const SizedBox(height: 16),
               Center(
@@ -62,7 +62,7 @@ class LoginScreen extends StatelessWidget {
                   prefixIcon: const Icon(CupertinoIcons.person),
                 ),
               ),
-              const SizedBox(height: 16.0),
+              const SizedBox(height: 8.0),
               Obx(
                 () => ReactiveTextField<String>(
                   formControlName: 'password',
@@ -98,7 +98,7 @@ class LoginScreen extends StatelessWidget {
                           controller.error.value,
                           style: const TextStyle(color: Colors.red),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 8),
                       ],
                     )
                   : const SizedBox.shrink()),

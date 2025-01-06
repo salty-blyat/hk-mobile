@@ -23,12 +23,6 @@ class AuthController extends GetxController {
 
   Rx<ClientInfo?> auth = Rxn<ClientInfo>();
 
-  @override
-  void onInit() {
-    super.onInit();
-    // logout();
-  }
-
   login() async {
     loading.value = true;
     try {

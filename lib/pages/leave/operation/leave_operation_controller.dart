@@ -94,7 +94,7 @@ class LeaveOperationController extends GetxController {
 
   void find(int id) async {
     loading.value = true;
-    var leave = await leaveService.find(id);
+    Leave leave = await leaveService.find(id);
     setFormValue(leave);
     loading.value = false;
   }
@@ -146,9 +146,9 @@ class LeaveOperationController extends GetxController {
     };
 
     if (id.value == 0) {
-      await leaveService.add(model);
+      await leaveService.add(model as Leave);
     } else {
-      await leaveService.edit({...model, 'id': id.value});
+      await leaveService.edit({...model, 'id': id.value} as Leave);
     }
     leaveController.search();
     Get.back();

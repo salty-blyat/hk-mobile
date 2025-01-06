@@ -7,7 +7,6 @@ part of 'leave_model.dart';
 // **************************************************************************
 
 Leave _$LeaveFromJson(Map<String, dynamic> json) => Leave(
-      id: (json['id'] as num?)?.toInt(),
       leaveTypeName: json['leaveTypeName'] as String?,
       leaveTypeCode: json['leaveTypeCode'] as String?,
       leaveTypeTrackBalance: json['leaveTypeTrackBalance'] as bool?,
