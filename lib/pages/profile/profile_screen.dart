@@ -11,7 +11,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const placeHolder = '--------------------------------';
+    const placeHolder = '-----------------------';
     return Scaffold(
       appBar: AppBar(
         title: Text('My Profile'.tr),
@@ -26,7 +26,7 @@ class ProfileScreen extends StatelessWidget {
                   children: [
                     Icon(CupertinoIcons.exclamationmark_circle,
                         size: 42, color: Colors.red),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
                     Text('No Data'),
                   ],
                 ),

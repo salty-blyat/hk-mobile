@@ -8,6 +8,6 @@
   "APP_ICON": "https://core.sgx.bz/files/22/12/logo_text-black-02_.png",
   "RECAPTCHA_ENABLE": "false",
   "PRIVACY_URL": "https://ryrith.github.io/hrapp/privacy.html",
-  "TENANT_CODE": "s9server",
+  "TENANT_CODE": "s8server",
   "APP_CODE": "hr"
 }

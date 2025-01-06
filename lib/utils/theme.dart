@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class AppTheme {
   static const Color menuColor = Color(0xFF068047);
   static const Color primaryColor = Color(0xFF0B3B5C);
+  static const Color primaryColorLigt = Color(0xFF885EA0);
   static const Color dangerColor = Color(0xFFc5000f);
   static const Color successColor = Color(0xFF068047);
   static const Color warningColor = Color(0xFFF59E0B);
@@ -13,6 +14,7 @@ class AppTheme {
   );
   static ThemeData get lightTheme {
     return ThemeData(
+      brightness: Brightness.light,
       // Primary color
       primaryColor: primaryColor,
 
@@ -22,7 +24,6 @@ class AppTheme {
       // Background and card colors
       scaffoldBackgroundColor: Colors.white,
       cardColor: Colors.white,
-
       colorScheme: const ColorScheme.light(
         primary: primaryColor,
       ),
@@ -149,6 +150,17 @@ class AppTheme {
       ),
       dropdownMenuTheme: DropdownMenuThemeData(
         textStyle: style.copyWith(fontSize: 14.0),
+      ),
+      listTileTheme: const ListTileThemeData(
+        textColor: Colors.black,
+        leadingAndTrailingTextStyle: style,
+      ),
+      chipTheme: const ChipThemeData(
+        backgroundColor: Colors.white,
+        labelStyle: style,
+        side: BorderSide(color: Colors.transparent),
+        padding: EdgeInsets.zero,
+        labelPadding: EdgeInsets.zero,
       ),
     );
   }

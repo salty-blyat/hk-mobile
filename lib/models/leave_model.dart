@@ -8,7 +8,7 @@ class Leave {
   final String? requestNo;
   final int? staffId;
   final int? leaveTypeId;
-  final int? totalDays;
+  final double? totalDays;
   final DateTime? fromDate;
   final DateTime? toDate;
   final DateTime? requestedDate;
@@ -21,8 +21,8 @@ class Leave {
   final int? status;
   final int? fromShiftId;
   final int? toShiftId;
-  final int? balance;
-  final int? totalHours;
+  final double? balance;
+  final double? totalHours;
   final int? id;
   final String? leaveTypeName;
   final String? leaveTypeCode;

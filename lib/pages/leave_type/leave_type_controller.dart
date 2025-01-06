@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:staff_view_ui/models/leave_type_model.dart';
-import 'package:staff_view_ui/pages/leave/leave_type/leave_type_service.dart';
+import 'package:staff_view_ui/pages/leave_type/leave_type_service.dart';
 
 class LeaveTypeController extends GetxController {
   final LeaveTypeService leaveTypeService = LeaveTypeService();

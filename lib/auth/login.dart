@@ -12,13 +12,20 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32),
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom +
+              16, // Dynamic padding above keyboard
+          left: 16,
+          right: 16,
+        ),
         child: MyButton(
+          onPressed: () {
+            controller.formGroup.valid ? controller.login() : null;
+          },
           label: 'Login',
-          onPressed: () =>
-              controller.formGroup.valid ? controller.login() : null,
         ),
       ),
       body: Padding(

@@ -6,6 +6,7 @@ import 'package:staff_view_ui/models/working_sheet.dart';
 import 'package:staff_view_ui/pages/working/working_controller.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/calendar.dart';
+import 'package:staff_view_ui/utils/widgets/tag.dart';
 
 enum TYPE {
   present(1),
@@ -135,35 +136,6 @@ class WorkingScreen extends StatelessWidget {
           ],
         );
       }),
-    );
-  }
-}
-
-class Tag extends StatelessWidget {
-  const Tag({
-    super.key,
-    required this.color,
-    required this.text,
-  });
-  final Color color;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Text(
-        text.tr,
-        style: TextStyle(
-          color: color,
-          fontSize: 10,
-          fontFamilyFallback: const ['Kantumruy', 'Gilroy'],
-        ),
-      ),
     );
   }
 }
