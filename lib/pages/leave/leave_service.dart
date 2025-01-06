@@ -36,7 +36,7 @@ class LeaveService extends BaseService<Leave> {
   // }
 
   Future<double> getLeaveBalance(int id) async {
-    var response = await dio.get('leavebalance/$id');
+    var response = await dio.get('$baseUrl/leavebalance/$id');
     return response.data['balance'];
   }
 }
