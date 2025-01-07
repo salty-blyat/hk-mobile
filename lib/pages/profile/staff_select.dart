@@ -48,7 +48,6 @@ class StaffSelect extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final StaffSelectController controller = Get.put(StaffSelectController());
-    print(formGroup.control(formControlName).value);
     if (formGroup.control(formControlName).value == null) {
       controller.selectedStaff.value = '-';
     } else {

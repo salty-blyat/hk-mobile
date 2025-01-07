@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Const {
   static const String version = '1.8';
   static const String date = '03-01-2025';
@@ -12,4 +14,16 @@ class Const {
     'RefreshToken': 'refreshToken',
     'AccessToken': 'accessToken',
   };
+  static const List<Map<String, dynamic>> languages = [
+    {
+      'key': Locale('km'),
+      'label': 'ភាសាខ្មែរ',
+      'image': 'assets/images/kh_FLAG.png'
+    },
+    {
+      'key': Locale('en'),
+      'label': 'English',
+      'image': 'assets/images/en_FLAG.png'
+    },
+  ];
 }

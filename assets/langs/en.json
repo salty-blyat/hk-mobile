@@ -316,5 +316,6 @@
   "week ago": "week ago",
   "months ago": "months ago",
   "years ago": "years ago",
-  "yesterday": "yesterday"
+  "yesterday": "yesterday",
+  "You already requested at {date}": "You already requested at {{date}}"
 }

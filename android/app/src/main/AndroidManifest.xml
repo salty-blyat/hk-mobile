@@ -4,7 +4,7 @@
         android:name="android.hardware.camera"
         android:required="false" />
     <application
-        android:label="staff_view_ui"
+        android:label="StaffView"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

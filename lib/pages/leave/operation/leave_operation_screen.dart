@@ -174,8 +174,10 @@ class LeaveOperationScreen extends StatelessWidget {
         Expanded(
           child: ReactiveTextField<String>(
             formControlName: 'requestNo',
-            style: Get.textTheme.bodySmall,
+            style: Get.textTheme.bodyLarge,
             decoration: InputDecoration(
+              fillColor: Colors.grey.shade200,
+              filled: true,
               labelText: 'Request No'.tr,
               hintText: 'New'.tr,
             ),
@@ -256,7 +258,11 @@ class LeaveOperationScreen extends StatelessWidget {
           return Expanded(
             child: ReactiveTextField<double>(
               formControlName: controlName,
-              decoration: InputDecoration(labelText: 'Total ($label)'.tr),
+              decoration: InputDecoration(
+                labelText: 'Total ($label)'.tr,
+                fillColor: Colors.grey.shade200,
+                filled: true,
+              ),
             ),
           );
         }),

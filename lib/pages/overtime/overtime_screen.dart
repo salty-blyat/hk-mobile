@@ -35,7 +35,9 @@ class OvertimeScreen extends StatelessWidget {
                 // Year Selection
                 SizedBox(
                   height: 20,
-                  child: YearSelect(),
+                  child: YearSelect(
+                    onYearSelected: (year) {},
+                  ),
                 ),
                 const SizedBox(height: 10),
                 Obx(() {

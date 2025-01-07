@@ -315,6 +315,18 @@
   "Thu": "ព្រហ",
   "Fri": "សុក្រ",
   "Sat": "សៅរ៍",
+  "Jan": "មករា",
+  "Feb": "កុម្ភៈ",
+  "Mar": "មីនា",
+  "Apr": "មេសា",
+  "May": "ឧសភា",
+  "Jun": "មិថុនា",
+  "Jul": "កក្កដា",
+  "Aug": "សីហា",
+  "Sep": "កញ្ញា",
+  "Oct": "តុលា",
+  "Nov": "វិច្ឆិកា",
+  "Dec": "ធ្នូ",
   "Attendance terminal with {key} was not found": "ការកត់ត្រាទីតាំងដែលមាន ID {{key}} មិនឃើញទេ",
   "just now": "ឥឡូវនេះ",
   "minutes ago": "នាទីមុន",
@@ -323,5 +335,6 @@
   "week ago": "សប្តាហ៍មុន",
   "months ago": "ខែមុន",
   "years ago": "ឆ្នាំមុន",
-  "yesterday": "ម្សិលមិញ"
+  "yesterday": "ម្សិលមិញ",
+  "You already requested at {date}": "អ្នកបានស្នើសុំរួចរាល់នៅថ្ងៃ {{date}}"
 }

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/models/leave_model.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
@@ -94,7 +95,7 @@ class LeaveOperationController extends GetxController {
 
   void find(int id) async {
     loading.value = true;
-    Leave leave = await leaveService.find(id);
+    var leave = Leave.fromJson(await leaveService.find(id));
     setFormValue(leave);
     loading.value = false;
   }
@@ -123,7 +124,7 @@ class LeaveOperationController extends GetxController {
   void calculateTotalDays() {
     final fromDate = formGroup.control('fromDate').value;
     final toDate = formGroup.control('toDate').value;
-    final totalDays = toDate.difference(fromDate).inDays + 1;
+    final double totalDays = toDate.difference(fromDate).inDays + 1;
     formGroup.control('totalDays').value = totalDays;
   }
 
@@ -146,11 +147,13 @@ class LeaveOperationController extends GetxController {
     };
 
     if (id.value == 0) {
-      await leaveService.add(model as Leave);
+      await leaveService.add(Leave.fromJson(model), Leave.fromJson);
     } else {
-      await leaveService.edit({...model, 'id': id.value} as Leave);
+      await leaveService.edit(
+          Leave.fromJson({...model, 'id': id.value}), Leave.fromJson);
     }
     leaveController.search();
+    Get.back();
     Get.back();
   }
 
@@ -160,12 +163,15 @@ class LeaveOperationController extends GetxController {
     balance = leaveBalance - (formGroup.controls['totalDays']!.value as double);
 
     formGroup.control('showBalance').value =
-        '${balance.toString()} = $leaveBalance - ${formGroup.controls['totalDays']?.value}';
+        '${numberFormat(balance)} = ${numberFormat(leaveBalance)} - ${numberFormat(formGroup.controls['totalDays']?.value as double)}';
+  }
+
+  String numberFormat(double value) {
+    return NumberFormat('###.##').format(value);
   }
 
   @override
   void onClose() {
-    // Dispose of form controls to release resources
     formGroup.dispose();
     super.onClose();
   }

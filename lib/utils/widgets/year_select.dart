@@ -4,8 +4,10 @@ import 'package:get/get.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 
 class YearSelect extends StatelessWidget {
-  final List<int> years = [2019, 2020, 2021, 2022, 2023, 2024];
-  final selectedYear = 2024.obs;
+  final selectedYear = DateTime.now().year.obs;
+  final Function(int) onYearSelected;
+
+  YearSelect({super.key, required this.onYearSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +66,7 @@ class YearSelect extends StatelessWidget {
                             ),
                           ),
                           onPressed: () {
+                            onYearSelected(selectedYear.value);
                             Navigator.of(context).pop();
                           },
                         ),
@@ -75,13 +78,17 @@ class YearSelect extends StatelessWidget {
                     ),
                     Expanded(
                       child: CupertinoPicker(
+                        scrollController: FixedExtentScrollController(
+                          initialItem: selectedYear.value - 1900,
+                        ),
                         itemExtent: 40,
                         onSelectedItemChanged: (int index) {
-                          selectedYear.value = years[index];
+                          selectedYear.value = index + 1900;
                         },
-                        children: years
+                        children: List.generate(DateTime.now().year - 1900 + 2,
+                                (index) => index)
                             .map((e) => Center(
-                                  child: Text('$e'),
+                                  child: Text('${e + 1900}'),
                                 ))
                             .toList(),
                       ),

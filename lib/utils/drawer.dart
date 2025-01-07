@@ -132,7 +132,76 @@ class DrawerWidget extends StatelessWidget {
                   ),
                   title: Text('Language'.tr),
                   onTap: () {
-                    Get.toNamed('/profile'); // Navigate to Profile
+                    Get.dialog(
+                      Dialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: SizedBox(
+                          height: 250,
+                          width: double.infinity,
+                          child: Column(
+                            children: [
+                              // Header Row
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const SizedBox(
+                                    width: 16, // Placeholder for alignment
+                                  ),
+                                  Text(
+                                    'Choose Language'.tr,
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                  ),
+                                  IconButton(
+                                    iconSize: 16,
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(); // Close the dialog
+                                    },
+                                    icon: const Icon(CupertinoIcons.clear),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              // Scrollable ListView
+                              Expanded(
+                                child: ListView.builder(
+                                  itemCount: Const.languages.length ??
+                                      0, // Handle null safely
+                                  itemBuilder: (context, index) {
+                                    final language = Const.languages[index];
+                                    return ListTile(
+                                      selectedColor: AppTheme.primaryColor,
+                                      selected: Get.locale == language['key'],
+                                      title: Text(language['label'] ??
+                                          'Unknown'), // Handle null safely
+                                      leading: Image.asset(
+                                        language['image'] ??
+                                            'assets/default.png', // Fallback image
+                                        width: 32,
+                                        height: 32,
+                                        fit: BoxFit.cover,
+                                      ),
+                                      onTap: () {
+                                        // Handle language selection
+                                        if (language['key'] != null) {
+                                          Get.updateLocale(language['key']);
+                                          Get.back();
+                                        }
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
                   },
                 ),
                 ListTile(

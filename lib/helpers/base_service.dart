@@ -64,14 +64,18 @@ class BaseService<T extends BaseModel> {
 
   Future<SearchResult<T>> search(
       QueryParam query, T Function(Map<String, dynamic>) fromJsonT) async {
-    final response = await dio.get(
-      '$apiUrl?pageIndex=${query.pageIndex}&pageSize=${query.pageSize}&sort=${query.sorts}&filters=${query.filters}',
-    );
+    try {
+      final response = await dio.get(
+        '$apiUrl?pageIndex=${query.pageIndex}&pageSize=${query.pageSize}&sorts=${query.sorts}&filters=${query.filters}',
+      );
 
-    if (response.statusCode == 200) {
-      return SearchResult<T>.fromJson(response.data, fromJsonT);
+      if (response.statusCode == 200) {
+        return SearchResult<T>.fromJson(response.data, fromJsonT);
+      }
+      throw Exception('Failed to search.');
+    } catch (e) {
+      throw Exception('Failed to search.');
     }
-    throw Exception('Failed to search.');
   }
 
   Future<dynamic> find(int id) async {
@@ -85,26 +89,26 @@ class BaseService<T extends BaseModel> {
     throw Exception('Failed to find.');
   }
 
-  Future<T> add(T model) async {
+  Future<T> add(T model, T Function(Map<String, dynamic>) fromJsonT) async {
     final response = await dio.post(
       apiUrl,
       data: model,
     );
 
     if (response.statusCode == 200) {
-      return response.data;
+      return fromJsonT(response.data);
     }
     throw Exception('Failed to add item');
   }
 
-  Future<T> edit(T model) async {
+  Future<T> edit(T model, T Function(Map<String, dynamic>) fromJsonT) async {
     final response = await dio.put(
       '$apiUrl/${model.id}',
       data: model,
     );
 
     if (response.statusCode == 200) {
-      return response.data;
+      return fromJsonT(response.data);
     }
     throw Exception('Failed to edit item');
   }
