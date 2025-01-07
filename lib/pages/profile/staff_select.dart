@@ -1,7 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
-import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,17 +35,20 @@ class StaffSelect extends StatelessWidget {
   final String formControlName;
   final String labelText;
   final FormGroup formGroup;
+  final bool isEdit;
 
   const StaffSelect({
     super.key,
     required this.formControlName,
     this.labelText = 'Approver',
     required this.formGroup,
+    this.isEdit = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final StaffSelectController controller = Get.put(StaffSelectController());
+    print(formGroup.control(formControlName).value);
     if (formGroup.control(formControlName).value == null) {
       controller.selectedStaff.value = '-';
     } else {
@@ -68,49 +70,13 @@ class StaffSelect extends StatelessWidget {
         ),
         readOnly: true,
         onTap: () async {
-          Staff? result = await Get.to(() => StaffSelectDialog(
+          await Get.to(() => StaffSelectDialog(
                 formControlName: formControlName,
                 formGroup: formGroup,
               ));
-          if (result != null) {
-            // controller.selectedStaff.value =
-            //     '${result.tittleName} ${result.name} ${result.latinName}';
-            // formGroup.control(formControlName).value = result.id;
-          }
         },
       ),
     );
-    // Column(
-    //   children: [
-    //     Obx(
-    //       () => controller.dropdownItems.isEmpty
-    //           ? const SizedBox.shrink()
-    //           : ReactiveDropdownField<int>(
-    //               formControlName: formControlName,
-    //               items: controller.dropdownItems,
-    //               decoration: InputDecoration(
-    //                 labelText: labelText.tr,
-    //                 labelStyle: const TextStyle(
-    //                   fontFamilyFallback: ['Kantumruy', 'Gilroy'],
-    //                   fontWeight: FontWeight.normal,
-    //                 ),
-
-    //               ),
-    //               onTap: (value) async {
-    //                 var result = await Get.to(() => StaffSelectDialog(
-    //                       formControlName: formControlName,
-    //                       formGroup: formGroup,
-    //                     ));
-    //                 if (result != null) {
-    //                   controller.addStaff(result.id,
-    //                       '${result.tittleName} ${result.name} ${result.latinName}');
-    //                   formGroup.control(formControlName).value = result.id;
-    //                 }
-    //               },
-    //             ),
-    //     ),
-    //   ],
-    // );
   }
 }
 

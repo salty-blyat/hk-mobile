@@ -7,7 +7,6 @@ part of 'leave_model.dart';
 // **************************************************************************
 
 Leave _$LeaveFromJson(Map<String, dynamic> json) => Leave(
-      id: (json['id'] as num?)?.toInt(),
       leaveTypeName: json['leaveTypeName'] as String?,
       leaveTypeCode: json['leaveTypeCode'] as String?,
       leaveTypeTrackBalance: json['leaveTypeTrackBalance'] as bool?,
@@ -25,7 +24,7 @@ Leave _$LeaveFromJson(Map<String, dynamic> json) => Leave(
       requestNo: json['requestNo'] as String?,
       staffId: (json['staffId'] as num?)?.toInt(),
       leaveTypeId: (json['leaveTypeId'] as num?)?.toInt(),
-      totalDays: (json['totalDays'] as num?)?.toInt(),
+      totalDays: (json['totalDays'] as num?)?.toDouble(),
       fromDate: json['fromDate'] == null
           ? null
           : DateTime.parse(json['fromDate'] as String),
@@ -48,8 +47,8 @@ Leave _$LeaveFromJson(Map<String, dynamic> json) => Leave(
       status: (json['status'] as num?)?.toInt(),
       fromShiftId: (json['fromShiftId'] as num?)?.toInt(),
       toShiftId: (json['toShiftId'] as num?)?.toInt(),
-      balance: (json['balance'] as num?)?.toInt(),
-      totalHours: (json['totalHours'] as num?)?.toInt(),
+      balance: (json['balance'] as num?)?.toDouble(),
+      totalHours: (json['totalHours'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$LeaveToJson(Leave instance) => <String, dynamic>{

@@ -12,22 +12,29 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32),
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom +
+              16, // Dynamic padding above keyboard
+          left: 16,
+          right: 16,
+        ),
         child: MyButton(
+          onPressed: () {
+            controller.formGroup.valid ? controller.login() : null;
+          },
           label: 'Login',
-          onPressed: () =>
-              controller.formGroup.valid ? controller.login() : null,
         ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ReactiveForm(
           formGroup: controller.formGroup,
-          child: ListView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 100),
               Image.asset('assets/images/logo.jpg', height: 100),
               const SizedBox(height: 16),
               Center(
@@ -55,7 +62,7 @@ class LoginScreen extends StatelessWidget {
                   prefixIcon: const Icon(CupertinoIcons.person),
                 ),
               ),
-              const SizedBox(height: 16.0),
+              const SizedBox(height: 8.0),
               Obx(
                 () => ReactiveTextField<String>(
                   formControlName: 'password',
@@ -91,7 +98,7 @@ class LoginScreen extends StatelessWidget {
                           controller.error.value,
                           style: const TextStyle(color: Colors.red),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 8),
                       ],
                     )
                   : const SizedBox.shrink()),

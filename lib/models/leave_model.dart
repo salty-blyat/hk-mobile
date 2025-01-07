@@ -1,14 +1,15 @@
+import 'package:staff_view_ui/helpers/base_service.dart';
 import 'package:staff_view_ui/models/attachment_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'leave_model.g.dart';
 
 @JsonSerializable()
-class Leave {
+class Leave extends BaseModel {
   final String? requestNo;
   final int? staffId;
   final int? leaveTypeId;
-  final int? totalDays;
+  final double? totalDays;
   final DateTime? fromDate;
   final DateTime? toDate;
   final DateTime? requestedDate;
@@ -21,9 +22,8 @@ class Leave {
   final int? status;
   final int? fromShiftId;
   final int? toShiftId;
-  final int? balance;
-  final int? totalHours;
-  final int? id;
+  final double? balance;
+  final double? totalHours;
   final String? leaveTypeName;
   final String? leaveTypeCode;
   final bool? leaveTypeTrackBalance;
@@ -40,7 +40,6 @@ class Leave {
   final String? statusNameKh;
 
   Leave({
-    this.id,
     this.leaveTypeName,
     this.leaveTypeCode,
     this.leaveTypeTrackBalance,

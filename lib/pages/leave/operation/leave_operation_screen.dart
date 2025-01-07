@@ -4,21 +4,28 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:staff_view_ui/pages/leave/leave_controller.dart';
-import 'package:staff_view_ui/pages/leave/leave_type/leave_type_controller.dart';
+import 'package:staff_view_ui/pages/leave/operation/leave_operation_controller.dart';
+import 'package:staff_view_ui/pages/leave_type/leave_type_controller.dart';
 import 'package:staff_view_ui/pages/profile/staff_select.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
 import 'package:staff_view_ui/utils/widgets/date_picker.dart';
 
 class LeaveOperationScreen extends StatelessWidget {
-  final LeaveController controller = Get.put(LeaveController());
+  final LeaveOperationController controller =
+      Get.put(LeaveOperationController());
   final LeaveTypeController leaveTypeController =
       Get.put(LeaveTypeController());
+  final int id;
 
-  LeaveOperationScreen({super.key});
+  LeaveOperationScreen({super.key, this.id = 0});
 
   @override
   Widget build(BuildContext context) {
+    if (id != 0) {
+      controller.id.value = id;
+      controller.find(id);
+    }
+
     return Scaffold(
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -48,31 +55,36 @@ class LeaveOperationScreen extends StatelessWidget {
           icon: const Icon(CupertinoIcons.chevron_back, color: Colors.black),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: ReactiveForm(
-          formGroup: controller.formGroup,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                _buildLeaveTypeButtons(context),
-                const SizedBox(height: 4),
-                _buildLeaveTypeNote(),
-                const SizedBox(height: 8),
-                _buildRequestDetails(),
-                const SizedBox(height: 16),
-                _buildDateRangeFields(context),
-                const SizedBox(height: 16),
-                _buildTotalDaysAndLeaveUnit(),
-                const SizedBox(height: 16),
-                _buildBalanceAndOtherDetails(),
-                const SizedBox(height: 16),
-                _buildAttachmentUploader(),
-              ],
+      body: Obx(() {
+        if (controller.loading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: ReactiveForm(
+            formGroup: controller.formGroup,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _buildLeaveTypeButtons(context),
+                  const SizedBox(height: 4),
+                  _buildLeaveTypeNote(),
+                  const SizedBox(height: 8),
+                  _buildRequestDetails(),
+                  const SizedBox(height: 16),
+                  _buildDateRangeFields(context),
+                  const SizedBox(height: 16),
+                  _buildTotalDaysAndLeaveUnit(),
+                  const SizedBox(height: 16),
+                  _buildBalanceAndOtherDetails(),
+                  const SizedBox(height: 16),
+                  _buildAttachmentUploader(),
+                ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 
@@ -242,7 +254,7 @@ class LeaveOperationScreen extends StatelessWidget {
           final label = controller.leaveUnit.value == '1' ? 'days' : 'hours';
 
           return Expanded(
-            child: ReactiveTextField<int>(
+            child: ReactiveTextField<double>(
               formControlName: controlName,
               decoration: InputDecoration(labelText: 'Total ($label)'.tr),
             ),
@@ -280,8 +292,8 @@ class LeaveOperationScreen extends StatelessWidget {
   Widget _buildBalanceAndOtherDetails() {
     return Column(
       children: [
-        ReactiveTextField<int>(
-          formControlName: 'balance',
+        ReactiveTextField<String>(
+          formControlName: 'showBalance',
           decoration: InputDecoration(labelText: 'Balance'.tr),
         ),
         const SizedBox(height: 16),
@@ -296,6 +308,7 @@ class LeaveOperationScreen extends StatelessWidget {
         StaffSelect(
           formControlName: 'approverId',
           formGroup: controller.formGroup,
+          isEdit: id != 0,
         ),
       ],
     );
