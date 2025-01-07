@@ -152,6 +152,8 @@ class ChangePassword extends StatelessWidget {
                       validationMessages: {
                         ValidationMessage.required: (_) =>
                             'Input is required'.tr,
+                        ValidationMessage.mustMatch: (_) =>
+                            'Password and confirm not match!'.tr
                       },
                       textInputAction: TextInputAction.done,
                       decoration: InputDecoration(
@@ -182,7 +184,7 @@ class ChangePassword extends StatelessWidget {
         child: MyButton(
           label: 'Save',
           loading: controller.loading.value,
-          onPressed: () => {},
+          onPressed: controller.submit,
         ),
       ),
     );

@@ -5,11 +5,14 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
+import 'package:staff_view_ui/auth/change_password/change_password_service.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
+import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
 class ChangePasswordController extends GetxController {
   final _authService = AuthService();
+  final _changePasswordService = ChangePasswordService();
   final loading = false.obs;
   final error = ''.obs;
   final formKey = GlobalKey<FormState>();
@@ -22,7 +25,9 @@ class ChangePasswordController extends GetxController {
     'oldPassword': FormControl<String>(validators: [Validators.required]),
     'newPassword': FormControl<String>(validators: [Validators.required]),
     'confirmPassword': FormControl<String>(validators: [Validators.required]),
-  });
+  }, [
+    Validators.mustMatch('newPassword', 'confirmPassword'),
+  ]);
   final isPasswordVisible = false.obs;
   final isConfirmPasswordVisible = false.obs;
   final isOldPasswordVisible = false.obs;
@@ -34,6 +39,37 @@ class ChangePasswordController extends GetxController {
   void onInit() {
     super.onInit();
     getUserInfo();
+  }
+
+  Future<void> submit() async {
+    loading.value = true;
+    error.value = "";
+    // print(changePasswordForm.value);
+    try {
+      final response =
+          await _changePasswordService.changePassword(changePasswordForm.value);
+
+      if (response == 200) {
+        Get.snackbar("Success", "Password changed successfully".tr,
+            snackPosition: SnackPosition.TOP);
+        Get.offAllNamed('/menu');
+        clearForm();
+      } else if (response == 400) {
+        Modal.errorDialog('Error', 'Password is incorrect!'.tr);
+      } else {
+        error.value = "Failed to change password. Please try again.";
+      }
+    } catch (e) {
+      error.value = "An error occurred: $e";
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  void clearForm() {
+    changePasswordForm.control('oldPassword').reset();
+    changePasswordForm.control('newPassword').reset();
+    changePasswordForm.control('confirmPassword').reset();
   }
 
   Future<void> getUserInfo() async {
