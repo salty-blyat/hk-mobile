@@ -47,7 +47,7 @@ class WorkingScreen extends StatelessWidget {
                 //         color: Colors.white,
                 //         fontSize: 16,
                 //         fontWeight: FontWeight.bold,
-                //         fontFamilyFallback: ['Kantumruy', 'Gilroy'])),
+                //         fontFamilyFallback: ['Gilroy', 'Kantumruy'])),
                 SizedBox(width: 5),
                 Icon(CupertinoIcons.arrow_down_circle,
                     size: 24, color: Colors.white),

@@ -123,11 +123,15 @@ class MenuScreen extends StatelessWidget {
                                 ),
                                 SizedBox(height: 4),
                                 Text(
+                                  textAlign: TextAlign.center,
                                   (menuItems[index]['title'] as String).tr,
                                   style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 16,
-                                  ),
+                                      color: Colors.black,
+                                      fontSize: 16,
+                                      fontFamilyFallback: [
+                                        'Gilroy',
+                                        'Kantumruy'
+                                      ]),
                                 ),
                               ],
                             ),

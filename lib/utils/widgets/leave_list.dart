@@ -40,7 +40,7 @@ class LeaveList extends StatelessWidget {
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 12,
-                                  fontFamilyFallback: ['Kantumruy', 'Gilroy'],
+                                  fontFamilyFallback: ['Gilroy', 'Kantumruy'],
                                 ),
                               ),
                             )

@@ -46,7 +46,7 @@ class LeaveOperationScreen extends StatelessWidget {
           'Leave Request'.tr,
           style: context.textTheme.titleLarge?.copyWith(
             color: Colors.black,
-            fontFamilyFallback: ['Kantumruy', 'Gilroy'],
+            fontFamilyFallback: ['Gilroy', 'Kantumruy'],
           ),
         ),
         backgroundColor: Colors.white,
@@ -281,7 +281,7 @@ class LeaveOperationScreen extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 16,
                             color: Colors.black,
-                            fontFamilyFallback: ['Kantumruy', 'Gilroy'],
+                            fontFamilyFallback: ['Gilroy', 'Kantumruy'],
                           ),
                         ),
                       ))

@@ -18,12 +18,14 @@ class Const {
     {
       'key': Locale('km'),
       'label': 'ភាសាខ្មែរ',
-      'image': 'assets/images/kh_FLAG.png'
+      'image': 'assets/images/kh_FLAG.png',
+      'code': 'km'
     },
     {
       'key': Locale('en'),
       'label': 'English',
-      'image': 'assets/images/en_FLAG.png'
+      'image': 'assets/images/en_FLAG.png',
+      'code': 'en'
     },
   ];
 }

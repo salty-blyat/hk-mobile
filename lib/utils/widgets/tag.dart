@@ -23,7 +23,7 @@ class Tag extends StatelessWidget {
         style: TextStyle(
           color: color,
           fontSize: 10,
-          fontFamilyFallback: const ['Kantumruy', 'Gilroy'],
+          fontFamilyFallback: const ['Gilroy', 'Kantumruy'],
         ),
       ),
     );

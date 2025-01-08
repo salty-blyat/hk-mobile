@@ -10,10 +10,10 @@ class AppTheme {
   static const Color secondaryColor = Color(0xFFEDEEF0);
   static const TextStyle style = TextStyle(
     fontSize: 16.0,
-    fontFamilyFallback: ['Kantumruy', 'Gilroy'],
+    fontFamilyFallback: ['Gilroy', 'Kantumruy'],
   );
   static ThemeData get lightTheme {
-    return ThemeData(
+    return ThemeData.light().copyWith(
       brightness: Brightness.light,
       // Primary color
       primaryColor: primaryColor,
@@ -161,6 +161,14 @@ class AppTheme {
         side: BorderSide(color: Colors.transparent),
         padding: EdgeInsets.zero,
         labelPadding: EdgeInsets.zero,
+      ),
+      dialogTheme: DialogTheme(
+        backgroundColor: Colors.white,
+        titleTextStyle: style,
+        contentTextStyle: style,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+        ),
       ),
     );
   }

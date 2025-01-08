@@ -63,7 +63,7 @@ class StaffSelect extends StatelessWidget {
           suffixIcon: const Icon(CupertinoIcons.chevron_down),
           labelText: labelText.tr,
           labelStyle: const TextStyle(
-            fontFamilyFallback: ['Kantumruy', 'Gilroy'],
+            fontFamilyFallback: ['Gilroy', 'Kantumruy'],
             fontWeight: FontWeight.normal,
           ),
         ),
@@ -105,7 +105,7 @@ class StaffSelectDialog extends StatelessWidget {
             textStyle: WidgetStateProperty.all(
               const TextStyle(
                 color: Colors.white,
-                fontFamilyFallback: ['Kantumruy', 'Gilroy'],
+                fontFamilyFallback: ['Gilroy', 'Kantumruy'],
                 fontSize: 18,
               ),
             ),
@@ -114,7 +114,7 @@ class StaffSelectDialog extends StatelessWidget {
               TextStyle(
                   color: Colors.white.withOpacity(0.5),
                   fontSize: 18,
-                  fontFamilyFallback: const ['Kantumruy', 'Gilroy']),
+                  fontFamilyFallback: const ['Gilroy', 'Kantumruy']),
             ),
             leading: const Icon(Icons.search),
             backgroundColor: WidgetStateProperty.all(Colors.transparent),

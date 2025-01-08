@@ -129,32 +129,25 @@ class LeaveOperationController extends GetxController {
   }
 
   Future<void> submit() async {
-    Modal.loadingDialog();
-    var model = {
-      'requestNo': formGroup.control('requestNo').value,
-      'requestedDate': formGroup.control('date').value.toIso8601String(),
-      'fromDate': formGroup.control('fromDate').value.toIso8601String(),
-      'toDate': formGroup.control('toDate').value.toIso8601String(),
-      'reason': formGroup.control('reason').value,
-      'totalDays': formGroup.control('totalDays').value,
-      'totalHours': formGroup.control('totalHours').value,
-      'balance': formGroup.control('balance').value,
-      'leaveTypeId': formGroup.control('leaveTypeId').value,
-      'status': formGroup.control('status').value,
-      'fromShiftId': formGroup.control('fromShiftId').value,
-      'toShiftId': formGroup.control('toShiftId').value,
-      'approverId': formGroup.control('approverId').value
-    };
-
-    if (id.value == 0) {
-      await leaveService.add(Leave.fromJson(model), Leave.fromJson);
-    } else {
-      await leaveService.edit(
-          Leave.fromJson({...model, 'id': id.value}), Leave.fromJson);
-    }
-    leaveController.search();
-    Get.back();
-    Get.back();
+    try {
+      Modal.loadingDialog();
+      var model = {
+        'requestedDate': formGroup.control('date').value.toIso8601String(),
+        'fromDate': formGroup.control('fromDate').value.toIso8601String(),
+        'toDate': formGroup.control('toDate').value.toIso8601String(),
+      };
+      if (id.value == 0) {
+        await leaveService.add(
+            Leave.fromJson({...formGroup.value, ...model}), Leave.fromJson);
+      } else {
+        await leaveService.edit(
+            Leave.fromJson({...formGroup.value, ...model, 'id': id.value}),
+            Leave.fromJson);
+      }
+      leaveController.search();
+      Get.back();
+      Get.back();
+    } catch (e) {}
   }
 
   Future<void> updateLeaveBalance(int id) async {

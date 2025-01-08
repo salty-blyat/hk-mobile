@@ -22,7 +22,7 @@ class MyButton extends StatelessWidget {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         minimumSize: const Size(double.infinity, 40),
-        textStyle: const TextStyle(fontFamilyFallback: ['Kantumruy', 'Gilroy']),
+        textStyle: const TextStyle(fontFamilyFallback: ['Gilroy', 'Kantumruy']),
         backgroundColor: disabled
             ? Theme.of(context).disabledColor
             : Theme.of(context).colorScheme.primary,

@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
@@ -14,6 +16,7 @@ class DrawerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var storage = FlutterSecureStorage();
     return Drawer(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(0),
@@ -148,8 +151,15 @@ class DrawerWidget extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(
-                                    width: 16, // Placeholder for alignment
+                                  IconButton(
+                                    iconSize: 16,
+                                    onPressed: () {
+                                      Get.back(); // Close the dialog
+                                    },
+                                    icon: const Icon(
+                                      CupertinoIcons.clear,
+                                      color: Colors.transparent,
+                                    ),
                                   ),
                                   Text(
                                     'Choose Language'.tr,
@@ -159,8 +169,7 @@ class DrawerWidget extends StatelessWidget {
                                   IconButton(
                                     iconSize: 16,
                                     onPressed: () {
-                                      Navigator.of(context)
-                                          .pop(); // Close the dialog
+                                      Get.back(); // Close the dialog
                                     },
                                     icon: const Icon(CupertinoIcons.clear),
                                   ),
@@ -169,14 +178,35 @@ class DrawerWidget extends StatelessWidget {
                               const SizedBox(height: 10),
                               // Scrollable ListView
                               Expanded(
-                                child: ListView.builder(
-                                  itemCount: Const.languages.length ??
-                                      0, // Handle null safely
+                                child: ListView.separated(
+                                  separatorBuilder: (context, index) =>
+                                      const SizedBox(height: 10),
+                                  padding: const EdgeInsets.all(16),
+                                  itemCount: Const
+                                      .languages.length, // Handle null safely
                                   itemBuilder: (context, index) {
                                     final language = Const.languages[index];
+                                    final isSelected =
+                                        Get.locale?.languageCode ==
+                                            language['code'];
                                     return ListTile(
+                                      selected: isSelected,
                                       selectedColor: AppTheme.primaryColor,
-                                      selected: Get.locale == language['key'],
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(4),
+                                        side: BorderSide(
+                                          color: isSelected
+                                              ? AppTheme.primaryColor
+                                              : Colors.grey.shade300,
+                                          width: 2,
+                                        ),
+                                      ),
+                                      trailing: Icon(
+                                          CupertinoIcons.checkmark_circle,
+                                          size: 20,
+                                          color: isSelected
+                                              ? AppTheme.primaryColor
+                                              : Colors.transparent),
                                       title: Text(language['label'] ??
                                           'Unknown'), // Handle null safely
                                       leading: Image.asset(
@@ -186,7 +216,7 @@ class DrawerWidget extends StatelessWidget {
                                         height: 32,
                                         fit: BoxFit.cover,
                                       ),
-                                      onTap: () {
+                                      onTap: () async {
                                         // Handle language selection
                                         if (language['key'] != null) {
                                           Get.updateLocale(language['key']);

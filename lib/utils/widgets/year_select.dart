@@ -48,7 +48,7 @@ class YearSelect extends StatelessWidget {
                             'Cancel'.tr,
                             style: const TextStyle(
                               color: Colors.grey,
-                              fontFamilyFallback: ['Kantumruy', 'Gilroy'],
+                              fontFamilyFallback: ['Gilroy', 'Kantumruy'],
                             ),
                           ),
                           onPressed: () {
@@ -62,7 +62,7 @@ class YearSelect extends StatelessWidget {
                             'Done'.tr,
                             style: const TextStyle(
                               color: AppTheme.primaryColor,
-                              fontFamilyFallback: ['Kantumruy', 'Gilroy'],
+                              fontFamilyFallback: ['Gilroy', 'Kantumruy'],
                             ),
                           ),
                           onPressed: () {
