@@ -27,24 +27,41 @@ import 'package:staff_view_ui/app_setting.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize translation and local storage
   final Translate translationService = Translate();
   await translationService.loadTranslations();
   await GetStorage.init();
   await AppSetting().initSetting();
+  var initialRoute = '/menu';
+  try {
+    var storage = const FlutterSecureStorage();
+    final token = await storage.read(key: 'accessToken');
+    if (token != null) {
+      print('token: $token');
+      initialRoute = '/menu';
+    } else {
+      initialRoute = '/login';
+    }
+  } catch (e) {
+    print('Error reading token: $e');
+  }
 
-  runApp(MyApp(translationService: translationService));
+  runApp(MyApp(
+      translationService: translationService, initialRoute: initialRoute));
 }
 
 class MyApp extends StatelessWidget {
   final Translate translationService;
-  const MyApp({super.key, required this.translationService});
+  final String initialRoute;
+  const MyApp(
+      {super.key,
+      required this.translationService,
+      required this.initialRoute});
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/menu',
+      initialRoute: initialRoute,
       supportedLocales: const [
         Locale("en", "US"), // English (United States)
         Locale("km", "KH"), // Khmer (Cambodia)
@@ -62,10 +79,12 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/menu', page: () => const MenuScreen()),
         GetPage(name: '/login', page: () => LoginScreen()),
         GetPage(name: '/profile', page: () => ProfileScreen()),
-        GetPage(name: '/delegate', page: () => DelegateScreen()),
-        GetPage(name: '/absent_exception', page: () => AbsentExceptionScreen()),
-        GetPage(name: '/document', page: () => DocumentScreen()),
-        GetPage(name: '/exception', page: () => ExceptionScreen()),
+        GetPage(name: '/delegate', page: () => const DelegateScreen()),
+        GetPage(
+            name: '/absent_exception',
+            page: () => const AbsentExceptionScreen()),
+        GetPage(name: '/document', page: () => const DocumentScreen()),
+        GetPage(name: '/exception', page: () => const ExceptionScreen()),
         GetPage(name: '/leave', page: () => LeaveScreen()),
         GetPage(name: '/overtime', page: () => OvertimeScreen()),
         GetPage(name: '/working', page: () => WorkingScreen()),

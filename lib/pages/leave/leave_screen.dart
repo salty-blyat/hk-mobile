@@ -241,7 +241,6 @@ class _CustomSlideButton extends StatelessWidget {
   final Color color;
   final VoidCallback onPressed;
   const _CustomSlideButton({
-    super.key,
     required this.label,
     required this.icon,
     required this.color,

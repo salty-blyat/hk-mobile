@@ -121,11 +121,11 @@ class MenuScreen extends StatelessWidget {
                                   color: AppTheme.menuColor,
                                   size: 48,
                                 ),
-                                SizedBox(height: 4),
+                                const SizedBox(height: 4),
                                 Text(
                                   textAlign: TextAlign.center,
                                   (menuItems[index]['title'] as String).tr,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 16,
                                       fontFamilyFallback: [

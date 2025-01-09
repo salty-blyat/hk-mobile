@@ -108,25 +108,25 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_pdfview: 25f53dd6097661e6395b17de506e6060585946bd
-  flutter_secure_storage: d33dac7ae2ea08509be337e775f6b59f1ff45f12
-  geolocator_apple: 9bcea1918ff7f0062d98345d238ae12718acfbc1
+  flutter_pdfview: 54e283d5851b0b247b3cc57877d35f1a05a204de
+  flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
+  geolocator_apple: 1560c3c875af2a412242c7a923e15d0d401966ff
   GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
   GoogleMLKit: eff9e23ec1d90ea4157a1ee2e32a4f610c5b3318
   GoogleToolboxForMac: d1a2cbf009c453f4d6ded37c105e2f67a32206d8
   GoogleUtilities: 52f677b52b0d2bed24e7b9c94455b1f7353a09f8
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
-  image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
+  image_picker_ios: 7fe1ff8e34c1790d6fff70a32484959f563a928a
   MLImage: 0ad1c5f50edd027672d8b26b0fee78a8b4a0fc56
   MLKitBarcodeScanning: 0a3064da0a7f49ac24ceb3cb46a5bc67496facd2
   MLKitCommon: 07c2c33ae5640e5380beaaa6e4b9c249a205542d
   MLKitVision: 45e79d68845a2de77e2dd4d7f07947f0ed157b0e
-  mobile_scanner: fd0054c52ede661e80bf5a4dea477a2467356bee
+  mobile_scanner: af8f71879eaba2bbcb4d86c6a462c3c0e7f23036
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
-  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
+  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
-  webview_flutter_wkwebview: 0982481e3d9c78fd5c6f62a002fcd24fc791f1e4
+  webview_flutter_wkwebview: 44d4dee7d7056d5ad185d25b38404436d56c547c
 
 PODFILE CHECKSUM: e5493faad3fc3f6c4525cb64f2dced6c8b8742ad
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

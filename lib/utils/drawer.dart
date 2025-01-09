@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
@@ -16,7 +14,6 @@ class DrawerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var storage = FlutterSecureStorage();
     return Drawer(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(0),

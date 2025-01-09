@@ -20,7 +20,7 @@ class Calendar extends StatelessWidget {
           BoxShadow(
             color: Colors.grey.shade300,
             blurRadius: 1,
-            offset: Offset(0, 1),
+            offset: const Offset(0, 1),
           ),
         ],
       ),
