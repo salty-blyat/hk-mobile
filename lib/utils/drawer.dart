@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:staff_view_ui/auth/auth_controller.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
+import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/utils/theme.dart';
@@ -11,7 +13,7 @@ import 'package:staff_view_ui/utils/theme.dart';
 class DrawerWidget extends StatelessWidget {
   DrawerWidget({super.key});
   final DrawerController drawerController = Get.put(DrawerController());
-
+  final AuthController authController = Get.put(AuthController());
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -151,7 +153,6 @@ class DrawerWidget extends StatelessWidget {
                                   IconButton(
                                     iconSize: 16,
                                     onPressed: () {
-                                      Get.back(); // Close the dialog
                                     },
                                     icon: const Icon(
                                       CupertinoIcons.clear,
@@ -216,6 +217,8 @@ class DrawerWidget extends StatelessWidget {
                                       onTap: () async {
                                         // Handle language selection
                                         if (language['key'] != null) {
+                                          var box = Storage();
+                                          box.write(Const.authorized['Lang']!, language['code']);
                                           Get.updateLocale(language['key']);
                                           Get.back();
                                         }
@@ -259,7 +262,7 @@ class DrawerWidget extends StatelessWidget {
                   ),
                   title: Text('Logout'.tr),
                   onTap: () {
-                    Get.offAllNamed('/login');
+                    authController.logout();
                   },
                 ),
               ],

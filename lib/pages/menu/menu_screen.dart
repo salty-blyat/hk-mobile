@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:staff_view_ui/pages/profile/profile_controller.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/drawer.dart';
 
 class MenuScreen extends StatelessWidget {
-  const MenuScreen({super.key});
+  MenuScreen({super.key});
+  final ProfileController profileController =
+      Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +64,7 @@ class MenuScreen extends StatelessWidget {
         'route': '/document',
       },
     ];
+    profileController.getUser();
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       appBar: AppBar(

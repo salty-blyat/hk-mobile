@@ -4,6 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
 import 'package:staff_view_ui/pages/leave/operation/leave_operation_screen.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
@@ -159,7 +160,9 @@ class LeaveScreen extends StatelessWidget {
             color: AppTheme.primaryColor,
           ),
           _CustomSlideButton(
-            onPressed: () {},
+            onPressed: () {
+              controller.delete(leave.id!);
+            },
             label: 'Delete',
             icon: CupertinoIcons.delete_solid,
             color: AppTheme.dangerColor,
@@ -187,8 +190,8 @@ class LeaveScreen extends StatelessWidget {
             Tag(
               color: Colors.black,
               text: leave.totalDays! >= 1
-                  ? '${NumberFormat('###.##').format(leave.totalDays)} ${'Day'.tr}'
-                  : '${NumberFormat('###.##').format(leave.totalHours)} ${'Hour'.tr}',
+                  ? '${Const.numberFormat(leave.totalDays ?? 0)} ${'Day'.tr}'
+                  : '${Const.numberFormat(leave.totalHours ?? 0)} ${'Hour'.tr}',
             ),
           ],
         ),

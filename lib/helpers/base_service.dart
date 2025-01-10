@@ -52,6 +52,7 @@ class SearchResult<T> {
 
 class BaseModel {
   int? id;
+  String? note;
 }
 
 class BaseService<T extends BaseModel> {

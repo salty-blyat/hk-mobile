@@ -97,11 +97,13 @@ class LeaveOperationScreen extends StatelessWidget {
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: 10,
-              itemBuilder: (context, index) => const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 4),
+              itemBuilder: (context, index) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: ElevatedButton(
-                  onPressed: null,
-                  child: Text('Leave'),
+                  onPressed: () {
+                    controller.calculateTotalDays();
+                  },
+                  child: const Text('Leave'),
                 ),
               ),
             ),
@@ -148,23 +150,18 @@ class LeaveOperationScreen extends StatelessWidget {
 
   Widget _buildLeaveTypeNote() {
     return Obx(() {
-      if (controller.leaveType.value == 0 ||
-          leaveTypeController.leaveTypes.isEmpty) {
-        return const SizedBox.shrink();
-      }
-
       final leaveType = leaveTypeController.leaveTypes
           .firstWhereOrNull((type) => type.id == controller.leaveType.value);
-
-      return leaveType != null
-          ? Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                leaveType.note ?? '',
-                style: Get.textTheme.bodySmall,
-              ),
-            )
-          : const SizedBox.shrink();
+      return Align(
+        alignment: Alignment.topLeft,
+        child: SizedBox(
+          height: 35,
+          child: Text(
+            leaveType?.note ?? '',
+            style: Get.textTheme.bodySmall,
+          ),
+        ),
+      );
     });
   }
 
@@ -240,7 +237,7 @@ class LeaveOperationScreen extends StatelessWidget {
           icon: Icons.date_range,
           onTap: () => dateRangePicker(context),
           controller: TextEditingController(
-            text: picker.control.value.toString().split(' ')[0],
+            text: DateFormat('dd-MM-yyyy').format(picker.control.value!),
           ),
         );
       },
@@ -251,17 +248,16 @@ class LeaveOperationScreen extends StatelessWidget {
     return Row(
       children: [
         Obx(() {
-          final controlName =
-              controller.leaveUnit.value == '1' ? 'totalDays' : 'totalHours';
           final label = controller.leaveUnit.value == '1' ? 'days' : 'hours';
 
           return Expanded(
             child: ReactiveTextField<double>(
-              formControlName: controlName,
+              formControlName: 'totalDays',
+              onChanged: (value) => controller.updateBalance(),
               decoration: InputDecoration(
                 labelText: 'Total ($label)'.tr,
                 fillColor: Colors.grey.shade200,
-                filled: true,
+                filled: controller.leaveUnit.value == '1',
               ),
             ),
           );
@@ -284,6 +280,7 @@ class LeaveOperationScreen extends StatelessWidget {
                             fontFamilyFallback: ['Gilroy', 'Kantumruy'],
                           ),
                         ),
+                        
                       ))
                   .toList(),
               onChanged: (value) => controller.updateLeaveUnit(value!),

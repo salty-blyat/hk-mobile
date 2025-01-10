@@ -5,13 +5,18 @@ import 'package:staff_view_ui/models/leave_model.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
 import 'package:staff_view_ui/pages/leave/leave_service.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
+import 'package:staff_view_ui/const.dart';
+import 'package:staff_view_ui/helpers/storage.dart';
 
 class LeaveOperationController extends GetxController {
   final LeaveController leaveController = Get.find<LeaveController>();
+  final storage = Storage();
   final loading = false.obs;
   final leaveService = LeaveService();
   final formValid = false.obs;
   final id = 0.obs;
+  final leaveId = 0.obs;
+  var leaveBalance = 0.0.obs;
 
   final formGroup = FormGroup({
     'id': FormControl<int>(
@@ -83,7 +88,20 @@ class LeaveOperationController extends GetxController {
 
   /// Updates the leave unit
   void updateLeaveUnit(String unit) {
+    final toDateControl = formGroup.control('toDate');
+    final fromDateControl = formGroup.control('fromDate');
+    final totalDaysControl = formGroup.control('totalDays');
+    if (unit == '1') {
+      toDateControl.markAsEnabled();
+      totalDaysControl.markAsDisabled();
+    } else {
+      toDateControl.value = fromDateControl.value;
+      totalDaysControl.value = 1.0;
+      toDateControl.markAsDisabled();
+      totalDaysControl.markAsEnabled();
+    }
     leaveUnit.value = unit;
+    updateBalance();
   }
 
   /// Updates the leave type
@@ -113,56 +131,81 @@ class LeaveOperationController extends GetxController {
       'status': leave.status,
       'fromShiftId': leave.fromShiftId,
       'toShiftId': leave.toShiftId,
-      'totalDays': leave.totalDays,
+      'totalDays': leave.totalDays! < 1 ? leave.totalHours : leave.totalDays,
       'totalHours': leave.totalHours,
       'balance': leave.balance,
     });
     leaveType.value = leave.leaveTypeId!;
+    leaveUnit.value = leave.totalDays! < 1 ? '2' : '1';
+    if (leave.totalDays! < 1) {
+      formGroup.control('totalDays').markAsEnabled();
+    }
     updateLeaveBalance(leave.leaveTypeId!);
   }
 
-  void calculateTotalDays() {
+  void calculateTotalDays() async {
     final fromDate = formGroup.control('fromDate').value;
     final toDate = formGroup.control('toDate').value;
-    final double totalDays = toDate.difference(fromDate).inDays + 1;
+    final staffId = int.parse(storage.read(Const.staffId));
+    final totalDays =
+        await leaveService.getActualLeaveDay(staffId, fromDate, toDate);
     formGroup.control('totalDays').value = totalDays;
+    updateBalance();
   }
 
   Future<void> submit() async {
-    try {
-      Modal.loadingDialog();
-      var model = {
-        'requestedDate': formGroup.control('date').value.toIso8601String(),
-        'fromDate': formGroup.control('fromDate').value.toIso8601String(),
-        'toDate': formGroup.control('toDate').value.toIso8601String(),
-      };
-      if (id.value == 0) {
-        await leaveService.add(
-            Leave.fromJson({...formGroup.value, ...model}), Leave.fromJson);
-      } else {
-        await leaveService.edit(
-            Leave.fromJson({...formGroup.value, ...model, 'id': id.value}),
-            Leave.fromJson);
-      }
-      leaveController.search();
-      Get.back();
-      Get.back();
-    } catch (e) {}
+    // try {
+    if (leaveUnit.value == '1') {
+      formGroup.control('totalHours').value = 0.0;
+    } else {
+      var dayField = formGroup.control('totalDays').value;
+      formGroup.control('totalHours').value = dayField;
+      dayField = dayField / 8;
+      formGroup.control('totalDays').value = dayField;
+    }
+    Modal.loadingDialog();
+    var model = {
+      'requestedDate': formGroup.control('date').value.toIso8601String(),
+      'fromDate': formGroup.control('fromDate').value.toIso8601String(),
+      'toDate': formGroup.control('toDate').value.toIso8601String(),
+    };
+    if (id.value == 0) {
+      await leaveService.add(
+          Leave.fromJson({...formGroup.rawValue, ...model}), Leave.fromJson);
+    } else {
+      await leaveService.edit(
+          Leave.fromJson({...formGroup.rawValue, ...model, 'id': id.value}),
+          Leave.fromJson);
+    }
+    leaveController.search();
+    Get.back();
+    Get.back();
+    // } catch (e) {
+    //   print(e);
+    // }
   }
 
   Future<void> updateLeaveBalance(int id) async {
-    var leaveBalance = await leaveService.getLeaveBalance(id);
+    leaveBalance.value = await leaveService.getLeaveBalance(id);
+    updateBalance();
+  }
+
+  void updateBalance() {
+    var leaveBalance = this.leaveBalance.value;
     var balance = formGroup.control('totalDays').value;
-    balance = leaveBalance - (formGroup.controls['totalDays']!.value as double);
+    var minus = (balance ?? 0) / 8;
+    if (leaveUnit.value == '1') {
+      minus = balance;
+      balance = leaveBalance - balance;
+    } else {
+      balance = leaveBalance - minus;
+    }
 
     formGroup.control('showBalance').value =
-        '${numberFormat(balance)} = ${numberFormat(leaveBalance)} - ${numberFormat(formGroup.controls['totalDays']?.value as double)}';
+        '${Const.numberFormat(balance)} = ${Const.numberFormat(leaveBalance)} - ${Const.numberFormat(minus)}';
   }
 
-  String numberFormat(double value) {
-    return NumberFormat('###.##').format(value);
-  }
-
+  @override
   @override
   void onClose() {
     formGroup.dispose();

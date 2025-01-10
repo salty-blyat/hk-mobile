@@ -10,4 +10,10 @@ class LeaveService extends BaseService<Leave> {
     var response = await dio.get('$baseUrl/leavebalance/$id');
     return response.data['balance'];
   }
+
+  Future<double> getActualLeaveDay(int id, DateTime fromDate, DateTime toDate) async {
+    var response = await dio.get(
+        '$baseUrl/actual/leave/day/$id/$fromDate/$toDate');
+    return response.data['totalDays'];
+  }
 }

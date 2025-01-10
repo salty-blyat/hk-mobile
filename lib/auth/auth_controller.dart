@@ -9,15 +9,24 @@ import 'package:staff_view_ui/models/client_info_model.dart';
 class AuthController extends GetxController {
   final _authService = AuthService();
   final loading = false.obs;
+  final formValid = false.obs;
   final error = ''.obs;
   final formKey = GlobalKey<FormState>();
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
-
-  // Login Form Group
   final FormGroup formGroup = fb.group({
     'username': FormControl<String>(validators: [Validators.required]),
     'password': FormControl<String>(validators: [Validators.required]),
   });
+
+  @override
+  void onInit() {
+    super.onInit();
+    formGroup.valueChanges.listen((value) {
+      formValid.value = formGroup.valid;
+    });
+  }
+
+  // Login Form Group
 
   final isPasswordVisible = false.obs;
 
@@ -44,5 +53,6 @@ class AuthController extends GetxController {
     _authService.deleteFromLocalStorage(Const.authorized['Authorized']!);
     secureStorage.delete(key: Const.authorized['AccessToken']!);
     secureStorage.delete(key: Const.authorized['RefreshToken']!);
+    Get.offAllNamed('/login');
   }
 }

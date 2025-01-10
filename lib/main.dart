@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -7,6 +8,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:staff_view_ui/auth/change_password/change_password.dart';
 import 'package:staff_view_ui/auth/edit_user/edit_user.dart';
 import 'package:staff_view_ui/const.dart';
+import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/pages/absent_exception/absent_exception_screen.dart';
 import 'package:staff_view_ui/pages/delegate/delegate_screen.dart';
 import 'package:staff_view_ui/pages/document/document_screen.dart';
@@ -27,22 +29,20 @@ import 'package:staff_view_ui/app_setting.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await GetStorage.init();
   final Translate translationService = Translate();
   await translationService.loadTranslations();
-  await GetStorage.init();
   await AppSetting().initSetting();
-  var initialRoute = '/menu';
+  var initialRoute = '/login';
+
   try {
     var storage = const FlutterSecureStorage();
     final token = await storage.read(key: 'accessToken');
-    if (token != null) {
-      print('token: $token');
-      initialRoute = '/menu';
-    } else {
-      initialRoute = '/login';
-    }
+    initialRoute = token != null ? '/menu' : '/login';
   } catch (e) {
-    print('Error reading token: $e');
+    if (kDebugMode) {
+      print('Error reading token: $e');
+    }
   }
 
   runApp(MyApp(
@@ -59,6 +59,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var box = Storage();
+    var lang = box.read(Const.authorized['Lang']!);
+    var pickLang = const Locale("km", "KH");
+    if (lang != null) {
+      if (lang == 'km') {
+        pickLang = const Locale("km", "KH");
+      } else {
+        pickLang = const Locale("en", "US");
+      }
+    }
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: initialRoute,
@@ -71,12 +81,12 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      locale: const Locale("km", "KH"), // Default locale set to Khmer
+      locale: pickLang, // Default locale set to Khmer
       translations: translationService, // Custom translation class
       fallbackLocale: const Locale("en", "US"), // Fallback to English
       theme: AppTheme.lightTheme, // Custom app theme
       getPages: [
-        GetPage(name: '/menu', page: () => const MenuScreen()),
+        GetPage(name: '/menu', page: () =>  MenuScreen()),
         GetPage(name: '/login', page: () => LoginScreen()),
         GetPage(name: '/profile', page: () => ProfileScreen()),
         GetPage(name: '/delegate', page: () => const DelegateScreen()),

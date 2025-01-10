@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_utils/get_utils.dart';
 import 'package:get/route_manager.dart';
 import 'package:staff_view_ui/app_setting.dart';
+import 'package:staff_view_ui/auth/auth_controller.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
 import 'package:staff_view_ui/const.dart';
@@ -11,6 +13,7 @@ class DioClient {
   final Dio dio = Dio();
   final AuthService authService = AuthService();
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+  final AuthController authController = Get.put(AuthController());
   final String baseUrl = '${AppSetting.setting['BASE_API_URL']}/mobile';
 
   DioClient() {
@@ -65,7 +68,7 @@ class DioClient {
             }
           } else {
             // Navigate to login page if token refresh fails
-            Get.offAllNamed('/login');
+            authController.logout();
           }
         } else {
           Modal.errorDialog('Unsuccessful', _getResponseMessage(e));

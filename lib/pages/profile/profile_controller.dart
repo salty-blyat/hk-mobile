@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:staff_view_ui/const.dart';
+import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/models/user_info_model.dart';
 import 'package:staff_view_ui/pages/profile/profile_service.dart';
 
@@ -11,6 +13,7 @@ class ProfileController extends GetxController {
   final Rx<Staff> user = Staff().obs;
   final RxBool loading = false.obs;
   final RxString filePath = ''.obs;
+  final storage = Storage();
   var isDownloading = false.obs;
   var downloadProgress = 0.0.obs;
   var downloading = ''.obs;
@@ -20,15 +23,14 @@ class ProfileController extends GetxController {
     getUser();
   }
 
-  Future<Staff> getUser() async {
+  void getUser() async {
     loading.value = true;
     try {
-      var response = await profileService.getUser();
-      user.value = response;
+      user.value = await profileService.getUser();
+      storage.write(Const.staffId, '${user.value.id}');
       loading.value = false;
-      return response;
     } catch (e) {
-      return Staff();
+      loading.value = false;
     }
   }
 

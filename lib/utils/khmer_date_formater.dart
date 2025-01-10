@@ -16,11 +16,10 @@ String convertToKhmerDate(DateTime dateTime) {
     'ធ្នូ'
   ];
 
-  // Get the Khmer month name
-  String khmerMonth = khmerMonths[dateTime.month - 1];
+  var date = dateTime.toLocal();
+  String khmerMonth = khmerMonths[date.month - 1];
 
-  // Format the date
-  String formattedDate = '${dateTime.day} $khmerMonth ${dateTime.year}';
+  String formattedDate = '${date.day} $khmerMonth ${date.year}';
 
   return formattedDate;
 }

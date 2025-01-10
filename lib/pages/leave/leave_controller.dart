@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
 import 'package:staff_view_ui/models/leave_model.dart';
+import 'package:staff_view_ui/pages/leave/delete/leave_delete_screen.dart';
 import 'package:staff_view_ui/pages/leave/leave_service.dart';
 
 class LeaveController extends GetxController {
@@ -30,5 +32,16 @@ class LeaveController extends GetxController {
         await leaveService.search(queryParameters.value, Leave.fromJson);
     lists.assignAll(leave.results as Iterable<Leave>);
     loading.value = false;
+  }
+
+  void delete(int id) {
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: LeaveDeleteScreen(id: id),
+      ),
+    );
   }
 }

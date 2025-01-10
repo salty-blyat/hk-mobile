@@ -21,12 +21,17 @@ class LoginScreen extends StatelessWidget {
           left: 16,
           right: 16,
         ),
-        child: MyButton(
-          onPressed: () {
-            controller.formGroup.valid ? controller.login() : null;
-          },
-          label: 'Login',
-        ),
+        child: Obx(() {
+          return MyButton(
+            label: 'Login',
+            disabled: !controller.formValid.value,
+            onPressed: () {
+              if (controller.formValid.value) {
+                controller.login();
+              }
+            },
+          );
+        }),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
