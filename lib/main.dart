@@ -79,7 +79,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/menu', page: () => const MenuScreen()),
         GetPage(name: '/login', page: () => LoginScreen()),
         GetPage(name: '/profile', page: () => ProfileScreen()),
-        GetPage(name: '/delegate', page: () => const DelegateScreen()),
+        GetPage(name: '/delegate', page: () => DelegateScreen()),
         GetPage(
             name: '/absent_exception',
             page: () => const AbsentExceptionScreen()),
