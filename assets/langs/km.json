@@ -336,5 +336,7 @@
   "months ago": "ខែមុន",
   "years ago": "ឆ្នាំមុន",
   "yesterday": "ម្សិលមិញ",
-  "You already requested at {date}": "អ្នកបានស្នើសុំរួចរាល់នៅថ្ងៃ {{date}}"
+  "You already requested at {date}": "អ្នកបានស្នើសុំរួចរាល់នៅថ្ងៃ {{date}}",
+  "day": "ច្បាប់ឈប់ (ថ្ងៃ)",
+  "hour": "ច្បាប់ឈប់ (ម៉ោង)"
 }

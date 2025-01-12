@@ -5,6 +5,7 @@ import 'package:staff_view_ui/utils/theme.dart';
 
 class YearSelect extends StatelessWidget {
   final selectedYear = DateTime.now().year.obs;
+  final previosSelectedYear = DateTime.now().year.obs;
   final Function(int) onYearSelected;
 
   YearSelect({super.key, required this.onYearSelected});
@@ -31,6 +32,7 @@ class YearSelect extends StatelessWidget {
         ),
         onPressed: () => {
           showCupertinoModalPopup(
+            semanticsDismissible: false,
             context: context,
             builder: (BuildContext context) {
               return Container(
@@ -52,6 +54,7 @@ class YearSelect extends StatelessWidget {
                             ),
                           ),
                           onPressed: () {
+                            selectedYear.value = previosSelectedYear.value;
                             Navigator.of(context).pop();
                           },
                         ),
@@ -66,6 +69,7 @@ class YearSelect extends StatelessWidget {
                             ),
                           ),
                           onPressed: () {
+                            previosSelectedYear.value = selectedYear.value;
                             onYearSelected(selectedYear.value);
                             Navigator.of(context).pop();
                           },

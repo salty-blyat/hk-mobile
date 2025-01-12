@@ -60,14 +60,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var box = Storage();
-    var lang = box.read(Const.authorized['Lang']!);
+    var lang = 'km';
+    try {
+      lang = box.read(Const.authorized['Lang']!);
+    } catch (e) {
+      lang = 'km';
+    }
     var pickLang = const Locale("km", "KH");
-    if (lang != null) {
-      if (lang == 'km') {
-        pickLang = const Locale("km", "KH");
-      } else {
-        pickLang = const Locale("en", "US");
-      }
+    if (lang == 'km') {
+      pickLang = const Locale("km", "KH");
+    } else {
+      pickLang = const Locale("en", "US");
     }
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
@@ -86,7 +89,7 @@ class MyApp extends StatelessWidget {
       fallbackLocale: const Locale("en", "US"), // Fallback to English
       theme: AppTheme.lightTheme, // Custom app theme
       getPages: [
-        GetPage(name: '/menu', page: () =>  MenuScreen()),
+        GetPage(name: '/menu', page: () => MenuScreen()),
         GetPage(name: '/login', page: () => LoginScreen()),
         GetPage(name: '/profile', page: () => ProfileScreen()),
         GetPage(name: '/delegate', page: () => DelegateScreen()),

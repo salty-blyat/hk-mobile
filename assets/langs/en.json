@@ -317,5 +317,7 @@
   "months ago": "months ago",
   "years ago": "years ago",
   "yesterday": "yesterday",
-  "You already requested at {date}": "You already requested at {{date}}"
+  "You already requested at {date}": "You already requested at {{date}}",
+  "day": "Leave (day)",
+  "hour": "Leave (hour)"
 }

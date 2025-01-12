@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/models/leave_model.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
@@ -94,6 +93,7 @@ class LeaveOperationController extends GetxController {
     if (unit == '1') {
       toDateControl.markAsEnabled();
       totalDaysControl.markAsDisabled();
+      totalDaysControl.value = 1.0;
     } else {
       toDateControl.value = fromDateControl.value;
       totalDaysControl.value = 1.0;
@@ -205,7 +205,6 @@ class LeaveOperationController extends GetxController {
         '${Const.numberFormat(balance)} = ${Const.numberFormat(leaveBalance)} - ${Const.numberFormat(minus)}';
   }
 
-  @override
   @override
   void onClose() {
     formGroup.dispose();

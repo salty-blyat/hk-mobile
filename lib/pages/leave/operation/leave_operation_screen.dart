@@ -269,18 +269,17 @@ class LeaveOperationScreen extends StatelessWidget {
               value: controller.leaveUnit.value.isEmpty
                   ? null
                   : controller.leaveUnit.value,
-              items: leaveTypeController.leaveUnits
+              items: LeaveUnit.values
                   .map((unit) => DropdownMenuItem(
-                        value: unit['id'],
+                        value: unit.value.toString(),
                         child: Text(
-                          unit['name']!,
+                          unit.name.toString().tr,
                           style: const TextStyle(
                             fontSize: 16,
                             color: Colors.black,
                             fontFamilyFallback: ['Gilroy', 'Kantumruy'],
                           ),
                         ),
-                        
                       ))
                   .toList(),
               onChanged: (value) => controller.updateLeaveUnit(value!),

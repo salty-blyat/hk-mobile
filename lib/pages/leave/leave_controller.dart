@@ -37,10 +37,15 @@ class LeaveController extends GetxController {
   void delete(int id) {
     Get.dialog(
       Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: Container(
+            color: Colors.white,
+            width: double.infinity,
+            height: 380,
+            child: LeaveDeleteScreen(id: id),
+          ),
         ),
-        child: LeaveDeleteScreen(id: id),
       ),
     );
   }

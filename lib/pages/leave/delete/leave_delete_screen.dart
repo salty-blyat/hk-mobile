@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/pages/leave/delete/leave_delete_controller.dart';
 import 'package:staff_view_ui/utils/khmer_date_formater.dart';
@@ -16,18 +17,39 @@ class LeaveDeleteScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     controller.getLeave(id);
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(4),
-      child: Container(
-        color: Colors.white,
-        width: double.infinity,
-        height: 400,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _Header(),
+        Obx(() => controller.loading.value
+            ? _buildLoading(context)
+            : _buildContent(context)),
+        _Footer(controller: controller),
+      ],
+    );
+  }
+
+  Widget _buildLoading(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Skeletonizer(
+        enabled: true,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _Header(),
-            _buildContent(context),
-            _Footer(controller: controller),
+            _info('Request No'.tr, '---', context),
+            _info('Request Date'.tr, '10-10-2000', context),
+            _info('Request Date'.tr, '10-10-2000', context),
+            _info('Request Date'.tr, '10-10-2000', context),
+            _info('Total (days)'.tr, '10 days', context),
+            const SizedBox(height: 8),
+            ReactiveForm(
+              formGroup: controller.formGroup,
+              child: ReactiveTextField<String>(
+                formControlName: 'reason',
+                maxLines: 3,
+                decoration: InputDecoration(labelText: 'Note'.tr),
+              ),
+            ),
           ],
         ),
       ),
@@ -120,11 +142,13 @@ class _Header extends StatelessWidget {
             onPressed: () {},
             icon: const Icon(CupertinoIcons.clear, color: Colors.transparent),
           ),
-          Text(
-            'Delete'.tr,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Colors.white,
-                ),
+          Center(
+            child: Text(
+              'Delete'.tr,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: Colors.white,
+                  ),
+            ),
           ),
           IconButton(
             iconSize: 16,
@@ -163,13 +187,18 @@ class _Footer extends StatelessWidget {
             onPressed: () => Get.back(),
           ),
           const SizedBox(width: 16),
-          _actionButton(
-            context,
-            icon: CupertinoIcons.trash,
-            label: 'Delete'.tr,
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
-            onPressed: () {},
+          Obx(
+            () => _actionButton(
+              context,
+              icon: CupertinoIcons.trash,
+              loading: controller.operationLoading.value,
+              label: 'Delete'.tr,
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              onPressed: () {
+                controller.deleteLeave();
+              },
+            ),
           ),
         ],
       ),
@@ -183,25 +212,34 @@ class _Footer extends StatelessWidget {
     required Color backgroundColor,
     required Color foregroundColor,
     required VoidCallback onPressed,
+    bool loading = false,
   }) {
     return Expanded(
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-          elevation: 0,
-          backgroundColor: backgroundColor,
-          foregroundColor: foregroundColor,
-        ),
-        onPressed: onPressed,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 16),
-            const SizedBox(width: 4),
-            Text(label),
-          ],
-        ),
+        child: ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        elevation: 0,
+        backgroundColor: backgroundColor,
+        foregroundColor: foregroundColor,
       ),
-    );
+      onPressed: onPressed,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          loading
+              ? SizedBox(
+                  height: 16,
+                  width: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: foregroundColor,
+                  ),
+                )
+              : Icon(icon, size: 16),
+          const SizedBox(width: 8),
+          Text(label),
+        ],
+      ),
+    ));
   }
 }

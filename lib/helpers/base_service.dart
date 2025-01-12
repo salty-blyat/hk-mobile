@@ -114,15 +114,15 @@ class BaseService<T extends BaseModel> {
     throw Exception('Failed to edit item');
   }
 
-  Future<T> delete(T model) async {
+  Future<bool> delete(T model) async {
     final response = await dio.delete(
       '$apiUrl/${model.id}',
       data: model,
     );
 
-    if (response.statusCode != 200) {
-      throw Exception('Failed to delete item');
+    if (response.statusCode == 200) {
+      return true;
     }
-    return response.data;
+    return false;
   }
 }

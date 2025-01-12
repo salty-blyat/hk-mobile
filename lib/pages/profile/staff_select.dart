@@ -224,7 +224,7 @@ class StaffSelectDialog extends StatelessWidget {
                           controller.staff[index].photo!.isNotEmpty
                       ? NetworkImage(controller.staff[index].photo!)
                       : AssetImage(
-                              'assets/images/${controller.staff[index].sexId == '1' ? 'female.jpg' : 'man.png'}')
+                              'assets/images/${controller.staff[index].sexId == 1 ? 'female.jpg' : 'man.png'}')
                           as ImageProvider,
                 ),
                 title: Column(
@@ -308,13 +308,11 @@ class StaffSelectController extends GetxController {
         'value': searchText.value
       });
     }
-    if (filterType.value != 0) {
-      filter.add({
-        'field': 'staffFilterTypes',
-        'operator': 'eq',
-        'value': filterType.value.value
-      });
-    }
+    filter.add({
+      'field': 'staffFilterTypes',
+      'operator': 'eq',
+      'value': filterType.value.value
+    });
 
     var response = await staffService.getStaff(queryParameters: {
       'pageIndex': currentPage,
