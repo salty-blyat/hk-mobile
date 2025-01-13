@@ -71,6 +71,7 @@ class DioClient {
             authController.logout();
           }
         } else {
+          if (Get.isDialogOpen == true) Get.back();
           Modal.errorDialog('Unsuccessful', _getResponseMessage(e));
         }
 

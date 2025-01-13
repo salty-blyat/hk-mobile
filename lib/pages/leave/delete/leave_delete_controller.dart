@@ -29,11 +29,11 @@ class LeaveDeleteController extends GetxController {
   }
 
   Future<void> deleteLeave() async {
+    if (operationLoading.isTrue) return;
     try {
       operationLoading.value = true;
       var res = await leaveService.delete(Leave.fromJson(formGroup.rawValue));
       if (res) {
-        operationLoading.value = false;
         Get.back();
         leaveController.search();
       } else {

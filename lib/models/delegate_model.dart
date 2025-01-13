@@ -9,6 +9,7 @@ class Delegate extends BaseModel {
   int? delegateStaffId;
   String? fromDate;
   String? toDate;
+  @override
   String? note;
   String? staffName;
   String? staffDelegateName;

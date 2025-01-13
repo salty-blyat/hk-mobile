@@ -7,8 +7,7 @@ import 'package:staff_view_ui/utils/drawer.dart';
 
 class MenuScreen extends StatelessWidget {
   MenuScreen({super.key});
-  final ProfileController profileController =
-      Get.put(ProfileController());
+  final ProfileController profileController = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +63,6 @@ class MenuScreen extends StatelessWidget {
         'route': '/document',
       },
     ];
-    profileController.getUser();
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       appBar: AppBar(

@@ -112,10 +112,8 @@ class LeaveOperationController extends GetxController {
   }
 
   void find(int id) async {
-    loading.value = true;
     var leave = Leave.fromJson(await leaveService.find(id));
     setFormValue(leave);
-    loading.value = false;
   }
 
   void setFormValue(Leave leave) {
@@ -154,35 +152,47 @@ class LeaveOperationController extends GetxController {
   }
 
   Future<void> submit() async {
-    // try {
-    if (leaveUnit.value == '1') {
-      formGroup.control('totalHours').value = 0.0;
-    } else {
-      var dayField = formGroup.control('totalDays').value;
-      formGroup.control('totalHours').value = dayField;
-      dayField = dayField / 8;
-      formGroup.control('totalDays').value = dayField;
+    if (loading.isTrue) return;
+
+    try {
+      if (leaveUnit.value == '1') {
+        formGroup.control('totalHours').value = 0.0;
+      } else {
+        var dayField = formGroup.control('totalDays').value;
+        formGroup.control('totalHours').value = dayField;
+        dayField = dayField / 8;
+        formGroup.control('totalDays').value = dayField;
+      }
+
+      // Show loading dialog
+      Modal.loadingDialog();
+
+      var model = {
+        'requestedDate': formGroup.control('date').value.toIso8601String(),
+        'fromDate': formGroup.control('fromDate').value.toIso8601String(),
+        'toDate': formGroup.control('toDate').value.toIso8601String(),
+      };
+
+      if (id.value == 0) {
+        await leaveService.add(
+            Leave.fromJson({...formGroup.rawValue, ...model}), Leave.fromJson);
+      } else {
+        await leaveService.edit(
+            Leave.fromJson({...formGroup.rawValue, ...model, 'id': id.value}),
+            Leave.fromJson);
+      }
+
+      leaveController.search();
+      // Close the loading dialog
+      Get.back(); // Navigate back or close extra layers if needed
+      Get.back(); // Navigate back or close extra layers if needed
+    } catch (e) {
+      print(e);
+      // Handle specific errors if necessary
+    } finally {
+      // Ensure the loading dialog is dismissed
+      // Modal.closeLoadingDialog();
     }
-    Modal.loadingDialog();
-    var model = {
-      'requestedDate': formGroup.control('date').value.toIso8601String(),
-      'fromDate': formGroup.control('fromDate').value.toIso8601String(),
-      'toDate': formGroup.control('toDate').value.toIso8601String(),
-    };
-    if (id.value == 0) {
-      await leaveService.add(
-          Leave.fromJson({...formGroup.rawValue, ...model}), Leave.fromJson);
-    } else {
-      await leaveService.edit(
-          Leave.fromJson({...formGroup.rawValue, ...model, 'id': id.value}),
-          Leave.fromJson);
-    }
-    leaveController.search();
-    Get.back();
-    Get.back();
-    // } catch (e) {
-    //   print(e);
-    // }
   }
 
   Future<void> updateLeaveBalance(int id) async {

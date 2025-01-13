@@ -55,36 +55,31 @@ class LeaveOperationScreen extends StatelessWidget {
           icon: const Icon(CupertinoIcons.chevron_back, color: Colors.black),
         ),
       ),
-      body: Obx(() {
-        if (controller.loading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: ReactiveForm(
-            formGroup: controller.formGroup,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  _buildLeaveTypeButtons(context),
-                  const SizedBox(height: 4),
-                  _buildLeaveTypeNote(),
-                  const SizedBox(height: 8),
-                  _buildRequestDetails(),
-                  const SizedBox(height: 16),
-                  _buildDateRangeFields(context),
-                  const SizedBox(height: 16),
-                  _buildTotalDaysAndLeaveUnit(),
-                  const SizedBox(height: 16),
-                  _buildBalanceAndOtherDetails(),
-                  const SizedBox(height: 16),
-                  _buildAttachmentUploader(),
-                ],
-              ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: ReactiveForm(
+          formGroup: controller.formGroup,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                _buildLeaveTypeButtons(context),
+                const SizedBox(height: 4),
+                _buildLeaveTypeNote(),
+                const SizedBox(height: 8),
+                _buildRequestDetails(),
+                const SizedBox(height: 16),
+                _buildDateRangeFields(context),
+                const SizedBox(height: 16),
+                _buildTotalDaysAndLeaveUnit(),
+                const SizedBox(height: 16),
+                _buildBalanceAndOtherDetails(),
+                const SizedBox(height: 16),
+                _buildAttachmentUploader(),
+              ],
             ),
           ),
-        );
-      }),
+        ),
+      ),
     );
   }
 

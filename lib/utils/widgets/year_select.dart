@@ -32,7 +32,7 @@ class YearSelect extends StatelessWidget {
         ),
         onPressed: () => {
           showCupertinoModalPopup(
-            semanticsDismissible: false,
+            barrierDismissible: false,
             context: context,
             builder: (BuildContext context) {
               return Container(

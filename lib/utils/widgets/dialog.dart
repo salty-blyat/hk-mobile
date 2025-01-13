@@ -97,6 +97,8 @@ class Modal {
         backgroundColor: Colors.white.withOpacity(0.1),
         child: const Center(child: CircularProgressIndicator()),
       ),
+      barrierDismissible: false,
+      name: 'loadingDialog',
     );
   }
 }

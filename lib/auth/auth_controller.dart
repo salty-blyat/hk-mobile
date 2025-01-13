@@ -5,6 +5,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
+import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
 class AuthController extends GetxController {
   final _authService = AuthService();
@@ -35,6 +36,7 @@ class AuthController extends GetxController {
   login() async {
     loading.value = true;
     try {
+      Modal.loadingDialog();
       final response = await _authService.login(
         formGroup.value,
         false,
@@ -43,6 +45,7 @@ class AuthController extends GetxController {
         Get.offAllNamed('/menu');
       }
     } catch (e) {
+      Get.back();
       error.value = 'Check your username or password';
     } finally {
       loading.value = false;

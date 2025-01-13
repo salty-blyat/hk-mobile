@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:staff_view_ui/pages/delegate/delegate_controller.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
 import 'package:staff_view_ui/utils/theme.dart';
@@ -124,7 +123,7 @@ class DelegateScreen extends StatelessWidget {
           delegate.delegatePosition,
           overflow: TextOverflow.ellipsis,
         ),
-        title: Row(
+        title: const Row(
           children: [Text('not done')],
         ),
       ),
