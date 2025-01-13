@@ -75,6 +75,7 @@ class BaseService<T extends BaseModel> {
       }
       throw Exception('Failed to search.');
     } catch (e) {
+      print(e);
       throw Exception('Failed to search.');
     }
   }

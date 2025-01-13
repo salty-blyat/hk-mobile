@@ -49,10 +49,13 @@ Leave _$LeaveFromJson(Map<String, dynamic> json) => Leave(
       toShiftId: (json['toShiftId'] as num?)?.toInt(),
       balance: (json['balance'] as num?)?.toDouble(),
       totalHours: (json['totalHours'] as num?)?.toDouble(),
-    )..id = (json['id'] as num?)?.toInt();
+    )
+      ..id = (json['id'] as num?)?.toInt()
+      ..note = json['note'] as String?;
 
 Map<String, dynamic> _$LeaveToJson(Leave instance) => <String, dynamic>{
       'id': instance.id,
+      'note': instance.note,
       'requestNo': instance.requestNo,
       'staffId': instance.staffId,
       'leaveTypeId': instance.leaveTypeId,

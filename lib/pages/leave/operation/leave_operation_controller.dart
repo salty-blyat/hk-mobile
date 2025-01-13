@@ -112,8 +112,15 @@ class LeaveOperationController extends GetxController {
   }
 
   void find(int id) async {
-    var leave = Leave.fromJson(await leaveService.find(id));
-    setFormValue(leave);
+    try {
+      loading.value = true;
+      var leave = Leave.fromJson(await leaveService.find(id));
+      setFormValue(leave);
+    } catch (e) {
+      print(e);
+    } finally {
+      loading.value = false;
+    }
   }
 
   void setFormValue(Leave leave) {

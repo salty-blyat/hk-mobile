@@ -17,6 +17,7 @@ import 'package:staff_view_ui/pages/leave/leave_screen.dart';
 import 'package:staff_view_ui/pages/menu/menu_screen.dart';
 import 'package:staff_view_ui/pages/overtime/overtime_screen.dart';
 import 'package:staff_view_ui/pages/privacy_policy/privacy_policy_screen.dart';
+import 'package:staff_view_ui/pages/request/request_screen.dart';
 import 'package:staff_view_ui/pages/scan/scan-check/scan_check_screen.dart';
 import 'package:staff_view_ui/pages/scan/scan_screen.dart';
 import 'package:staff_view_ui/pages/working/working_screen.dart';
@@ -105,6 +106,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/check', page: () => ScanCheckScreen()),
         GetPage(name: '/privacy-policy', page: () => PrivacyPolicyScreen()),
         GetPage(name: '/change-password', page: () => ChangePassword()),
+        GetPage(name: '/request-approval', page: () => RequestApproveScreen()),
         GetPage(name: '/edit-user', page: () => EditUser()),
       ],
       builder: (context, child) {

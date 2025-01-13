@@ -6,7 +6,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/pages/leave/operation/leave_operation_controller.dart';
 import 'package:staff_view_ui/pages/leave_type/leave_type_controller.dart';
-import 'package:staff_view_ui/pages/profile/staff_select.dart';
+import 'package:staff_view_ui/pages/staff/staff_select.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
 import 'package:staff_view_ui/utils/widgets/date_picker.dart';
 
@@ -55,30 +55,35 @@ class LeaveOperationScreen extends StatelessWidget {
           icon: const Icon(CupertinoIcons.chevron_back, color: Colors.black),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: ReactiveForm(
-          formGroup: controller.formGroup,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                _buildLeaveTypeButtons(context),
-                const SizedBox(height: 4),
-                _buildLeaveTypeNote(),
-                const SizedBox(height: 8),
-                _buildRequestDetails(),
-                const SizedBox(height: 16),
-                _buildDateRangeFields(context),
-                const SizedBox(height: 16),
-                _buildTotalDaysAndLeaveUnit(),
-                const SizedBox(height: 16),
-                _buildBalanceAndOtherDetails(),
-                const SizedBox(height: 16),
-                _buildAttachmentUploader(),
-              ],
-            ),
-          ),
-        ),
+      body: Obx(
+        () => controller.loading.value
+            ? const Center(child: CircularProgressIndicator())
+            : Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: ReactiveForm(
+                  formGroup: controller.formGroup,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        _buildLeaveTypeButtons(context),
+                        const SizedBox(height: 4),
+                        _buildLeaveTypeNote(),
+                        const SizedBox(height: 8),
+                        _buildRequestDetails(),
+                        const SizedBox(height: 16),
+                        _buildDateRangeFields(context),
+                        const SizedBox(height: 16),
+                        _buildTotalDaysAndLeaveUnit(),
+                        const SizedBox(height: 16),
+                        _buildBalanceAndOtherDetails(),
+                        const SizedBox(height: 16),
+                        _buildAttachmentUploader(),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
       ),
     );
   }
@@ -189,7 +194,7 @@ class LeaveOperationScreen extends StatelessWidget {
                 controller: TextEditingController(
                   text: DateFormat('dd-MM-yyyy').format(picker.control.value!),
                 ),
-                onTap: () => dateRangePicker(context),
+                onTap: () {},
               );
             },
           ),
