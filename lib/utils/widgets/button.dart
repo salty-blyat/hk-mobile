@@ -7,6 +7,8 @@ class MyButton extends StatelessWidget {
   final bool loading;
   final IconData? icon;
   final bool disabled;
+  final Color? color;
+  final Color? textColor;
 
   const MyButton({
     super.key,
@@ -15,6 +17,8 @@ class MyButton extends StatelessWidget {
     this.disabled = false,
     this.loading = false,
     this.icon,
+    this.color,
+    this.textColor,
   });
 
   @override
@@ -25,10 +29,10 @@ class MyButton extends StatelessWidget {
         textStyle: const TextStyle(fontFamilyFallback: ['Gilroy', 'Kantumruy']),
         backgroundColor: disabled
             ? Theme.of(context).disabledColor
-            : Theme.of(context).colorScheme.primary,
+            : color ?? Theme.of(context).colorScheme.primary,
         foregroundColor: disabled
             ? Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
-            : Theme.of(context).colorScheme.onPrimary,
+            : textColor ?? Theme.of(context).colorScheme.onPrimary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4),
         ),

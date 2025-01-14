@@ -2,33 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/models/request_model.dart';
-import 'package:staff_view_ui/pages/request/history/request_history_screen.dart';
-import 'package:staff_view_ui/pages/request/request_controller.dart';
+import 'package:staff_view_ui/pages/request/history/request_history_controller.dart';
 import 'package:staff_view_ui/pages/request/view/request_view_screen.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
 import 'package:staff_view_ui/utils/style.dart';
 import 'package:staff_view_ui/utils/widgets/calendar.dart';
 import 'package:staff_view_ui/utils/widgets/tag.dart';
 
-class RequestApproveScreen extends StatelessWidget {
-  RequestApproveScreen({super.key});
+class RequestHistoryScreen extends StatelessWidget {
+  RequestHistoryScreen({super.key});
 
-  final RequestApproveController controller =
-      Get.put(RequestApproveController());
+  final RequestHistoryController controller =
+      Get.put(RequestHistoryController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Request Approve'.tr),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Get.to(() => RequestHistoryScreen());
-            },
-            icon: Icon(Icons.history),
-          ),
-        ],
       ),
       body: Obx(() {
         if (controller.loading.value) {

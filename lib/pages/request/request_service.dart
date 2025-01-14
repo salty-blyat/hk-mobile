@@ -2,30 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
 import 'package:staff_view_ui/models/request_model.dart';
 
-class RequestApproved extends BaseModel {
-  int? nextApproverId;
-
-  RequestApproved.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    note = json['note'];
-    nextApproverId = json['nextApproverId'];
-  }
-}
-
-class RequestRejected extends BaseModel {
-  RequestRejected.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    note = json['note'];
-  }
-}
-
-class RequestUndo extends BaseModel {
-  RequestUndo.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    note = json['note'];
-  }
-}
-
 class RequestApproveService extends BaseService<RequestModel> {
   RequestApproveService() : super('request');
   Future<Response<RequestModel>> findByReqType(int id, int reqType) async {
@@ -36,15 +12,35 @@ class RequestApproveService extends BaseService<RequestModel> {
     return await dio.get<bool>('$apiUrl/can-do-action/$id');
   }
 
-  Future<Response<RequestModel>> reject(RequestRejected model) async {
-    return await dio.post<RequestModel>('$apiUrl/reject', data: model);
+  Future<Response<Map<String, dynamic>>> reject(
+      Map<String, dynamic> model) async {
+    return await dio.post<Map<String, dynamic>>('$apiUrl/reject', data: model);
   }
 
-  Future<Response<RequestModel>> approve(RequestApproved model) async {
-    return await dio.post<RequestModel>('$apiUrl/approve', data: model);
+  Future<Response<Map<String, dynamic>>> approve(
+      Map<String, dynamic> model) async {
+    return await dio.post<Map<String, dynamic>>('$apiUrl/approve', data: model);
   }
 
-  Future<Response<RequestModel>> undo(RequestUndo model) async {
-    return await dio.post<RequestModel>('$apiUrl/undo', data: model);
+  Future<Response<Map<String, dynamic>>> undo(
+      Map<String, dynamic> model) async {
+    return await dio.post<Map<String, dynamic>>('$apiUrl/undo', data: model);
+  }
+
+  Future<SearchResult<RequestModel>> all(QueryParam query,
+      RequestModel Function(Map<String, dynamic>) fromJsonT) async {
+    try {
+      final response = await dio.get(
+        '$apiUrl?pageIndex=${query.pageIndex}&pageSize=${query.pageSize}&sorts=${query.sorts}&filters=${query.filters}',
+      );
+
+      if (response.statusCode == 200) {
+        return SearchResult<RequestModel>.fromJson(response.data, fromJsonT);
+      }
+      throw Exception('Failed to search.');
+    } catch (e) {
+      print(e);
+      throw Exception('Failed to search.');
+    }
   }
 }

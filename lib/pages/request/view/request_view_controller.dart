@@ -1,8 +1,13 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/models/request_model.dart';
+import 'package:staff_view_ui/pages/request/operation/request_approve.dart';
+import 'package:staff_view_ui/pages/request/operation/request_reject.dart';
 import 'package:staff_view_ui/pages/request/request_service.dart';
+import 'package:staff_view_ui/pages/request/view/request_view_screen.dart';
+import 'package:staff_view_ui/pages/request/operation/request_undo.dart';
 
 class RequestViewController extends GetxController {
   final RequestApproveService service = RequestApproveService();
@@ -22,7 +27,7 @@ class RequestViewController extends GetxController {
     if (reqType != 0) {
       findByReqType(reqType);
     } else {
-      findById();
+      findById(id);
     }
   }
 
@@ -42,10 +47,63 @@ class RequestViewController extends GetxController {
     }
   }
 
-  void findById() async {
+  void findById(int id) async {
     loading.value = true;
     model.value = RequestModel.fromJson(await service.find(id));
     requestData.value = jsonDecode(model.value.requestData ?? '');
     loading.value = false;
+  }
+
+  void showApproveDialog(BuildContext context, int requestStatus, int id) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, // Allow resizing beyond default limits
+      builder: (context) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.4, // Initial height (40% of screen)
+          minChildSize: 0.2, // Minimum height (20% of screen)
+          maxChildSize: 0.8, // Maximum height (80% of screen)
+          expand: false, // Prevents full screen expansion
+          builder: (context, scrollController) {
+            return Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+              ),
+              child: Column(
+                children: [
+                  // Handle at the top center
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: 50,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      width: double.infinity,
+                      child: requestStatus == RequestStatus.approve.value
+                          ? ApproveRequest(id: id)
+                          : requestStatus == RequestStatus.reject.value
+                              ? RejectRequest(id: id)
+                              : UndoRequest(id: id),
+                    ),
+                  )
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 }

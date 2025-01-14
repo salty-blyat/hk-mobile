@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/models/timeline_model.dart';
 import 'package:staff_view_ui/pages/leave/leave_screen.dart';
@@ -22,6 +23,20 @@ enum RequestType {
 
   static RequestType? fromValue(int? value) {
     return RequestType.values.firstWhereOrNull((type) => type.value == value);
+  }
+}
+
+enum RequestStatus {
+  approve(0),
+  reject(1),
+  undo(2);
+
+  final int value;
+  const RequestStatus(this.value);
+
+  static RequestStatus? fromValue(int? value) {
+    return RequestStatus.values
+        .firstWhereOrNull((status) => status.value == value);
   }
 }
 
@@ -51,7 +66,7 @@ class RequestViewScreen extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
-    return SingleChildScrollView(
+    return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
@@ -98,151 +113,163 @@ class RequestViewScreen extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return SizedBox(
-      height: logs.length * 150.0,
-      child: Flexible(
-        child: Timeline.tileBuilder(
-          theme: TimelineThemeData(
-            nodePosition: 0,
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
-            indicatorTheme: const IndicatorThemeData(
-              position: 0,
-              size: 18.0,
-            ),
-            connectorTheme: const ConnectorThemeData(
-              thickness: 2.5,
-            ),
+    return Expanded(
+      child: Timeline.tileBuilder(
+        theme: TimelineThemeData(
+          nodePosition: 0,
+          color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+          indicatorTheme: const IndicatorThemeData(
+            position: 0,
+            size: 18.0,
           ),
-          // padding: const EdgeInsets.symmetric(vertical: 20.0),
-          builder: TimelineTileBuilder(
-            endConnectorBuilder: (_, index) => Connector.solidLine(),
-            itemCount: logs.length,
-            contentsBuilder: (_, index) {
-              return Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      children: [
-                        if (index == 0 &&
-                            logs[index + 1].status != LeaveStatus.pending.value)
-                          _actionButton(const Color.fromARGB(221, 22, 22, 22),
-                              CupertinoIcons.gobackward, 'Undo'.tr),
-                        if (index == 0 &&
-                            logs[index + 1].status == LeaveStatus.pending.value)
-                          _actionButton(AppTheme.successColor,
-                              CupertinoIcons.checkmark, 'Approve'.tr),
-                        if (index == 0 &&
-                            logs[index + 1].status == LeaveStatus.pending.value)
-                          const SizedBox(width: 16),
-                        if (index == 0 &&
-                            logs[index + 1].status == LeaveStatus.pending.value)
-                          _actionButton(AppTheme.dangerColor,
-                              CupertinoIcons.xmark, 'Reject'.tr),
-                        if (index != 0)
-                          Text(
-                            logs[index].statusNameKh ?? '',
-                            style:
-                                Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                      fontSize: 16.0,
-                                    ),
-                          ),
-                        const SizedBox(width: 8),
-                        if (index != 0)
-                          Text(
-                            convertToKhmerTimeAgo(
-                                logs[index].createdDate ?? DateTime.now()),
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      fontSize: 16.0,
-                                      color: Colors.black54,
-                                    ),
-                          ),
-                      ],
-                    ),
-                    if (index != 0) _buildTimelineContent(logs[index]),
-                    const SizedBox(height: 8),
-                    // _InnerTimeline(messages: processes[index].messages),
-                  ],
-                ),
-              );
-            },
-            indicatorBuilder: (_, index) {
-              if (index == 0) {
-                if (logs[index + 1].status == LeaveStatus.pending.value) {
-                  return const Icon(
-                    CupertinoIcons.clock,
-                    color: AppTheme.warningColor,
-                    size: 18.0,
-                  );
-                } else if (logs[index + 1].status ==
-                    LeaveStatus.approved.value) {
-                  return const Icon(
-                    CupertinoIcons.arrow_uturn_down_circle,
-                    color: Colors.black,
-                    size: 18.0,
-                  );
-                } else {
-                  return const SizedBox.shrink();
-                }
-              }
-              if (logs[index].status == LeaveStatus.approved.value) {
-                return const OutlinedDotIndicator(
-                  size: 18.0,
-                  color: AppTheme.successColor,
-                  child: Icon(
-                    Icons.check,
-                    color: AppTheme.successColor,
-                    size: 12.0,
+          connectorTheme: const ConnectorThemeData(
+            thickness: 2.5,
+          ),
+        ),
+        // padding: const EdgeInsets.symmetric(vertical: 20.0),
+        builder: TimelineTileBuilder(
+          endConnectorBuilder: (_, index) => Connector.solidLine(),
+          itemCount: logs.length,
+          contentsBuilder: (_, index) {
+            return Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      if (index == 0 &&
+                          logs[index + 1].status != LeaveStatus.pending.value)
+                        _actionButton(
+                            const Color.fromARGB(221, 22, 22, 22),
+                            CupertinoIcons.arrowshape_turn_up_left,
+                            'Undo'.tr,
+                            () => controller.showApproveDialog(
+                                context,
+                                RequestStatus.undo.value,
+                                controller.model.value.id ?? 0)),
+                      if (index == 0 &&
+                          logs[index + 1].status == LeaveStatus.pending.value)
+                        _actionButton(AppTheme.successColor,
+                            CupertinoIcons.checkmark, 'Approve'.tr, () {
+                          controller.showApproveDialog(
+                              context,
+                              RequestStatus.approve.value,
+                              controller.model.value.id ?? 0);
+                        }),
+                      if (index == 0 &&
+                          logs[index + 1].status == LeaveStatus.pending.value)
+                        const SizedBox(width: 16),
+                      if (index == 0 &&
+                          logs[index + 1].status == LeaveStatus.pending.value)
+                        _actionButton(AppTheme.dangerColor,
+                            CupertinoIcons.xmark, 'Reject'.tr, () {
+                          controller.showApproveDialog(
+                              context,
+                              RequestStatus.reject.value,
+                              controller.model.value.id ?? 0);
+                        }),
+                      if (index != 0)
+                        Text(
+                          logs[index].statusNameKh ?? '',
+                          style:
+                              Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    fontSize: 16.0,
+                                  ),
+                        ),
+                      const SizedBox(width: 8),
+                      if (index != 0)
+                        Text(
+                          convertToKhmerTimeAgo(
+                              logs[index].createdDate ?? DateTime.now()),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontSize: 16.0,
+                                    color: Colors.black54,
+                                  ),
+                        ),
+                    ],
                   ),
+                  if (index != 0) _buildTimelineContent(logs[index]),
+                  const SizedBox(height: 8),
+                ],
+              ),
+            );
+          },
+          indicatorBuilder: (_, index) {
+            if (index == 0) {
+              if (logs[index + 1].status == LeaveStatus.pending.value) {
+                return const Icon(
+                  CupertinoIcons.clock,
+                  color: AppTheme.warningColor,
+                  size: 18.0,
                 );
-              } else if (logs[index].status == LeaveStatus.pending.value) {
-                return const OutlinedDotIndicator(
+              } else if (logs[index + 1].status == LeaveStatus.approved.value) {
+                return const Icon(
+                  CupertinoIcons.arrow_uturn_down_circle,
+                  color: Colors.black,
                   size: 18.0,
-                  color: AppTheme.primaryColor,
-                  child: Icon(
-                    CupertinoIcons.circle_fill,
-                    color: AppTheme.primaryColor,
-                    size: 12.0,
-                  ),
-                );
-              } else if (logs[index].status == LeaveStatus.rejected.value) {
-                return const OutlinedDotIndicator(
-                  size: 18.0,
-                  child: Icon(
-                    CupertinoIcons.xmark,
-                    color: AppTheme.dangerColor,
-                    size: 12.0,
-                  ),
-                );
-              } else if (logs[index].status == LeaveStatus.processing.value) {
-                return const OutlinedDotIndicator(
-                  size: 18.0,
-                  color: AppTheme.primaryColor,
-                  child: Icon(
-                    CupertinoIcons.arrow_2_circlepath,
-                    color: AppTheme.primaryColor,
-                    size: 12.0,
-                  ),
                 );
               } else {
                 return const SizedBox.shrink();
               }
-            },
-            // connectorBuilder: (_, index, ___) => SolidLineConnector(
-            //   color: logs[index].status == LeaveStatus.approved.value
-            //       ? Theme.of(context).colorScheme.primary
-            //       : null,
-            // ),
-          ),
+            }
+            if (logs[index].status == LeaveStatus.approved.value) {
+              return const OutlinedDotIndicator(
+                size: 18.0,
+                color: AppTheme.successColor,
+                child: Icon(
+                  Icons.check,
+                  color: AppTheme.successColor,
+                  size: 12.0,
+                ),
+              );
+            } else if (logs[index].status == LeaveStatus.pending.value) {
+              return const OutlinedDotIndicator(
+                size: 18.0,
+                color: AppTheme.primaryColor,
+                child: Icon(
+                  CupertinoIcons.circle_fill,
+                  color: AppTheme.primaryColor,
+                  size: 12.0,
+                ),
+              );
+            } else if (logs[index].status == LeaveStatus.rejected.value) {
+              return const OutlinedDotIndicator(
+                size: 18.0,
+                child: Icon(
+                  CupertinoIcons.xmark,
+                  color: AppTheme.dangerColor,
+                  size: 12.0,
+                ),
+              );
+            } else if (logs[index].status == LeaveStatus.processing.value) {
+              return const OutlinedDotIndicator(
+                size: 18.0,
+                color: AppTheme.primaryColor,
+                child: Icon(
+                  CupertinoIcons.arrow_2_circlepath,
+                  color: AppTheme.primaryColor,
+                  size: 12.0,
+                ),
+              );
+            } else {
+              return const SizedBox.shrink();
+            }
+          },
+          // connectorBuilder: (_, index, ___) => SolidLineConnector(
+          //   color: logs[index].status == LeaveStatus.approved.value
+          //       ? Theme.of(context).colorScheme.primary
+          //       : null,
+          // ),
         ),
       ),
     );
   }
 
-  Widget _actionButton(Color color, IconData icon, String title) {
+  Widget _actionButton(
+      Color color, IconData icon, String title, Function() onPressed) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
@@ -251,7 +278,7 @@ class RequestViewScreen extends StatelessWidget {
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16),
       ),
-      onPressed: () {},
+      onPressed: onPressed,
       child: Row(
         children: [
           Icon(
@@ -440,20 +467,6 @@ class RequestViewScreen extends StatelessWidget {
         const SizedBox(width: 4),
         Text(value),
       ],
-    );
-  }
-}
-
-class _EmptyContents extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(left: 10.0),
-      height: 10.0,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(2.0),
-        color: const Color(0xffe6e7e9),
-      ),
     );
   }
 }

@@ -106,27 +106,32 @@ class LeaveScreen extends StatelessWidget {
     // Group the leave requests by month
     final groupedLeaves = _groupLeavesByMonth(controller.lists);
 
-    return CustomScrollView(
-      slivers: groupedLeaves.entries.map((entry) {
-        final month = entry.key;
-        final leaves = entry.value;
+    return RefreshIndicator(
+      onRefresh: () async {
+        controller.search();
+      },
+      child: CustomScrollView(
+        slivers: groupedLeaves.entries.map((entry) {
+          final month = entry.key;
+          final leaves = entry.value;
 
-        return SliverStickyHeader(
-          header: _buildStickyHeader(month),
-          sliver: SliverList.separated(
-            itemBuilder: (context, index) {
-              final leave = leaves[index];
-              return _buildLeaveItem(leave);
-            },
-            separatorBuilder: (context, index) => Container(
-              color: Colors.grey.shade300,
-              width: double.infinity,
-              height: 1,
+          return SliverStickyHeader(
+            header: _buildStickyHeader(month),
+            sliver: SliverList.separated(
+              itemBuilder: (context, index) {
+                final leave = leaves[index];
+                return _buildLeaveItem(leave);
+              },
+              separatorBuilder: (context, index) => Container(
+                color: Colors.grey.shade300,
+                width: double.infinity,
+                height: 1,
+              ),
+              itemCount: leaves.length,
             ),
-            itemCount: leaves.length,
-          ),
-        );
-      }).toList(),
+          );
+        }).toList(),
+      ),
     );
   }
 
