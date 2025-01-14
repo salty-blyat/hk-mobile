@@ -9,8 +9,12 @@ part of 'delegate_model.dart';
 Delegate _$DelegateFromJson(Map<String, dynamic> json) => Delegate(
       staffId: (json['staffId'] as num?)?.toInt(),
       delegateStaffId: (json['delegateStaffId'] as num?)?.toInt(),
-      fromDate: json['fromDate'] as String?,
-      toDate: json['toDate'] as String?,
+      fromDate: json['fromDate'] == null
+          ? null
+          : DateTime.parse(json['fromDate'] as String),
+      toDate: json['toDate'] == null
+          ? null
+          : DateTime.parse(json['toDate'] as String),
       note: json['note'] as String?,
       staffName: json['staffName'] as String?,
       staffDelegateName: json['staffDelegateName'] as String?,

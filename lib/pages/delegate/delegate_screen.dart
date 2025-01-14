@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -5,9 +7,18 @@ import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/pages/delegate/delegate_controller.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
+import 'package:staff_view_ui/utils/khmer_date_formater.dart';
 import 'package:staff_view_ui/utils/theme.dart';
-import 'package:staff_view_ui/utils/widgets/calendar.dart';
+import 'package:staff_view_ui/utils/widgets/tag.dart';
 import 'package:staff_view_ui/utils/widgets/year_select.dart';
+
+enum FilterDelegateTypes {
+  Uncomplete(1),
+  Complete(2);
+
+  final int value;
+  const FilterDelegateTypes(this.value);
+}
 
 class DelegateScreen extends StatelessWidget {
   DelegateScreen({super.key});
@@ -16,9 +27,51 @@ class DelegateScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    controller.search();
     return Scaffold(
       appBar: AppBar(
         title: Text('Delegate'.tr),
+        actions: [
+          IconButton(
+            iconSize: 30,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            onPressed: () {
+              showMenu(
+                context: context,
+                position: const RelativeRect.fromLTRB(100, 100, 0, 0),
+                items: FilterDelegateTypes.values
+                    .map((e) => PopupMenuItem<FilterDelegateTypes>(
+                          value: e,
+                          child: Row(
+                            children: [
+                              Icon(
+                                controller.filterType.value == e
+                                    ? Icons.radio_button_checked
+                                    : Icons.radio_button_unchecked,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                e.name.tr,
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ],
+                          ),
+                        ))
+                    .toList(),
+              ).then((selectedValue) {
+                if (selectedValue != null) {
+                  controller.filterType.value = selectedValue;
+                  controller.lists.clear();
+                  controller.currentPage = 1;
+                  controller.search();
+                }
+              });
+            },
+            icon: const Icon(CupertinoIcons.ellipsis_vertical),
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -58,6 +111,7 @@ class DelegateScreen extends StatelessWidget {
 
   Widget _buildStickyDelegateList() {
     final groupedDelegate = _groupDelegateByMonth(controller.lists);
+
     return CustomScrollView(
       slivers: groupedDelegate.entries.map((entry) {
         final month = entry.key;
@@ -118,13 +172,69 @@ class DelegateScreen extends StatelessWidget {
       ),
       child: ListTile(
         titleAlignment: ListTileTitleAlignment.center,
-        leading: Calendar(date: delegate.fromDate!),
+        leading: delegate.delegatePhoto != null
+            ? CircleAvatar(
+                child: ClipOval(
+                  child: Image.network(
+                    delegate.delegatePhoto,
+                    fit: BoxFit.cover,
+                    height: 64,
+                    width: 64,
+                  ),
+                ),
+              )
+            : CircleAvatar(
+                backgroundColor: AppTheme.primaryColor.withOpacity(0.7),
+                child: Text(
+                  delegate.staffDelegateName?.substring(0, 1).toUpperCase() ??
+                      '',
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
         subtitle: Text(
           delegate.delegatePosition,
           overflow: TextOverflow.ellipsis,
         ),
-        title: const Row(
-          children: [Text('not done')],
+        title: Row(
+          children: [
+            Text(
+              '${delegate.delegateTitle ?? ''} ${delegate.staffDelegateName ?? ''}',
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 16,
+                letterSpacing: 0,
+              ),
+            ),
+          ],
+        ),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              delegate.toDate.isAfter(delegate.fromDate)
+                  ? '${convertToKhmerDate(delegate.fromDate)} ~ ${convertToKhmerDate(delegate.toDate)}'
+                  : convertToKhmerDate(delegate.fromDate),
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w100,
+                color: Colors.grey.shade700,
+              ),
+            ),
+            Text(
+              '${delegate.toDate.difference(delegate.fromDate).inDays + 1} ${'Day'.tr}',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey.shade700,
+              ),
+            ),
+            Tag(color: Colors.green.shade200, text: 'Active'),
+          ],
         ),
       ),
     );

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
 import 'package:staff_view_ui/models/delegate_model.dart';
+import 'package:staff_view_ui/pages/delegate/delegate_screen.dart';
 import 'package:staff_view_ui/pages/delegate/delegate_service.dart';
 
 class DelegateController extends GetxController {
@@ -11,6 +12,8 @@ class DelegateController extends GetxController {
   final formValid = false.obs;
   final lists = <Delegate>[].obs;
   final year = DateTime.now().year.obs;
+  int currentPage = 1;
+  final Rx<FilterDelegateTypes> filterType = FilterDelegateTypes.Uncomplete.obs;
   final queryParameters = QueryParam(
     pageIndex: 1,
     pageSize: 25,
@@ -24,6 +27,11 @@ class DelegateController extends GetxController {
     var filters = [
       {'field': 'fromDate', 'operator': 'contains', 'value': rangeDate}
     ];
+    filters.add({
+      'field': 'delegateType',
+      'operator': 'eq',
+      'value': filterType.value.value.toString()
+    });
     queryParameters.value.filters = jsonEncode(filters);
 
     var delegate =

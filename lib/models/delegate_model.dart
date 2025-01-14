@@ -7,8 +7,8 @@ part 'delegate_model.g.dart';
 class Delegate extends BaseModel {
   int? staffId;
   int? delegateStaffId;
-  String? fromDate;
-  String? toDate;
+  DateTime? fromDate;
+  DateTime? toDate;
   @override
   String? note;
   String? staffName;
