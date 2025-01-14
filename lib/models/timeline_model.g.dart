@@ -18,7 +18,9 @@ TimelineModel _$TimelineModelFromJson(Map<String, dynamic> json) =>
       positionName: json['positionName'] as String?,
       departmentName: json['departmentName'] as String?,
       branchName: json['branchName'] as String?,
-      createdDate: json['createdDate'] as String?,
+      createdDate: json['createdDate'] == null
+          ? null
+          : DateTime.parse(json['createdDate'] as String),
       createdBy: json['createdBy'] as String?,
     );
 
@@ -34,6 +36,6 @@ Map<String, dynamic> _$TimelineModelToJson(TimelineModel instance) =>
       'positionName': instance.positionName,
       'departmentName': instance.departmentName,
       'branchName': instance.branchName,
-      'createdDate': instance.createdDate,
+      'createdDate': instance.createdDate?.toIso8601String(),
       'createdBy': instance.createdBy,
     };

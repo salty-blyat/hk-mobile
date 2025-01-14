@@ -13,7 +13,7 @@ class TimelineModel {
   String? positionName;
   String? departmentName;
   String? branchName;
-  String? createdDate;
+  DateTime? createdDate;
   String? createdBy;
 
   TimelineModel({

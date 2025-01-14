@@ -16,3 +16,7 @@ String getYear(DateTime dateTime) {
 String getDayOfWeek(DateTime dateTime) {
   return DateFormat('EEE').format(dateTime.toLocal()).tr;
 }
+
+String getTime(DateTime dateTime) {
+  return DateFormat('HH:mm').format(dateTime.toLocal());
+}

@@ -7,6 +7,7 @@ import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
 import 'package:staff_view_ui/pages/leave/operation/leave_operation_screen.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
+import 'package:staff_view_ui/utils/style.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/calendar.dart';
 import 'package:staff_view_ui/utils/widgets/tag.dart';
@@ -204,25 +205,13 @@ class LeaveScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Tag(
-              color: _getStatusColor(leave.status),
+              color: Style.getStatusColor(leave.status),
               text: leave.statusNameKh!,
             ),
           ],
         ),
       ),
     );
-  }
-
-  Color _getStatusColor(int status) {
-    if (LeaveStatus.approved.value == status) {
-      return AppTheme.successColor;
-    } else if (LeaveStatus.rejected.value == status) {
-      return AppTheme.dangerColor;
-    } else if (LeaveStatus.processing.value == status) {
-      return AppTheme.primaryColor;
-    } else {
-      return AppTheme.warningColor;
-    }
   }
 
   Map<String, List<dynamic>> _groupLeavesByMonth(List<dynamic> leaves) {

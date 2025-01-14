@@ -7,6 +7,9 @@ part of 'request_model.dart';
 // **************************************************************************
 
 RequestModel _$RequestModelFromJson(Map<String, dynamic> json) => RequestModel(
+      requestLogs: (json['requestLogs'] as List<dynamic>?)
+          ?.map((e) => TimelineModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
       staffId: (json['staffId'] as num?)?.toInt(),
       photo: json['photo'] as String?,
       requestNo: json['requestNo'] as String?,
@@ -73,4 +76,5 @@ Map<String, dynamic> _$RequestModelToJson(RequestModel instance) =>
       'createdDate': instance.createdDate?.toIso8601String(),
       'canDoAction': instance.canDoAction,
       'delegatorId': instance.delegatorId,
+      'requestLogs': instance.requestLogs,
     };
