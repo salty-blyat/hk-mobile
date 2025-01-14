@@ -6,6 +6,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/pages/delegate/delegate_controller.dart';
+import 'package:staff_view_ui/pages/delegate/operation/delegate_operation_screen.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
 import 'package:staff_view_ui/utils/khmer_date_formater.dart';
 import 'package:staff_view_ui/utils/theme.dart';
@@ -29,6 +30,11 @@ class DelegateScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     controller.search();
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Get.to(() => DelegateOperationScreen()),
+        shape: const CircleBorder(),
+        child: const Icon(CupertinoIcons.add),
+      ),
       appBar: AppBar(
         title: Text('Delegate'.tr),
         actions: [
