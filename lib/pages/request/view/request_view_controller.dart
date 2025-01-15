@@ -2,8 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:staff_view_ui/const.dart';
+import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/models/request_model.dart';
+import 'package:staff_view_ui/pages/leave/leave_screen.dart';
 import 'package:staff_view_ui/pages/request/operation/request_approve.dart';
+import 'package:staff_view_ui/pages/request/operation/request_operation_controller.dart';
 import 'package:staff_view_ui/pages/request/operation/request_reject.dart';
 import 'package:staff_view_ui/pages/request/request_service.dart';
 import 'package:staff_view_ui/pages/request/operation/request_undo.dart';
@@ -37,10 +41,13 @@ enum RequestStatus {
 
 class RequestViewController extends GetxController {
   final RequestApproveService service = RequestApproveService();
+  final storage = Storage();
   final model = RequestModel().obs;
   final requestData = Rxn<Map<String, dynamic>>();
   final canDoAction = false.obs;
   final loading = false.obs;
+  final showUndo = false.obs;
+  final showApprove = false.obs;
   int id = 0;
   int reqType = 0;
 
@@ -49,7 +56,9 @@ class RequestViewController extends GetxController {
     super.onInit();
     id = Get.arguments['id'];
     reqType = Get.arguments['reqType'];
-    checkCanDoAction();
+    if (reqType == 0) {
+      checkCanDoAction();
+    }
     if (reqType != 0) {
       findByReqType(reqType);
     } else {
@@ -78,6 +87,19 @@ class RequestViewController extends GetxController {
     model.value = RequestModel.fromJson(await service.find(id));
     requestData.value = jsonDecode(model.value.requestData ?? '');
     loading.value = false;
+    bool oneDayPassed = model.value.requestLogs![0].createdDate!
+        .isBefore(DateTime.now().subtract(const Duration(days: 1)));
+    showApprove.value = model.value.status == LeaveStatus.pending.value ||
+        model.value.status == LeaveStatus.processing.value;
+    showUndo.value = ((model.value.status == LeaveStatus.approved.value ||
+            model.value.status == LeaveStatus.rejected.value) &&
+        model.value.requestLogs![0].approverId ==
+            int.parse(storage.read(Const.staffId)) &&
+        !oneDayPassed);
+  }
+
+  bool isCurrentApprover() {
+    return false;
   }
 
   void showApproveDialog(BuildContext context, int requestStatus, int id) {
@@ -131,5 +153,11 @@ class RequestViewController extends GetxController {
         );
       },
     );
+  }
+
+  @override
+  void onClose() {
+    Get.delete<RequestOperationController>();
+    super.onClose();
   }
 }

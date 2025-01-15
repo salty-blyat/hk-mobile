@@ -13,6 +13,7 @@ class UndoRequest extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    controller.formGroup.patchValue({'id': id});
     return ReactiveForm(
       formGroup: controller.formGroup,
       child: Column(

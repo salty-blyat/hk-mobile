@@ -21,9 +21,9 @@ class RequestOperationController extends GetxController {
   });
 
   void approve() {
-    loading.value = true;
     formGroup.markAsTouched();
     if (formGroup.valid && !loading.value) {
+      loading.value = true;
       requestService.approve(formGroup.rawValue).then((value) {
         if (value.statusCode == 200) {
           requestViewController.findById(formGroup.value['id'] as int);
@@ -36,31 +36,32 @@ class RequestOperationController extends GetxController {
   }
 
   void reject() {
-    loading.value = true;
     formGroup.markAsTouched();
-    if (formGroup.valid) {
+    if (formGroup.valid && !loading.value) {
+      loading.value = true;
       requestService.reject(formGroup.rawValue).then((value) {
         if (value.statusCode == 200) {
           requestViewController.findById(formGroup.value['id'] as int);
           requestApproveController.search();
           Get.back();
+          loading.value = false;
         }
       });
     }
-    loading.value = false;
   }
 
   void undo() {
-    loading.value = true;
-    if (formGroup.valid) {
+    formGroup.markAsTouched();
+    if (formGroup.valid && !loading.value) {
+      loading.value = true;
       requestService.undo(formGroup.rawValue).then((value) {
         if (value.statusCode == 200) {
           requestViewController.findById(formGroup.value['id'] as int);
           requestApproveController.search();
           Get.back();
+          loading.value = false;
         }
       });
     }
-    loading.value = false;
   }
 }

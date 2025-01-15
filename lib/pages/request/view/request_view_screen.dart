@@ -73,13 +73,19 @@ class RequestViewScreen extends StatelessWidget {
 
   Widget _buildTimeline(BuildContext context) {
     final logs = controller.model.value.requestLogs ?? [];
-    logs.insert(
-        0,
-        TimelineModel(
-          status: 0,
-          statusNameKh: 'Request',
-          createdDate: DateTime.now(),
-        ));
+    final canDoAction = controller.canDoAction.value;
+
+    if (controller.showUndo.value || controller.showApprove.value) {
+      if (logs[0].status != 0) {
+        logs.insert(
+            0,
+            TimelineModel(
+              status: 0,
+              statusNameKh: null,
+              createdDate: null,
+            ));
+      }
+    }
 
     if (logs.isEmpty) {
       return const SizedBox.shrink();
@@ -95,10 +101,9 @@ class RequestViewScreen extends StatelessWidget {
             size: 18.0,
           ),
           connectorTheme: const ConnectorThemeData(
-            thickness: 2.5,
+            thickness: 1,
           ),
         ),
-        // padding: const EdgeInsets.symmetric(vertical: 20.0),
         builder: TimelineTileBuilder(
           endConnectorBuilder: (_, index) => Connector.solidLine(),
           itemCount: logs.length,
@@ -107,12 +112,10 @@ class RequestViewScreen extends StatelessWidget {
               padding: const EdgeInsets.only(left: 8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
                 children: [
                   Row(
                     children: [
-                      if (index == 0 &&
-                          logs[index + 1].status != LeaveStatus.pending.value)
+                      if (controller.showUndo.value && index == 0)
                         _actionButton(
                             const Color.fromARGB(221, 22, 22, 22),
                             CupertinoIcons.arrowshape_turn_up_left,
@@ -120,64 +123,62 @@ class RequestViewScreen extends StatelessWidget {
                             () => controller.showApproveDialog(
                                 context,
                                 RequestStatus.undo.value,
-                                controller.model.value.id ?? 0)),
-                      if (index == 0 &&
-                          logs[index + 1].status == LeaveStatus.pending.value)
+                                controller.model.value.id ?? 0),
+                            false),
+                      if (index == 0 && controller.showApprove.value)
                         _actionButton(AppTheme.successColor,
                             CupertinoIcons.checkmark, 'Approve'.tr, () {
-                          controller.showApproveDialog(
-                              context,
-                              RequestStatus.approve.value,
-                              controller.model.value.id ?? 0);
-                        }),
-                      if (index == 0 &&
-                          logs[index + 1].status == LeaveStatus.pending.value)
+                          if (canDoAction) {
+                            controller.showApproveDialog(
+                                context,
+                                RequestStatus.approve.value,
+                                controller.model.value.id ?? 0);
+                          } else {
+                            null;
+                          }
+                        }, !canDoAction),
+                      if (index == 0 && controller.showApprove.value)
                         const SizedBox(width: 16),
-                      if (index == 0 &&
-                          logs[index + 1].status == LeaveStatus.pending.value)
+                      if (index == 0 && controller.showApprove.value)
                         _actionButton(AppTheme.dangerColor,
                             CupertinoIcons.xmark, 'Reject'.tr, () {
                           controller.showApproveDialog(
                               context,
                               RequestStatus.reject.value,
                               controller.model.value.id ?? 0);
-                        }),
-                      if (index != 0)
-                        Text(
-                          logs[index].statusNameKh ?? '',
-                          style:
-                              Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                    fontSize: 16.0,
-                                  ),
-                        ),
+                        }, !canDoAction),
+                      Text(
+                        logs[index].statusNameKh ?? '',
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              fontSize: 16.0,
+                            ),
+                      ),
                       const SizedBox(width: 8),
-                      if (index != 0)
-                        Text(
-                          convertToKhmerTimeAgo(
-                              logs[index].createdDate ?? DateTime.now()),
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    fontSize: 16.0,
-                                    color: Colors.black54,
-                                  ),
-                        ),
+                      Text(
+                        convertToKhmerTimeAgo(logs[index].createdDate),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              fontSize: 16.0,
+                              color: Colors.black54,
+                            ),
+                      ),
                     ],
                   ),
-                  if (index != 0) _buildTimelineContent(logs[index]),
+                  _buildTimelineContent(logs[index]),
                   const SizedBox(height: 8),
                 ],
               ),
             );
           },
           indicatorBuilder: (_, index) {
-            if (index == 0) {
-              if (logs[index + 1].status == LeaveStatus.pending.value) {
+            if ((controller.showUndo.value || controller.showApprove.value) &&
+                index == 0) {
+              if (controller.showApprove.value) {
                 return const Icon(
                   CupertinoIcons.clock,
                   color: AppTheme.warningColor,
                   size: 20.0,
                 );
-              } else if (logs[index + 1].status == LeaveStatus.approved.value) {
+              } else if (controller.showUndo.value) {
                 return const Icon(
                   CupertinoIcons.arrow_uturn_left_circle,
                   color: Colors.black,
@@ -189,6 +190,7 @@ class RequestViewScreen extends StatelessWidget {
             }
             if (logs[index].status == LeaveStatus.approved.value) {
               return const OutlinedDotIndicator(
+                borderWidth: 1.3,
                 size: 18.0,
                 color: AppTheme.successColor,
                 child: Icon(
@@ -199,6 +201,7 @@ class RequestViewScreen extends StatelessWidget {
               );
             } else if (logs[index].status == LeaveStatus.pending.value) {
               return const OutlinedDotIndicator(
+                borderWidth: 1.3,
                 size: 18.0,
                 color: AppTheme.primaryColor,
                 child: Icon(
@@ -209,6 +212,7 @@ class RequestViewScreen extends StatelessWidget {
               );
             } else if (logs[index].status == LeaveStatus.rejected.value) {
               return const OutlinedDotIndicator(
+                borderWidth: 1.3,
                 color: AppTheme.dangerColor,
                 size: 18.0,
                 child: Icon(
@@ -219,6 +223,7 @@ class RequestViewScreen extends StatelessWidget {
               );
             } else if (logs[index].status == LeaveStatus.processing.value) {
               return const OutlinedDotIndicator(
+                borderWidth: 1.3,
                 size: 18.0,
                 color: AppTheme.primaryColor,
                 child: Icon(
@@ -241,17 +246,19 @@ class RequestViewScreen extends StatelessWidget {
     );
   }
 
-  Widget _actionButton(
-      Color color, IconData icon, String title, Function() onPressed) {
+  Widget _actionButton(Color color, IconData icon, String title,
+      Function() onPressed, bool isDisabled) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
+        disabledBackgroundColor: color.withOpacity(0.6),
+        disabledForegroundColor: Colors.white,
         backgroundColor: color,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16),
       ),
-      onPressed: onPressed,
+      onPressed: isDisabled ? null : onPressed,
       child: Row(
         children: [
           Icon(
@@ -270,8 +277,9 @@ class RequestViewScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _info('Request date',
-            '${convertToKhmerDate(log.createdDate ?? DateTime.now())} ${getTime(log.createdDate ?? DateTime.now())}'),
+        if (log.createdDate != null)
+          _info('Request date',
+              '${convertToKhmerDate(log.createdDate ?? DateTime.now())} ${getTime(log.createdDate ?? DateTime.now())}'),
         log.departmentName != null
             ? _info('Department', log.departmentName ?? '')
             : const SizedBox.shrink(),
@@ -425,10 +433,44 @@ class RequestViewScreen extends StatelessWidget {
   Widget _buildExceptionInfo() {
     return Column(
       children: [
-        _buildInfo(
-          CupertinoIcons.clock,
-          controller.requestData.value?['absentTime'] ?? '',
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildInfo(
+              CupertinoIcons.bookmark,
+              controller.requestData.value?['exceptionTypeName'] ?? '',
+            ),
+            Tag(
+              text: controller.model.value.statusNameKh ?? '',
+              color: Style.getStatusColor(controller.model.value.status ?? 0),
+            ),
+          ],
         ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            _buildInfo(
+              CupertinoIcons.calendar,
+              controller.requestData.value?['totalDays'] < 1
+                  ? '${Const.numberFormat(controller.requestData.value?['totalHours'])} ${'Hour'.tr}'
+                  : '${Const.numberFormat(controller.requestData.value?['totalDays'])} ${'Day'.tr}',
+            ),
+            const SizedBox(width: 8),
+            Text(
+              controller.requestData.value?['totalDays'] > 1
+                  ? '${convertToKhmerDate(DateTime.parse(controller.requestData.value?['fromDate'] ?? ''))} - ${convertToKhmerDate(DateTime.parse(controller.requestData.value?['toDate'] ?? ''))}'
+                  : convertToKhmerDate(DateTime.parse(
+                      controller.requestData.value?['fromDate'] ?? '')),
+            ),
+          ],
+        ),
+        controller.requestData.value?['reason'] != null
+            ? const SizedBox(height: 8)
+            : const SizedBox.shrink(),
+        controller.requestData.value?['reason'] != null
+            ? _buildInfo(CupertinoIcons.doc_plaintext,
+                controller.requestData.value?['reason'] ?? '')
+            : const SizedBox.shrink(),
       ],
     );
   }

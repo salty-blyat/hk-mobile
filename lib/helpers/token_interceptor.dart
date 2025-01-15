@@ -180,6 +180,6 @@ class DioClient {
       });
       return messageTemplate;
     }
-    return '';
+    return e.response?.data['message'].toString().tr ?? '';
   }
 }

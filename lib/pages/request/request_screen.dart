@@ -20,7 +20,7 @@ class RequestApproveScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Request Approve'.tr),
+        title: Text('Request/Approve'.tr),
         actions: [
           IconButton(
             onPressed: () {
@@ -101,7 +101,7 @@ class RequestApproveScreen extends StatelessWidget {
       title: Row(
         children: [
           Text(
-            leave.staffNameKh!,
+            leave.staffNameKh ?? leave.staffNameEn!,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               fontSize: 16,

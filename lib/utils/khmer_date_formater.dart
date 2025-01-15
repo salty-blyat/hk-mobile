@@ -24,7 +24,8 @@ String convertToKhmerDate(DateTime dateTime) {
   return formattedDate;
 }
 
-String convertToKhmerTimeAgo(DateTime targetDate) {
+String convertToKhmerTimeAgo(DateTime? targetDate) {
+  if (targetDate == null) return '';
   DateTime now = DateTime.now();
   Duration diff = now.difference(targetDate);
 
