@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/models/timeline_model.dart';
 import 'package:staff_view_ui/pages/leave/leave_screen.dart';
@@ -12,33 +11,6 @@ import 'package:staff_view_ui/utils/style.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/tag.dart';
 import 'package:timelines/timelines.dart';
-
-enum RequestType {
-  leave(1),
-  ot(2),
-  exception(3);
-
-  final int value;
-  const RequestType(this.value);
-
-  static RequestType? fromValue(int? value) {
-    return RequestType.values.firstWhereOrNull((type) => type.value == value);
-  }
-}
-
-enum RequestStatus {
-  approve(0),
-  reject(1),
-  undo(2);
-
-  final int value;
-  const RequestStatus(this.value);
-
-  static RequestStatus? fromValue(int? value) {
-    return RequestStatus.values
-        .firstWhereOrNull((status) => status.value == value);
-  }
-}
 
 class RequestViewScreen extends StatelessWidget {
   final RequestViewController controller = Get.put(RequestViewController());
@@ -203,13 +175,13 @@ class RequestViewScreen extends StatelessWidget {
                 return const Icon(
                   CupertinoIcons.clock,
                   color: AppTheme.warningColor,
-                  size: 18.0,
+                  size: 20.0,
                 );
               } else if (logs[index + 1].status == LeaveStatus.approved.value) {
                 return const Icon(
-                  CupertinoIcons.arrow_uturn_down_circle,
+                  CupertinoIcons.arrow_uturn_left_circle,
                   color: Colors.black,
-                  size: 18.0,
+                  size: 20.0,
                 );
               } else {
                 return const SizedBox.shrink();
@@ -237,6 +209,7 @@ class RequestViewScreen extends StatelessWidget {
               );
             } else if (logs[index].status == LeaveStatus.rejected.value) {
               return const OutlinedDotIndicator(
+                color: AppTheme.dangerColor,
                 size: 18.0,
                 child: Icon(
                   CupertinoIcons.xmark,

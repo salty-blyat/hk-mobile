@@ -6,8 +6,34 @@ import 'package:staff_view_ui/models/request_model.dart';
 import 'package:staff_view_ui/pages/request/operation/request_approve.dart';
 import 'package:staff_view_ui/pages/request/operation/request_reject.dart';
 import 'package:staff_view_ui/pages/request/request_service.dart';
-import 'package:staff_view_ui/pages/request/view/request_view_screen.dart';
 import 'package:staff_view_ui/pages/request/operation/request_undo.dart';
+
+enum RequestType {
+  leave(1),
+  ot(2),
+  exception(3);
+
+  final int value;
+  const RequestType(this.value);
+
+  static RequestType? fromValue(int? value) {
+    return RequestType.values.firstWhereOrNull((type) => type.value == value);
+  }
+}
+
+enum RequestStatus {
+  approve(0),
+  reject(1),
+  undo(2);
+
+  final int value;
+  const RequestStatus(this.value);
+
+  static RequestStatus? fromValue(int? value) {
+    return RequestStatus.values
+        .firstWhereOrNull((status) => status.value == value);
+  }
+}
 
 class RequestViewController extends GetxController {
   final RequestApproveService service = RequestApproveService();

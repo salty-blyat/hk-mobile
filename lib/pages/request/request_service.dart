@@ -31,7 +31,7 @@ class RequestApproveService extends BaseService<RequestModel> {
       RequestModel Function(Map<String, dynamic>) fromJsonT) async {
     try {
       final response = await dio.get(
-        '$apiUrl?pageIndex=${query.pageIndex}&pageSize=${query.pageSize}&sorts=${query.sorts}&filters=${query.filters}',
+        '$apiUrl/all?pageIndex=${query.pageIndex}&pageSize=${query.pageSize}&sorts=${query.sorts}&filters=${query.filters}',
       );
 
       if (response.statusCode == 200) {

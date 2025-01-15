@@ -23,7 +23,7 @@ class RequestOperationController extends GetxController {
   void approve() {
     loading.value = true;
     formGroup.markAsTouched();
-    if (formGroup.valid) {
+    if (formGroup.valid && !loading.value) {
       requestService.approve(formGroup.rawValue).then((value) {
         if (value.statusCode == 200) {
           requestViewController.findById(formGroup.value['id'] as int);

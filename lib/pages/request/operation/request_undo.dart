@@ -21,7 +21,7 @@ class UndoRequest extends StatelessWidget {
             formControlName: 'note',
             maxLines: 3,
             decoration: InputDecoration(
-              labelText: 'Note'.tr,
+              labelText: '${'Note'.tr} (${'Optional'.tr})',
             ),
           ),
           const SizedBox(height: 16),

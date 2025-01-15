@@ -2,10 +2,31 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:staff_view_ui/models/user_info_model.dart';
-import 'package:staff_view_ui/pages/staff/staff_select.dart';
 import 'package:staff_view_ui/pages/staff/staff_service.dart';
 
+enum FilterTypesStaff {
+  DirectFollower(4),
+  AnyFollower(5),
+  AnyStaff(9);
+
+  final int value;
+
+  const FilterTypesStaff(this.value);
+}
+
+enum FilterTypesApprover {
+  DirectManager(1),
+  UpperManager(2),
+  AnyManager(3),
+  AnyStaff(9),
+  SelfApprove(10);
+
+  final int value;
+  const FilterTypesApprover(this.value);
+}
+
 class StaffSelectController extends GetxController {
+  final RxBool isDelegate = false.obs;
   final RxString searchText = ''.obs;
   final RxString selectedStaff = '-'.obs;
   final RxList<Staff> staff = <Staff>[].obs;
@@ -15,8 +36,15 @@ class StaffSelectController extends GetxController {
   final RxBool hasMore = true.obs;
   int currentPage = 1;
   final int pageSize = 20;
-  final Rx<FilterTypesApprover> filterType =
-      FilterTypesApprover.DirectManager.obs;
+  final Rx<int> filterType = FilterTypesApprover.DirectManager.value.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    filterType.value = isDelegate.value
+        ? FilterTypesStaff.DirectFollower.value
+        : FilterTypesApprover.DirectManager.value;
+  }
 
   Future<void> getStaffById(int id) async {
     loading.value = true;
@@ -37,6 +65,10 @@ class StaffSelectController extends GetxController {
   }
 
   Future<void> getStaff() async {
+    if (isDelegate.value &&
+        filterType.value == FilterTypesApprover.DirectManager.value) {
+      filterType.value = FilterTypesStaff.DirectFollower.value;
+    }
     loading.value = true;
     staff.value = [];
     var filter = [];
@@ -47,11 +79,19 @@ class StaffSelectController extends GetxController {
         'value': searchText.value
       });
     }
-    filter.add({
-      'field': 'staffFilterTypes',
-      'operator': 'eq',
-      'value': filterType.value.value
-    });
+    if (isDelegate.value) {
+      filter.add({
+        'field': 'staffFilterTypes',
+        'operator': 'eq',
+        'value': filterType.value
+      });
+    } else {
+      filter.add({
+        'field': 'staffFilterTypes',
+        'operator': 'eq',
+        'value': filterType.value
+      });
+    }
 
     var response = await staffService.getStaff(queryParameters: {
       'pageIndex': currentPage,
@@ -74,11 +114,7 @@ class StaffSelectController extends GetxController {
     loadingMore.value = true;
     currentPage++;
     var filter = [
-      {
-        'field': 'staffFilterTypes',
-        'operator': 'eq',
-        'value': filterType.value.value
-      }
+      {'field': 'staffFilterTypes', 'operator': 'eq', 'value': filterType.value}
     ];
     var response = await staffService.getStaff(queryParameters: {
       'pageIndex': currentPage,

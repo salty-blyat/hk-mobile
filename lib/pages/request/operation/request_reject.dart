@@ -22,7 +22,7 @@ class RejectRequest extends StatelessWidget {
             formControlName: 'note',
             maxLines: 3,
             decoration: InputDecoration(
-              labelText: 'Note'.tr,
+              labelText: '${'Note'.tr} (${'Optional'.tr})',
             ),
           ),
           SizedBox(height: 16),

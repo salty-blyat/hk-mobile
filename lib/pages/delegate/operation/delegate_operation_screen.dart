@@ -59,6 +59,7 @@ class DelegateOperationScreen extends StatelessWidget {
                           formControlName: 'delegateStaffId',
                           formGroup: controller.formGroup,
                           isEdit: id != 0,
+                          isDelegate: true,
                         ),
                         const SizedBox(height: 16),
                         Row(

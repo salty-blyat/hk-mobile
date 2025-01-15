@@ -19,7 +19,7 @@ class RequestHistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Request Approve'.tr),
+        title: Text('Request History'.tr),
       ),
       body: Obx(() {
         if (controller.loading.value) {
@@ -121,7 +121,7 @@ class RequestHistoryScreen extends StatelessWidget {
           const SizedBox(height: 12),
           Tag(
             color: Style.getStatusColor(leave.status!),
-            text: leave.statusNameKh!,
+            text: leave.statusNameKh ?? '',
           ),
         ],
       ),

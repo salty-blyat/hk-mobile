@@ -1,5 +1,3 @@
-// ignore_for_file: constant_identifier_names
-
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -10,32 +8,12 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/models/user_info_model.dart';
 import 'package:staff_view_ui/pages/staff/staff_controller.dart';
 
-enum FilterTypesStaff {
-  DirectFollower(4),
-  AnyFollower(5),
-  AnyStaff(9);
-
-  final int value;
-
-  const FilterTypesStaff(this.value);
-}
-
-enum FilterTypesApprover {
-  DirectManager(1),
-  UpperManager(2),
-  AnyManager(3),
-  AnyStaff(9),
-  SelfApprove(10);
-
-  final int value;
-  const FilterTypesApprover(this.value);
-}
-
 class StaffSelect extends StatelessWidget {
   final String formControlName;
   final String labelText;
   final FormGroup formGroup;
   final bool isEdit;
+  final bool isDelegate;
 
   const StaffSelect({
     super.key,
@@ -43,11 +21,13 @@ class StaffSelect extends StatelessWidget {
     this.labelText = 'Approver',
     required this.formGroup,
     this.isEdit = false,
+    this.isDelegate = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final StaffSelectController controller = Get.put(StaffSelectController());
+    controller.isDelegate.value = isDelegate;
     if (formGroup.control(formControlName).value == null) {
       controller.selectedStaff.value = '-';
     } else {
@@ -137,40 +117,81 @@ class StaffSelectDialog extends StatelessWidget {
             iconSize: 30,
             padding: const EdgeInsets.symmetric(horizontal: 16),
             onPressed: () {
-              showMenu(
-                context: context,
-                position: const RelativeRect.fromLTRB(
-                    100, 100, 0, 0), // Adjust position as needed
-                items: FilterTypesApprover.values
-                    .map((e) => PopupMenuItem<FilterTypesApprover>(
-                          value: e,
-                          child: Row(
-                            children: [
-                              Icon(
-                                controller.filterType.value == e
-                                    ? Icons.radio_button_checked
-                                    : Icons.radio_button_unchecked,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primary, // Set the icon color
-                                size: 20, // Adjust the icon size
-                              ),
-                              const SizedBox(
-                                  width: 8), // Spacing between icon and text
-                              Text(e.name.tr,
-                                  style: Theme.of(context).textTheme.bodyLarge),
-                            ],
-                          ),
-                        ))
-                    .toList(),
-              ).then((selectedValue) {
-                if (selectedValue != null) {
-                  controller.filterType.value = selectedValue;
-                  controller.staff.clear();
-                  controller.currentPage = 1;
-                  controller.getStaff();
-                }
-              });
+              controller.isDelegate.value
+                  ? showMenu(
+                          context: context,
+                          position: const RelativeRect.fromLTRB(
+                              100, 100, 0, 0), // Adjust position as needed
+                          items: FilterTypesStaff.values
+                              .map((e) => PopupMenuItem<FilterTypesStaff>(
+                                    value: e,
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          controller.filterType.value == e.value
+                                              ? Icons.radio_button_checked
+                                              : Icons.radio_button_unchecked,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary, // Set the icon color
+                                          size: 20, // Adjust the icon size
+                                        ),
+                                        const SizedBox(
+                                            width:
+                                                8), // Spacing between icon and text
+                                        Text(e.name.tr,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyLarge),
+                                      ],
+                                    ),
+                                  ))
+                              .toList())
+                      .then((selectedValue) {
+                      if (selectedValue != null) {
+                        controller.filterType.value = selectedValue.value;
+                        controller.staff.clear();
+                        controller.currentPage = 1;
+                        controller.getStaff();
+                      }
+                    })
+                  : showMenu(
+                          context: context,
+                          position: const RelativeRect.fromLTRB(
+                              100, 100, 0, 0), // Adjust position as needed
+                          items: FilterTypesApprover.values
+                              .map((e) => PopupMenuItem<FilterTypesApprover>(
+                                    value: e,
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          controller.filterType.value == e.value
+                                              ? Icons.radio_button_checked
+                                              : Icons.radio_button_unchecked,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary, // Set the icon color
+                                          size: 20, // Adjust the icon size
+                                        ),
+                                        const SizedBox(
+                                            width:
+                                                8), // Spacing between icon and text
+                                        Text(e.name.tr,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyLarge),
+                                      ],
+                                    ),
+                                  ))
+                              .toList())
+                      .then((selectedValue) {
+                      if (selectedValue != null) {
+                        controller.filterType.value = selectedValue.value;
+                        controller.staff.clear();
+                        controller.currentPage = 1;
+                        controller.getStaff();
+                      }
+                    });
             },
             icon: const Icon(CupertinoIcons.ellipsis_vertical),
           ),
