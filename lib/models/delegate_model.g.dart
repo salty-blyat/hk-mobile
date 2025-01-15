@@ -15,22 +15,23 @@ Delegate _$DelegateFromJson(Map<String, dynamic> json) => Delegate(
       toDate: json['toDate'] == null
           ? null
           : DateTime.parse(json['toDate'] as String),
-      note: json['note'] as String?,
       staffName: json['staffName'] as String?,
       staffDelegateName: json['staffDelegateName'] as String?,
       delegatePhoto: json['delegatePhoto'] as String?,
       delegateTitle: json['delegateTitle'] as String?,
       delegateTitleKh: json['delegateTitleKh'] as String?,
       delegatePosition: json['delegatePosition'] as String?,
-    )..id = (json['id'] as num?)?.toInt();
+    )
+      ..id = (json['id'] as num?)?.toInt()
+      ..note = json['note'] as String?;
 
 Map<String, dynamic> _$DelegateToJson(Delegate instance) => <String, dynamic>{
       'id': instance.id,
+      'note': instance.note,
       'staffId': instance.staffId,
       'delegateStaffId': instance.delegateStaffId,
-      'fromDate': instance.fromDate,
-      'toDate': instance.toDate,
-      'note': instance.note,
+      'fromDate': instance.fromDate?.toIso8601String(),
+      'toDate': instance.toDate?.toIso8601String(),
       'staffName': instance.staffName,
       'staffDelegateName': instance.staffDelegateName,
       'delegatePhoto': instance.delegatePhoto,

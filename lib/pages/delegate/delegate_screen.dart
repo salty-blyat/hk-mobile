@@ -163,7 +163,9 @@ class DelegateScreen extends StatelessWidget {
         motion: const ScrollMotion(),
         children: [
           _CustomSlideButton(
-            onPressed: () {},
+            onPressed: () {
+              Get.to(() => DelegateOperationScreen(id: delegate.id));
+            },
             label: 'Edit',
             icon: Icons.edit_square,
             color: AppTheme.primaryColor,
@@ -176,72 +178,98 @@ class DelegateScreen extends StatelessWidget {
           ),
         ],
       ),
-      child: ListTile(
-        titleAlignment: ListTileTitleAlignment.center,
-        leading: delegate.delegatePhoto != null
-            ? CircleAvatar(
-                child: ClipOval(
-                  child: Image.network(
-                    delegate.delegatePhoto,
-                    fit: BoxFit.cover,
-                    height: 64,
-                    width: 64,
+      child: Stack(
+        children: [
+          ListTile(
+            titleAlignment: ListTileTitleAlignment.center,
+            leading: delegate.delegatePhoto != null
+                ? CircleAvatar(
+                    child: ClipOval(
+                      child: Image.network(
+                        delegate.delegatePhoto,
+                        fit: BoxFit.cover,
+                        height: 64,
+                        width: 64,
+                      ),
+                    ),
+                  )
+                : CircleAvatar(
+                    backgroundColor: AppTheme.primaryColor.withOpacity(0.7),
+                    child: Text(
+                      delegate.staffDelegateName
+                              ?.substring(0, 1)
+                              .toUpperCase() ??
+                          '',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+            title: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    '${delegate.delegateTitle ?? ''} ${delegate.staffDelegateName ?? ''}',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      letterSpacing: 0,
+                    ),
                   ),
                 ),
-              )
-            : CircleAvatar(
-                backgroundColor: AppTheme.primaryColor.withOpacity(0.7),
-                child: Text(
-                  delegate.staffDelegateName?.substring(0, 1).toUpperCase() ??
-                      '',
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+              ],
+            ),
+            subtitle: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    delegate.delegatePosition,
+                    style: const TextStyle(
+                      fontSize: 12,
+                    ),
                   ),
                 ),
-              ),
-        subtitle: Text(
-          delegate.delegatePosition,
-          overflow: TextOverflow.ellipsis,
-        ),
-        title: Row(
-          children: [
-            Text(
-              '${delegate.delegateTitle ?? ''} ${delegate.staffDelegateName ?? ''}',
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 16,
-                letterSpacing: 0,
+              ],
+            ),
+          ),
+          Positioned(
+            right: 0,
+            top: 0,
+            bottom: 0,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    DateTime(delegate.fromDate.year, delegate.fromDate.month,
+                                delegate.fromDate.day) ==
+                            DateTime(delegate.toDate.year,
+                                delegate.toDate.month, delegate.toDate.day)
+                        ? convertToKhmerDate(delegate.fromDate)
+                        : '${convertToKhmerDate(delegate.fromDate)} ~ ${convertToKhmerDate(delegate.toDate)}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w100,
+                      color: Colors.grey.shade700,
+                    ),
+                  ),
+                  Text(
+                    '${delegate.toDate.difference(delegate.fromDate).inDays + 1} ${'Day'.tr}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey.shade700,
+                    ),
+                  ),
+                  Tag(color: Colors.green.shade200, text: 'Active'),
+                ],
               ),
             ),
-          ],
-        ),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              delegate.toDate.isAfter(delegate.fromDate)
-                  ? '${convertToKhmerDate(delegate.fromDate)} ~ ${convertToKhmerDate(delegate.toDate)}'
-                  : convertToKhmerDate(delegate.fromDate),
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w100,
-                color: Colors.grey.shade700,
-              ),
-            ),
-            Text(
-              '${delegate.toDate.difference(delegate.fromDate).inDays + 1} ${'Day'.tr}',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey.shade700,
-              ),
-            ),
-            Tag(color: Colors.green.shade200, text: 'Active'),
-          ],
-        ),
+          )
+        ],
       ),
     );
   }

@@ -9,8 +9,6 @@ class Delegate extends BaseModel {
   int? delegateStaffId;
   DateTime? fromDate;
   DateTime? toDate;
-  @override
-  String? note;
   String? staffName;
   String? staffDelegateName;
   String? delegatePhoto;
@@ -22,7 +20,6 @@ class Delegate extends BaseModel {
     this.delegateStaffId,
     this.fromDate,
     this.toDate,
-    this.note,
     this.staffName,
     this.staffDelegateName,
     this.delegatePhoto,
