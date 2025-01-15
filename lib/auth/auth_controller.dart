@@ -4,11 +4,13 @@ import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/const.dart';
+import 'package:staff_view_ui/helpers/firebase_service.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
 class AuthController extends GetxController {
   final _authService = AuthService();
+  final _firebaseService = NotificationService();
   final loading = false.obs;
   final formValid = false.obs;
   final error = ''.obs;
@@ -42,6 +44,7 @@ class AuthController extends GetxController {
         false,
       );
       if (response == 200) {
+        _firebaseService.handlePassToken();
         Get.offAllNamed('/menu');
       }
     } catch (e) {

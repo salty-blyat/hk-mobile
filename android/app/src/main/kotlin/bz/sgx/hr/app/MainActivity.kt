@@ -1,4 +1,4 @@
-package bz.sgx.pavr.app.staff_view_ui
+package bz.sgx.hr.app
 
 import io.flutter.embedding.android.FlutterActivity
 

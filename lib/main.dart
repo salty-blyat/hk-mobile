@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:staff_view_ui/auth/change_password/change_password.dart';
 import 'package:staff_view_ui/auth/edit_user/edit_user.dart';
 import 'package:staff_view_ui/const.dart';
+import 'package:staff_view_ui/helpers/firebase_service.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/pages/absent_exception/absent_exception_screen.dart';
 import 'package:staff_view_ui/pages/delegate/delegate_screen.dart';
@@ -29,10 +31,11 @@ import 'package:staff_view_ui/app_setting.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await Firebase.initializeApp();
   await GetStorage.init();
   final Translate translationService = Translate();
   await translationService.loadTranslations();
+  NotificationService.initialize();
   await AppSetting().initSetting();
   var initialRoute = '/login';
 

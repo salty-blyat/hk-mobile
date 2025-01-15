@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "531484540732",
+    "project_id": "pavr-mobile",
+    "storage_bucket": "pavr-mobile.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:531484540732:android:c74bf8cffec5af7546e839",
+        "android_client_info": {
+          "package_name": "bz.oone.oonehrms"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIT-Dgw8clZZTj9-GPaUbfn_c47Aq_8pQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:531484540732:android:bea80df8389459a046e839",
+        "android_client_info": {
+          "package_name": "bz.sgx.hr.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIT-Dgw8clZZTj9-GPaUbfn_c47Aq_8pQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
