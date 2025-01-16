@@ -74,8 +74,8 @@ class DelegatepOperationController extends GetxController {
     final fromDate = formGroup.control('fromDate').value;
     final toDate = formGroup.control('toDate').value;
 
-    final difference = toDate.difference(fromDate).inDays + 1;
-    formGroup.control('totalDays').value = difference;
+    final totalDays = toDate.difference(fromDate).inDays + 1;
+    formGroup.control('totalDays').value = totalDays;
   }
 
   Future<void> submit() async {
