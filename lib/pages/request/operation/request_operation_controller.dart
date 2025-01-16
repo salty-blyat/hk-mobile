@@ -6,8 +6,10 @@ import 'package:staff_view_ui/pages/request/view/request_view_controller.dart';
 
 class RequestOperationController extends GetxController {
   final requestService = RequestApproveService();
-  final RequestViewController requestViewController = Get.find();
-  final RequestApproveController requestApproveController = Get.find();
+  final RequestViewController requestViewController =
+      Get.put(RequestViewController());
+  final RequestApproveController requestApproveController =
+      Get.put(RequestApproveController());
   final loading = false.obs;
 
   final formGroup = FormGroup({

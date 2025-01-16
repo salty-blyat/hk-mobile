@@ -36,6 +36,7 @@ class LeaveDeleteController extends GetxController {
       if (res) {
         Get.back();
         leaveController.search();
+        operationLoading.value = false;
       } else {
         operationLoading.value = false;
       }
