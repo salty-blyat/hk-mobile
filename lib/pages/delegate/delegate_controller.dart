@@ -50,7 +50,7 @@ class DelegateController extends GetxController {
           child: Container(
             color: Colors.white,
             width: double.infinity,
-            height: 380,
+            height: 340,
             child: DelegateDeleteScreen(id: id),
           ),
         ),

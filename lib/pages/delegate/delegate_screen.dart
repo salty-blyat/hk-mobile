@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:staff_view_ui/pages/delegate/delegate_controller.dart';
 import 'package:staff_view_ui/pages/delegate/operation/delegate_operation_screen.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
 import 'package:staff_view_ui/utils/khmer_date_formater.dart';
+import 'package:staff_view_ui/utils/style.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/tag.dart';
 import 'package:staff_view_ui/utils/widgets/year_select.dart';
@@ -20,6 +22,8 @@ enum FilterDelegateTypes {
   final int value;
   const FilterDelegateTypes(this.value);
 }
+
+enum DelegateStatus { Active, Upcoming, Completed }
 
 class DelegateScreen extends StatelessWidget {
   DelegateScreen({super.key});
@@ -266,7 +270,11 @@ class DelegateScreen extends StatelessWidget {
                       color: Colors.grey.shade700,
                     ),
                   ),
-                  Tag(color: Colors.green.shade200, text: 'Active'),
+                  // Tag(
+                  //   color: Style.getDelegateStatusColor(
+                  //       _getStatus(delegate.fromDate, delegate.toDate)),
+                  //   text: _getStatus(delegate.fromDate, delegate.toDate).name,
+                  // ),
                 ],
               ),
             ),
@@ -275,6 +283,22 @@ class DelegateScreen extends StatelessWidget {
       ),
     );
   }
+
+  // DelegateStatus _getStatus(DateTime fromDate, DateTime toDate) {
+  //   // Extract only the date components (year, month, day)
+  //   final now = DateTime.now();
+  //   final today = DateFormat();
+  //   final from = DateTime(fromDate.year, fromDate.month, fromDate.day);
+  //   final to = DateTime(toDate.year, toDate.month, toDate.day);
+
+  //   if (today.isBefore(from)) {
+  //     return DelegateStatus.Upcoming;
+  //   } else if (today.isAfter(to)) {
+  //     return DelegateStatus.Completed;
+  //   } else {
+  //     return DelegateStatus.Active;
+  //   }
+  // }
 
   Widget _buildYearSelector() {
     return Container(

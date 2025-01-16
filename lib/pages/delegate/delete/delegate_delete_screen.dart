@@ -41,11 +41,11 @@ class DelegateDeleteScreen extends StatelessWidget {
                   controller.delegate.value.fromDate ?? DateTime.now()),
               context),
           _info(
-              'To Date'.tr,
+              'To date'.tr,
               convertToKhmerDate(
                   controller.delegate.value.toDate ?? DateTime.now()),
               context),
-          _info('Total (days)'.tr, controller.totalDays.value.toString(),
+          _info('Total (days)'.tr, '${controller.totalDays.value} ${'Day'.tr}',
               context),
           const SizedBox(height: 8),
           ReactiveForm(

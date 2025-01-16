@@ -50,10 +50,10 @@ class DelegateDeleteController extends GetxController {
       if (res) {
         Get.back();
         delegateController.search();
-      } else {
-        operationLoading.value = false;
       }
     } catch (e) {
+      operationLoading.value = false;
+    } finally {
       operationLoading.value = false;
     }
   }
