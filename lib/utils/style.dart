@@ -23,7 +23,7 @@ class Style {
       case DelegateStatus.Active:
         return AppTheme.successColor;
       case DelegateStatus.Upcoming:
-        return AppTheme.warningColor;
+        return AppTheme.primaryColor;
       case DelegateStatus.Completed:
         return AppTheme.defaultColor;
     }
