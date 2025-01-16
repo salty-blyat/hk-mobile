@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
 import 'package:staff_view_ui/models/delegate_model.dart';
 import 'package:staff_view_ui/pages/delegate/delegate_screen.dart';
 import 'package:staff_view_ui/pages/delegate/delegate_service.dart';
+import 'package:staff_view_ui/pages/delegate/delete/delegate_delete_screen.dart';
 
 class DelegateController extends GetxController {
   final loading = false.obs;
@@ -38,5 +40,21 @@ class DelegateController extends GetxController {
         await delegateService.search(queryParameters.value, Delegate.fromJson);
     lists.assignAll(delegate.results as Iterable<Delegate>);
     loading.value = false;
+  }
+
+  void delete(int id) {
+    Get.dialog(
+      Dialog(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: Container(
+            color: Colors.white,
+            width: double.infinity,
+            height: 380,
+            child: DelegateDeleteScreen(id: id),
+          ),
+        ),
+      ),
+    );
   }
 }

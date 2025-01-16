@@ -171,7 +171,9 @@ class DelegateScreen extends StatelessWidget {
             color: AppTheme.primaryColor,
           ),
           _CustomSlideButton(
-            onPressed: () {},
+            onPressed: () {
+              controller.delete(delegate.id);
+            },
             label: 'Delete',
             icon: CupertinoIcons.delete_solid,
             color: AppTheme.dangerColor,
