@@ -158,7 +158,7 @@ class DioClient {
   }
 
   // Example method to make DELETE requests
-  Future<Response> delete(String url, {Map<String, dynamic>? data}) async {
+  Future<Response> delete(String url, Map<String, dynamic>? data) async {
     try {
       Response response = await dio.delete('$baseUrl/$url', data: data);
       return response;

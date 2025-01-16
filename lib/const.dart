@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Const {
-  static const String version = '1.8';
-  static const String date = '03-01-2025';
+  static const String version = '1.9';
+  static const String date = '16-01-2025';
   static const String staffId = "StaffId";
   static String numberFormat(double value) {
     return NumberFormat('###.##').format(value);
