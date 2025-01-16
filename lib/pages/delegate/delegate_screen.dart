@@ -217,7 +217,8 @@ class DelegateScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    '${delegate.delegateTitle ?? ''} ${delegate.staffDelegateName ?? ''}',
+                    '${delegate.delegateTitle ?? ''} ${delegate.staffDelegateName ?? ''}'
+                        .trim(),
                     style: const TextStyle(
                       fontSize: 14,
                       letterSpacing: 0,
