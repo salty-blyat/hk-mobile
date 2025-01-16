@@ -77,7 +77,8 @@ class DelegateOperationScreen extends StatelessWidget {
                           readOnly: true,
                           decoration: InputDecoration(
                             labelText: 'Total (days)'.tr,
-                            border: const OutlineInputBorder(),
+                            fillColor: Colors.grey.shade200,
+                            filled: true,
                           ),
                         ),
                         const SizedBox(height: 16),

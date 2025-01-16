@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:staff_view_ui/pages/delegate/delegate_controller.dart';
 import 'package:staff_view_ui/pages/delegate/operation/delegate_operation_screen.dart';
+import 'package:staff_view_ui/utils/get_date.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
 import 'package:staff_view_ui/utils/khmer_date_formater.dart';
 import 'package:staff_view_ui/utils/style.dart';
@@ -250,10 +250,8 @@ class DelegateScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    DateTime(delegate.fromDate.year, delegate.fromDate.month,
-                                delegate.fromDate.day) ==
-                            DateTime(delegate.toDate.year,
-                                delegate.toDate.month, delegate.toDate.day)
+                    getDateOnly(delegate.fromDate) ==
+                            getDateOnly(delegate.toDate)
                         ? convertToKhmerDate(delegate.fromDate)
                         : '${convertToKhmerDate(delegate.fromDate)} ~ ${convertToKhmerDate(delegate.toDate)}',
                     style: TextStyle(
@@ -270,11 +268,11 @@ class DelegateScreen extends StatelessWidget {
                       color: Colors.grey.shade700,
                     ),
                   ),
-                  // Tag(
-                  //   color: Style.getDelegateStatusColor(
-                  //       _getStatus(delegate.fromDate, delegate.toDate)),
-                  //   text: _getStatus(delegate.fromDate, delegate.toDate).name,
-                  // ),
+                  Tag(
+                    color: Style.getDelegateStatusColor(
+                        _getStatus(delegate.fromDate, delegate.toDate)),
+                    text: _getStatus(delegate.fromDate, delegate.toDate).name,
+                  ),
                 ],
               ),
             ),
@@ -284,21 +282,19 @@ class DelegateScreen extends StatelessWidget {
     );
   }
 
-  // DelegateStatus _getStatus(DateTime fromDate, DateTime toDate) {
-  //   // Extract only the date components (year, month, day)
-  //   final now = DateTime.now();
-  //   final today = DateFormat();
-  //   final from = DateTime(fromDate.year, fromDate.month, fromDate.day);
-  //   final to = DateTime(toDate.year, toDate.month, toDate.day);
+  DelegateStatus _getStatus(DateTime fromDate, DateTime toDate) {
+    final currentDate = getDateOnly(DateTime.now());
+    final from = getDateOnly(fromDate);
+    final to = getDateOnly(toDate);
 
-  //   if (today.isBefore(from)) {
-  //     return DelegateStatus.Upcoming;
-  //   } else if (today.isAfter(to)) {
-  //     return DelegateStatus.Completed;
-  //   } else {
-  //     return DelegateStatus.Active;
-  //   }
-  // }
+    if (currentDate.isBefore(from)) {
+      return DelegateStatus.Upcoming;
+    } else if (currentDate.isAfter(to)) {
+      return DelegateStatus.Completed;
+    } else {
+      return DelegateStatus.Active;
+    }
+  }
 
   Widget _buildYearSelector() {
     return Container(
