@@ -146,6 +146,16 @@ class DioClient {
     }
   }
 
+  Future<Response?> getCustom(String url,
+      {Map<String, dynamic>? queryParameters}) async {
+    try {
+      Response response = await dio.get(url, queryParameters: queryParameters);
+      return response;
+    } on DioException {
+      rethrow;
+    }
+  }
+
   Future<Response?> postCustom(String url, {Map<String, dynamic>? data}) async {
     try {
       Response response = await dio.post(url, data: data);

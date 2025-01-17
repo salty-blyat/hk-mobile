@@ -13,6 +13,7 @@ class EditUser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    controller.getUserInfo();
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit User'.tr),
@@ -20,8 +21,8 @@ class EditUser extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: ReactiveForm(
-          formGroup: controller.editUserForm,
-          child: ListView(
+          formGroup: controller.formGroup,
+          child: Column(
             children: [
               const SizedBox(height: 16),
               Obx(
@@ -32,11 +33,11 @@ class EditUser extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(100),
                   ),
-                  child: controller.auth.value?.profile?.isNotEmpty == true
+                  child: controller.info.value?.profile?.isNotEmpty == true
                       ? CircleAvatar(
                           child: ClipOval(
                             child: Image.network(
-                              controller.auth.value!.profile!,
+                              controller.info.value!.profile!,
                               fit: BoxFit.cover,
                               height: 84,
                               width: 84,
@@ -47,7 +48,7 @@ class EditUser extends StatelessWidget {
                           backgroundColor:
                               AppTheme.primaryColor.withOpacity(0.8),
                           child: Text(
-                            controller.auth.value?.fullName
+                            controller.info.value?.fullName
                                     ?.substring(0, 1)
                                     .toUpperCase() ??
                                 '',
@@ -64,7 +65,7 @@ class EditUser extends StatelessWidget {
               Obx(
                 () => Center(
                   child: Text(
-                    controller.auth.value?.fullName ?? '',
+                    controller.info.value?.fullName ?? '',
                     style: const TextStyle(
                       fontSize: 18,
                       color: Colors.black,
@@ -74,7 +75,7 @@ class EditUser extends StatelessWidget {
               ),
               const SizedBox(height: 32),
               ReactiveTextField<String>(
-                formControlName: 'username',
+                formControlName: 'name',
                 validationMessages: {
                   ValidationMessage.required: (_) => 'Input is required!'.tr,
                 },
@@ -134,11 +135,17 @@ class EditUser extends StatelessWidget {
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32),
-        child: MyButton(
-          label: 'Save',
-          loading: controller.loading.value,
-          onPressed: () => {},
-        ),
+        child: Obx(() {
+          return MyButton(
+            label: 'Save',
+            disabled: !controller.formValid.value,
+            onPressed: () {
+              if (controller.formValid.value) {
+                controller.submit();
+              }
+            },
+          );
+        }),
       ),
     );
   }
