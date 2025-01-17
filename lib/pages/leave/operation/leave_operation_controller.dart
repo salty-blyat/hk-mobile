@@ -1,20 +1,20 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/helpers/image_picker_controller.dart';
 import 'package:staff_view_ui/models/leave_model.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
 import 'package:staff_view_ui/pages/leave/leave_service.dart';
-import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class LeaveOperationController extends GetxController {
+  final dio = Dio();
   final LeaveController leaveController = Get.find<LeaveController>();
   final filePickerController = Get.put(FilePickerController());
   final storage = Storage();
@@ -244,14 +244,9 @@ class LeaveOperationController extends GetxController {
         '${Const.numberFormat(balance)} = ${Const.numberFormat(leaveBalance)} - ${Const.numberFormat(minus)}';
   }
 
-  void showAttachments() {
+  void showAttachments() async {
     final controller = WebViewController();
     var url = formGroup.control('attachments').value.first['url'];
-
-    if (!Const.isImage(url)) {
-      url =
-          'https://docs.google.com/gview?embedded=true&url=${Uri.encodeFull(url)}';
-    }
 
     controller.loadRequest(Uri.parse(url));
 
@@ -273,7 +268,12 @@ class LeaveOperationController extends GetxController {
               ),
             ],
           ),
-          Expanded(child: WebViewWidget(controller: controller)),
+          Expanded(
+              child: Const.isImage(url)
+                  ? WebViewWidget(controller: controller)
+                  : PDFView(
+                      filePath: filePickerController.filePath.value,
+                    )),
         ],
       ),
     ));

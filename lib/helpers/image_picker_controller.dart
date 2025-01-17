@@ -12,6 +12,7 @@ import 'package:staff_view_ui/models/attachment_model.dart';
 
 class FilePickerController extends GetxController {
   final ImagePicker _picker = ImagePicker();
+  var filePath = RxString('');
   var selectedImage = Rx<File?>(null);
   var selectedFile = Rx<File?>(null);
   var isUploading = RxBool(false);
@@ -66,6 +67,7 @@ class FilePickerController extends GetxController {
     const secureStorage = FlutterSecureStorage();
     final token =
         await secureStorage.read(key: Const.authorized['AccessToken']!);
+    filePath.value = file.path;
     isUploading.value = true;
 
     try {
