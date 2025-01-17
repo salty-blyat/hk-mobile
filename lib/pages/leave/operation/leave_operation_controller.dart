@@ -170,7 +170,6 @@ class LeaveOperationController extends GetxController {
         dayField = dayField / 8;
         formGroup.control('totalDays').value = dayField;
       }
-      formGroup.control('balance').value = formGroup.control('totalDays').value;
 
       // Show loading dialog
       Modal.loadingDialog();
@@ -218,6 +217,7 @@ class LeaveOperationController extends GetxController {
     } else {
       balance = leaveBalance - minus;
     }
+    formGroup.control('balance').value = balance;
 
     formGroup.control('showBalance').value =
         '${Const.numberFormat(balance)} = ${Const.numberFormat(leaveBalance)} - ${Const.numberFormat(minus)}';

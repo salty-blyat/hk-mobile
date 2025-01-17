@@ -58,10 +58,26 @@ class AuthController extends GetxController {
   logout() async {
     final res = await _firebaseService.handleRemoveToken();
     if (res.statusCode == 200) {
+      handleLogout();
+    } else {
+      handleLogout();
+    }
+  }
+
+  handleLogout() async {
+    final res = await _authService.logout();
+    if (res.statusCode == 200) {
       _authService.deleteFromLocalStorage(Const.authorized['Authorized']!);
       secureStorage.delete(key: Const.authorized['AccessToken']!);
       secureStorage.delete(key: Const.authorized['RefreshToken']!);
       Get.offAllNamed('/login');
     }
+  }
+
+  handleLogoutError() {
+    _authService.deleteFromLocalStorage(Const.authorized['Authorized']!);
+    secureStorage.delete(key: Const.authorized['AccessToken']!);
+    secureStorage.delete(key: Const.authorized['RefreshToken']!);
+    Get.offAllNamed('/login');
   }
 }

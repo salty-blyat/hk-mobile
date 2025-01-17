@@ -68,7 +68,7 @@ class DioClient {
             }
           } else {
             // Navigate to login page if token refresh fails
-            authController.logout();
+            authController.handleLogoutError();
           }
         } else {
           if (Get.isDialogOpen == true) Get.back();
@@ -158,13 +158,19 @@ class DioClient {
   }
 
   // Example method to make DELETE requests
-  Future<Response> delete(String url, Map<String, dynamic>? data) async {
+  Future<Response?> delete(String url, Map<String, dynamic>? data) async {
     try {
-      Response response = await dio.delete('$baseUrl/$url', data: data);
+      Response response = await dio.delete('$baseUrl/$url',
+          data: data,
+          options: Options(
+            headers: {
+              'disableErrorNotification': 'yes',
+            },
+          ));
       return response;
     } on DioException {
       // Modal.errorDialog('Error', _getResponseMessage(e));
-      rethrow;
+      return null;
     }
   }
 

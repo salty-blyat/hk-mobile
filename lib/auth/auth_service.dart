@@ -77,4 +77,23 @@ class AuthService {
       throw Exception('Error deleting from secure storage: $e');
     }
   }
+
+  Future<dio.Response> logout() async {
+    // Set base options for Dio
+    dioClient.options.baseUrl = authUrl;
+    dioClient.options.headers.addAll({
+      'disableErrorNotification': 'yes',
+      'X-ACCEPT-REFRESH-TOKEN': 'true',
+      'Authorization': 'Bearer ${await readFromLocalStorage('accessToken')}',
+    });
+
+    return await dioClient.get(
+      '/auth/logout',
+      options: dio.Options(
+        headers: dioClient.options.headers,
+        contentType: dio.Headers.jsonContentType,
+        responseType: dio.ResponseType.json,
+      ),
+    );
+  }
 }
