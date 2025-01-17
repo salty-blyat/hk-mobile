@@ -15,7 +15,8 @@ class DelegateController extends GetxController {
   final lists = <Delegate>[].obs;
   final year = DateTime.now().year.obs;
   int currentPage = 1;
-  final Rx<FilterDelegateTypes> filterType = FilterDelegateTypes.Uncomplete.obs;
+  final Rx<FilterDelegateTypes> filterType =
+      FilterDelegateTypes.Uncompleted.obs;
   final queryParameters = QueryParam(
     pageIndex: 1,
     pageSize: 25,

@@ -16,8 +16,8 @@ import 'package:staff_view_ui/utils/widgets/tag.dart';
 import 'package:staff_view_ui/utils/widgets/year_select.dart';
 
 enum FilterDelegateTypes {
-  Uncomplete(1),
-  Complete(2);
+  Uncompleted(1),
+  Completed(2);
 
   final int value;
   const FilterDelegateTypes(this.value);
