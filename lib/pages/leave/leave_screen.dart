@@ -156,7 +156,7 @@ class LeaveScreen extends StatelessWidget {
       endActionPane: ActionPane(
         motion: const ScrollMotion(),
         children: [
-          _CustomSlideButton(
+          CustomSlideButton(
             onPressed: () {
               Get.to(() => LeaveOperationScreen(id: leave.id));
             },
@@ -164,7 +164,7 @@ class LeaveScreen extends StatelessWidget {
             icon: Icons.edit_square,
             color: AppTheme.primaryColor,
           ),
-          _CustomSlideButton(
+          CustomSlideButton(
             onPressed: () {
               controller.delete(leave.id!);
             },
@@ -231,12 +231,12 @@ class LeaveScreen extends StatelessWidget {
   }
 }
 
-class _CustomSlideButton extends StatelessWidget {
+class CustomSlideButton extends StatelessWidget {
   final String label;
   final IconData icon;
   final Color color;
   final VoidCallback onPressed;
-  const _CustomSlideButton({
+  const CustomSlideButton({
     required this.label,
     required this.icon,
     required this.color,

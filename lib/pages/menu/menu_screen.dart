@@ -32,21 +32,21 @@ class MenuScreen extends StatelessWidget {
         'icon': CupertinoIcons.calendar_circle,
         'route': '/leave',
       },
-      {
-        'title': 'Overtime Request',
-        'icon': CupertinoIcons.clock,
-        'route': '/overtime',
-      },
-      {
-        'title': 'Absent Exception Request',
-        'icon': CupertinoIcons.refresh_circled,
-        'route': '/absent_exception',
-      },
-      {
-        'title': 'Exception',
-        'icon': CupertinoIcons.refresh_circled,
-        'route': '/exception',
-      },
+      // {
+      //   'title': 'Overtime Request',
+      //   'icon': CupertinoIcons.clock,
+      //   'route': '/overtime',
+      // },
+      // {
+      //   'title': 'Absent Exception Request',
+      //   'icon': CupertinoIcons.refresh_circled,
+      //   'route': '/absent_exception',
+      // },
+      // {
+      //   'title': 'Exception',
+      //   'icon': CupertinoIcons.refresh_circled,
+      //   'route': '/exception',
+      // },
       {
         'title': 'Request/Approve',
         'icon': CupertinoIcons.doc_plaintext,
@@ -57,11 +57,11 @@ class MenuScreen extends StatelessWidget {
         'icon': CupertinoIcons.person_2,
         'route': '/delegate',
       },
-      {
-        'title': 'Document',
-        'icon': CupertinoIcons.doc_plaintext,
-        'route': '/document',
-      },
+      // {
+      //   'title': 'Document',
+      //   'icon': CupertinoIcons.doc_plaintext,
+      //   'route': '/document',
+      // },
     ];
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
@@ -106,7 +106,7 @@ class MenuScreen extends StatelessWidget {
                       mainAxisSpacing: 1,
                       childAspectRatio: 1.5, // Control width-to-height ratio
                     ),
-                    itemCount: 10,
+                    itemCount: menuItems.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () {

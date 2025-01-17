@@ -1,14 +1,22 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import 'package:staff_view_ui/helpers/image_picker_controller.dart';
 import 'package:staff_view_ui/models/leave_model.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
 import 'package:staff_view_ui/pages/leave/leave_service.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class LeaveOperationController extends GetxController {
   final LeaveController leaveController = Get.find<LeaveController>();
+  final filePickerController = Get.put(FilePickerController());
   final storage = Storage();
   final loading = false.obs;
   final leaveService = LeaveService();
@@ -71,6 +79,9 @@ class LeaveOperationController extends GetxController {
     ),
     'toShiftId': FormControl<int>(
       value: 0,
+    ),
+    'attachments': FormControl<List<dynamic>>(
+      value: [],
     ),
   });
 
@@ -146,6 +157,16 @@ class LeaveOperationController extends GetxController {
       formGroup.control('totalDays').markAsEnabled();
     }
     updateLeaveBalance(leave.leaveTypeId!);
+    formGroup.control('attachments').value = [
+      {
+        'name': leave.attachments?.first.name,
+        'url': leave.attachments?.first.url,
+        'uid': leave.attachments?.first.uid,
+      }
+    ];
+    filePickerController.isImage.value =
+        Const.isImage(leave.attachments?.first.url ?? '');
+    filePickerController.attachments.value = leave.attachments ?? [];
   }
 
   void calculateTotalDays() async {
@@ -221,6 +242,41 @@ class LeaveOperationController extends GetxController {
 
     formGroup.control('showBalance').value =
         '${Const.numberFormat(balance)} = ${Const.numberFormat(leaveBalance)} - ${Const.numberFormat(minus)}';
+  }
+
+  void showAttachments() {
+    final controller = WebViewController();
+    var url = formGroup.control('attachments').value.first['url'];
+
+    if (!Const.isImage(url)) {
+      url =
+          'https://docs.google.com/gview?embedded=true&url=${Uri.encodeFull(url)}';
+    }
+
+    controller.loadRequest(Uri.parse(url));
+
+    Get.dialog(Dialog.fullscreen(
+      backgroundColor: Colors.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Row(
+            children: [
+              const SizedBox(width: 16),
+              Text('Attachment'.tr, style: const TextStyle(fontSize: 16)),
+              const Spacer(),
+              IconButton(
+                onPressed: () {
+                  Get.back();
+                },
+                icon: const Icon(CupertinoIcons.clear),
+              ),
+            ],
+          ),
+          Expanded(child: WebViewWidget(controller: controller)),
+        ],
+      ),
+    ));
   }
 
   @override

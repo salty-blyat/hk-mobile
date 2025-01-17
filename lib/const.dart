@@ -9,6 +9,10 @@ class Const {
     return NumberFormat('###.##').format(value);
   }
 
+  static String percentageFormat(double value) {
+    return NumberFormat('###').format(value * 100);
+  }
+
   static const Map<String, String> authorized = {
     'Authorized': 'authorized',
     'Lang': 'lang',
@@ -34,4 +38,18 @@ class Const {
       'code': 'en'
     },
   ];
+  static bool isImage(String url) {
+    final lowerUrl = url.toLowerCase();
+    final imageExtensions = [
+      '.jpg',
+      '.jpeg',
+      '.png',
+      '.gif',
+      '.bmp',
+      '.webp',
+      '.svg'
+    ];
+
+    return imageExtensions.any((extension) => lowerUrl.endsWith(extension));
+  }
 }
