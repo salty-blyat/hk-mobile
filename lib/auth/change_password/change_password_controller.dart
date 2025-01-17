@@ -14,14 +14,14 @@ class ChangePasswordController extends GetxController {
   final _authService = AuthService();
   final _changePasswordService = ChangePasswordService();
   final loading = false.obs;
+  final formValid = false.obs;
   final error = ''.obs;
   final formKey = GlobalKey<FormState>();
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
   // Change Password Form Group
-  final FormGroup changePasswordForm = fb.group({
-    'username':
-        FormControl<String>(validators: [Validators.required], disabled: true),
+  final FormGroup formGroup = fb.group({
+    'username': FormControl<String>(disabled: true),
     'oldPassword': FormControl<String>(validators: [Validators.required]),
     'newPassword': FormControl<String>(validators: [Validators.required]),
     'confirmPassword': FormControl<String>(validators: [Validators.required]),
@@ -39,37 +39,52 @@ class ChangePasswordController extends GetxController {
   void onInit() {
     super.onInit();
     getUserInfo();
+    formGroup.valueChanges.listen((value) {
+      formValid.value = formGroup.valid;
+    });
   }
 
   Future<void> submit() async {
     loading.value = true;
-    error.value = "";
-    // print(changePasswordForm.value);
-    try {
-      final response =
-          await _changePasswordService.changePassword(changePasswordForm.value);
 
-      if (response == 200) {
-        Get.snackbar("Success", "Password changed successfully".tr,
-            snackPosition: SnackPosition.TOP);
+    try {
+      Modal.loadingDialog();
+      final response =
+          await _changePasswordService.changePassword(formGroup.value);
+
+      if (response.statusCode == 200) {
+        Get.snackbar(
+          "Success".tr,
+          "Change password successfully".tr,
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.white,
+          colorText: Colors.black,
+          icon: const Icon(
+            Icons.check_circle_outline,
+            color: Colors.green,
+            size: 40,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          boxShadows: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
+          overlayColor: Colors.transparent,
+          isDismissible: true,
+        );
+
         Get.offAllNamed('/menu');
-        clearForm();
-      } else if (response == 400) {
-        Modal.errorDialog('Error', 'Password is incorrect!'.tr);
       } else {
-        error.value = "Failed to change password. Please try again.";
+        Modal.errorDialog('Unsuccessful', '$response.statusMessage');
       }
     } catch (e) {
       error.value = "An error occurred: $e";
     } finally {
       loading.value = false;
     }
-  }
-
-  void clearForm() {
-    changePasswordForm.control('oldPassword').reset();
-    changePasswordForm.control('newPassword').reset();
-    changePasswordForm.control('confirmPassword').reset();
   }
 
   Future<void> getUserInfo() async {
@@ -80,7 +95,7 @@ class ChangePasswordController extends GetxController {
       auth.value = authData != null && authData.isNotEmpty
           ? ClientInfo.fromJson(jsonDecode(authData))
           : ClientInfo();
-      changePasswordForm.control('username').value = auth.value?.name;
+      formGroup.control('username').value = auth.value?.name;
     } catch (e) {
       print('Error reading from local storage: $e');
     } finally {

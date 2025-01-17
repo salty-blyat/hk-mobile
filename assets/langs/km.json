@@ -256,6 +256,8 @@
   "At latest 6 characters, with uppercase lowercase number and symbol": "ចុងក្រោយបំផុត 6 តួអក្សរដែលមានអក្សរធំ និងនិមិត្តសញ្ញា",
   "New password": "លេខសម្ងាត់ថ្មី",
   "Update Password": "ធ្វើបច្ចុប្បន្នភាពពាក្យសម្ងាត់",
+  "Input is required!": "ទាមទារការបញ្ចូល!",
+  "Password and confirm not match!": "ពាក្យសម្ងាត់និងបញ្ជាក់ពាក្យសម្ងាត់មិនត្រូវគ្នា!",
   "Absent exception unit": "ឯកតាស្នើសុំប្រជុំ",
   "Edit profile successfully": "កែសម្រួលអ្នកប្រើប្រាស់ដោយជោគជ័យ",
   "Update Available": "មានការអាប់ដេត",

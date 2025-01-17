@@ -146,6 +146,15 @@ class DioClient {
     }
   }
 
+  Future<Response?> postCustom(String url, {Map<String, dynamic>? data}) async {
+    try {
+      Response response = await dio.post(url, data: data);
+      return response;
+    } on DioException {
+      return null;
+    }
+  }
+
   // Example method to make PUT requests
   Future<Response> put(String url, {Map<String, dynamic>? data}) async {
     try {

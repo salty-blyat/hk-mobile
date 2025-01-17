@@ -257,6 +257,8 @@
   "At latest 6 characters, with uppercase lowercase number and symbol": "At latest 6 characters, with uppercase lowercase number and symbol",
   "New password": "New password",
   "Update Password": "Update Password",
+  "Input is required!": "Input is required!",
+  "Password and confirm not match!":"Password and confirm not match!",
   "Absent exception unit": "Absent exception unit",
   "Edit profile successfully": "Edit profile successfully",
   "Update Available": "Update Available",
