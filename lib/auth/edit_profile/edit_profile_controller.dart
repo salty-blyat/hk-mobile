@@ -5,22 +5,39 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
+import 'package:staff_view_ui/auth/edit_profile/edit_profile_service.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
 
 class EditUserController extends GetxController {
   final _authService = AuthService();
+  final _editProfile = EditProfileService();
   final loading = false.obs;
+  final formValid = false.obs;
   final error = ''.obs;
   final formKey = GlobalKey<FormState>();
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
+// {
+//   "fullName": "string",
+//   "phone": "string",
+//   "email": "string",
+//   "name": "string",
+//   "isEnabled2FA": true,
+//   "verifyMethod2FA": 1,
+//   "profile": "string"
+// }
+
+  // Edit Profile Form Group
   final FormGroup editUserForm = fb.group({
-    'username':
+    'name':
         FormControl<String>(validators: [Validators.required], disabled: true),
     'fullName': FormControl<String>(validators: [Validators.required]),
     'phone': FormControl<String>(validators: [Validators.required]),
     'email': FormControl<String>(validators: [Validators.required]),
+    'isEnabled2FA': FormControl<bool>(),
+    'verifyMethod2FA': FormControl<int>(),
+    'profile': FormControl<String>(),
   });
 
   Rx<ClientInfo?> auth = Rxn<ClientInfo>();

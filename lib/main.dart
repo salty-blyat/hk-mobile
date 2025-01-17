@@ -7,7 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:staff_view_ui/auth/change_password/change_password.dart';
-import 'package:staff_view_ui/auth/edit_user/edit_user.dart';
+import 'package:staff_view_ui/auth/edit_profile/edit_profile.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/firebase_service.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
