@@ -1,12 +1,9 @@
-// import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:staff_view_ui/app_setting.dart';
 import 'package:staff_view_ui/helpers/token_interceptor.dart';
 
 class ChangePasswordService {
   final String authUrl = AppSetting.setting['AUTH_API_URL'];
   final dioClient = DioClient();
-  final secureStorage = const FlutterSecureStorage();
 
   Future<dynamic> changePassword(dynamic model) async {
     try {
@@ -20,12 +17,13 @@ class ChangePasswordService {
     }
   }
 
-  // Read data from secure storage
-  Future<String?> readFromLocalStorage(String key) async {
+  Future<dynamic> getUserInfo() async {
     try {
-      return await secureStorage.read(key: key);
+      final response = await dioClient.getCustom('$authUrl/auth/info');
+      return response;
     } catch (e) {
-      throw Exception('Error reading from secure storage: $e');
+      // ignore: avoid_print
+      print('Get user info Error: $e');
     }
   }
 }

@@ -32,11 +32,11 @@ class ChangePassword extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(100),
                   ),
-                  child: controller.auth.value?.profile?.isNotEmpty == true
+                  child: controller.info.value?.profile?.isNotEmpty == true
                       ? CircleAvatar(
                           child: ClipOval(
                             child: Image.network(
-                              controller.auth.value!.profile!,
+                              controller.info.value!.profile!,
                               fit: BoxFit.cover,
                               height: 84,
                               width: 84,
@@ -47,7 +47,7 @@ class ChangePassword extends StatelessWidget {
                           backgroundColor:
                               AppTheme.primaryColor.withOpacity(0.8),
                           child: Text(
-                            controller.auth.value?.fullName
+                            controller.info.value?.fullName
                                     ?.substring(0, 1)
                                     .toUpperCase() ??
                                 '',
@@ -64,7 +64,7 @@ class ChangePassword extends StatelessWidget {
               Obx(
                 () => Center(
                   child: Text(
-                    controller.auth.value?.fullName ?? '',
+                    controller.info.value?.fullName ?? '',
                     style: const TextStyle(
                       fontSize: 18,
                       color: Colors.black,
@@ -76,7 +76,7 @@ class ChangePassword extends StatelessWidget {
                 height: 32,
               ),
               ReactiveTextField<String>(
-                formControlName: 'username',
+                formControlName: 'name',
                 readOnly: true,
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(

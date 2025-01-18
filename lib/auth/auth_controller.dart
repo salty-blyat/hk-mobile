@@ -56,10 +56,14 @@ class AuthController extends GetxController {
   }
 
   logout() async {
-    final res = await _firebaseService.handleRemoveToken();
-    if (res.statusCode == 200) {
-      handleLogout();
-    } else {
+    try {
+      final res = await _firebaseService.handleRemoveToken();
+      if (res.statusCode == 200) {
+        handleLogout();
+      } else {
+        handleLogout();
+      }
+    } catch (e) {
       handleLogout();
     }
   }

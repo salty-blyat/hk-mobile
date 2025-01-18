@@ -1,12 +1,16 @@
 // ignore_for_file: avoid_print
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/auth/edit_profile/edit_profile_service.dart';
+import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
+import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
 class EditUserController extends GetxController {
-  final editProfileService = EditProfileService();
+  final _editProfileService = EditProfileService();
   final loading = false.obs;
   final formValid = false.obs;
   final error = ''.obs;
@@ -15,26 +19,33 @@ class EditUserController extends GetxController {
   // Edit Profile Form Group
   final FormGroup formGroup = fb.group({
     'name': FormControl<String>(
+      value: null,
       validators: [Validators.required],
       disabled: true,
     ),
     'fullName': FormControl<String>(
+      value: null,
       validators: [Validators.required],
     ),
     'phone': FormControl<String>(
+      value: null,
       validators: [
         Validators.required,
         Validators.pattern(r'^\+?[0-9]{10,15}$'),
       ],
     ),
     'email': FormControl<String>(
+      value: null,
       validators: [
         Validators.required,
         Validators.email,
       ],
     ),
-    'isEnabled2FA': FormControl<bool>(),
-    'verifyMethod2FA': FormControl<int>(),
+    'isEnabled2FA': FormControl<bool>(value: false),
+    'verifyMethod2FA': FormControl<int>(
+      value: null,
+      validators: [Validators.required],
+    ),
     'profile': FormControl<String>(value: ''),
   });
 
@@ -48,7 +59,51 @@ class EditUserController extends GetxController {
     });
   }
 
-  Future<void> submit() async {}
+  Future<void> submit() async {
+    loading.value = true;
+
+    try {
+      Modal.loadingDialog();
+      final response =
+          await _editProfileService.editProfile(formGroup.rawValue);
+
+      if (response.statusCode == 200) {
+        await _editProfileService.saveToLocalStorage(
+            Const.authorized['Authorized']!, jsonEncode(formGroup.rawValue));
+        Get.snackbar(
+          "Success".tr,
+          "Edit profile successfully".tr,
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.white,
+          colorText: Colors.black,
+          icon: const Icon(
+            Icons.check_circle_outline,
+            color: Colors.green,
+            size: 40,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          boxShadows: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
+          overlayColor: Colors.transparent,
+          isDismissible: true,
+        );
+
+        Get.offAllNamed('/menu');
+      } else {
+        Modal.errorDialog('Unsuccessful', '$response.statusMessage');
+      }
+    } catch (e) {
+      print(e);
+    } finally {
+      loading.value = false;
+    }
+  }
+
   void setFormValue(ClientInfo info) {
     formGroup.patchValue({
       'name': info.name,
@@ -64,7 +119,7 @@ class EditUserController extends GetxController {
   Future<void> getUserInfo() async {
     loading.value = true;
     try {
-      var response = await editProfileService.getUserInfo();
+      var response = await _editProfileService.getUserInfo();
 
       var userInfo = ClientInfo.fromJson(response.data);
       setFormValue(userInfo);

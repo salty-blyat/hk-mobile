@@ -82,9 +82,11 @@ class EditUser extends StatelessWidget {
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
                   labelText: 'Username'.tr,
+                  fillColor: Colors.grey.shade200,
+                  filled: true,
                   errorStyle: const TextStyle(height: 0.7),
                   prefixIcon: const Icon(CupertinoIcons.person_alt_circle),
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  floatingLabelBehavior: FloatingLabelBehavior.auto,
                 ),
               ),
               const SizedBox(height: 16),
