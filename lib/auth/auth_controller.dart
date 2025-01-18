@@ -76,6 +76,8 @@ class AuthController extends GetxController {
         secureStorage.delete(key: Const.authorized['AccessToken']!);
         secureStorage.delete(key: Const.authorized['RefreshToken']!);
         Get.offAllNamed('/login');
+      } else {
+        handleLogoutError();
       }
     } catch (e) {
       handleLogoutError();

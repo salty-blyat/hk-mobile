@@ -172,7 +172,7 @@ class LeaveOperationController extends GetxController {
   void calculateTotalDays() async {
     final fromDate = formGroup.control('fromDate').value;
     final toDate = formGroup.control('toDate').value;
-    final staffId = int.parse(storage.read(Const.staffId));
+    final staffId = int.parse(storage.read(Const.staffId) ?? '0');
     final totalDays =
         await leaveService.getActualLeaveDay(staffId, fromDate, toDate);
     formGroup.control('totalDays').value = totalDays;

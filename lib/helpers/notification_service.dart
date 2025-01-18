@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:get/get.dart';
 
 class ShowNotificationService {
   static Future initialize(
@@ -65,12 +64,14 @@ class ShowNotificationService {
             children: [
               const Icon(Icons.favorite, color: Colors.green),
               Padding(
-                padding: EdgeInsets.only(left: 8.0),
-                child: Text(message, style: TextStyle(color: Colors.green)),
+                padding: const EdgeInsets.only(left: 8.0),
+                child:
+                    Text(message, style: const TextStyle(color: Colors.green)),
               ),
               const Spacer(),
               TextButton(
-                  onPressed: () => debugPrint("Undid"), child: Text("Undo"))
+                  onPressed: () => debugPrint("Undid"),
+                  child: const Text("Undo"))
             ],
           )),
     );

@@ -25,7 +25,7 @@ class RejectRequest extends StatelessWidget {
               labelText: '${'Note'.tr} (${'Optional'.tr})',
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           MyButton(
             onPressed: controller.reject,
             label: 'Reject'.tr,

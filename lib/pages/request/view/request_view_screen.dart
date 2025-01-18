@@ -420,6 +420,14 @@ class RequestViewScreen extends StatelessWidget {
         const SizedBox(height: 8),
         _buildInfo(CupertinoIcons.doc_plaintext,
             controller.requestData.value?['reason'] ?? ''),
+        const SizedBox(height: 8),
+        if (controller.requestData.value?['attachments'].isNotEmpty)
+          GestureDetector(
+            child: _buildInfo(CupertinoIcons.doc, 'Attachment'.tr),
+            onTap: () {
+              controller.showAttachments();
+            },
+          ),
       ],
     );
   }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/const.dart';
@@ -34,12 +35,15 @@ class NotificationService {
 
     // Handle foreground messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      print('FOREGROUND');
-      print('FOREGROUND MESSAGE: ${message.notification?.title}');
-      // ShowNotificationService.getNotification(
-      //     message.notification?.title ?? '',
-      //     message.notification?.body ?? '',
-      //     (t) => _messageClickHandler(message));
+      Get.snackbar(
+        message.notification?.title ?? '',
+        message.notification?.body ?? '',
+        backgroundColor: Colors.grey.shade100,
+        colorText: Colors.black,
+        onTap: (details) {
+          _messageClickHandler(message);
+        },
+      );
     });
 
     // Handle background messages

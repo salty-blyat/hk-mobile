@@ -66,7 +66,7 @@ class MyApp extends StatelessWidget {
     var box = Storage();
     var lang = 'km';
     try {
-      lang = box.read(Const.authorized['Lang']!);
+      lang = box.read(Const.authorized['Lang'] ?? 'km')!;
     } catch (e) {
       lang = 'km';
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 
 class MyFormField extends StatelessWidget {
   final String label;
@@ -9,6 +10,7 @@ class MyFormField extends StatelessWidget {
   final String? Function(String?)? validator;
   final TextEditingController? controller;
   final int? maxLines;
+  final String? controlName;
   const MyFormField({
     super.key,
     required this.label,
@@ -18,6 +20,7 @@ class MyFormField extends StatelessWidget {
     this.validator,
     this.controller,
     this.maxLines = 1,
+    this.controlName,
   });
 
   @override
@@ -32,18 +35,22 @@ class MyFormField extends StatelessWidget {
   }
 
   Widget _buildFormField(BuildContext context, RxBool isPasswordVisible) {
-    return TextFormField(
+    return ReactiveTextField<String>(
       maxLines: password ? 1 : maxLines,
       controller: controller,
-      enabled: !disabled,
-      validator: validator,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
+      validationMessages: {
+        ValidationMessage.required: (_) => 'Input is required!'.tr,
+      },
+      formControlName: controlName,
       obscureText: password ? !isPasswordVisible.value : false,
       enableSuggestions: false,
+      autocorrect: false,
       decoration: InputDecoration(
+        labelText: label.tr,
         labelStyle: context.textTheme.bodyMedium!.copyWith(
           color: Colors.black,
           fontWeight: FontWeight.normal,
+          height: 0,
         ),
         prefixIconColor: disabled ? Colors.grey[500] : null,
         suffixIcon: password
@@ -56,7 +63,6 @@ class MyFormField extends StatelessWidget {
                 },
               )
             : null,
-        labelText: label.tr,
         prefixIcon: icon != null ? Icon(icon) : null,
       ),
     );

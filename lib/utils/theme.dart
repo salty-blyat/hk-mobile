@@ -82,13 +82,9 @@ class AppTheme {
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
-        floatingLabelStyle: style.copyWith(
-          fontSize: 14.0,
-          color: Colors.black,
-        ),
         contentPadding: const EdgeInsets.symmetric(
-          vertical: 12.0, // Adjust vertical padding
-          horizontal: 12.0, // Adjust horizontal padding
+          vertical: 12.0,
+          horizontal: 12.0,
         ),
         labelStyle: style.copyWith(
           fontSize: 16.0,
@@ -120,6 +116,7 @@ class AppTheme {
         ),
         errorStyle: style.copyWith(color: Colors.red, fontSize: 12),
         floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIconColor: Colors.black54,
       ),
 
       // ElevatedButton style

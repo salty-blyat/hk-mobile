@@ -9,5 +9,6 @@
   "RECAPTCHA_ENABLE": "false",
   "PRIVACY_URL": "https://ryrith.github.io/hrapp/privacy.html",
   "TENANT_CODE": "s8server",
-  "APP_CODE": "hr"
+  "APP_CODE": "StaffView",
+  "APP_VERSION": "1.9"
 }

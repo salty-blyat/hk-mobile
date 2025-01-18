@@ -25,16 +25,17 @@ class WorkingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(100),
-        ),
-        onPressed: () {
-          // TODO: Implement download functionality
-        },
-        child: const Icon(CupertinoIcons.clock),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   shape: RoundedRectangleBorder(
+      //     borderRadius: BorderRadius.circular(100),
+      //   ),
+      //   onPressed: () {
+      //     // TODO: Implement download functionality
+      //   },
+      //   child: const Icon(CupertinoIcons.clock),
+      // ),
       appBar: AppBar(
+        title: Text('Worksheet'.tr),
         actions: [
           TextButton(
             onPressed: () {
@@ -60,6 +61,9 @@ class WorkingScreen extends StatelessWidget {
         if (workingController.working.isEmpty &&
             !workingController.isLoading.value) {
           return const Center(child: Text('No data found'));
+        }
+        if (workingController.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
         }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,12 +178,6 @@ Color getTagColor(Worksheets working) {
 }
 
 String getTitle(Worksheets working) {
-  if (working.type! == TYPE.present.value &&
-      working.holiday?.isEmpty == true &&
-      working.leaveReason?.isEmpty == true &&
-      working.missionObjective?.isEmpty == true) {
-    return '${'Working'.tr} ${working.adrWorkingHour}${'h'.tr} / ${working.expectedWorkingHour}${'h'.tr}';
-  }
   if (working.holiday?.isNotEmpty == true) {
     return working.holiday!;
   }
@@ -189,8 +187,11 @@ String getTitle(Worksheets working) {
   if (working.missionObjective?.isNotEmpty == true) {
     return working.missionObjective!;
   }
+  if (working.type! == TYPE.present.value) {
+    return '${'Working'.tr} ${working.adrWorkingHour}${'h'.tr} / ${working.expectedWorkingHour}${'h'.tr}';
+  }
   if (working.type! == TYPE.offDuty.value) {
-    return '';
+    return 'Day off'.tr;
   }
   if (working.type! == TYPE.absent.value) {
     if (working.date!.isAfter(DateTime.now())) {
