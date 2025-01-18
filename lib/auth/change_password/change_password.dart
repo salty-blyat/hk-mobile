@@ -119,7 +119,7 @@ class ChangePassword extends StatelessWidget {
                   formControlName: 'newPassword',
                   obscureText: !controller.isNewPasswordVisible.value,
                   validationMessages: {
-                    ValidationMessage.required: (_) => 'Input is required'.tr,
+                    ValidationMessage.required: (_) => 'Input is required!'.tr,
                   },
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(

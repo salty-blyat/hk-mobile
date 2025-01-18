@@ -56,7 +56,7 @@ class LoginScreen extends StatelessWidget {
               ReactiveTextField<String>(
                 formControlName: 'username',
                 validationMessages: {
-                  ValidationMessage.required: (_) => 'Input is required'.tr,
+                  ValidationMessage.required: (_) => 'Input is required!'.tr,
                 },
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
@@ -73,7 +73,7 @@ class LoginScreen extends StatelessWidget {
                   formControlName: 'password',
                   obscureText: !controller.isPasswordVisible.value,
                   validationMessages: {
-                    ValidationMessage.required: (_) => 'Input is required'.tr,
+                    ValidationMessage.required: (_) => 'Input is required!'.tr,
                   },
                   textInputAction: TextInputAction.done,
                   decoration: InputDecoration(
