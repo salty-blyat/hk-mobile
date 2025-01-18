@@ -28,7 +28,7 @@ class ChangePasswordController extends GetxController {
       validators: [Validators.required],
     ),
   }, [
-    Validators.mustMatch('newPassword', 'confirmPassword'),
+    Validators.mustMatch('newPassword', 'confirmPassword', markAsDirty: false),
   ]);
   final isPasswordVisible = false.obs;
   final isConfirmPasswordVisible = false.obs;

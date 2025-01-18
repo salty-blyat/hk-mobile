@@ -14,10 +14,11 @@ class ChangePassword extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text('Change Password'.tr),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: ReactiveForm(
           formGroup: controller.formGroup,
@@ -84,7 +85,7 @@ class ChangePassword extends StatelessWidget {
                   fillColor: Colors.grey.shade200,
                   filled: true,
                   prefixIcon: const Icon(CupertinoIcons.person_alt_circle),
-                  floatingLabelBehavior: FloatingLabelBehavior.auto,
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
               ),
               const SizedBox(height: 16),
@@ -100,7 +101,7 @@ class ChangePassword extends StatelessWidget {
                     labelText: 'Old Password'.tr,
                     errorStyle: const TextStyle(height: 0.7),
                     prefixIcon: const Icon(CupertinoIcons.lock),
-                    floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
                     suffixIcon: IconButton(
                       icon: Icon(controller.isOldPasswordVisible.value
                           ? CupertinoIcons.eye_slash
@@ -126,7 +127,7 @@ class ChangePassword extends StatelessWidget {
                     labelText: 'New Password'.tr,
                     errorStyle: const TextStyle(height: 0.7),
                     prefixIcon: const Icon(CupertinoIcons.lock),
-                    floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
                     suffixIcon: IconButton(
                       icon: Icon(controller.isNewPasswordVisible.value
                           ? CupertinoIcons.eye_slash
@@ -144,6 +145,8 @@ class ChangePassword extends StatelessWidget {
                 () => ReactiveTextField<String>(
                   formControlName: 'confirmPassword',
                   obscureText: !controller.isConfirmPasswordVisible.value,
+                  enableSuggestions: false,
+                  showErrors: (control) => control.invalid && control.dirty,
                   validationMessages: {
                     ValidationMessage.required: (_) => 'Input is required!'.tr,
                     ValidationMessage.mustMatch: (_) =>
@@ -154,7 +157,7 @@ class ChangePassword extends StatelessWidget {
                     labelText: 'Confirm Password'.tr,
                     errorStyle: const TextStyle(height: 0.7),
                     prefixIcon: const Icon(CupertinoIcons.lock),
-                    floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
                     suffixIcon: IconButton(
                       icon: Icon(controller.isConfirmPasswordVisible.value
                           ? CupertinoIcons.eye_slash
@@ -172,7 +175,11 @@ class ChangePassword extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32),
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+          left: 16,
+          right: 16,
+        ),
         child: Obx(() {
           return MyButton(
             label: 'Save',
