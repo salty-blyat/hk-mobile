@@ -5,6 +5,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/auth/change_password/change_password_controller.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
+import 'package:staff_view_ui/utils/widgets/input.dart';
 
 class ChangePassword extends StatelessWidget {
   ChangePassword({super.key});
@@ -75,97 +76,31 @@ class ChangePassword extends StatelessWidget {
               const SizedBox(
                 height: 32,
               ),
-              ReactiveTextField<String>(
-                formControlName: 'name',
-                readOnly: true,
-                textInputAction: TextInputAction.next,
-                decoration: InputDecoration(
-                  labelText: 'Username'.tr,
-                  fillColor: Colors.grey.shade200,
-                  filled: true,
-                  prefixIcon: const Icon(CupertinoIcons.person_alt_circle),
-                  floatingLabelBehavior: FloatingLabelBehavior.auto,
-                ),
+              MyFormField(
+                controlName: 'name',
+                label: 'Username'.tr,
+                icon: CupertinoIcons.person_alt_circle,
               ),
               const SizedBox(height: 16),
-              Obx(
-                () => ReactiveTextField<String>(
-                  formControlName: 'oldPassword',
-                  obscureText: !controller.isOldPasswordVisible.value,
-                  validationMessages: {
-                    ValidationMessage.required: (_) => 'Input is required!'.tr,
-                  },
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: 'Old Password'.tr,
-                    errorStyle: const TextStyle(height: 0.7),
-                    prefixIcon: const Icon(CupertinoIcons.lock),
-                    floatingLabelBehavior: FloatingLabelBehavior.auto,
-                    suffixIcon: IconButton(
-                      icon: Icon(controller.isOldPasswordVisible.value
-                          ? CupertinoIcons.eye_slash
-                          : CupertinoIcons.eye),
-                      onPressed: () {
-                        controller.isOldPasswordVisible.value =
-                            !controller.isOldPasswordVisible.value;
-                      },
-                    ),
-                  ),
-                ),
+              MyFormField(
+                controlName: 'oldPassword',
+                password: true,
+                label: 'Old Password'.tr,
+                icon: CupertinoIcons.lock,
               ),
               const SizedBox(height: 16),
-              Obx(
-                () => ReactiveTextField<String>(
-                  formControlName: 'newPassword',
-                  obscureText: !controller.isNewPasswordVisible.value,
-                  validationMessages: {
-                    ValidationMessage.required: (_) => 'Input is required!'.tr,
-                  },
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: 'New Password'.tr,
-                    errorStyle: const TextStyle(height: 0.7),
-                    prefixIcon: const Icon(CupertinoIcons.lock),
-                    floatingLabelBehavior: FloatingLabelBehavior.auto,
-                    suffixIcon: IconButton(
-                      icon: Icon(controller.isNewPasswordVisible.value
-                          ? CupertinoIcons.eye_slash
-                          : CupertinoIcons.eye),
-                      onPressed: () {
-                        controller.isNewPasswordVisible.value =
-                            !controller.isNewPasswordVisible.value;
-                      },
-                    ),
-                  ),
-                ),
+              MyFormField(
+                controlName: 'newPassword',
+                label: 'New Password'.tr,
+                password: true,
+                icon: CupertinoIcons.lock,
               ),
               const SizedBox(height: 16),
-              Obx(
-                () => ReactiveTextField<String>(
-                  formControlName: 'confirmPassword',
-                  obscureText: !controller.isConfirmPasswordVisible.value,
-                  validationMessages: {
-                    ValidationMessage.required: (_) => 'Input is required!'.tr,
-                    ValidationMessage.mustMatch: (_) =>
-                        'Password and confirm not match!'.tr
-                  },
-                  textInputAction: TextInputAction.done,
-                  decoration: InputDecoration(
-                    labelText: 'Confirm Password'.tr,
-                    errorStyle: const TextStyle(height: 0.7),
-                    prefixIcon: const Icon(CupertinoIcons.lock),
-                    floatingLabelBehavior: FloatingLabelBehavior.auto,
-                    suffixIcon: IconButton(
-                      icon: Icon(controller.isConfirmPasswordVisible.value
-                          ? CupertinoIcons.eye_slash
-                          : CupertinoIcons.eye),
-                      onPressed: () {
-                        controller.isConfirmPasswordVisible.value =
-                            !controller.isConfirmPasswordVisible.value;
-                      },
-                    ),
-                  ),
-                ),
+              MyFormField(
+                controlName: 'confirmPassword',
+                password: true,
+                label: 'Confirm Password'.tr,
+                icon: CupertinoIcons.lock,
               ),
             ],
           ),
