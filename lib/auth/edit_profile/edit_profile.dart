@@ -15,10 +15,11 @@ class EditUser extends StatelessWidget {
   Widget build(BuildContext context) {
     controller.getUserInfo();
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text('Edit User'.tr),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: ReactiveForm(
           formGroup: controller.formGroup,
@@ -86,7 +87,7 @@ class EditUser extends StatelessWidget {
                   filled: true,
                   errorStyle: const TextStyle(height: 0.7),
                   prefixIcon: const Icon(CupertinoIcons.person_alt_circle),
-                  floatingLabelBehavior: FloatingLabelBehavior.auto,
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
               ),
               const SizedBox(height: 16),
@@ -100,35 +101,40 @@ class EditUser extends StatelessWidget {
                   labelText: 'Full Name'.tr,
                   errorStyle: const TextStyle(height: 0.7),
                   prefixIcon: const Icon(CupertinoIcons.person),
-                  floatingLabelBehavior: FloatingLabelBehavior.auto,
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
               ),
               const SizedBox(height: 16),
               ReactiveTextField<String>(
                 formControlName: 'phone',
+                showErrors: (control) => control.dirty,
                 validationMessages: {
                   ValidationMessage.required: (_) => 'Input is required!'.tr,
+                  ValidationMessage.pattern: (_) =>
+                      'Phone number is not valid!'.tr
                 },
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
                   labelText: 'Phone Number'.tr,
                   errorStyle: const TextStyle(height: 0.7),
                   prefixIcon: const Icon(CupertinoIcons.phone),
-                  floatingLabelBehavior: FloatingLabelBehavior.auto,
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
               ),
               const SizedBox(height: 16),
               ReactiveTextField<String>(
                 formControlName: 'email',
+                showErrors: (control) => control.dirty,
                 validationMessages: {
                   ValidationMessage.required: (_) => 'Input is required!'.tr,
+                  ValidationMessage.email: (_) => 'Email is not valid!'.tr,
                 },
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
                   labelText: 'Email'.tr,
                   errorStyle: const TextStyle(height: 0.7),
                   prefixIcon: const Icon(CupertinoIcons.mail),
-                  floatingLabelBehavior: FloatingLabelBehavior.auto,
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
               ),
             ],
@@ -136,7 +142,11 @@ class EditUser extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32),
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+          left: 16,
+          right: 16,
+        ),
         child: Obx(() {
           return MyButton(
             label: 'Save',

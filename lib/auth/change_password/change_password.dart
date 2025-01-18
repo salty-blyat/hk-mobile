@@ -15,10 +15,11 @@ class ChangePassword extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text('Change Password'.tr),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: ReactiveForm(
           formGroup: controller.formGroup,
@@ -107,7 +108,11 @@ class ChangePassword extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32),
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+          left: 16,
+          right: 16,
+        ),
         child: Obx(() {
           return MyButton(
             label: 'Save',
