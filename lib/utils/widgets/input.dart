@@ -52,6 +52,8 @@ class MyFormField extends StatelessWidget {
           fontWeight: FontWeight.normal,
           height: 0,
         ),
+        filled: disabled,
+        fillColor: disabled ? Colors.grey[500] : null,
         prefixIconColor: disabled ? Colors.grey[500] : null,
         suffixIcon: password
             ? IconButton(

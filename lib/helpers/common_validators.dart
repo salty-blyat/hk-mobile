@@ -5,9 +5,11 @@ typedef Validator<T> = Map<String, dynamic>? Function(
     AbstractControl<T> control);
 
 class CommonValidators {
-  static String? required(String field) {
+  static Map<String, String>? required(String field) {
     if (field.isEmpty) {
-      return 'Input is required!'.tr;
+      return {
+        'required': 'Input is required!'.tr,
+      };
     }
     return null;
   }

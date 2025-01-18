@@ -108,7 +108,7 @@
   "Pending": "រង់ចាំអនុម័ត",
   "PENDING": "រង់ចាំអនុម័ត",
   "Phone Number": "លេខទូរស័ព្ទ",
-  "Phone number is not valid!" : "លេខទូរសព្ទមិនត្រឹមត្រូវ!",
+  "Phone number is not valid!": "លេខទូរសព្ទមិនត្រឹមត្រូវ!",
   "Please check your internet": "សូមពិនិត្យមើលអ៉ីនធឺណិតរបស់អ្នក",
   "Position": "តួនាទី",
   "Present": "វត្តមាន",
@@ -250,7 +250,7 @@
   "Forget password": "ភ្លេចលេខសម្ងាត់",
   "Please enter your email or phone for the verification process": "សូមបញ្ចូលអ៊ីមែល ឬទូរសព្ទរបស់អ្នកសម្រាប់ដំណើរការផ្ទៀងផ្ទាត់",
   "Email or Phone": "អ៊ីមែល ឬលេខទូរស័ព្ទ",
-  "Email is not valid!" : "អុីមែលមិនត្រឹមត្រូវ!",
+  "Email is not valid!": "អុីមែលមិនត្រឹមត្រូវ!",
   "Verification": "ការផ្ទៀងផ្ទាត់",
   "Please enter the verification code we send to your phone or email": "សូមបញ្ចូលលេខកូដផ្ទៀងផ្ទាត់ដែលយើងផ្ញើទៅទូរស័ព្ទ ឬអ៊ីមែលរបស់អ្នក",
   "Verify": "ផ្ទៀងផ្ទាត់",
@@ -341,5 +341,6 @@
   "yesterday": "ម្សិលមិញ",
   "You already requested at {date}": "អ្នកបានស្នើសុំរួចរាល់នៅថ្ងៃ {{date}}",
   "day": "ច្បាប់ឈប់ (ថ្ងៃ)",
-  "hour": "ច្បាប់ឈប់ (ម៉ោង)"
+  "hour": "ច្បាប់ឈប់ (ម៉ោង)",
+  "mustMatch": "ពាក្យសម្ងាត់និងបញ្ជាក់មិនត្រូវគ្នា"
 }
