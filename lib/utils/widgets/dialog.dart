@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:staff_view_ui/pages/app-info/app_info_operation_screen.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
 
@@ -100,5 +101,18 @@ class Modal {
       barrierDismissible: false,
       name: 'loadingDialog',
     );
+  }
+
+  static showSettingDialog() {
+    Get.dialog(Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: SizedBox(
+        height: 370,
+        width: double.infinity,
+        child: AppInfoOperationScreen(),
+      ),
+    ));
   }
 }

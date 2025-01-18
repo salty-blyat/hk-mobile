@@ -7,7 +7,7 @@ class Storage {
     storage.write(key, value);
   }
 
-  String read(String key) {
+  String? read(String key) {
     return storage.read(key);
   }
 

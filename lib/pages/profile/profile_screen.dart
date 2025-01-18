@@ -7,7 +7,7 @@ import 'package:staff_view_ui/utils/khmer_date_formater.dart';
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({super.key});
-  final ProfileController controller = Get.put(ProfileController());
+  final controller = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {

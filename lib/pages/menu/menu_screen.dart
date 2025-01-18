@@ -7,7 +7,7 @@ import 'package:staff_view_ui/utils/drawer.dart';
 
 class MenuScreen extends StatelessWidget {
   MenuScreen({super.key});
-  final ProfileController profileController = Get.put(ProfileController());
+  final profileController = Get.create(() => ProfileController());
 
   @override
   Widget build(BuildContext context) {

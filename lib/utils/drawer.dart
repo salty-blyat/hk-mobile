@@ -9,11 +9,13 @@ import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/utils/theme.dart';
+import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
 class DrawerWidget extends StatelessWidget {
   DrawerWidget({super.key});
   final DrawerController drawerController = Get.put(DrawerController());
   final AuthController authController = Get.put(AuthController());
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -152,8 +154,7 @@ class DrawerWidget extends StatelessWidget {
                                 children: [
                                   IconButton(
                                     iconSize: 16,
-                                    onPressed: () {
-                                    },
+                                    onPressed: () {},
                                     icon: const Icon(
                                       CupertinoIcons.clear,
                                       color: Colors.transparent,
@@ -218,7 +219,8 @@ class DrawerWidget extends StatelessWidget {
                                         // Handle language selection
                                         if (language['key'] != null) {
                                           var box = Storage();
-                                          box.write(Const.authorized['Lang']!, language['code']);
+                                          box.write(Const.authorized['Lang']!,
+                                              language['code']);
                                           Get.updateLocale(language['key']);
                                           Get.back();
                                         }
@@ -268,10 +270,15 @@ class DrawerWidget extends StatelessWidget {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text('${'Version'.tr} ${Const.version} (${Const.date})',
-                style: const TextStyle(fontSize: 12)),
+          GestureDetector(
+            onDoubleTap: () {
+              Modal.showSettingDialog();
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text('${'Version'.tr} ${Const.version} (${Const.date})',
+                  style: const TextStyle(fontSize: 12)),
+            ),
           ),
         ],
       ),

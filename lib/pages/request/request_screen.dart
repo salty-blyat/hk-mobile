@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
@@ -26,7 +27,7 @@ class RequestApproveScreen extends StatelessWidget {
             onPressed: () {
               Get.to(() => RequestHistoryScreen());
             },
-            icon: Icon(Icons.history),
+            icon: const Icon(Icons.history),
           ),
         ],
       ),
@@ -51,6 +52,20 @@ class RequestApproveScreen extends StatelessWidget {
         slivers: groupedLeaves.entries.map((entry) {
           final month = entry.key;
           final leaves = entry.value;
+          if (leaves.isEmpty) {
+            return SliverToBoxAdapter(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(CupertinoIcons.clear_circled, size: 40),
+                    const SizedBox(height: 10),
+                    Text('Not found'.tr),
+                  ],
+                ),
+              ),
+            );
+          }
 
           return SliverStickyHeader(
             header: _buildStickyHeader(month),

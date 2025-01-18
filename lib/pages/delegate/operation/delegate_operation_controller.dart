@@ -91,7 +91,7 @@ class DelegatepOperationController extends GetxController {
       var model = {
         'fromDate': formGroup.control('fromDate').value.toIso8601String(),
         'toDate': formGroup.control('toDate').value.toIso8601String(),
-        'staffId': int.parse(storage.read(Const.staffId)),
+        'staffId': int.parse(storage.read(Const.staffId) ?? '0'),
       };
 
       if (id.value == 0) {

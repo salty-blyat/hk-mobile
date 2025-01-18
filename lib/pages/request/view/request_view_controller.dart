@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
@@ -11,6 +13,7 @@ import 'package:staff_view_ui/pages/request/operation/request_operation_controll
 import 'package:staff_view_ui/pages/request/operation/request_reject.dart';
 import 'package:staff_view_ui/pages/request/request_service.dart';
 import 'package:staff_view_ui/pages/request/operation/request_undo.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 enum RequestType {
   leave(1),
@@ -94,7 +97,7 @@ class RequestViewController extends GetxController {
     showUndo.value = ((model.value.status == LeaveStatus.approved.value ||
             model.value.status == LeaveStatus.rejected.value) &&
         model.value.requestLogs![0].approverId ==
-            int.parse(storage.read(Const.staffId)) &&
+            int.parse(storage.read(Const.staffId) ?? '0') &&
         !oneDayPassed);
   }
 
@@ -153,6 +156,41 @@ class RequestViewController extends GetxController {
         );
       },
     );
+  }
+
+  void showAttachments() async {
+    final controller = WebViewController();
+    var url = requestData.value?['attachments'].first['url'];
+
+    controller.loadRequest(Uri.parse(url));
+
+    Get.dialog(Dialog.fullscreen(
+      backgroundColor: Colors.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Row(
+            children: [
+              const SizedBox(width: 16),
+              Text('Attachment'.tr, style: const TextStyle(fontSize: 16)),
+              const Spacer(),
+              IconButton(
+                onPressed: () {
+                  Get.back();
+                },
+                icon: const Icon(CupertinoIcons.clear),
+              ),
+            ],
+          ),
+          Expanded(
+              child: Const.isImage(url)
+                  ? WebViewWidget(controller: controller)
+                  : PDFView(
+                      filePath: url,
+                    )),
+        ],
+      ),
+    ));
   }
 
   @override
