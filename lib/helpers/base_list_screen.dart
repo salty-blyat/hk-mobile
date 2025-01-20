@@ -78,7 +78,7 @@ class BaseList<T> extends StatelessWidget {
   Widget buildHeaderWidget() {
     return Container(
       width: double.infinity,
-      height: 35,
+      // height: 35,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(4),

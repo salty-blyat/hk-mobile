@@ -20,8 +20,8 @@ class RequestApproveController extends GetxController {
 
   @override
   void onInit() {
-    super.onInit();
     search();
+    super.onInit();
   }
 
   Future<void> onLoadMore() async {
