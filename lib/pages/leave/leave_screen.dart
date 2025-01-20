@@ -33,6 +33,9 @@ class LeaveScreen extends BaseList<Leave> {
   bool get canLoadMore => controller.canLoadMore.value;
 
   @override
+  RxList<Leave> get items => controller.lists;
+
+  @override
   Future<void> onLoadMore() async {
     await controller.onLoadMore();
   }
@@ -141,7 +144,4 @@ class LeaveScreen extends BaseList<Leave> {
       ),
     );
   }
-
-  @override
-  RxList<Leave> get items => controller.lists;
 }

@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:staff_view_ui/utils/widgets/no_data.dart';
 
 class BaseList<T> extends StatelessWidget {
-  const BaseList({super.key});
+  BaseList({super.key});
   String get title => '';
   bool get isLoading => false;
   bool get isLoadingMore => false;
@@ -18,6 +18,7 @@ class BaseList<T> extends StatelessWidget {
   Map<String, List<T>> groupItems(List<T> items) => {};
   Widget buildItem(T item) => const SizedBox.shrink();
   RxList<T> get items => RxList.empty();
+  List<Widget> actions = [];
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +28,7 @@ class BaseList<T> extends StatelessWidget {
           title.tr,
           style: context.textTheme.titleLarge!.copyWith(color: Colors.white),
         ),
+        actions: actions,
       ),
       floatingActionButton: fabButton
           ? FloatingActionButton(

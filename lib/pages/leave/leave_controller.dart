@@ -19,7 +19,6 @@ enum LeaveStatus {
 }
 
 class LeaveController extends GetxController {
-  final scrollController = ScrollController();
   final loading = false.obs;
   final isLoadingMore = false.obs;
   final leaveService = LeaveService();
