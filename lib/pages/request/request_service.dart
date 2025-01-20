@@ -4,8 +4,8 @@ import 'package:staff_view_ui/models/request_model.dart';
 
 class RequestApproveService extends BaseService<RequestModel> {
   RequestApproveService() : super('request');
-  Future<Response<RequestModel>> findByReqType(int id, int reqType) async {
-    return await dio.get<RequestModel>('$apiUrl/requesttype/$id/$reqType');
+  Future<Response<dynamic>> findByReqType(int id, int reqType) async {
+    return await dio.get<dynamic>('$apiUrl/requesttype/$id/$reqType');
   }
 
   Future<Response<bool>> canDoAction(int id) async {

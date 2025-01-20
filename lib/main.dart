@@ -17,9 +17,12 @@ import 'package:staff_view_ui/pages/document/document_screen.dart';
 import 'package:staff_view_ui/pages/exception/exception_screen.dart';
 import 'package:staff_view_ui/pages/leave/leave_screen.dart';
 import 'package:staff_view_ui/pages/menu/menu_screen.dart';
+import 'package:staff_view_ui/pages/notification/notification_screen.dart';
 import 'package:staff_view_ui/pages/overtime/overtime_screen.dart';
 import 'package:staff_view_ui/pages/privacy_policy/privacy_policy_screen.dart';
+import 'package:staff_view_ui/pages/request/history/request_history_screen.dart';
 import 'package:staff_view_ui/pages/request/request_screen.dart';
+import 'package:staff_view_ui/pages/request/view/request_view_screen.dart';
 import 'package:staff_view_ui/pages/scan/scan-check/scan_check_screen.dart';
 import 'package:staff_view_ui/pages/scan/scan_screen.dart';
 import 'package:staff_view_ui/pages/working/working_screen.dart';
@@ -111,6 +114,9 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/change-password', page: () => ChangePassword()),
         GetPage(name: '/request-approval', page: () => RequestApproveScreen()),
         GetPage(name: '/edit-user', page: () => EditUser()),
+        GetPage(name: '/request-history', page: () => RequestHistoryScreen()),
+        GetPage(name: '/request-view', page: () => RequestViewScreen()),
+        GetPage(name: '/notification', page: () => NotificationScreen()),
       ],
       builder: (context, child) {
         return MediaQuery(

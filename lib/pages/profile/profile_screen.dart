@@ -11,6 +11,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    controller.getUser();
     const placeHolder = '-----------------------';
     return Scaffold(
       appBar: AppBar(

@@ -1,111 +1,101 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
+import 'package:staff_view_ui/helpers/base_list_screen.dart';
 import 'package:staff_view_ui/models/request_model.dart';
 import 'package:staff_view_ui/pages/request/history/request_history_controller.dart';
-import 'package:staff_view_ui/pages/request/view/request_view_screen.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
 import 'package:staff_view_ui/utils/style.dart';
 import 'package:staff_view_ui/utils/widgets/calendar.dart';
 import 'package:staff_view_ui/utils/widgets/tag.dart';
+import 'package:staff_view_ui/utils/widgets/year_select.dart';
 
-class RequestHistoryScreen extends StatelessWidget {
+class RequestHistoryScreen extends BaseList<RequestModel> {
   RequestHistoryScreen({super.key});
 
   final RequestHistoryController controller =
       Get.put(RequestHistoryController());
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Request/Approve History'.tr),
-      ),
-      body: Obx(() {
-        if (controller.loading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        return _buildStickyLeaveList();
-      }),
-    );
+  String get title => 'Request/Approve History'.tr;
+
+  @override
+  bool get isLoading => controller.loading.value;
+
+  @override
+  bool get canLoadMore => controller.canLoadMore.value;
+
+  @override
+  bool get isLoadingMore => controller.isLoadingMore.value;
+
+  @override
+  bool get fabButton => false;
+
+  @override
+  Future<void> onLoadMore() async {
+    await controller.onLoadMore();
   }
 
-  Widget _buildStickyLeaveList() {
-    // Group the leave requests by month
-    final groupedLeaves = _groupLeavesByMonth(controller.lists);
+  @override
+  Future<void> onRefresh() async {
+    controller.queryParameters.value.pageIndex = 1;
+    await controller.refreshData();
+  }
 
-    return RefreshIndicator(
-      onRefresh: () async {
-        controller.search();
+  @override
+  Map<String, List<RequestModel>> groupItems(List<RequestModel> items) {
+    return items.fold<Map<String, List<RequestModel>>>({}, (grouped, request) {
+      final month = getMonth(request.requestedDate!);
+      grouped.putIfAbsent(month, () => []).add(request);
+      return grouped;
+    });
+  }
+
+  @override
+  Widget headerWidget() {
+    return YearSelect(
+      onYearSelected: (year) {
+        controller.year.value = year;
+        controller.lists.value = [];
+        onRefresh();
       },
-      child: CustomScrollView(
-        slivers: groupedLeaves.entries.map((entry) {
-          final month = entry.key;
-          final leaves = entry.value;
-
-          return SliverStickyHeader(
-            header: _buildStickyHeader(month),
-            sliver: SliverList.separated(
-              itemBuilder: (context, index) {
-                final leave = leaves[index];
-                return _buildLeaveItem(leave);
-              },
-              separatorBuilder: (context, index) => Container(
-                color: Colors.grey.shade300,
-                width: double.infinity,
-                height: 1,
-              ),
-              itemCount: leaves.length,
-            ),
-          );
-        }).toList(),
-      ),
     );
   }
 
-  Widget _buildStickyHeader(String month) {
-    return Container(
-      color: Colors.grey.shade200,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: Text(
-        month.tr,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLeaveItem(RequestModel leave) {
+  @override
+  Widget buildItem(RequestModel item) {
     return ListTile(
+      onTap: () => Get.toNamed('/request-view', arguments: {
+        'id': item.id,
+        'reqType': 0,
+      }),
       titleAlignment: ListTileTitleAlignment.center,
-      leading: Calendar(date: leave.requestedDate!),
+      leading: Calendar(date: item.requestedDate!),
       subtitle: Text(
-        leave.title!,
+        item.title!,
         overflow: TextOverflow.ellipsis,
-        style: const TextStyle(
-          fontSize: 12,
-          color: Colors.black,
-        ),
       ),
       title: Row(
         children: [
-          Text(
-            leave.staffNameKh!,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            leave.requestTypeName!.tr,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 16,
-              color: Get.theme.colorScheme.primary,
+          RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: item.staffNameKh ?? item.staffNameEn ?? '',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                    fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+                  ),
+                ),
+                TextSpan(
+                  text: '  ${item.requestTypeName!.tr}',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Get.theme.colorScheme.primary,
+                    fontFamilyFallback: const ['Gilroy', 'Kantumruy'],
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -115,32 +105,19 @@ class RequestHistoryScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            leave.requestNo!,
+            item.requestNo!,
             style: Get.textTheme.bodySmall!.copyWith(color: Colors.black),
           ),
           const SizedBox(height: 12),
           Tag(
-            color: Style.getStatusColor(leave.status!),
-            text: leave.statusNameKh ?? leave.statusName!.tr,
+            color: Style.getStatusColor(item.status ?? 0),
+            text: item.statusName!.tr,
           ),
         ],
       ),
-      onTap: () {
-        Get.to(() => RequestViewScreen(),
-            arguments: {'id': leave.id!, 'reqType': 0});
-      },
     );
   }
 
-  Map<String, List<RequestModel>> _groupLeavesByMonth(
-      List<RequestModel> leaves) {
-    final Map<String, List<RequestModel>> grouped = {};
-
-    for (var leave in leaves) {
-      final month = getMonth(leave.requestedDate!);
-      grouped.putIfAbsent(month, () => []).add(leave);
-    }
-
-    return grouped;
-  }
+  @override
+  RxList<RequestModel> get items => controller.lists;
 }

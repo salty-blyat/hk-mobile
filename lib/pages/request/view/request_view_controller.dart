@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/models/request_model.dart';
-import 'package:staff_view_ui/pages/leave/leave_screen.dart';
+import 'package:staff_view_ui/pages/leave/leave_controller.dart';
 import 'package:staff_view_ui/pages/request/operation/request_approve.dart';
 import 'package:staff_view_ui/pages/request/operation/request_operation_controller.dart';
 import 'package:staff_view_ui/pages/request/operation/request_reject.dart';
@@ -73,7 +73,17 @@ class RequestViewController extends GetxController {
     loading.value = true;
     final response = await service.findByReqType(id, reqType);
     if (response.statusCode == 200) {
-      model.value = response.data!;
+      model.value = RequestModel.fromJson(response.data!);
+      requestData.value = jsonDecode(model.value.requestData ?? '');
+      bool oneDayPassed = model.value.requestLogs![0].createdDate!
+          .isBefore(DateTime.now().subtract(const Duration(days: 1)));
+      showApprove.value = model.value.status == LeaveStatus.pending.value ||
+          model.value.status == LeaveStatus.processing.value;
+      showUndo.value = ((model.value.status == LeaveStatus.approved.value ||
+              model.value.status == LeaveStatus.rejected.value) &&
+          model.value.requestLogs![0].approverId ==
+              int.parse(storage.read(Const.staffId) ?? '0') &&
+          !oneDayPassed);
     }
     loading.value = false;
   }
@@ -86,19 +96,23 @@ class RequestViewController extends GetxController {
   }
 
   void findById(int id) async {
-    loading.value = true;
-    model.value = RequestModel.fromJson(await service.find(id));
-    requestData.value = jsonDecode(model.value.requestData ?? '');
-    loading.value = false;
-    bool oneDayPassed = model.value.requestLogs![0].createdDate!
-        .isBefore(DateTime.now().subtract(const Duration(days: 1)));
-    showApprove.value = model.value.status == LeaveStatus.pending.value ||
-        model.value.status == LeaveStatus.processing.value;
-    showUndo.value = ((model.value.status == LeaveStatus.approved.value ||
-            model.value.status == LeaveStatus.rejected.value) &&
-        model.value.requestLogs![0].approverId ==
-            int.parse(storage.read(Const.staffId) ?? '0') &&
-        !oneDayPassed);
+    try {
+      loading.value = true;
+      model.value = RequestModel.fromJson(await service.find(id));
+      requestData.value = jsonDecode(model.value.requestData ?? '');
+      loading.value = false;
+      bool oneDayPassed = model.value.requestLogs![0].createdDate!
+          .isBefore(DateTime.now().subtract(const Duration(days: 1)));
+      showApprove.value = model.value.status == LeaveStatus.pending.value ||
+          model.value.status == LeaveStatus.processing.value;
+      showUndo.value = ((model.value.status == LeaveStatus.approved.value ||
+              model.value.status == LeaveStatus.rejected.value) &&
+          model.value.requestLogs![0].approverId ==
+              int.parse(storage.read(Const.staffId) ?? '0') &&
+          !oneDayPassed);
+    } catch (e) {
+      loading.value = false;
+    }
   }
 
   bool isCurrentApprover() {

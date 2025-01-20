@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:staff_view_ui/pages/delegate/delegate_screen.dart';
-import 'package:staff_view_ui/pages/leave/leave_screen.dart';
+import 'package:staff_view_ui/pages/leave/leave_controller.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 
 class Style {

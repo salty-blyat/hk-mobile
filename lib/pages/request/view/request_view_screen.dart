@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/models/timeline_model.dart';
-import 'package:staff_view_ui/pages/leave/leave_screen.dart';
+import 'package:staff_view_ui/pages/leave/leave_controller.dart';
 import 'package:staff_view_ui/pages/request/view/request_view_controller.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
 import 'package:staff_view_ui/utils/khmer_date_formater.dart';

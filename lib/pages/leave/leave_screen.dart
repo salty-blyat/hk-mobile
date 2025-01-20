@@ -1,164 +1,83 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/const.dart';
+import 'package:staff_view_ui/helpers/base_list_screen.dart';
+import 'package:staff_view_ui/models/leave_model.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
 import 'package:staff_view_ui/pages/leave/operation/leave_operation_screen.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
 import 'package:staff_view_ui/utils/style.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/calendar.dart';
+import 'package:staff_view_ui/utils/widgets/custom_slide_button.dart';
 import 'package:staff_view_ui/utils/widgets/tag.dart';
 import 'package:staff_view_ui/utils/widgets/year_select.dart';
 
-enum LeaveStatus {
-  pending(74),
-  approved(75),
-  rejected(76),
-  processing(77),
-  removed(78);
-
-  final int value;
-  const LeaveStatus(this.value);
-}
-
-class LeaveScreen extends StatelessWidget {
+class LeaveScreen extends BaseList<Leave> {
   LeaveScreen({super.key});
 
   final LeaveController controller = Get.put(LeaveController());
 
   @override
-  Widget build(BuildContext context) {
+  String get title => 'Leave';
+
+  @override
+  bool get isLoading => controller.loading.value;
+
+  @override
+  bool get isLoadingMore => controller.isLoadingMore.value;
+
+  @override
+  bool get canLoadMore => controller.canLoadMore.value;
+
+  @override
+  Future<void> onLoadMore() async {
+    await controller.onLoadMore();
+  }
+
+  @override
+  void onFabPressed() {
+    Get.to(() => LeaveOperationScreen());
+  }
+
+  @override
+  Future<void> onRefresh() async {
+    controller.queryParameters.value.pageIndex = 1;
     controller.search();
-
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Get.to(() => LeaveOperationScreen()),
-        shape: const CircleBorder(),
-        child: const Icon(CupertinoIcons.add),
-      ),
-      appBar: AppBar(
-        title: Text(
-          'Leave'.tr,
-          style: context.textTheme.titleLarge!.copyWith(color: Colors.white),
-        ),
-      ),
-      body: Column(
-        children: [
-          _buildYearSelector(),
-          Expanded(
-            child: Obx(() {
-              if (controller.loading.value) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
-              if (controller.lists.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        CupertinoIcons.clear_circled,
-                        size: 40,
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        'Not found'.tr,
-                        style: context.textTheme.bodyLarge,
-                      ),
-                    ],
-                  ),
-                );
-              }
-
-              return _buildStickyLeaveList();
-            }),
-          ),
-        ],
-      ),
-    );
   }
 
-  Widget _buildYearSelector() {
-    return Container(
-      width: double.infinity,
-      height: 35,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      padding: const EdgeInsets.only(left: 16),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: YearSelect(
-          onYearSelected: (year) {
-            controller.year.value = year;
-            controller.search();
-          },
-        ),
-      ),
-    );
+  @override
+  Map<String, List<Leave>> groupItems(List<Leave> items) {
+    return items.fold<Map<String, List<Leave>>>({}, (grouped, leave) {
+      final month = getMonth(leave.fromDate!);
+      grouped.putIfAbsent(month, () => []).add(leave);
+      return grouped;
+    });
   }
 
-  Widget _buildStickyLeaveList() {
-    // Group the leave requests by month
-    final groupedLeaves = _groupLeavesByMonth(controller.lists);
-
-    return RefreshIndicator(
-      onRefresh: () async {
-        controller.search();
+  @override
+  Widget headerWidget() {
+    return YearSelect(
+      onYearSelected: (year) {
+        controller.year.value = year;
+        onRefresh();
       },
-      child: CustomScrollView(
-        slivers: groupedLeaves.entries.map((entry) {
-          final month = entry.key;
-          final leaves = entry.value;
-
-          return SliverStickyHeader(
-            header: _buildStickyHeader(month),
-            sliver: SliverList.separated(
-              itemBuilder: (context, index) {
-                final leave = leaves[index];
-                return _buildLeaveItem(leave);
-              },
-              separatorBuilder: (context, index) => Container(
-                color: Colors.grey.shade300,
-                width: double.infinity,
-                height: 1,
-              ),
-              itemCount: leaves.length,
-            ),
-          );
-        }).toList(),
-      ),
     );
   }
 
-  Widget _buildStickyHeader(String month) {
-    return Container(
-      color: Colors.grey.shade200,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: Text(
-        month.tr,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLeaveItem(leave) {
+  @override
+  Widget buildItem(Leave item) {
     return Slidable(
-      key: Key(leave.id.toString()),
-      enabled: leave.status == LeaveStatus.pending.value,
+      key: Key(item.id.toString()),
+      enabled: item.status == LeaveStatus.pending.value,
       endActionPane: ActionPane(
         motion: const ScrollMotion(),
         children: [
           CustomSlideButton(
             onPressed: () {
-              Get.to(() => LeaveOperationScreen(id: leave.id));
+              Get.to(() => LeaveOperationScreen(id: item.id ?? 0));
             },
             label: 'Edit',
             icon: Icons.edit_square,
@@ -166,7 +85,7 @@ class LeaveScreen extends StatelessWidget {
           ),
           CustomSlideButton(
             onPressed: () {
-              controller.delete(leave.id!);
+              controller.delete(item.id!);
             },
             label: 'Delete',
             icon: CupertinoIcons.delete_solid,
@@ -175,16 +94,20 @@ class LeaveScreen extends StatelessWidget {
         ],
       ),
       child: ListTile(
+        onTap: () => Get.toNamed('/request-view', arguments: {
+          'id': item.id,
+          'reqType': 1,
+        }),
         titleAlignment: ListTileTitleAlignment.center,
-        leading: Calendar(date: leave.fromDate!),
+        leading: Calendar(date: item.fromDate!),
         subtitle: Text(
-          leave.reason!,
+          item.reason!,
           overflow: TextOverflow.ellipsis,
         ),
         title: Row(
           children: [
             Text(
-              leave.leaveTypeName!,
+              item.leaveTypeName!,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 16,
@@ -194,9 +117,9 @@ class LeaveScreen extends StatelessWidget {
             const SizedBox(width: 10),
             Tag(
               color: Colors.black,
-              text: leave.totalDays! >= 1
-                  ? '${Const.numberFormat(leave.totalDays ?? 0)} ${'Day'.tr}'
-                  : '${Const.numberFormat(leave.totalHours ?? 0)} ${'Hour'.tr}',
+              text: item.totalDays! >= 1
+                  ? '${Const.numberFormat(item.totalDays ?? 0)} ${'Day'.tr}'
+                  : '${Const.numberFormat(item.totalHours ?? 0)} ${'Hour'.tr}',
             ),
           ],
         ),
@@ -205,13 +128,13 @@ class LeaveScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              leave.requestNo!,
+              item.requestNo!,
               style: Get.textTheme.bodySmall!.copyWith(color: Colors.black),
             ),
             const SizedBox(height: 12),
             Tag(
-              color: Style.getStatusColor(leave.status),
-              text: leave.statusNameKh!,
+              color: Style.getStatusColor(item.status ?? 0),
+              text: item.statusNameKh!,
             ),
           ],
         ),
@@ -219,65 +142,6 @@ class LeaveScreen extends StatelessWidget {
     );
   }
 
-  Map<String, List<dynamic>> _groupLeavesByMonth(List<dynamic> leaves) {
-    final Map<String, List<dynamic>> grouped = {};
-
-    for (var leave in leaves) {
-      final month = getMonth(leave.fromDate!);
-      grouped.putIfAbsent(month, () => []).add(leave);
-    }
-
-    return grouped;
-  }
-}
-
-class CustomSlideButton extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final Color color;
-  final VoidCallback onPressed;
-  const CustomSlideButton({
-    super.key,
-    required this.label,
-    required this.icon,
-    required this.color,
-    required this.onPressed,
-  });
-
   @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      flex: 1,
-      child: SizedBox.expand(
-        child: OutlinedButton(
-          style: OutlinedButton.styleFrom(
-            backgroundColor: color,
-            foregroundColor: Colors.white,
-            side: BorderSide.none,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(0),
-            ),
-          ),
-          onPressed: onPressed,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                color: Colors.white,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                label.tr,
-                style: Get.textTheme.bodySmall!.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  RxList<Leave> get items => controller.lists;
 }
