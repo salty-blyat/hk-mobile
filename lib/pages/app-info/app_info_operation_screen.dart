@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/const.dart';
+import 'package:staff_view_ui/helpers/version_server.dart';
 import 'package:staff_view_ui/pages/app-info/app_info_controller.dart';
 import 'package:staff_view_ui/utils/widgets/input.dart';
 
@@ -36,8 +37,14 @@ class AppInfoOperationScreen extends StatelessWidget {
                     children: [
                       Text('Version'.tr, style: const TextStyle(fontSize: 16)),
                       const SizedBox(width: 8),
-                      Text(': v${Const.version} (${Const.date})',
-                          style: const TextStyle(fontSize: 16)),
+                      FutureBuilder(
+                        future: AppVersion.getAppVersion(),
+                        builder: (context, snapshot) {
+                          return Text(
+                              ': v${snapshot.data ?? '...'} (${Const.date})',
+                              style: const TextStyle(fontSize: 16));
+                        },
+                      ),
                     ],
                   ),
                   const SizedBox(height: 24),

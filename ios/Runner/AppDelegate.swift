@@ -7,7 +7,26 @@ import UIKit
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    // Register plugins
     GeneratedPluginRegistrant.register(with: self)
+
+    // Setup MethodChannel for app version retrieval
+    let controller = window?.rootViewController as! FlutterViewController
+    let channel = FlutterMethodChannel(name: "app.version.channel", binaryMessenger: controller.binaryMessenger)
+
+    channel.setMethodCallHandler { (call, result) in
+      if call.method == "getAppVersion" {
+        // Retrieve app version from Info.plist
+        if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+          result(version)
+        } else {
+          result(FlutterError(code: "UNAVAILABLE", message: "Version not found", details: nil))
+        }
+      } else {
+        result(FlutterMethodNotImplemented)
+      }
+    }
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }

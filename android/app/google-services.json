@@ -7,6 +7,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:531484540732:android:72e81c46db2be63946e839",
+        "android_client_info": {
+          "package_name": "bz.oone.mmehr"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIT-Dgw8clZZTj9-GPaUbfn_c47Aq_8pQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:531484540732:android:c74bf8cffec5af7546e839",
         "android_client_info": {
           "package_name": "bz.oone.oonehrms"
@@ -29,6 +48,25 @@
         "mobilesdk_app_id": "1:531484540732:android:bea80df8389459a046e839",
         "android_client_info": {
           "package_name": "bz.sgx.hr.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIT-Dgw8clZZTj9-GPaUbfn_c47Aq_8pQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:531484540732:android:1a0350063b1ed72346e839",
+        "android_client_info": {
+          "package_name": "bz.sgx.pavr.app"
         }
       },
       "oauth_client": [],

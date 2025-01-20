@@ -108,7 +108,7 @@
   "Pending": "Pending",
   "PENDING": "PENDING",
   "Phone Number": "Phone Number",
-  "Phone number is not valid!" : "Phone number is not valid!",
+  "Phone number is not valid!": "Phone number is not valid!",
   "Please check your internet": "Please check your internet",
   "Position": "Position",
   "Present": "Present",
@@ -251,7 +251,7 @@
   "Forget password": "Forget password",
   "Please enter your email or phone for the verification process": "Please enter your email or phone for the verification process",
   "Email or Phone": "Email or Phone",
-  "Email is not valid!" : "Email is not valid!",
+  "Email is not valid!": "Email is not valid!",
   "Verification": "Verification",
   "Please enter the verification code we send to your phone or email": "Please enter the verification code we send to your phone or email",
   "Verify": "Verify",
@@ -260,7 +260,7 @@
   "New password": "New password",
   "Update Password": "Update Password",
   "Input is required!": "Input is required!",
-  "Password and confirm not match!":"Password and confirm not match!",
+  "Password and confirm not match!": "Password and confirm not match!",
   "Absent exception unit": "Absent exception unit",
   "Edit profile successfully": "Edit profile successfully",
   "Update Available": "Update Available",
@@ -322,5 +322,7 @@
   "yesterday": "yesterday",
   "You already requested at {date}": "You already requested at {{date}}",
   "day": "Leave (day)",
-  "hour": "Leave (hour)"
+  "hour": "Leave (hour)",
+  "NewVersion": "New version",
+  "is available in": "is available in"
 }

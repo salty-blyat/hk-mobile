@@ -11,6 +11,7 @@ import 'package:staff_view_ui/utils/style.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/tag.dart';
 import 'package:timelines/timelines.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RequestViewScreen extends StatelessWidget {
   final RequestViewController controller = Get.put(RequestViewController());
@@ -424,8 +425,19 @@ class RequestViewScreen extends StatelessWidget {
         if (controller.requestData.value?['attachments'].isNotEmpty)
           GestureDetector(
             child: _buildInfo(CupertinoIcons.doc, 'Attachment'.tr),
-            onTap: () {
-              controller.showAttachments();
+            onTap: () async {
+              final Uri uri = Uri.parse(
+                  controller.requestData.value?['attachments'][0]['url'] ?? '');
+
+              if (await canLaunchUrl(uri)) {
+                await launchUrl(
+                  uri,
+                  mode: LaunchMode
+                      .externalApplication, // Use external browser if in-app fails
+                );
+              } else {
+                throw 'Could not launch $uri';
+              }
             },
           ),
       ],

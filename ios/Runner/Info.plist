@@ -60,5 +60,15 @@
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>sms</string>
+		<string>tel</string>
+	</array>
+	<key>CFBundleShortVersionString</key>
+	<string>3.2</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+
 </dict>
 </plist>

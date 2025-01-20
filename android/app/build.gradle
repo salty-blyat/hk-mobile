@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "bz.sgx.hr.app"
+    namespace = "bz.sgx.pavr.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -21,11 +21,11 @@ android {
     }
 
     defaultConfig {
-        applicationId = "bz.sgx.hr.app"
+        applicationId = "bz.sgx.pavr.app"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        versionCode = 1
+        versionName = "1.9"
         minSdkVersion flutter.minSdkVersion
     }
 

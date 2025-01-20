@@ -1,16 +1,18 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:staff_view_ui/helpers/version_server.dart';
 import 'package:staff_view_ui/pages/menu/menu_controller.dart';
 import 'package:staff_view_ui/pages/profile/profile_controller.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/drawer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MenuScreen extends StatelessWidget {
   MenuScreen({super.key});
   final profileController = Get.put(ProfileController());
   final menuController = Get.put(MenusController());
-
   @override
   Widget build(BuildContext context) {
     var menuItems = menuController.menuItems;
@@ -134,6 +136,82 @@ class MenuScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  @pragma('vm:entry-point')
+  static Route<void> modalBuilder(BuildContext context, Object? arguments) {
+    final controller = Get.put(MenusController());
+    return CupertinoModalPopupRoute<void>(
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return CupertinoActionSheet(
+          title: Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Text('Update Available'.tr,
+                style: const TextStyle(
+                    fontFamilyFallback: ['Gilroy', 'Kantumruy'], fontSize: 16)),
+          ),
+          message: FutureBuilder<String?>(
+            future: AppVersion.getAppVersion(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError || snapshot.data == null) {
+                return const Text('Error retrieving version');
+              }
+              switch (defaultTargetPlatform) {
+                case TargetPlatform.android:
+                  return Obx(
+                    () => Text(
+                      '${'NewVersion'.tr} ${controller.androidVersion.value} ${'is available in'.tr} Play Store${'.'.tr}',
+                      style: const TextStyle(
+                        fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+                      ),
+                    ),
+                  );
+                case TargetPlatform.iOS:
+                  return Obx(
+                    () => Text(
+                      '${'NewVersion'.tr} ${controller.iosVersion.value} ${'is available in'.tr} App Store${'.'.tr}',
+                      style: const TextStyle(
+                        fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+                      ),
+                    ),
+                  );
+                default:
+                  return Text('${'New Version'.tr}: ${snapshot.data}');
+              }
+            },
+          ),
+          actions: <CupertinoActionSheetAction>[
+            CupertinoActionSheetAction(
+              child: Text('Later'.tr,
+                  style: const TextStyle(
+                      fontFamilyFallback: ['Gilroy', 'Kantumruy'])),
+              onPressed: () {
+                Get.back();
+              },
+            ),
+            CupertinoActionSheetAction(
+              child: Text('Update Now'.tr,
+                  style: const TextStyle(
+                      fontFamilyFallback: ['Gilroy', 'Kantumruy'])),
+              onPressed: () {
+                switch (defaultTargetPlatform) {
+                  case TargetPlatform.android:
+                    launchUrl(Uri.parse(controller.androidLink.value));
+                  case TargetPlatform.iOS:
+                    launchUrl(Uri.parse(controller.iosLink.value));
+                  default:
+                    launchUrl(Uri.parse(controller.androidLink.value));
+                }
+                Get.back();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

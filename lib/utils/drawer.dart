@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:staff_view_ui/auth/auth_controller.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
+import 'package:staff_view_ui/helpers/version_server.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/utils/theme.dart';
@@ -276,8 +277,14 @@ class DrawerWidget extends StatelessWidget {
             },
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Text('${'Version'.tr} ${Const.version} (${Const.date})',
-                  style: const TextStyle(fontSize: 12)),
+              child: FutureBuilder(
+                future: AppVersion.getAppVersion(),
+                builder: (context, snapshot) {
+                  return Text(
+                      '${'Version'.tr} ${snapshot.data ?? '...'} (${Const.date})',
+                      style: const TextStyle(fontSize: 12));
+                },
+              ),
             ),
           ),
         ],

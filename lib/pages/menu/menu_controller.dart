@@ -1,10 +1,22 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:staff_view_ui/const.dart';
+import 'package:staff_view_ui/helpers/version_server.dart';
+import 'package:staff_view_ui/models/setting_model.dart';
+import 'package:staff_view_ui/pages/menu/menu_screen.dart';
 import 'package:staff_view_ui/pages/menu/menu_service.dart';
 
 class MenusController extends GetxController {
   final menuService = MenuService();
   var totalRequest = 0.obs;
+  var setting = <SettingModel>[].obs;
+  var iosLink = ''.obs;
+  var androidLink = ''.obs;
+  var iosVersion = '...'.obs;
+  var androidVersion = '...'.obs;
   var menuItems = [
     {
       'title': 'My Profile',
@@ -87,5 +99,55 @@ class MenusController extends GetxController {
             (element) => element['route'] == '/request-approval')['badge'] =
         totalRequest.value;
     menuItems.refresh();
+    androidLink.value = (await menuService
+                .getSettingPrivate(Const.SETTING_KEY()['AppAndroidUrl'] ?? ''))
+            .value ??
+        '';
+    iosLink.value = (await menuService
+                .getSettingPrivate(Const.SETTING_KEY()['AppIosUrl'] ?? ''))
+            .value ??
+        '';
+    iosVersion.value = (await menuService
+                .getSettingPrivate(Const.SETTING_KEY()['AppIosVersion'] ?? ''))
+            .value ??
+        '';
+    androidVersion.value = (await menuService.getSettingPrivate(
+                Const.SETTING_KEY()['AppAndroidVersion'] ?? ''))
+            .value ??
+        '';
+    getSetting();
+  }
+
+  Future<void> getSetting() async {
+    final setting = await menuService.getSetting();
+    for (var element in setting) {
+      this.setting.add(element);
+    }
+  }
+
+  @override
+  void onReady() async {
+    var version = await AppVersion.getAppVersion();
+    super.onReady();
+    if (Platform.isAndroid) {
+      androidVersion.listen((value) {
+        if (value != '...' &&
+            double.parse(value) > double.parse(version ?? '0')) {
+          Navigator.of(Get.context!).restorablePush(
+            MenuScreen.modalBuilder,
+          );
+        }
+      });
+    }
+    if (Platform.isIOS) {
+      iosVersion.listen((value) {
+        if (value != '...' &&
+            double.parse(value) > double.parse(version ?? '0')) {
+          Navigator.of(Get.context!).restorablePush(
+            MenuScreen.modalBuilder,
+          );
+        }
+      });
+    }
   }
 }

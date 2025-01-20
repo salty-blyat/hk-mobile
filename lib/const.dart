@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 
 class Const {
   static const String version = '1.9';
-  static const String date = '16-01-2025';
+  static const String date = '20-01-2025';
   static const String staffId = "StaffId";
   static String numberFormat(double value) {
     return NumberFormat('###.##').format(value);
@@ -52,4 +52,41 @@ class Const {
 
     return imageExtensions.any((extension) => lowerUrl.endsWith(extension));
   }
+
+  static Map<String, String> SETTING_KEY() => {
+        'StaffAutoId': 'StaffAutoId',
+        'StaffLeaveAutoId': 'StaffLeaveAutoId',
+        'OvertimeAutoId': 'OvertimeAutoId',
+        'StaffExceptionAutoId': 'StaffExceptionAutoId',
+        'PayrollRequestAutoId': 'PayrollRequestAutoId',
+        'LoanAutoId': 'LoanAutoId',
+        'CurrencyId': 'CurrencyId',
+        'CompanyName': 'CompanyName',
+        'CompanyNameKh': 'CompanyNameKh',
+        'CompanyAddress': 'CompanyAddress',
+        'CompanyAddressKh': 'CompanyAddressKh',
+        'CompanyPhone': 'CompanyPhone',
+        'CompanyLogo': 'CompanyLogo',
+        'CompanyEmail': 'CompanyEmail',
+        'CompanyWebsite': 'CompanyWebsite',
+        'LeaveAutoApprove': 'LeaveAutoApprove',
+        'ExceptionAutoApprove': 'ExceptionAutoApprove',
+        'OvertimeRequestAutoApprove': 'OvertimeRequestAutoApprove',
+        'PayrollRequestAutoApprove': 'PayrollRequestAutoApprove',
+        'LoanAutoApprove': 'LoanAutoApprove',
+        'MissionAutoId': 'MissionAutoId',
+        'LeaveVisibility': 'LeaveVisibility',
+        'OvertimeVisibility': 'OvertimeVisibility',
+        'ExceptionVisibility': 'ExceptionVisibility',
+        'ApproveVisibility': 'ApproveVisibility',
+        'GeoTrackingPeriod': 'GeoTrackingPeriod',
+        'TrackingDistant': 'TrackingDistant',
+        'SelfApprove': 'SelfApprove',
+        'LogoutVisibility': 'LogoutVisibility',
+        'AbsentExceptionVisibility': 'AbsentExceptionVisibility',
+        'AppAndroidVersion': 'AppAndroidVersion',
+        'AppIosVersion': 'AppIosVersion',
+        'AppAndroidUrl': 'AppAndroidUrl',
+        'AppIosUrl': 'AppIosUrl'
+      };
 }

@@ -182,7 +182,7 @@
   "Last 6 months": "៦ខែចុងក្រោយ",
   "Last 1 year": "១ឆ្នាំចុងក្រោយ",
   "Last 2 years": "២ឆ្នាំចុងក្រោយ",
-  "Version": "កំណែ",
+  "Version": "ជំនាន់",
   "Document": "ឯកសារ",
   "Setting": "ការកំណត់",
   "Attendance record": "កត់ត្រាវត្តមាន",
@@ -263,7 +263,7 @@
   "Absent exception unit": "ឯកតាស្នើសុំប្រជុំ",
   "Edit profile successfully": "កែសម្រួលអ្នកប្រើប្រាស់ដោយជោគជ័យ",
   "Update Available": "មានការអាប់ដេត",
-  "A new version is available.Please update to continue.": "មានកំណែថ្មី។ សូមធ្វើបច្ចុប្បន្នភាពដើម្បីបន្ត។",
+  "A new version is available.Please update to continue.": "មានជំនាន់ថ្មី។ សូមធ្វើបច្ចុប្បន្នភាពដើម្បីបន្ត។",
   "Update Now": "ធ្វើបច្ចុប្បន្នភាពឥឡូវនេះ",
   "Do not show again": "កុំបង្ហាញម្តងទៀត",
   "Cannot find staff user": "រកមិនឃើញអ្នកប្រើប្រាស់ {{id}}",
@@ -342,5 +342,9 @@
   "You already requested at {date}": "អ្នកបានស្នើសុំរួចរាល់នៅថ្ងៃ {{date}}",
   "day": "ច្បាប់ឈប់ (ថ្ងៃ)",
   "hour": "ច្បាប់ឈប់ (ម៉ោង)",
-  "mustMatch": "ពាក្យសម្ងាត់និងបញ្ជាក់មិនត្រូវគ្នា"
+  "mustMatch": "ពាក្យសម្ងាត់និងបញ្ជាក់មិនត្រូវគ្នា",
+  "NewVersion": "ជំនាន់ថ្មី",
+  "Later": "ពេលក្រោយ",
+  "is available in": "មាននៅក្នុង",
+  ".": "។"
 }
