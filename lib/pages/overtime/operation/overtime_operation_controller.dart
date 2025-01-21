@@ -120,7 +120,7 @@ class OvertimeOperationController extends GetxController {
         hour: overtime.toTime!.toLocal().hour,
         minute: overtime.toTime!.toLocal().minute,
       ),
-      'overtimeHour': Const.numberFormat(overtime.overtimeHour!),
+      'overtimeHour': overtime.overtimeHour!,
       'overtimeTypeId': overtime.overtimeTypeId,
       'note': overtime.note,
       'status': overtime.status,
@@ -210,9 +210,8 @@ class OvertimeOperationController extends GetxController {
       final totalHours = duration >= 0 ? duration : 24 + duration;
 
       // Update the overtimeHour field
-      formGroup.control('overtimeHour').value = totalHours;
-    } else {
-      formGroup.control('overtimeHour').value = 0; // Reset if times are invalid
+      formGroup.control('overtimeHour').value =
+          double.parse(totalHours.toStringAsFixed(2));
     }
   }
 

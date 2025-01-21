@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/models/timeline_model.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
@@ -445,8 +446,69 @@ class RequestViewScreen extends StatelessWidget {
   }
 
   Widget _buildOtInfo() {
-    return const Column(
-      children: [],
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildInfo(
+              CupertinoIcons.bookmark,
+              controller.requestData.value?['overtimeTypeName'] ?? '',
+            ),
+            Tag(
+              text: controller.model.value.statusNameKh ?? '',
+              color: Style.getStatusColor(controller.model.value.status ?? 0),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            _buildInfo(
+              CupertinoIcons.calendar,
+              convertToKhmerDate(
+                DateTime.parse(controller.requestData.value?['date']),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            _buildInfo(
+              CupertinoIcons.clock,
+              '${Const.numberFormat(controller.requestData.value?['overtimeHour'])} ${'Hour'.tr}',
+            ),
+            const SizedBox(width: 8),
+            Text(
+              '${DateFormat('hh:mma').format(DateTime.parse(controller.requestData.value?['fromTime']))} - ${DateFormat('hh:mma').format(DateTime.parse(controller.requestData.value?['toTime']))}',
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        if (controller.requestData.value?['note'] != null) ...[
+          _buildInfo(CupertinoIcons.doc_plaintext,
+              controller.requestData.value?['note'] ?? ''),
+          const SizedBox(height: 8),
+        ],
+        if (controller.requestData.value?['attachments'].isNotEmpty)
+          GestureDetector(
+            child: _buildInfo(CupertinoIcons.doc, 'Attachment'.tr),
+            onTap: () async {
+              final Uri uri = Uri.parse(
+                  controller.requestData.value?['attachments'][0]['url'] ?? '');
+
+              if (await canLaunchUrl(uri)) {
+                await launchUrl(
+                  uri,
+                  mode: LaunchMode.externalApplication,
+                );
+              } else {
+                throw 'Could not launch $uri';
+              }
+            },
+          ),
+      ],
     );
   }
 

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -122,30 +120,6 @@ class OvertimeOperationScreen extends StatelessWidget {
 
   Widget _buildOvertimeTypeButtons(BuildContext context) {
     return Obx(() {
-      if (overtimeTypeController.isLoading.value) {
-        return Skeletonizer(
-          child: SizedBox(
-            height: 45,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 10,
-              itemBuilder: (context, index) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                      side: const BorderSide(color: Colors.black),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
-                      )),
-                  child: const Text('Overtime'),
-                ),
-              ),
-            ),
-          ),
-        );
-      }
-
       if (overtimeTypeController.lists.isEmpty) {
         return const SizedBox.shrink();
       }
@@ -163,7 +137,6 @@ class OvertimeOperationScreen extends StatelessWidget {
               child: Obx(() {
                 final isSelected =
                     controller.overtimeType.value == overtimeType.id;
-
                 return ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isSelected
