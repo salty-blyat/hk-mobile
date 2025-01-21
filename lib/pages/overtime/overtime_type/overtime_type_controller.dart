@@ -5,7 +5,7 @@ import 'package:staff_view_ui/pages/overtime/overtime_type/overtime_type_service
 class OvertimeTypeController extends GetxController {
   final OvertimeTypeService overtimeTypeService = OvertimeTypeService();
 
-  final lists = <OvertimeType>[OvertimeType(id: 0, name: 'All')].obs;
+  final lists = <OvertimeType>[OvertimeType()].obs;
   final isLoading = false.obs;
 
   @override
@@ -18,7 +18,7 @@ class OvertimeTypeController extends GetxController {
     try {
       isLoading.value = true;
       final fetchedOvertimeType = await overtimeTypeService.getOvertimeType();
-      lists.addAll(fetchedOvertimeType);
+      lists.assignAll(fetchedOvertimeType);
     } catch (e) {
       isLoading.value = false;
     } finally {

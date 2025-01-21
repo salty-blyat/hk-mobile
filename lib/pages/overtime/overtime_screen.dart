@@ -1,13 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/base_list_screen.dart';
 import 'package:staff_view_ui/models/overtime_model.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
+import 'package:staff_view_ui/pages/overtime/operation/overtime_operation_screen.dart';
 import 'package:staff_view_ui/pages/overtime/overtime_controller.dart';
 import 'package:staff_view_ui/pages/overtime/overtime_type/overtime_type_controller.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
@@ -39,7 +40,12 @@ class OvertimeScreen extends BaseList<Overtime> {
   bool get canLoadMore => controller.canLoadMore.value;
 
   @override
-  bool get fabButton => false;
+  bool get fabButton => true;
+
+  @override
+  void onFabPressed() {
+    Get.to(() => OvertimeOperationScreen());
+  }
 
   @override
   RxList<Overtime> get items => controller.lists;
@@ -75,7 +81,7 @@ class OvertimeScreen extends BaseList<Overtime> {
             onRefresh();
           },
         ),
-        _buildOvertimeTypeButtons()
+        // _buildOvertimeTypeButtons()
       ],
     );
   }
@@ -90,7 +96,8 @@ class OvertimeScreen extends BaseList<Overtime> {
         children: [
           CustomSlideButton(
             onPressed: () {
-              // Get.to(() => LeaveOperationScreen(id: item.id ?? 0));
+              print(item.id);
+              Get.to(() => OvertimeOperationScreen(id: item.id ?? 0));
             },
             label: 'Edit',
             icon: Icons.edit_square,
@@ -114,7 +121,7 @@ class OvertimeScreen extends BaseList<Overtime> {
         titleAlignment: ListTileTitleAlignment.center,
         leading: Calendar(date: item.date!),
         subtitle: Text(
-          item.note!,
+          item.note ?? "",
           overflow: TextOverflow.ellipsis,
         ),
         title: Row(
@@ -130,7 +137,7 @@ class OvertimeScreen extends BaseList<Overtime> {
             const SizedBox(width: 10),
             Tag(
               color: Colors.black,
-              text: '${item.overtimeHour} ${'Hours'.tr}',
+              text: '${Const.numberFormat(item.overtimeHour!)} ${'Hour'.tr}',
             ),
           ],
         ),
