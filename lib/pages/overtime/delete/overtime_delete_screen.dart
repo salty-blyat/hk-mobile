@@ -3,19 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:staff_view_ui/pages/delegate/delete/delegate_delete_controller.dart';
+import 'package:staff_view_ui/const.dart';
+import 'package:staff_view_ui/pages/overtime/delete/overtime_delete_controller.dart';
+import 'package:staff_view_ui/utils/get_date_name.dart';
 import 'package:staff_view_ui/utils/khmer_date_formater.dart';
 
-class DelegateDeleteScreen extends StatelessWidget {
+class OvertimeDeleteScreen extends StatelessWidget {
   final int id;
-  final DelegateDeleteController controller =
-      Get.put(DelegateDeleteController());
+  final OvertimeDeleteController controller =
+      Get.put(OvertimeDeleteController());
 
-  DelegateDeleteScreen({super.key, required this.id});
+  OvertimeDeleteScreen({super.key, required this.id});
 
   @override
   Widget build(BuildContext context) {
-    controller.getDelegate(id);
+    controller.getOvertime(id);
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -35,23 +37,26 @@ class DelegateDeleteScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
       child: Column(
         children: [
+          _info('Request No'.tr, controller.overtime.value.requestNo!, context),
           _info(
-              'From Date'.tr,
-              convertToKhmerDate(
-                  controller.delegate.value.fromDate ?? DateTime.now()),
+              'Request date'.tr,
+              convertToKhmerDate(controller.overtime.value.requestedDate!),
+              context),
+          _info('Date'.tr, convertToKhmerDate(controller.overtime.value.date!),
               context),
           _info(
-              'To date'.tr,
-              convertToKhmerDate(
-                  controller.delegate.value.toDate ?? DateTime.now()),
+              'Time'.tr,
+              '${getTime(controller.overtime.value.fromTime!)} - ${getTime(controller.overtime.value.toTime!)}',
               context),
-          _info('Total (days)'.tr, '${controller.totalDays.value} ${'Day'.tr}',
+          _info(
+              'Total (hours)'.tr,
+              '${Const.numberFormat(controller.overtime.value.overtimeHour!)} ${'Hours'.tr}',
               context),
           const SizedBox(height: 8),
           ReactiveForm(
             formGroup: controller.formGroup,
             child: ReactiveTextField<String>(
-              formControlName: 'reason',
+              formControlName: 'note',
               maxLines: 3,
               decoration: InputDecoration(labelText: 'Note'.tr),
             ),
@@ -67,14 +72,16 @@ class DelegateDeleteScreen extends StatelessWidget {
       child: Skeletonizer(
         child: Column(
           children: [
-            _info('From date'.tr, '10-10-2000', context),
-            _info('To date'.tr, '10-10-2000', context),
-            _info('Total (days)'.tr, '10 days', context),
+            _info('Request No'.tr, '0000', context),
+            _info('Request date'.tr, '10-10-2000', context),
+            _info('Date'.tr, '10-10-2000', context),
+            _info('Time'.tr, '12:00-01:00', context),
+            _info('Total (hours)'.tr, '10 hours', context),
             const SizedBox(height: 8),
             ReactiveForm(
               formGroup: controller.formGroup,
               child: ReactiveTextField<String>(
-                formControlName: 'reason',
+                formControlName: 'note',
                 maxLines: 3,
                 decoration: InputDecoration(labelText: 'Note'.tr),
               ),
@@ -149,7 +156,7 @@ class _Header extends StatelessWidget {
 }
 
 class _Footer extends StatelessWidget {
-  final DelegateDeleteController controller;
+  final OvertimeDeleteController controller;
 
   const _Footer({required this.controller});
 
@@ -183,7 +190,7 @@ class _Footer extends StatelessWidget {
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
               onPressed: () {
-                controller.deleteDelegate();
+                controller.deleteOvertime();
               },
             ),
           ),

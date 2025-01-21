@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/base_list_screen.dart';
 import 'package:staff_view_ui/models/overtime_model.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
@@ -95,7 +95,6 @@ class OvertimeScreen extends BaseList<Overtime> {
         children: [
           CustomSlideButton(
             onPressed: () {
-              print(item.id);
               Get.to(() => OvertimeOperationScreen(id: item.id ?? 0));
             },
             label: 'Edit',
@@ -104,7 +103,7 @@ class OvertimeScreen extends BaseList<Overtime> {
           ),
           CustomSlideButton(
             onPressed: () {
-              // controller.delete(item.id!);
+              controller.delete(item.id!);
             },
             label: 'Delete',
             icon: CupertinoIcons.delete_solid,

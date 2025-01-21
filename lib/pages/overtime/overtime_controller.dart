@@ -1,8 +1,9 @@
 import 'dart:convert';
-
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
 import 'package:staff_view_ui/models/overtime_model.dart';
+import 'package:staff_view_ui/pages/overtime/delete/overtime_delete_screen.dart';
 import 'package:staff_view_ui/pages/overtime/overtime_service.dart';
 
 class OvertimeController extends GetxController {
@@ -72,5 +73,21 @@ class OvertimeController extends GetxController {
     } finally {
       loading.value = false;
     }
+  }
+
+  void delete(int id) {
+    Get.dialog(
+      Dialog(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: Container(
+            color: Colors.white,
+            width: double.infinity,
+            height: 380,
+            child: OvertimeDeleteScreen(id: id),
+          ),
+        ),
+      ),
+    );
   }
 }
