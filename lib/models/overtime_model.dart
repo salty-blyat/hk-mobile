@@ -13,13 +13,9 @@ class Overtime extends BaseModel {
   final DateTime? date;
   final DateTime? fromTime;
   final DateTime? toTime;
-  final int? overtimeHour;
-  @override
-  final String? note;
+  final double? overtimeHour;
   final List<Attachment>? attachments;
   final String? attachmentString;
-  @override
-  final int? id;
   final String? overtimeTypeName;
   final String? staffName;
   final String? staffCode;
@@ -31,6 +27,7 @@ class Overtime extends BaseModel {
   final int? departmentId;
   final String? departmentName;
   final int? status;
+  final int? approverId;
   final String? approvedBy;
   final DateTime? approvedDate;
   final DateTime? createdDate;
@@ -45,10 +42,8 @@ class Overtime extends BaseModel {
       this.fromTime,
       this.toTime,
       this.overtimeHour,
-      this.note,
       this.attachments,
       this.attachmentString,
-      this.id,
       this.overtimeTypeName,
       this.staffName,
       this.staffCode,
@@ -60,6 +55,7 @@ class Overtime extends BaseModel {
       this.departmentId,
       this.departmentName,
       this.status,
+      this.approverId,
       this.approvedBy,
       this.approvedDate,
       this.createdDate,

@@ -21,13 +21,11 @@ Overtime _$OvertimeFromJson(Map<String, dynamic> json) => Overtime(
       toTime: json['toTime'] == null
           ? null
           : DateTime.parse(json['toTime'] as String),
-      overtimeHour: (json['overtimeHour'] as num?)?.toInt(),
-      note: json['note'] as String?,
+      overtimeHour: (json['overtimeHour'] as num?)?.toDouble(),
       attachments: (json['attachments'] as List<dynamic>?)
           ?.map((e) => Attachment.fromJson(e as Map<String, dynamic>))
           .toList(),
       attachmentString: json['attachmentString'] as String?,
-      id: (json['id'] as num?)?.toInt(),
       overtimeTypeName: json['overtimeTypeName'] as String?,
       staffName: json['staffName'] as String?,
       staffCode: json['staffCode'] as String?,
@@ -39,6 +37,7 @@ Overtime _$OvertimeFromJson(Map<String, dynamic> json) => Overtime(
       departmentId: (json['departmentId'] as num?)?.toInt(),
       departmentName: json['departmentName'] as String?,
       status: (json['status'] as num?)?.toInt(),
+      approverId: (json['approverId'] as num?)?.toInt(),
       approvedBy: json['approvedBy'] as String?,
       approvedDate: json['approvedDate'] == null
           ? null
@@ -48,9 +47,13 @@ Overtime _$OvertimeFromJson(Map<String, dynamic> json) => Overtime(
           : DateTime.parse(json['createdDate'] as String),
       statusName: json['statusName'] as String?,
       statusNameKh: json['statusNameKh'] as String?,
-    );
+    )
+      ..id = (json['id'] as num?)?.toInt()
+      ..note = json['note'] as String?;
 
 Map<String, dynamic> _$OvertimeToJson(Overtime instance) => <String, dynamic>{
+      'id': instance.id,
+      'note': instance.note,
       'staffId': instance.staffId,
       'requestNo': instance.requestNo,
       'overtimeTypeId': instance.overtimeTypeId,
@@ -59,10 +62,8 @@ Map<String, dynamic> _$OvertimeToJson(Overtime instance) => <String, dynamic>{
       'fromTime': instance.fromTime?.toIso8601String(),
       'toTime': instance.toTime?.toIso8601String(),
       'overtimeHour': instance.overtimeHour,
-      'note': instance.note,
       'attachments': instance.attachments,
       'attachmentString': instance.attachmentString,
-      'id': instance.id,
       'overtimeTypeName': instance.overtimeTypeName,
       'staffName': instance.staffName,
       'staffCode': instance.staffCode,
@@ -74,6 +75,7 @@ Map<String, dynamic> _$OvertimeToJson(Overtime instance) => <String, dynamic>{
       'departmentId': instance.departmentId,
       'departmentName': instance.departmentName,
       'status': instance.status,
+      'approverId': instance.approverId,
       'approvedBy': instance.approvedBy,
       'approvedDate': instance.approvedDate?.toIso8601String(),
       'createdDate': instance.createdDate?.toIso8601String(),
