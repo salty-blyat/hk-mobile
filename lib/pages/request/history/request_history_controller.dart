@@ -18,7 +18,7 @@ class RequestHistoryController extends GetxController {
 
   final queryParameters = QueryParam(
     pageIndex: 1,
-    pageSize: 10,
+    pageSize: 25,
     sorts: 'createdDate-',
     filters: '[]',
   ).obs;

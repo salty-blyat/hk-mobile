@@ -14,9 +14,11 @@ class Overtime extends BaseModel {
   final DateTime? fromTime;
   final DateTime? toTime;
   final int? overtimeHour;
+  @override
   final String? note;
   final List<Attachment>? attachments;
   final String? attachmentString;
+  @override
   final int? id;
   final String? overtimeTypeName;
   final String? staffName;

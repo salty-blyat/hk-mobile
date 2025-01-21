@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 
 class Calendar extends StatelessWidget {
   const Calendar({
@@ -39,7 +41,7 @@ class Calendar extends StatelessWidget {
             child: Center(
               child: Text(
                 getDayOfWeek(date),
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
@@ -51,6 +53,11 @@ class Calendar extends StatelessWidget {
             child: Center(
               child: Text(
                 getDate(date),
+                style: TextStyle(
+                    color: getDayOfWeek(date).toLowerCase() == 'Sun'.tr
+                        ? AppTheme.dangerColor
+                        : Colors.black,
+                    fontSize: 18),
               ),
             ),
           )

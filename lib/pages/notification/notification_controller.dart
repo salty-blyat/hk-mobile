@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
@@ -17,7 +15,7 @@ class NotificationController extends GetxController {
   final canLoadMore = false.obs;
   final queryParameters = QueryParam(
     pageIndex: 1,
-    pageSize: 10,
+    pageSize: 25,
     sorts: 'createdDate-',
     filters: '[]',
   ).obs;
@@ -78,12 +76,16 @@ class NotificationController extends GetxController {
       var model = {
         'id': item.id,
         'isView': true,
-        'createdDate': DateTime.now().toIso8601String(),
+        'createdDate': item.createdDate!.toIso8601String(),
         'message': item.message,
         'title': item.title,
         'requestId': item.requestId,
         'staffId': item.staffId,
+        'viewDate': DateTime.now().toIso8601String(),
       };
+      queryParameters.update((params) {
+        params?.pageIndex = 1;
+      });
       await service.edit(
           NotificationModel.fromJson(model), NotificationModel.fromJson);
       Get.toNamed('/request-view', arguments: {

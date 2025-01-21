@@ -1,6 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get/get.dart';
+import 'package:staff_view_ui/pages/request/view/request_view_controller.dart';
 
 class ShowNotificationService {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -8,10 +8,17 @@ class ShowNotificationService {
 
   static Future<void> onDidReceiveNotification(
       NotificationResponse notificationResponse) async {
-    Get.toNamed('/request-view', arguments: {
-      'id': int.parse(notificationResponse.payload!),
-      'reqType': 0
-    });
+    if (Get.isRegistered<RequestViewController>()) {
+      Get.delete<RequestViewController>();
+    }
+    Get.toNamed(
+      '/request-view',
+      arguments: {
+        'id': int.parse(notificationResponse.payload!),
+        'reqType': 0,
+      },
+      preventDuplicates: false,
+    );
   }
 
   static Future<void> initialize() async {

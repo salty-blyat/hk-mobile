@@ -36,6 +36,17 @@ class LoginScreen extends StatelessWidget {
           );
         }),
       ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Modal.showLanguageDialog();
+            },
+            icon: const Icon(CupertinoIcons.globe, color: Colors.black87),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
@@ -73,12 +84,12 @@ class LoginScreen extends StatelessWidget {
                     controlName: 'username',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Input is required'.tr;
+                        return '';
                       }
                       return null;
                     },
                   ),
-                  const SizedBox(height: 8.0),
+                  const SizedBox(height: 16),
                   MyFormField(
                     icon: CupertinoIcons.lock,
                     password: true,
@@ -86,7 +97,7 @@ class LoginScreen extends StatelessWidget {
                     controlName: 'password',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Input is required'.tr;
+                        return '';
                       }
                       return null;
                     },
@@ -104,23 +115,23 @@ class LoginScreen extends StatelessWidget {
                           ],
                         )
                       : const SizedBox.shrink()),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        foregroundColor: Theme.of(context).colorScheme.primary,
-                      ),
-                      onPressed: () {
-                        Get.toNamed('/forget-password');
-                      },
-                      child: Text(
-                        '${'Forgot Password'.tr}?',
-                        style: const TextStyle(
-                          fontFamilyFallback: ['Gilroy', 'Kantumruy'],
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Align(
+                  //   alignment: Alignment.centerRight,
+                  //   child: TextButton(
+                  //     style: TextButton.styleFrom(
+                  //       foregroundColor: Theme.of(context).colorScheme.primary,
+                  //     ),
+                  //     onPressed: () {
+                  //       Get.toNamed('/forget-password');
+                  //     },
+                  //     child: Text(
+                  //       '${'Forgot Password'.tr}?',
+                  //       style: const TextStyle(
+                  //         fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),

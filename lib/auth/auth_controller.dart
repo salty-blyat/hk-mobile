@@ -5,10 +5,12 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/firebase_service.dart';
+import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
 class AuthController extends GetxController {
+  final language = 'km'.obs;
   final _authService = AuthService();
   final _firebaseService = NotificationService();
   final loading = false.obs;
@@ -27,6 +29,7 @@ class AuthController extends GetxController {
     formGroup.valueChanges.listen((value) {
       formValid.value = formGroup.valid;
     });
+    language.value = Storage().read('lang') ?? 'km';
   }
 
   // Login Form Group

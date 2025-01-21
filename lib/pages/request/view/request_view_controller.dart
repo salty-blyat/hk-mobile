@@ -59,9 +59,7 @@ class RequestViewController extends GetxController {
     super.onInit();
     id = Get.arguments['id'];
     reqType = Get.arguments['reqType'];
-    if (reqType == 0) {
-      checkCanDoAction();
-    }
+    checkCanDoAction();
     if (reqType != 0) {
       findByReqType(reqType);
     } else {

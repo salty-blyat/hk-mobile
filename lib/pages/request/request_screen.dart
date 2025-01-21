@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/helpers/base_list_screen.dart';
@@ -77,16 +79,38 @@ class RequestApproveScreen extends BaseList<RequestModel> {
 
   @override
   Widget buildItem(RequestModel item) {
+    var requestData = jsonDecode(item.requestData ?? '');
     return ListTile(
       titleAlignment: ListTileTitleAlignment.center,
+      titleTextStyle: Get.textTheme.titleMedium!.copyWith(
+        color: Colors.black,
+        fontSize: 14,
+      ),
+      subtitleTextStyle: Get.textTheme.bodyMedium!.copyWith(
+        color: Colors.black,
+        fontSize: 12,
+      ),
       leading: Calendar(date: item.requestedDate!),
-      subtitle: Text(
-        item.title!,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(
-          fontSize: 12,
-          color: Colors.black,
-        ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            item.title!,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 12,
+              color: Colors.black,
+            ),
+          ),
+          Text(
+            requestData['reason'] ?? requestData['note'] ?? '',
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 12,
+              color: Colors.black,
+            ),
+          ),
+        ],
       ),
       title: Row(
         children: [
@@ -94,7 +118,6 @@ class RequestApproveScreen extends BaseList<RequestModel> {
             item.staffNameKh ?? item.staffNameEn!,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
-              fontSize: 16,
               color: Colors.black,
             ),
           ),
@@ -102,9 +125,9 @@ class RequestApproveScreen extends BaseList<RequestModel> {
           Text(
             item.requestTypeName!.tr,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 16,
+            style: Get.textTheme.titleMedium!.copyWith(
               color: Get.theme.colorScheme.primary,
+              fontSize: 14,
             ),
           ),
         ],

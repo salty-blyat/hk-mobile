@@ -36,21 +36,12 @@ class MyButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4),
         ),
+        disabledBackgroundColor:
+            (color ?? Theme.of(context).colorScheme.primary).withOpacity(0.38),
+        disabledForegroundColor: Colors.white,
       ),
       onPressed: disabled ? null : onPressed,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (loading)
-            const SizedBox(
-              width: 16,
-              height: 16,
-              child: CircularProgressIndicator(),
-            ),
-          const SizedBox(width: 8),
-          Text(label.tr),
-        ],
-      ),
+      child: Text(label.tr),
     );
   }
 }

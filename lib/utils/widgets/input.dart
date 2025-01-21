@@ -11,6 +11,7 @@ class MyFormField extends StatelessWidget {
   final TextEditingController? controller;
   final int? maxLines;
   final String? controlName;
+  final bool enableSuggestions;
   const MyFormField({
     super.key,
     required this.label,
@@ -21,20 +22,22 @@ class MyFormField extends StatelessWidget {
     this.controller,
     this.maxLines = 1,
     this.controlName,
+    this.enableSuggestions = false,
   });
 
   @override
   Widget build(BuildContext context) {
     if (!password) {
       // Non-password fields don't need reactive state.
-      return _buildFormField(context, false.obs);
+      return _buildFormField(context, false.obs, disabled.obs);
     }
     // For password fields, create reactive state.
     final isPasswordVisible = false.obs;
-    return Obx(() => _buildFormField(context, isPasswordVisible));
+    return Obx(() => _buildFormField(context, isPasswordVisible, disabled.obs));
   }
 
-  Widget _buildFormField(BuildContext context, RxBool isPasswordVisible) {
+  Widget _buildFormField(
+      BuildContext context, RxBool isPasswordVisible, RxBool isDisabled) {
     return ReactiveTextField<String>(
       maxLines: password ? 1 : maxLines,
       controller: controller,
@@ -43,18 +46,17 @@ class MyFormField extends StatelessWidget {
       },
       formControlName: controlName,
       obscureText: password ? !isPasswordVisible.value : false,
-      enableSuggestions: false,
+      enableSuggestions: enableSuggestions,
       autocorrect: false,
       decoration: InputDecoration(
         labelText: label.tr,
         labelStyle: context.textTheme.bodyMedium!.copyWith(
           color: Colors.black,
           fontWeight: FontWeight.normal,
-          height: 0,
         ),
-        filled: disabled,
-        fillColor: disabled ? Colors.grey[500] : null,
-        prefixIconColor: disabled ? Colors.grey[500] : null,
+        filled: isDisabled.value,
+        fillColor: isDisabled.value ? Colors.grey[200] : null,
+        prefixIconColor: isDisabled.value ? Colors.grey[600] : null,
         suffixIcon: password
             ? IconButton(
                 icon: Icon(isPasswordVisible.value
@@ -63,9 +65,10 @@ class MyFormField extends StatelessWidget {
                 onPressed: () {
                   isPasswordVisible.value = !isPasswordVisible.value;
                 },
+                iconSize: 18,
               )
             : null,
-        prefixIcon: icon != null ? Icon(icon) : null,
+        prefixIcon: icon != null ? Icon(icon, size: 18) : null,
       ),
     );
   }

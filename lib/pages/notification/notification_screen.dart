@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:staff_view_ui/helpers/base_list_screen.dart';
 import 'package:staff_view_ui/models/notification_model.dart';
 import 'package:staff_view_ui/pages/notification/notification_controller.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
-import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/calendar.dart';
 import 'package:staff_view_ui/utils/widgets/year_select.dart';
 
@@ -82,18 +82,34 @@ class NotificationScreen extends BaseList<NotificationModel> {
         ),
         maxLines: 2,
       ),
-      title: Text(
-        item.title!,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          fontSize: 14,
-          color: Get.theme.colorScheme.primary,
-        ),
-        maxLines: 1,
+      title: Row(
+        children: [
+          Text(
+            item.title!,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: item.isView == false ? FontWeight.bold : null,
+            ),
+            maxLines: 1,
+          ),
+          const Spacer(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                DateFormat('hh:mm a').format(item.createdDate!),
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: item.isView == false ? FontWeight.bold : null,
+                ),
+                maxLines: 1,
+              ),
+            ],
+          ),
+        ],
       ),
-      tileColor: item.isView == true
-          ? Colors.white
-          : AppTheme.primaryColor.withOpacity(0.08),
     );
   }
 

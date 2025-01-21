@@ -25,8 +25,8 @@ android {
         applicationId = "bz.sgx.pavr.app"
         multiDexEnabled true
         minSdk = 17
-        targetSdk = 33
-        versionCode = 1
+        targetSdk = 34
+        versionCode = 3
         versionName = "1.9"
         minSdkVersion flutter.minSdkVersion
     }

@@ -28,6 +28,7 @@ class AppTheme {
       colorScheme: const ColorScheme.light(
         primary: primaryColor,
       ),
+
       // Text theme
       textTheme: TextTheme(
         displayLarge: style.copyWith(
@@ -85,10 +86,6 @@ class AppTheme {
         contentPadding: const EdgeInsets.symmetric(
           vertical: 12.0,
           horizontal: 12.0,
-        ),
-        labelStyle: style.copyWith(
-          fontSize: 16.0,
-          color: Colors.black,
         ),
         counterStyle: style.copyWith(
           fontSize: 12.0,

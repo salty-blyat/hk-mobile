@@ -20,6 +20,7 @@ class DrawerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(0),
       ),
@@ -126,117 +127,17 @@ class DrawerWidget extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  leading: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: const Icon(CupertinoIcons.textformat,
-                        color: Colors.black87),
-                  ),
-                  title: Text('Language'.tr),
-                  onTap: () {
-                    Get.dialog(
-                      Dialog(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: SizedBox(
-                          height: 250,
-                          width: double.infinity,
-                          child: Column(
-                            children: [
-                              // Header Row
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  IconButton(
-                                    iconSize: 16,
-                                    onPressed: () {},
-                                    icon: const Icon(
-                                      CupertinoIcons.clear,
-                                      color: Colors.transparent,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Choose Language'.tr,
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium,
-                                  ),
-                                  IconButton(
-                                    iconSize: 16,
-                                    onPressed: () {
-                                      Get.back(); // Close the dialog
-                                    },
-                                    icon: const Icon(CupertinoIcons.clear),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              // Scrollable ListView
-                              Expanded(
-                                child: ListView.separated(
-                                  separatorBuilder: (context, index) =>
-                                      const SizedBox(height: 10),
-                                  padding: const EdgeInsets.all(16),
-                                  itemCount: Const
-                                      .languages.length, // Handle null safely
-                                  itemBuilder: (context, index) {
-                                    final language = Const.languages[index];
-                                    final isSelected =
-                                        Get.locale?.languageCode ==
-                                            language['code'];
-                                    return ListTile(
-                                      selected: isSelected,
-                                      selectedColor: AppTheme.primaryColor,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(4),
-                                        side: BorderSide(
-                                          color: isSelected
-                                              ? AppTheme.primaryColor
-                                              : Colors.grey.shade300,
-                                          width: 2,
-                                        ),
-                                      ),
-                                      trailing: Icon(
-                                          CupertinoIcons.checkmark_circle,
-                                          size: 20,
-                                          color: isSelected
-                                              ? AppTheme.primaryColor
-                                              : Colors.transparent),
-                                      title: Text(language['label'] ??
-                                          'Unknown'), // Handle null safely
-                                      leading: Image.asset(
-                                        language['image'] ??
-                                            'assets/default.png', // Fallback image
-                                        width: 32,
-                                        height: 32,
-                                        fit: BoxFit.cover,
-                                      ),
-                                      onTap: () async {
-                                        // Handle language selection
-                                        if (language['key'] != null) {
-                                          var box = Storage();
-                                          box.write(Const.authorized['Lang']!,
-                                              language['code']);
-                                          Get.updateLocale(language['key']);
-                                          Get.back();
-                                        }
-                                      },
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                    leading: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(4),
                       ),
-                    );
-                  },
-                ),
+                      child: const Icon(CupertinoIcons.globe,
+                          color: Colors.black87),
+                    ),
+                    title: Text('Language'.tr),
+                    onTap: () => Modal.showLanguageDialog()),
                 ListTile(
                   leading: Container(
                     padding: const EdgeInsets.all(4),

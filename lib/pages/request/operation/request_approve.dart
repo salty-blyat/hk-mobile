@@ -29,9 +29,9 @@ class ApproveRequest extends StatelessWidget {
           const SizedBox(height: 16),
           MyButton(
             onPressed: controller.approve,
+            loading: controller.loading.value,
             label: 'Approve'.tr,
             color: AppTheme.successColor,
-            loading: controller.loading.value,
           ),
           const SizedBox(height: 8),
           MyButton(

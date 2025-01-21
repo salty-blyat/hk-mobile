@@ -27,9 +27,9 @@ class UndoRequest extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           MyButton(
-            onPressed: controller.undo,
             label: 'Undo'.tr,
-            color: Colors.black54,
+            onPressed: controller.undo,
+            color: Colors.black87,
             textColor: Colors.white,
           ),
         ],

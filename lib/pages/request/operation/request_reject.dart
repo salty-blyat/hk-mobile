@@ -14,6 +14,7 @@ class RejectRequest extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    controller.formGroup.patchValue({'id': id});
     return ReactiveForm(
       formGroup: controller.formGroup,
       child: Column(
@@ -27,6 +28,7 @@ class RejectRequest extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           MyButton(
+            loading: controller.loading.value,
             onPressed: controller.reject,
             label: 'Reject'.tr,
             color: AppTheme.dangerColor,

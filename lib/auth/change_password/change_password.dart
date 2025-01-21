@@ -81,6 +81,7 @@ class ChangePassword extends StatelessWidget {
                 controlName: 'name',
                 label: 'Username'.tr,
                 icon: CupertinoIcons.person_alt_circle,
+                disabled: controller.formGroup.control('name').disabled,
               ),
               const SizedBox(height: 16),
               MyFormField(

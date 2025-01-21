@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/const.dart';
@@ -23,7 +22,6 @@ class NotificationService {
       badge: true,
       sound: true,
     );
-
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {}
 
     // Handle foreground messages
@@ -35,18 +33,18 @@ class NotificationService {
     });
 
     // Handle background messages
-    FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
+    // FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       _messageClickHandler(message);
     });
   }
 
-  static Future<void> _backgroundMessageHandler(RemoteMessage message) async {
-    await showNotification(
-        message.notification?.title ?? '',
-        message.notification?.body ?? '',
-        jsonDecode(message.data['Data'])['requestId'].toString());
-  }
+  // static Future<void> _backgroundMessageHandler(RemoteMessage message) async {
+  //   await showNotification(
+  //       message.notification?.title ?? '',
+  //       message.notification?.body ?? '',
+  //       jsonDecode(message.data['Data'])['requestId'].toString());
+  // }
 
   static showNotification(String title, String body, String payload) {
     ShowNotificationService.showInstantNotification(title, body, payload);

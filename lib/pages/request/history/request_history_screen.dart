@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/helpers/base_list_screen.dart';
@@ -63,6 +65,7 @@ class RequestHistoryScreen extends BaseList<RequestModel> {
 
   @override
   Widget buildItem(RequestModel item) {
+    var requestData = jsonDecode(item.requestData ?? '');
     return ListTile(
       onTap: () => Get.toNamed('/request-view', arguments: {
         'id': item.id,
@@ -70,32 +73,43 @@ class RequestHistoryScreen extends BaseList<RequestModel> {
       }),
       titleAlignment: ListTileTitleAlignment.center,
       leading: Calendar(date: item.requestedDate!),
-      subtitle: Text(
-        item.title!,
-        overflow: TextOverflow.ellipsis,
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            item.title!,
+            overflow: TextOverflow.ellipsis,
+            style: Get.textTheme.bodyMedium!.copyWith(
+              fontSize: 12,
+              color: Colors.black,
+            ),
+          ),
+          Text(
+            requestData['reason'] ?? requestData['note'] ?? '',
+            overflow: TextOverflow.ellipsis,
+            style: Get.textTheme.bodyMedium!.copyWith(
+              fontSize: 12,
+              color: Colors.black,
+            ),
+          ),
+        ],
       ),
       title: Row(
         children: [
-          RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: item.staffNameKh ?? item.staffNameEn ?? '',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                    fontFamilyFallback: ['Gilroy', 'Kantumruy'],
-                  ),
-                ),
-                TextSpan(
-                  text: '  ${item.requestTypeName!.tr}',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Get.theme.colorScheme.primary,
-                    fontFamilyFallback: const ['Gilroy', 'Kantumruy'],
-                  ),
-                ),
-              ],
+          Text(
+            item.staffNameKh ?? item.staffNameEn ?? '',
+            style: Get.textTheme.titleMedium!.copyWith(
+              fontSize: 14,
+              color: Colors.black,
+              fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+            ),
+          ),
+          Text(
+            '  ${item.requestTypeName!.tr}',
+            style: Get.textTheme.titleMedium!.copyWith(
+              fontSize: 14,
+              color: Get.theme.colorScheme.primary,
+              fontFamilyFallback: const ['Gilroy', 'Kantumruy'],
             ),
           ),
         ],

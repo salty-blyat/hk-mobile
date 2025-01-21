@@ -129,12 +129,15 @@ class LeaveOperationScreen extends StatelessWidget {
           itemBuilder: (context, index) {
             final leaveType = leaveTypeController.leaveTypes[index];
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
+              padding: const EdgeInsets.only(right: 8),
               child: Obx(() {
                 final isSelected = controller.leaveType.value == leaveType.id;
 
                 return ElevatedButton(
                   style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
                     backgroundColor: isSelected
                         ? Theme.of(context).colorScheme.primary
                         : Colors.white,

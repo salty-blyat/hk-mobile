@@ -16,7 +16,6 @@ class BaseList<T> extends StatelessWidget {
   Future<void> onLoadMore() async {}
   bool get canLoadMore => true;
   Map<String, List<T>> groupItems(List<T> items) => {};
-  Widget buildItem(T item) => const SizedBox.shrink();
   RxList<T> get items => RxList.empty();
   List<Widget> actions = [];
 
@@ -143,5 +142,9 @@ class BaseList<T> extends StatelessWidget {
         );
       }).toList(),
     );
+  }
+
+  Widget buildItem(T item) {
+    return const SizedBox.shrink();
   }
 }

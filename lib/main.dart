@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
@@ -33,6 +32,8 @@ import 'package:staff_view_ui/utils/translation.dart';
 import 'package:staff_view_ui/auth/login.dart';
 import 'package:staff_view_ui/pages/profile/profile_screen.dart';
 import 'package:staff_view_ui/app_setting.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -82,51 +83,71 @@ class MyApp extends StatelessWidget {
     } else {
       pickLang = const Locale("en", "US");
     }
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      initialRoute: initialRoute,
-      supportedLocales: const [
-        Locale("en", "US"), // English (United States)
-        Locale("km", "KH"), // Khmer (Cambodia)
-      ],
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      locale: pickLang, // Default locale set to Khmer
-      translations: translationService, // Custom translation class
-      fallbackLocale: const Locale("en", "US"), // Fallback to English
-      theme: AppTheme.lightTheme, // Custom app theme
-      getPages: [
-        GetPage(name: '/menu', page: () => MenuScreen()),
-        GetPage(name: '/login', page: () => LoginScreen()),
-        GetPage(name: '/profile', page: () => ProfileScreen()),
-        GetPage(name: '/delegate', page: () => DelegateScreen()),
-        GetPage(
-            name: '/absent_exception',
-            page: () => const AbsentExceptionScreen()),
-        GetPage(name: '/document', page: () => const DocumentScreen()),
-        GetPage(name: '/exception', page: () => const ExceptionScreen()),
-        GetPage(name: '/leave', page: () => LeaveScreen()),
-        GetPage(name: '/overtime', page: () => OvertimeScreen()),
-        GetPage(name: '/working', page: () => WorkingScreen()),
-        GetPage(name: '/scan-attendance', page: () => ScanScreen()),
-        GetPage(name: '/check', page: () => ScanCheckScreen()),
-        GetPage(name: '/privacy-policy', page: () => PrivacyPolicyScreen()),
-        GetPage(name: '/change-password', page: () => ChangePassword()),
-        GetPage(name: '/request-approval', page: () => RequestApproveScreen()),
-        GetPage(name: '/edit-user', page: () => EditUser()),
-        GetPage(name: '/request-history', page: () => RequestHistoryScreen()),
-        GetPage(name: '/request-view', page: () => RequestViewScreen()),
-        GetPage(name: '/notification', page: () => NotificationScreen()),
-      ],
-      builder: (context, child) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            textScaler: const TextScaler.linear(1.0), // Fix text scale factor
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 450,
+            ),
+            child: GetMaterialApp(
+              debugShowCheckedModeBanner: false,
+              navigatorKey: navigatorKey,
+              initialRoute: initialRoute,
+              supportedLocales: const [
+                Locale("en", "US"), // English (United States)
+                Locale("km", "KH"), // Khmer (Cambodia)
+              ],
+              localizationsDelegates: const [
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              locale: pickLang, // Default locale set to Khmer
+              translations: translationService, // Custom translation class
+              fallbackLocale: const Locale("en", "US"), // Fallback to English
+              theme: AppTheme.lightTheme, // Custom app theme
+              getPages: [
+                GetPage(name: '/menu', page: () => MenuScreen()),
+                GetPage(name: '/login', page: () => LoginScreen()),
+                GetPage(name: '/profile', page: () => ProfileScreen()),
+                GetPage(name: '/delegate', page: () => DelegateScreen()),
+                GetPage(
+                    name: '/absent_exception',
+                    page: () => const AbsentExceptionScreen()),
+                GetPage(name: '/document', page: () => const DocumentScreen()),
+                GetPage(
+                    name: '/exception', page: () => const ExceptionScreen()),
+                GetPage(name: '/leave', page: () => LeaveScreen()),
+                GetPage(name: '/overtime', page: () => OvertimeScreen()),
+                GetPage(name: '/working', page: () => WorkingScreen()),
+                GetPage(name: '/scan-attendance', page: () => ScanScreen()),
+                GetPage(name: '/check', page: () => ScanCheckScreen()),
+                GetPage(
+                    name: '/privacy-policy', page: () => PrivacyPolicyScreen()),
+                GetPage(name: '/change-password', page: () => ChangePassword()),
+                GetPage(
+                    name: '/request-approval',
+                    page: () => RequestApproveScreen()),
+                GetPage(name: '/edit-user', page: () => EditUser()),
+                GetPage(
+                    name: '/request-history',
+                    page: () => RequestHistoryScreen()),
+                GetPage(name: '/request-view', page: () => RequestViewScreen()),
+                GetPage(
+                    name: '/notification', page: () => NotificationScreen()),
+              ],
+              builder: (context, child) {
+                return MediaQuery(
+                  data: MediaQuery.of(context).copyWith(
+                    textScaler:
+                        const TextScaler.linear(1.0), // Fix text scale factor
+                  ),
+                  child: child!,
+                );
+              },
+            ),
           ),
-          child: child!,
         );
       },
     );
