@@ -18,13 +18,6 @@ class NotificationService {
   static final dioClient = DioClient();
   final storage = Storage();
   static Future<void> initialize() async {
-    FlutterLocalNotificationsPlugin fln = FlutterLocalNotificationsPlugin();
-    await fln.initialize(
-      const InitializationSettings(
-        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-        iOS: DarwinInitializationSettings(),
-      ),
-    );
     NotificationSettings settings = await _firebaseMessaging.requestPermission(
       alert: true,
       badge: true,
@@ -32,37 +25,31 @@ class NotificationService {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {}
-    await _firebaseMessaging.getAPNSToken();
 
     // Handle foreground messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      Get.snackbar(
-        message.notification?.title ?? '',
-        message.notification?.body ?? '',
-        backgroundColor: Colors.grey.shade100,
-        colorText: Colors.black,
-        onTap: (details) {
-          _messageClickHandler(message);
-        },
-      );
+      await showNotification(
+          message.notification?.title ?? '',
+          message.notification?.body ?? '',
+          jsonDecode(message.data['Data'])['requestId'].toString());
     });
 
     // Handle background messages
     FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('CLICKED');
       _messageClickHandler(message);
     });
   }
 
   static Future<void> _backgroundMessageHandler(RemoteMessage message) async {
-    print('BACKGROUND');
-    ShowNotificationService.showNotification(
-      id: message.notification?.hashCode ?? 0,
-      title: message.notification?.title ?? '',
-      body: message.notification?.body ?? '',
-      fln: fln,
-    );
+    await showNotification(
+        message.notification?.title ?? '',
+        message.notification?.body ?? '',
+        jsonDecode(message.data['Data'])['requestId'].toString());
+  }
+
+  static showNotification(String title, String body, String payload) {
+    ShowNotificationService.showInstantNotification(title, body, payload);
   }
 
   static Future<void> _messageClickHandler(RemoteMessage message) async {

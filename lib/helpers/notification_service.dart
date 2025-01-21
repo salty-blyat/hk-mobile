@@ -1,79 +1,59 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 
 class ShowNotificationService {
-  static Future initialize(
-      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-    const initializationSettingsIOS = DarwinInitializationSettings();
+  static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  static Future<void> onDidReceiveNotification(
+      NotificationResponse notificationResponse) async {
+    Get.toNamed('/request-view', arguments: {
+      'id': int.parse(notificationResponse.payload!),
+      'reqType': 0
+    });
+  }
+
+  static Future<void> initialize() async {
+    const AndroidInitializationSettings androidInitializationSettings =
+        AndroidInitializationSettings("@mipmap/ic_launcher");
+    const DarwinInitializationSettings iOSInitializationSettings =
+        DarwinInitializationSettings();
+
     const InitializationSettings initializationSettings =
         InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
+      android: androidInitializationSettings,
+      iOS: iOSInitializationSettings,
     );
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: onDidReceiveNotification,
+      onDidReceiveBackgroundNotificationResponse: onDidReceiveNotification,
+    );
+
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
   }
 
-  static Future showNotification({
-    int id = 0,
-    required String title,
-    required String body,
-    required FlutterLocalNotificationsPlugin fln,
-  }) async {
-    try {
-      const AndroidNotificationDetails androidPlatformChannelSpecifics =
-          AndroidNotificationDetails(
-        'high_importance_channel',
-        'default',
-        playSound: true,
-        importance: Importance.max,
-        priority: Priority.high,
-      );
-      const iosPlatformChannelSpecifics = DarwinNotificationDetails();
-      const NotificationDetails platformChannelSpecifics = NotificationDetails(
-        android: androidPlatformChannelSpecifics,
-        iOS: iosPlatformChannelSpecifics,
-      );
-      await fln.show(id, title, body, platformChannelSpecifics);
-    } catch (e) {
-      print(e);
-    }
-  }
+  static Future<void> showInstantNotification(
+      String title, String body, String payload) async {
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(
+        android: AndroidNotificationDetails(
+          'high_importance_channel',
+          'Instant Notifications',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+        iOS: DarwinNotificationDetails());
 
-  static Future getNotification(String title, String message, onTap) async {
-    SnackBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      content: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.greenAccent,
-            border: Border.all(color: Colors.green, width: 3),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x19000000),
-                spreadRadius: 2.0,
-                blurRadius: 8.0,
-                offset: Offset(2, 4),
-              )
-            ],
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Row(
-            children: [
-              const Icon(Icons.favorite, color: Colors.green),
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child:
-                    Text(message, style: const TextStyle(color: Colors.green)),
-              ),
-              const Spacer(),
-              TextButton(
-                  onPressed: () => debugPrint("Undid"),
-                  child: const Text("Undo"))
-            ],
-          )),
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      title,
+      body,
+      platformChannelSpecifics,
+      payload: payload,
     );
   }
 }
