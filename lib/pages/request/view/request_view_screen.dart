@@ -64,10 +64,13 @@ class RequestViewScreen extends StatelessWidget {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildProfileAvatar(),
           const SizedBox(width: 16),
-          _buildProfileDetails(),
+          Expanded(
+            child: _buildProfileDetails(),
+          )
         ],
       ),
     );
@@ -341,11 +344,17 @@ class RequestViewScreen extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(controller.model.value.positionName ?? '',
-                style: const TextStyle(fontSize: 12)),
+            Text(
+              controller.model.value.positionName ?? '',
+              style: const TextStyle(
+                fontSize: 12,
+              ),
+              softWrap: true,
+            ),
             Text(
               controller.model.value.departmentName ?? '',
               style: const TextStyle(color: Colors.black54, fontSize: 12),
+              softWrap: true,
             ),
           ],
         ),
@@ -453,7 +462,7 @@ class RequestViewScreen extends StatelessWidget {
           children: [
             _buildInfo(
               CupertinoIcons.bookmark,
-              controller.requestData.value?['overtimeTypeName'] ?? '',
+              controller.requestData.value?['overTimeName'] ?? '',
             ),
             Tag(
               text: controller.model.value.statusNameKh ?? '',
@@ -475,9 +484,16 @@ class RequestViewScreen extends StatelessWidget {
         const SizedBox(height: 8),
         Row(
           children: [
-            _buildInfo(
-              CupertinoIcons.clock,
-              '${Const.numberFormat(controller.requestData.value?['overtimeHour'])} ${'Hour'.tr}',
+            Row(
+              children: [
+                const Icon(CupertinoIcons.clock, size: 16),
+                const SizedBox(width: 4),
+                Tag(
+                  color: Colors.black,
+                  text:
+                      '${Const.numberFormat(controller.requestData.value?['overtimeHour']!)} ${'Hour'.tr}',
+                )
+              ],
             ),
             const SizedBox(width: 8),
             Text(

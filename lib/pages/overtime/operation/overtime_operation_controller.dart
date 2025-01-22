@@ -78,6 +78,8 @@ class OvertimeOperationController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
+    // Will update next Time Bcuz it replace value of 'overtimeHours' field when init formGroup
     // Listen to changes in 'fromTime' and 'toTime' and trigger the calculation.
     formGroup.control('fromTime').valueChanges.listen((_) {
       calculateTotalHours();
