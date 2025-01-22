@@ -123,20 +123,10 @@ class DelegateOperationScreen extends StatelessWidget {
 
   Widget _buildDateField(BuildContext context,
       {required String formControlName, required String label}) {
-    return ReactiveDatePicker<DateTime>(
+    return DatePicker(
       formControlName: formControlName,
       firstDate: DateTime(1900),
       lastDate: DateTime(2200),
-      builder: (context, picker, child) {
-        return DatePicker(
-          label: label.tr,
-          icon: Icons.date_range,
-          onTap: () => dateRangePicker(context),
-          controller: TextEditingController(
-            text: DateFormat('dd-MM-yyyy').format(picker.control.value!),
-          ),
-        );
-      },
     );
   }
 

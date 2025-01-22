@@ -58,7 +58,6 @@ class OvertimeOperationController extends GetxController {
     'overtimeHour': FormControl<double>(
       value: 0,
       disabled: true,
-      validators: [Validators.required],
     ),
     'note': FormControl<String>(
       value: null,
@@ -74,6 +73,7 @@ class OvertimeOperationController extends GetxController {
       validators: [Validators.required],
     ),
   });
+  bool firstTime = true;
 
   @override
   void onInit() {
@@ -81,13 +81,22 @@ class OvertimeOperationController extends GetxController {
 
     // Will update next Time Bcuz it replace value of 'overtimeHours' field when init formGroup
     // Listen to changes in 'fromTime' and 'toTime' and trigger the calculation.
+    print(firstTime);
     formGroup.control('fromTime').valueChanges.listen((_) {
-      calculateTotalHours();
+      if (!firstTime) {
+        print('fromTime');
+        calculateTotalHours();
+      }
     });
 
     formGroup.control('toTime').valueChanges.listen((_) {
-      calculateTotalHours();
+      if (!firstTime) {
+        print(firstTime);
+        calculateTotalHours();
+      }
     });
+
+    firstTime = false;
 
     formGroup.valueChanges.listen((value) {
       formValid.value = formGroup.valid;
@@ -108,6 +117,7 @@ class OvertimeOperationController extends GetxController {
   }
 
   void setFormValue(Overtime overtime) {
+    print(overtime.overtimeHour);
     formGroup.patchValue({
       'id': overtime.id,
       'requestNo': overtime.requestNo,
