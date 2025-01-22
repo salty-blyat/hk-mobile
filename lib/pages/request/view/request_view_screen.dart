@@ -255,7 +255,7 @@ class RequestViewScreen extends StatelessWidget {
       Function() onPressed, bool isDisabled) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        disabledBackgroundColor: color.withOpacity(0.6),
+        disabledBackgroundColor: color.withOpacity(0.4),
         disabledForegroundColor: Colors.white,
         backgroundColor: color,
         shape: RoundedRectangleBorder(
@@ -300,7 +300,7 @@ class RequestViewScreen extends StatelessWidget {
 
   Widget _info(String title, String value) {
     return Padding(
-      padding: const EdgeInsets.only(left: 8),
+      padding: const EdgeInsets.only(left: 0),
       child: Row(
         children: [
           SizedBox(width: 110, child: Text(title.tr)),

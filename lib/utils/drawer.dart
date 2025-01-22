@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/auth/auth_controller.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
-import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/helpers/version_server.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/const.dart';
@@ -206,7 +205,6 @@ class DrawerController extends GetxController {
       auth.value = authData != null && authData.isNotEmpty
           ? ClientInfo.fromJson(jsonDecode(authData))
           : ClientInfo();
-      // Replace with default constructor or handle null case
     } catch (e) {
       print('Error during initialization: $e');
     }

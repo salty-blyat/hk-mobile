@@ -8,12 +8,31 @@ class DatePicker extends StatelessWidget {
   final String formControlName;
   final DateTime firstDate;
   final DateTime lastDate;
-  final String labelText;
   final String dateFormat;
   final Widget Function(
       BuildContext, ReactiveDatePickerDelegate<DateTime>, Widget?)? builder;
 
   // Static method for the builder to avoid instance method issues
+
+  const DatePicker({
+    super.key,
+    required this.formControlName,
+    required this.firstDate,
+    required this.lastDate,
+    this.dateFormat = 'dd-MM-yyyy', // Default date format
+    this.builder = _defaultPicker, // Default builder
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ReactiveDatePicker<DateTime>(
+      formControlName: formControlName,
+      firstDate: firstDate,
+      lastDate: lastDate,
+      builder: builder!,
+    );
+  }
+
   static Widget _defaultPicker(BuildContext context,
       ReactiveDatePickerDelegate<DateTime> picker, Widget? child) {
     return GestureDetector(
@@ -24,9 +43,7 @@ class DatePicker extends StatelessWidget {
       },
       child: InputDecorator(
         decoration: InputDecoration(
-          labelText: picker.control.value == null
-              ? null
-              : 'Date'.tr, // Localization for the label
+          labelText: 'Date'.tr,
           suffixIcon: const Icon(CupertinoIcons.calendar),
           fillColor: Colors.grey.shade200,
           filled: !picker.control.enabled,
@@ -40,26 +57,6 @@ class DatePicker extends StatelessWidget {
               : const TextStyle(color: Colors.grey), // Disabled style
         ),
       ),
-    );
-  }
-
-  const DatePicker({
-    super.key,
-    required this.formControlName,
-    required this.firstDate,
-    required this.lastDate,
-    this.labelText = 'Date', // Default label text
-    this.dateFormat = 'dd-MM-yyyy', // Default date format
-    this.builder = _defaultPicker, // Default builder
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ReactiveDatePicker<DateTime>(
-      formControlName: formControlName,
-      firstDate: firstDate,
-      lastDate: lastDate,
-      builder: builder!,
     );
   }
 }

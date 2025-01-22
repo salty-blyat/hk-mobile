@@ -113,6 +113,10 @@ class AppTheme {
         ),
         errorStyle: style.copyWith(color: Colors.red, fontSize: 12),
         floatingLabelBehavior: FloatingLabelBehavior.always,
+        floatingLabelStyle: style.copyWith(
+          color: Colors.black,
+          fontWeight: FontWeight.normal,
+        ),
         suffixIconColor: Colors.black54,
       ),
 
@@ -161,7 +165,6 @@ class AppTheme {
           ),
         ),
       ),
-
       datePickerTheme: DatePickerThemeData(
         headerHeadlineStyle: style,
         headerHelpStyle: style,

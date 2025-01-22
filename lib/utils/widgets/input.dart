@@ -28,10 +28,8 @@ class MyFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!password) {
-      // Non-password fields don't need reactive state.
       return _buildFormField(context, false.obs, disabled.obs);
     }
-    // For password fields, create reactive state.
     final isPasswordVisible = false.obs;
     return Obx(() => _buildFormField(context, isPasswordVisible, disabled.obs));
   }
@@ -49,6 +47,16 @@ class MyFormField extends StatelessWidget {
       enableSuggestions: enableSuggestions,
       autocorrect: false,
       decoration: InputDecoration(
+        prefix: Padding(
+          padding: const EdgeInsetsDirectional.symmetric(horizontal: 4.0),
+          child: icon != null
+              ? Icon(
+                  icon,
+                  size: 18,
+                  color: isDisabled.value ? Colors.grey[600] : null,
+                )
+              : null,
+        ),
         labelText: label.tr,
         labelStyle: context.textTheme.bodyMedium!.copyWith(
           color: Colors.black,
@@ -56,7 +64,7 @@ class MyFormField extends StatelessWidget {
         ),
         filled: isDisabled.value,
         fillColor: isDisabled.value ? Colors.grey[200] : null,
-        prefixIconColor: isDisabled.value ? Colors.grey[600] : null,
+        // prefixIconColor: isDisabled.value ? Colors.grey[600] : null,
         suffixIcon: password
             ? IconButton(
                 icon: Icon(isPasswordVisible.value
@@ -68,7 +76,6 @@ class MyFormField extends StatelessWidget {
                 iconSize: 18,
               )
             : null,
-        prefixIcon: icon != null ? Icon(icon, size: 18) : null,
       ),
     );
   }

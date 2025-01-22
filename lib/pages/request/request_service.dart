@@ -39,7 +39,6 @@ class RequestApproveService extends BaseService<RequestModel> {
       }
       throw Exception('Failed to search.');
     } catch (e) {
-      print(e);
       throw Exception('Failed to search.');
     }
   }

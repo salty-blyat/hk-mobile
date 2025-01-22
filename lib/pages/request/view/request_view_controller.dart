@@ -120,89 +120,64 @@ class RequestViewController extends GetxController {
   void showApproveDialog(BuildContext context, int requestStatus, int id) {
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true, // Allow resizing beyond default limits
-      builder: (context) {
-        return DraggableScrollableSheet(
-          initialChildSize: 0.4, // Initial height (40% of screen)
-          minChildSize: 0.2, // Minimum height (20% of screen)
-          maxChildSize: 0.8, // Maximum height (80% of screen)
-          expand: false, // Prevents full screen expansion
-          builder: (context, scrollController) {
-            return Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                ),
+      isScrollControlled: true, // Enables full-screen height adjustments
+      backgroundColor: Colors
+          .transparent, // Makes the modal background match the top rounded corners
+      builder: (BuildContext context) {
+        return Padding(
+          // Adjusts padding for the keyboard
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(0),
+                topRight: Radius.circular(0),
               ),
-              child: Column(
-                children: [
-                  // Handle at the top center
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      width: 50,
-                      height: 5,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[400],
-                        borderRadius: BorderRadius.circular(10),
+            ),
+            child: DraggableScrollableSheet(
+              initialChildSize: 0.4, // Initial height (40% of screen)
+              minChildSize: 0.2, // Minimum height (20% of screen)
+              maxChildSize: 0.8, // Maximum height (80% of screen)
+              expand: false, // Prevents full screen expansion
+              builder:
+                  (BuildContext context, ScrollController scrollController) {
+                return SingleChildScrollView(
+                  controller: scrollController,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Handle at the top center
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          width: 50,
+                          height: 5,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[400],
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
                       ),
-                    ),
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        width: double.infinity,
+                        child: requestStatus == RequestStatus.approve.value
+                            ? ApproveRequest(id: id)
+                            : requestStatus == RequestStatus.reject.value
+                                ? RejectRequest(id: id)
+                                : UndoRequest(id: id),
+                      ),
+                    ],
                   ),
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      width: double.infinity,
-                      child: requestStatus == RequestStatus.approve.value
-                          ? ApproveRequest(id: id)
-                          : requestStatus == RequestStatus.reject.value
-                              ? RejectRequest(id: id)
-                              : UndoRequest(id: id),
-                    ),
-                  )
-                ],
-              ),
-            );
-          },
+                );
+              },
+            ),
+          ),
         );
       },
     );
-  }
-
-  void showAttachments() async {
-    final controller = WebViewController();
-    var url = requestData.value?['attachments'].first['url'];
-
-    controller.loadRequest(Uri.parse(url));
-
-    Get.dialog(Dialog.fullscreen(
-      backgroundColor: Colors.white,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Row(
-            children: [
-              const SizedBox(width: 16),
-              Text('Attachment'.tr, style: const TextStyle(fontSize: 16)),
-              const Spacer(),
-              IconButton(
-                onPressed: () {
-                  Get.back();
-                },
-                icon: const Icon(CupertinoIcons.clear),
-              ),
-            ],
-          ),
-          Expanded(
-              child: Const.isImage(url)
-                  ? WebViewWidget(controller: controller)
-                  : PDFView(
-                      filePath: url,
-                    )),
-        ],
-      ),
-    ));
   }
 
   @override

@@ -35,6 +35,9 @@ class RequestApproveScreen extends BaseList<RequestModel> {
   bool get fabButton => false;
 
   @override
+  bool get showHeader => false;
+
+  @override
   RxList<RequestModel> get items => controller.lists;
 
   @override
@@ -49,14 +52,14 @@ class RequestApproveScreen extends BaseList<RequestModel> {
   }
 
   @override
-  List<Widget> actions = [
-    IconButton(
-      onPressed: () {
-        Get.to(() => RequestHistoryScreen());
-      },
-      icon: const Icon(Icons.history),
-    ),
-  ];
+  List<Widget> actions() => [
+        IconButton(
+          onPressed: () {
+            Get.to(() => RequestHistoryScreen());
+          },
+          icon: const Icon(Icons.history),
+        ),
+      ];
 
   @override
   Map<String, List<RequestModel>> groupItems(List<RequestModel> items) {

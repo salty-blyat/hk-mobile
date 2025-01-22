@@ -6,6 +6,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/helpers/image_picker_controller.dart';
 import 'package:staff_view_ui/pages/leave/operation/leave_operation_controller.dart';
 import 'package:staff_view_ui/pages/leave_type/leave_type_controller.dart';
+import 'package:staff_view_ui/pages/leave_type/leave_type_select.dart';
 import 'package:staff_view_ui/pages/staff/staff_select.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
 import 'package:staff_view_ui/utils/widgets/date_picker.dart';
@@ -70,6 +71,9 @@ class LeaveOperationScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         _buildLeaveTypeButtons(context),
+                        // LeaveTypeSelect(
+                        //   leaveTypeId: controller.leaveType.value,
+                        // ),
                         const SizedBox(height: 4),
                         _buildLeaveTypeNote(),
                         const SizedBox(height: 8),

@@ -22,17 +22,19 @@ class DateRangePicker extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: _buildDateRangeFields(context, fromDateControlName),
+          child:
+              _buildDateRangeFields(context, fromDateControlName, 'From date'),
         ),
         const SizedBox(width: 16),
         Expanded(
-          child: _buildDateRangeFields(context, toDateControlName),
+          child: _buildDateRangeFields(context, toDateControlName, 'To date'),
         ),
       ],
     );
   }
 
-  Widget _buildDateRangeFields(BuildContext context, String controlName) {
+  Widget _buildDateRangeFields(
+      BuildContext context, String controlName, String label) {
     return DatePicker(
       formControlName: controlName,
       firstDate: DateTime(1900),
@@ -46,7 +48,7 @@ class DateRangePicker extends StatelessWidget {
             decoration: InputDecoration(
               labelText: picker.control.value == null
                   ? null
-                  : 'Date'.tr, // Localization for the label
+                  : label.tr, // Localization for the label
               suffixIcon: const Icon(CupertinoIcons.calendar),
               fillColor: Colors.grey.shade200,
               filled: !picker.control.enabled,

@@ -17,7 +17,8 @@ class BaseList<T> extends StatelessWidget {
   bool get canLoadMore => true;
   Map<String, List<T>> groupItems(List<T> items) => {};
   RxList<T> get items => RxList.empty();
-  List<Widget> actions = [];
+  List<Widget> actions() => [];
+  Widget buildItem(T item) => const SizedBox.shrink();
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class BaseList<T> extends StatelessWidget {
           title.tr,
           style: context.textTheme.titleLarge!.copyWith(color: Colors.white),
         ),
-        actions: actions,
+        actions: actions(),
       ),
       floatingActionButton: fabButton
           ? FloatingActionButton(
@@ -60,6 +61,8 @@ class BaseList<T> extends StatelessWidget {
                     return false;
                   },
                   child: RefreshIndicator(
+                    color: Theme.of(context).primaryColor,
+                    backgroundColor: Colors.white,
                     onRefresh: onRefresh,
                     // ignore: invalid_use_of_protected_member
                     child: buildStickyList(items.value),
@@ -142,9 +145,5 @@ class BaseList<T> extends StatelessWidget {
         );
       }).toList(),
     );
-  }
-
-  Widget buildItem(T item) {
-    return const SizedBox.shrink();
   }
 }
