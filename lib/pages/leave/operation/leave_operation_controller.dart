@@ -199,12 +199,6 @@ class LeaveOperationController extends GetxController {
         'requestedDate': formGroup.control('date').value.toIso8601String(),
         'fromDate': formGroup.control('fromDate').value.toIso8601String(),
         'toDate': formGroup.control('toDate').value.toIso8601String(),
-        'totalDays':
-            Const.numberFormat(formGroup.control('totalDays').value) as num,
-        'balance':
-            Const.numberFormat(formGroup.control('balance').value) as num,
-        'totalHours':
-            Const.numberFormat(formGroup.control('totalHours').value) as num,
       };
 
       if (id.value == 0) {

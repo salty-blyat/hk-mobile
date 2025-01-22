@@ -128,6 +128,40 @@ class AppTheme {
           textStyle: style,
         ),
       ),
+      timePickerTheme: TimePickerThemeData(
+        dayPeriodShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+        ),
+        hourMinuteShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+        ),
+        cancelButtonStyle: ButtonStyle(
+          textStyle: WidgetStateProperty.all(
+            const TextStyle(
+              fontSize: 14,
+              fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+            ),
+          ),
+        ),
+        confirmButtonStyle: ButtonStyle(
+          textStyle: WidgetStateProperty.all(
+            const TextStyle(
+              fontSize: 14,
+              fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+            ),
+          ),
+        ),
+        timeSelectorSeparatorTextStyle: WidgetStateProperty.all(
+          style.copyWith(
+            fontSize: 50,
+            color: Colors.black,
+          ),
+        ),
+      ),
+
       datePickerTheme: DatePickerThemeData(
         headerHeadlineStyle: style,
         headerHelpStyle: style,
@@ -136,11 +170,21 @@ class AppTheme {
         yearStyle: style,
         rangePickerHeaderHeadlineStyle: style,
         rangePickerHeaderHelpStyle: style,
-        cancelButtonStyle: ButtonStyle(
-          textStyle: WidgetStateProperty.all(style),
-        ),
         confirmButtonStyle: ButtonStyle(
-          textStyle: WidgetStateProperty.all(style),
+          textStyle: WidgetStateProperty.all(
+            const TextStyle(
+              fontSize: 14,
+              fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+            ),
+          ),
+        ),
+        cancelButtonStyle: ButtonStyle(
+          textStyle: WidgetStateProperty.all(
+            const TextStyle(
+              fontSize: 14,
+              fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+            ),
+          ),
         ),
       ),
       dropdownMenuTheme: DropdownMenuThemeData(
