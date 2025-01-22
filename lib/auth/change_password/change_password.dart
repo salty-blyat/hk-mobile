@@ -77,28 +77,28 @@ class ChangePassword extends StatelessWidget {
               const SizedBox(
                 height: 32,
               ),
-              MyFormField(
+              MyFormField<String>(
                 controlName: 'name',
                 label: 'Username'.tr,
                 icon: CupertinoIcons.person_alt_circle,
                 disabled: controller.formGroup.control('name').disabled,
               ),
               const SizedBox(height: 16),
-              MyFormField(
+              MyFormField<String>(
                 controlName: 'oldPassword',
                 password: true,
                 label: 'Old Password'.tr,
                 icon: CupertinoIcons.lock,
               ),
               const SizedBox(height: 16),
-              MyFormField(
+              MyFormField<String>(
                 controlName: 'newPassword',
                 label: 'New Password'.tr,
                 password: true,
                 icon: CupertinoIcons.lock,
               ),
               const SizedBox(height: 16),
-              MyFormField(
+              MyFormField<String>(
                 controlName: 'confirmPassword',
                 password: true,
                 label: 'Confirm Password'.tr,

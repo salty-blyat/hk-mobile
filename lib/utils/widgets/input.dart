@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-class MyFormField extends StatelessWidget {
+class MyFormField<T> extends StatelessWidget {
   final String label;
   final IconData? icon;
   final bool disabled;
@@ -12,18 +12,20 @@ class MyFormField extends StatelessWidget {
   final int? maxLines;
   final String? controlName;
   final bool enableSuggestions;
-  const MyFormField({
-    super.key,
-    required this.label,
-    this.icon,
-    this.disabled = false,
-    this.password = false,
-    this.validator,
-    this.controller,
-    this.maxLines = 1,
-    this.controlName,
-    this.enableSuggestions = false,
-  });
+  final bool Function(AbstractControl<dynamic> control)?
+      showErrors; // Callback for custom error logic
+  const MyFormField(
+      {super.key,
+      required this.label,
+      this.icon,
+      this.disabled = false,
+      this.password = false,
+      this.validator,
+      this.controller,
+      this.maxLines = 1,
+      this.controlName,
+      this.enableSuggestions = false,
+      this.showErrors});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,7 @@ class MyFormField extends StatelessWidget {
 
   Widget _buildFormField(
       BuildContext context, RxBool isPasswordVisible, RxBool isDisabled) {
-    return ReactiveTextField<String>(
+    return ReactiveTextField<T>(
       maxLines: password ? 1 : maxLines,
       controller: controller,
       validationMessages: {
@@ -46,6 +48,8 @@ class MyFormField extends StatelessWidget {
       obscureText: password ? !isPasswordVisible.value : false,
       enableSuggestions: enableSuggestions,
       autocorrect: false,
+      showErrors: showErrors ??
+          (control) => control.invalid && (control.dirty || control.touched),
       decoration: InputDecoration(
         prefix: Padding(
           padding: const EdgeInsetsDirectional.symmetric(horizontal: 4.0),
