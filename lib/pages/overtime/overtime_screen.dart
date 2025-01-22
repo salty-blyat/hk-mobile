@@ -6,6 +6,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/base_list_screen.dart';
 import 'package:staff_view_ui/models/overtime_model.dart';
+import 'package:staff_view_ui/models/overtime_type_model.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
 import 'package:staff_view_ui/pages/overtime/operation/overtime_operation_screen.dart';
 import 'package:staff_view_ui/pages/overtime/overtime_controller.dart';
@@ -80,7 +81,7 @@ class OvertimeScreen extends BaseList<Overtime> {
             onRefresh();
           },
         ),
-        // _buildOvertimeTypeButtons()
+        _buildOvertimeTypeButtons()
       ],
     );
   }
@@ -170,9 +171,12 @@ class OvertimeScreen extends BaseList<Overtime> {
               itemBuilder: (context, index) => Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: ElevatedButton(
-                  onPressed: () {
-                    // controller.calculateTotalDays();
-                  },
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
                   child: const Text('Leave'),
                 ),
               ),
@@ -184,6 +188,13 @@ class OvertimeScreen extends BaseList<Overtime> {
       if (overtimeTypeController.lists.isEmpty) {
         return const SizedBox.shrink();
       }
+      overtimeTypeController.lists.insert(
+        0,
+        OvertimeType(
+          id: 0,
+          name: 'All'.tr,
+        ),
+      );
 
       return Container(
         height: 45,
@@ -208,9 +219,15 @@ class OvertimeScreen extends BaseList<Overtime> {
                     side: BorderSide(
                       color: Theme.of(context).colorScheme.primary,
                     ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
                   ),
-                  // onPressed: () => controller.updateLeaveType(overtimeType.id!),
-                  onPressed: () {},
+                  // onPressed: () => controller.updateOvertimeType(overtimeType.id!),
+                  onPressed: () {
+                    controller.overtimeType.value = overtimeType.id!;
+                    controller.search();
+                  },
                   child: Text(overtimeType.name ?? ''),
                 );
               }),
