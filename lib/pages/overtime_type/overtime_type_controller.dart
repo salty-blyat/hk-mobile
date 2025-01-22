@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:staff_view_ui/models/overtime_type_model.dart';
-import 'package:staff_view_ui/pages/overtime/overtime_type/overtime_type_service.dart';
+import 'package:staff_view_ui/pages/overtime_type/overtime_type_service.dart';
 
 class OvertimeTypeController extends GetxController {
   final OvertimeTypeService overtimeTypeService = OvertimeTypeService();

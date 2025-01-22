@@ -9,7 +9,7 @@ import 'package:staff_view_ui/models/overtime_model.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
 import 'package:staff_view_ui/pages/overtime/operation/overtime_operation_screen.dart';
 import 'package:staff_view_ui/pages/overtime/overtime_controller.dart';
-import 'package:staff_view_ui/pages/overtime/overtime_type/overtime_type_controller.dart';
+import 'package:staff_view_ui/pages/overtime_type/overtime_type_controller.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
 import 'package:staff_view_ui/utils/style.dart';
 import 'package:staff_view_ui/utils/theme.dart';

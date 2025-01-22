@@ -7,7 +7,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/image_picker_controller.dart';
 import 'package:staff_view_ui/pages/overtime/operation/overtime_operation_controller.dart';
-import 'package:staff_view_ui/pages/overtime/overtime_type/overtime_type_controller.dart';
+import 'package:staff_view_ui/pages/overtime_type/overtime_type_controller.dart';
 import 'package:staff_view_ui/pages/staff/staff_select.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
