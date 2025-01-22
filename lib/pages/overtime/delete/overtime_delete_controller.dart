@@ -10,11 +10,10 @@ class OvertimeDeleteController extends GetxController {
   final loading = false.obs;
   final operationLoading = false.obs;
   final overtime = Overtime().obs;
-  final totalDays = 0.obs;
 
   final formGroup = fb.group({
     'id': fb.control(0),
-    'reason': fb.control(''),
+    'note': fb.control(''),
   });
 
   Future<void> getOvertime(int id) async {

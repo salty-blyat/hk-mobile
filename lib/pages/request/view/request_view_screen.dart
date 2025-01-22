@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/models/timeline_model.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
@@ -63,10 +64,13 @@ class RequestViewScreen extends StatelessWidget {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildProfileAvatar(),
           const SizedBox(width: 16),
-          _buildProfileDetails(),
+          Expanded(
+            child: _buildProfileDetails(),
+          )
         ],
       ),
     );
@@ -340,11 +344,17 @@ class RequestViewScreen extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(controller.model.value.positionName ?? '',
-                style: const TextStyle(fontSize: 12)),
+            Text(
+              controller.model.value.positionName ?? '',
+              style: const TextStyle(
+                fontSize: 12,
+              ),
+              softWrap: true,
+            ),
             Text(
               controller.model.value.departmentName ?? '',
               style: const TextStyle(color: Colors.black54, fontSize: 12),
+              softWrap: true,
             ),
           ],
         ),
@@ -445,8 +455,76 @@ class RequestViewScreen extends StatelessWidget {
   }
 
   Widget _buildOtInfo() {
-    return const Column(
-      children: [],
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildInfo(
+              CupertinoIcons.bookmark,
+              controller.requestData.value?['overTimeName'] ?? '',
+            ),
+            Tag(
+              text: controller.model.value.statusNameKh ?? '',
+              color: Style.getStatusColor(controller.model.value.status ?? 0),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            _buildInfo(
+              CupertinoIcons.calendar,
+              convertToKhmerDate(
+                DateTime.parse(controller.requestData.value?['date']),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Row(
+              children: [
+                const Icon(CupertinoIcons.clock, size: 16),
+                const SizedBox(width: 4),
+                Tag(
+                  color: Colors.black,
+                  text:
+                      '${Const.numberFormat(controller.requestData.value?['overtimeHour']!)} ${'Hour'.tr}',
+                )
+              ],
+            ),
+            const SizedBox(width: 8),
+            Text(
+              '${DateFormat('hh:mma').format(DateTime.parse(controller.requestData.value?['fromTime']))} - ${DateFormat('hh:mma').format(DateTime.parse(controller.requestData.value?['toTime']))}',
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        if (controller.requestData.value?['note'] != null) ...[
+          _buildInfo(CupertinoIcons.doc_plaintext,
+              controller.requestData.value?['note'] ?? ''),
+          const SizedBox(height: 8),
+        ],
+        if (controller.requestData.value?['attachments'].isNotEmpty)
+          GestureDetector(
+            child: _buildInfo(CupertinoIcons.doc, 'Attachment'.tr),
+            onTap: () async {
+              final Uri uri = Uri.parse(
+                  controller.requestData.value?['attachments'][0]['url'] ?? '');
+
+              if (await canLaunchUrl(uri)) {
+                await launchUrl(
+                  uri,
+                  mode: LaunchMode.externalApplication,
+                );
+              } else {
+                throw 'Could not launch $uri';
+              }
+            },
+          ),
+      ],
     );
   }
 

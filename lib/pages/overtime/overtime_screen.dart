@@ -95,7 +95,6 @@ class OvertimeScreen extends BaseList<Overtime> {
         children: [
           CustomSlideButton(
             onPressed: () {
-              print(item.id);
               Get.to(() => OvertimeOperationScreen(id: item.id ?? 0));
             },
             label: 'Edit',
@@ -104,7 +103,7 @@ class OvertimeScreen extends BaseList<Overtime> {
           ),
           CustomSlideButton(
             onPressed: () {
-              // controller.delete(item.id!);
+              controller.delete(item.id!);
             },
             label: 'Delete',
             icon: CupertinoIcons.delete_solid,
