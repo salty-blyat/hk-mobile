@@ -7,6 +7,7 @@ import 'package:staff_view_ui/pages/delegate/operation/delegate_operation_contro
 import 'package:staff_view_ui/pages/staff/staff_select.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
 import 'package:staff_view_ui/utils/widgets/date_picker.dart';
+import 'package:staff_view_ui/utils/widgets/date_range_picker.dart';
 
 class DelegateOperationScreen extends StatelessWidget {
   final DelegatepOperationController controller =
@@ -70,7 +71,14 @@ class DelegateOperationScreen extends StatelessWidget {
                           isDelegate: true,
                         ),
                         const SizedBox(height: 16),
-                        _buildDateRangeFields(context),
+                        DateRangePicker(
+                          formGroup: controller.formGroup,
+                          fromDateControlName: 'fromDate',
+                          toDateControlName: 'toDate',
+                          onDateSelected: (dateRange) {
+                            controller.calculateTotalDays();
+                          },
+                        ),
                         const SizedBox(height: 16),
                         ReactiveTextField<int>(
                           formControlName: 'totalDays',
@@ -97,55 +105,5 @@ class DelegateOperationScreen extends StatelessWidget {
               ),
       ),
     );
-  }
-
-  Widget _buildDateRangeFields(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildDateField(
-            context,
-            formControlName: 'fromDate',
-            label: 'From date',
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _buildDateField(
-            context,
-            formControlName: 'toDate',
-            label: 'To date',
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDateField(BuildContext context,
-      {required String formControlName, required String label}) {
-    return DatePicker(
-      formControlName: formControlName,
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2200),
-    );
-  }
-
-  Future<void> dateRangePicker(BuildContext context) async {
-    final selectedDates = await showDateRangePicker(
-      context: context,
-      locale: Get.locale,
-      initialDateRange: DateTimeRange(
-        start: controller.formGroup.control('fromDate').value ?? DateTime.now(),
-        end: controller.formGroup.control('toDate').value ?? DateTime.now(),
-      ),
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2200),
-    );
-
-    if (selectedDates != null) {
-      controller.formGroup.control('fromDate').value = selectedDates.start;
-      controller.formGroup.control('toDate').value = selectedDates.end;
-      controller.calculateTotalDays();
-    }
   }
 }
