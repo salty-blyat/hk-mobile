@@ -9,7 +9,7 @@ import 'package:staff_view_ui/models/overtime_model.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
 import 'package:staff_view_ui/pages/overtime/operation/overtime_operation_screen.dart';
 import 'package:staff_view_ui/pages/overtime/overtime_controller.dart';
-import 'package:staff_view_ui/pages/overtime/overtime_type/overtime_type_controller.dart';
+import 'package:staff_view_ui/pages/overtime_type/overtime_type_controller.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
 import 'package:staff_view_ui/utils/style.dart';
 import 'package:staff_view_ui/utils/theme.dart';
@@ -80,7 +80,7 @@ class OvertimeScreen extends BaseList<Overtime> {
             onRefresh();
           },
         ),
-        // _buildOvertimeTypeButtons()
+        _buildOvertimeTypeButtons()
       ],
     );
   }
@@ -170,9 +170,12 @@ class OvertimeScreen extends BaseList<Overtime> {
               itemBuilder: (context, index) => Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: ElevatedButton(
-                  onPressed: () {
-                    // controller.calculateTotalDays();
-                  },
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
                   child: const Text('Leave'),
                 ),
               ),
@@ -184,7 +187,6 @@ class OvertimeScreen extends BaseList<Overtime> {
       if (overtimeTypeController.lists.isEmpty) {
         return const SizedBox.shrink();
       }
-
       return Container(
         height: 45,
         margin: const EdgeInsets.only(top: 0, bottom: 10),
@@ -208,9 +210,14 @@ class OvertimeScreen extends BaseList<Overtime> {
                     side: BorderSide(
                       color: Theme.of(context).colorScheme.primary,
                     ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
                   ),
-                  // onPressed: () => controller.updateLeaveType(overtimeType.id!),
-                  onPressed: () {},
+                  onPressed: () {
+                    controller.overtimeType.value = overtimeType.id!;
+                    controller.search();
+                  },
                   child: Text(overtimeType.name ?? ''),
                 );
               }),

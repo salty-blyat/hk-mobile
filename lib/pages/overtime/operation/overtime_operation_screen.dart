@@ -4,11 +4,10 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/image_picker_controller.dart';
 import 'package:staff_view_ui/pages/overtime/operation/overtime_operation_controller.dart';
-import 'package:staff_view_ui/pages/overtime/overtime_type/overtime_type_controller.dart';
+import 'package:staff_view_ui/pages/overtime_type/overtime_type_controller.dart';
 import 'package:staff_view_ui/pages/staff/staff_select.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
@@ -87,7 +86,9 @@ class OvertimeOperationScreen extends StatelessWidget {
                                 decoration: InputDecoration(
                                   labelText: 'Total (hours)'.tr,
                                   fillColor: Colors.grey.shade200,
-                                  filled: true,
+                                  filled: !controller.formGroup
+                                      .control('overtimeHour')
+                                      .enabled,
                                 ),
                               ),
                             ),
@@ -120,31 +121,12 @@ class OvertimeOperationScreen extends StatelessWidget {
 
   Widget _buildOvertimeTypeButtons(BuildContext context) {
     return Obx(() {
-      if (overtimeTypeController.isLoading.value) {
-        return Skeletonizer(
-          child: SizedBox(
-            height: 45,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 10,
-              itemBuilder: (context, index) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                      side: const BorderSide(color: Colors.black),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
-                      )),
-                  child: const Text('Overtime'),
-                ),
-              ),
-            ),
-          ),
-        );
-      }
+      // Filter out the "All" item (id: 0)
+      final lists = overtimeTypeController.lists
+          .where((item) => item.id != 0)
+          .toList(); // Create a new list without the "All" item
 
-      if (overtimeTypeController.lists.isEmpty) {
+      if (lists.isEmpty) {
         return const SizedBox.shrink();
       }
 
@@ -153,9 +135,9 @@ class OvertimeOperationScreen extends StatelessWidget {
         margin: const EdgeInsets.only(top: 0, bottom: 10),
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: overtimeTypeController.lists.length,
+          itemCount: lists.length, // Use filtered list
           itemBuilder: (context, index) {
-            final overtimeType = overtimeTypeController.lists[index];
+            final overtimeType = lists[index]; // Use filtered list
             return Padding(
               padding: const EdgeInsets.only(right: 8),
               child: Obx(() {

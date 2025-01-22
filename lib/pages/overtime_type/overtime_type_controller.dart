@@ -1,11 +1,13 @@
 import 'package:get/get.dart';
 import 'package:staff_view_ui/models/overtime_type_model.dart';
-import 'package:staff_view_ui/pages/overtime/overtime_type/overtime_type_service.dart';
+import 'package:staff_view_ui/pages/overtime_type/overtime_type_service.dart';
 
 class OvertimeTypeController extends GetxController {
   final OvertimeTypeService overtimeTypeService = OvertimeTypeService();
 
-  final lists = <OvertimeType>[OvertimeType()].obs;
+  var lists = <OvertimeType>[
+    OvertimeType(id: 0, name: 'All'.tr), // Default "All" item
+  ].obs;
   final isLoading = false.obs;
 
   @override
@@ -18,7 +20,7 @@ class OvertimeTypeController extends GetxController {
     try {
       isLoading.value = true;
       final fetchedOvertimeType = await overtimeTypeService.getOvertimeType();
-      lists.assignAll(fetchedOvertimeType);
+      lists.addAll(fetchedOvertimeType);
     } catch (e) {
       isLoading.value = false;
     } finally {

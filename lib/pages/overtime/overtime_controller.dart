@@ -56,9 +56,19 @@ class OvertimeController extends GetxController {
 
     queryParameters.update((params) {
       final rangeDate = '${year.value}-01-01~${year.value}-12-31';
-      params?.filters = jsonEncode([
+      final filters = [
         {'field': 'date', 'operator': 'contains', 'value': rangeDate},
-      ]);
+      ];
+      // Add overtimeType filter only if it's not 0
+      if (overtimeType.value != 0) {
+        filters.add({
+          'field': 'overtimeTypeId',
+          'operator': 'eq',
+          'value': overtimeType.value.toString()
+        });
+      }
+
+      params?.filters = jsonEncode(filters);
     });
 
     try {
