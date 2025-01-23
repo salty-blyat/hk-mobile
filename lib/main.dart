@@ -16,6 +16,7 @@ import 'package:staff_view_ui/pages/absent_exception/absent_exception_screen.dar
 import 'package:staff_view_ui/pages/delegate/delegate_screen.dart';
 import 'package:staff_view_ui/pages/document/document_screen.dart';
 import 'package:staff_view_ui/pages/exception/exception_screen.dart';
+import 'package:staff_view_ui/pages/exception/operation/exception_operation_screen.dart';
 import 'package:staff_view_ui/pages/leave/leave_screen.dart';
 import 'package:staff_view_ui/pages/menu/menu_screen.dart';
 import 'package:staff_view_ui/pages/notification/notification_screen.dart';
@@ -115,9 +116,8 @@ class MyApp extends StatelessWidget {
                 GetPage(
                     name: '/absent_exception',
                     page: () => const AbsentExceptionScreen()),
-                GetPage(name: '/document', page: () => const DocumentScreen()),
-                GetPage(
-                    name: '/exception', page: () => const ExceptionScreen()),
+                GetPage(name: '/document', page: () => DocumentScreen()),
+                GetPage(name: '/exception', page: () => ExceptionScreen()),
                 GetPage(name: '/leave', page: () => LeaveScreen()),
                 GetPage(name: '/overtime', page: () => OvertimeScreen()),
                 GetPage(name: '/working', page: () => WorkingScreen()),
@@ -136,6 +136,9 @@ class MyApp extends StatelessWidget {
                 GetPage(name: '/request-view', page: () => RequestViewScreen()),
                 GetPage(
                     name: '/notification', page: () => NotificationScreen()),
+                GetPage(
+                    name: '/exception-operation',
+                    page: () => ExceptionOperationScreen()),
               ],
               builder: (context, child) {
                 return MediaQuery(

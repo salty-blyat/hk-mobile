@@ -335,6 +335,7 @@
   "minutes ago": "នាទីមុន",
   "hours ago": "ម៉ោងមុន",
   "days ago": "ថ្ងៃមុន",
+  "weeks ago": "សប្តាហ៍មុន",
   "week ago": "សប្តាហ៍មុន",
   "months ago": "ខែមុន",
   "years ago": "ឆ្នាំមុន",
@@ -347,5 +348,8 @@
   "Later": "ពេលក្រោយ",
   "is available in": "មាននៅក្នុង",
   ".": "។",
-  "Flash": "ពិល"
+  "Flash": "ពិល",
+  "Days": "ថ្ងៃ",
+  "Hours": "ម៉ោង",
+  "Select Date & Time": "ជ្រើសថ្ងៃនិងម៉ោង"
 }

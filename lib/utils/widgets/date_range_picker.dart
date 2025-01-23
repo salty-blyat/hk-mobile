@@ -42,7 +42,14 @@ class DateRangePicker extends StatelessWidget {
       builder: (context, picker, child) {
         return GestureDetector(
           onTap: () {
-            dateRangePicker(context);
+            if (formGroup.control(toDateControlName).disabled &&
+                label == 'From date') {
+              datePicker(context);
+              return;
+            }
+            if (picker.control.enabled) {
+              dateRangePicker(context);
+            }
           },
           child: InputDecorator(
             decoration: InputDecoration(
@@ -82,6 +89,21 @@ class DateRangePicker extends StatelessWidget {
       formGroup.control(fromDateControlName).value = selectedDates.start;
       formGroup.control(toDateControlName).value = selectedDates.end;
       onDateSelected?.call(selectedDates);
+    }
+  }
+
+  Future<void> datePicker(BuildContext context) async {
+    final selectedDates = await showDatePicker(
+      context: context,
+      locale: Get.locale,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+      initialDate:
+          formGroup.control(fromDateControlName).value ?? DateTime.now(),
+    );
+    if (selectedDates != null) {
+      formGroup.control(fromDateControlName).value = selectedDates;
+      formGroup.control(toDateControlName).value = selectedDates;
     }
   }
 }

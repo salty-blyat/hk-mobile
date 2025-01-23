@@ -189,6 +189,9 @@ class AppTheme {
             ),
           ),
         ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+        ),
       ),
       dropdownMenuTheme: DropdownMenuThemeData(
         textStyle: style.copyWith(fontSize: 14.0),

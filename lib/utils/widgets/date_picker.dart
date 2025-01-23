@@ -9,6 +9,7 @@ class DatePicker extends StatelessWidget {
   final DateTime firstDate;
   final DateTime lastDate;
   final String dateFormat;
+  final String label;
   final Widget Function(
       BuildContext, ReactiveDatePickerDelegate<DateTime>, Widget?)? builder;
 
@@ -19,8 +20,9 @@ class DatePicker extends StatelessWidget {
     required this.formControlName,
     required this.firstDate,
     required this.lastDate,
-    this.dateFormat = 'dd-MM-yyyy', // Default date format
-    this.builder = _defaultPicker, // Default builder
+    this.dateFormat = 'dd-MM-yyyy',
+    this.builder,
+    this.label = 'Date',
   });
 
   @override
@@ -29,11 +31,11 @@ class DatePicker extends StatelessWidget {
       formControlName: formControlName,
       firstDate: firstDate,
       lastDate: lastDate,
-      builder: builder!,
+      builder: builder ?? _defaultPicker,
     );
   }
 
-  static Widget _defaultPicker(BuildContext context,
+  Widget _defaultPicker(BuildContext context,
       ReactiveDatePickerDelegate<DateTime> picker, Widget? child) {
     return GestureDetector(
       onTap: () {
@@ -43,7 +45,7 @@ class DatePicker extends StatelessWidget {
       },
       child: InputDecorator(
         decoration: InputDecoration(
-          labelText: 'Date'.tr,
+          labelText: label.tr,
           suffixIcon: const Icon(CupertinoIcons.calendar),
           fillColor: Colors.grey.shade200,
           filled: !picker.control.enabled,

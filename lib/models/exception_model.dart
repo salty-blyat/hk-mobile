@@ -17,11 +17,11 @@ class ExceptionModel extends BaseModel {
   final String? attachmentString;
   final int? scanType;
   final String? scanTime;
-  final String? date;
-  final int? duration;
-  final int? totalDays;
+  final DateTime? date;
+  final double? duration;
+  final double? totalDays;
   final int? absentType;
-  final int? totalHours;
+  final double? totalHours;
   final String? exceptionTypeName;
   final String? staffName;
   final String? staffCode;
