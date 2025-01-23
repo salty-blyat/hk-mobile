@@ -126,17 +126,18 @@ class DrawerWidget extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                    leading: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: const Icon(CupertinoIcons.globe,
-                          color: Colors.black87),
+                  leading: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(4),
                     ),
-                    title: Text('Language'.tr),
-                    onTap: () => Modal.showLanguageDialog()),
+                    child:
+                        const Icon(CupertinoIcons.globe, color: Colors.black87),
+                  ),
+                  title: Text('Language'.tr),
+                  onTap: () => Modal.showLanguageDialog(),
+                ),
                 ListTile(
                   leading: Container(
                     padding: const EdgeInsets.all(4),
@@ -165,7 +166,8 @@ class DrawerWidget extends StatelessWidget {
                   ),
                   title: Text('Logout'.tr),
                   onTap: () {
-                    authController.logout();
+                    Navigator.of(context).pop();
+                    Modal.showLogoutDialog();
                   },
                 ),
               ],

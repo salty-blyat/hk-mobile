@@ -12,20 +12,23 @@ class MyFormField<T> extends StatelessWidget {
   final int? maxLines;
   final String? controlName;
   final bool enableSuggestions;
-  final bool Function(AbstractControl<dynamic> control)?
-      showErrors; // Callback for custom error logic
-  const MyFormField(
-      {super.key,
-      required this.label,
-      this.icon,
-      this.disabled = false,
-      this.password = false,
-      this.validator,
-      this.controller,
-      this.maxLines = 1,
-      this.controlName,
-      this.enableSuggestions = false,
-      this.showErrors});
+  final bool Function(AbstractControl<dynamic> control)? showErrors;
+  final void Function(FormControl<T>)? onChanged;
+
+  const MyFormField({
+    super.key,
+    required this.label,
+    this.icon,
+    this.disabled = false,
+    this.password = false,
+    this.validator,
+    this.controller,
+    this.maxLines = 1,
+    this.controlName,
+    this.enableSuggestions = false,
+    this.showErrors,
+    this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,48 +41,55 @@ class MyFormField<T> extends StatelessWidget {
 
   Widget _buildFormField(
       BuildContext context, RxBool isPasswordVisible, RxBool isDisabled) {
-    return ReactiveTextField<T>(
-      maxLines: password ? 1 : maxLines,
-      controller: controller,
-      validationMessages: {
-        ValidationMessage.required: (_) => 'Input is required!'.tr,
-      },
-      formControlName: controlName,
-      obscureText: password ? !isPasswordVisible.value : false,
-      enableSuggestions: enableSuggestions,
-      autocorrect: false,
-      showErrors: showErrors ??
-          (control) => control.invalid && (control.dirty || control.touched),
-      decoration: InputDecoration(
-        prefix: Padding(
-          padding: const EdgeInsetsDirectional.symmetric(horizontal: 4.0),
-          child: icon != null
-              ? Icon(
-                  icon,
-                  size: 18,
-                  color: isDisabled.value ? Colors.grey[600] : null,
+    return SizedBox(
+      height: context.height * 0.07,
+      child: ReactiveTextField<T>(
+        maxLines: password ? 1 : maxLines,
+        controller: controller,
+        validationMessages: {
+          ValidationMessage.required: (_) => 'Input is required!'.tr,
+        },
+        formControlName: controlName,
+        obscureText: password ? !isPasswordVisible.value : false,
+        enableSuggestions: enableSuggestions,
+        autocorrect: false,
+        showErrors: showErrors,
+        onChanged: onChanged,
+        textInputAction: TextInputAction.next,
+        decoration: InputDecoration(
+          prefix: Padding(
+            padding: const EdgeInsetsDirectional.symmetric(horizontal: 4.0),
+            child: icon != null
+                ? Icon(
+                    icon,
+                    size: 18,
+                    color: isDisabled.value ? Colors.grey[600] : null,
+                  )
+                : null,
+          ),
+          labelText: label.tr,
+          labelStyle: context.textTheme.bodyMedium!.copyWith(
+            color: Colors.black,
+            fontWeight: FontWeight.normal,
+          ),
+          filled: isDisabled.value,
+          helperStyle: const TextStyle(height: 0.7),
+          errorStyle: const TextStyle(height: 0.7),
+
+          fillColor: isDisabled.value ? Colors.grey[200] : null,
+          // prefixIconColor: isDisabled.value ? Colors.grey[600] : null,
+          suffixIcon: password
+              ? IconButton(
+                  icon: Icon(isPasswordVisible.value
+                      ? Icons.visibility_off
+                      : Icons.visibility),
+                  onPressed: () {
+                    isPasswordVisible.value = !isPasswordVisible.value;
+                  },
+                  iconSize: 18,
                 )
               : null,
         ),
-        labelText: label.tr,
-        labelStyle: context.textTheme.bodyMedium!.copyWith(
-          color: Colors.black,
-          fontWeight: FontWeight.normal,
-        ),
-        filled: isDisabled.value,
-        fillColor: isDisabled.value ? Colors.grey[200] : null,
-        // prefixIconColor: isDisabled.value ? Colors.grey[600] : null,
-        suffixIcon: password
-            ? IconButton(
-                icon: Icon(isPasswordVisible.value
-                    ? Icons.visibility_off
-                    : Icons.visibility),
-                onPressed: () {
-                  isPasswordVisible.value = !isPasswordVisible.value;
-                },
-                iconSize: 18,
-              )
-            : null,
       ),
     );
   }

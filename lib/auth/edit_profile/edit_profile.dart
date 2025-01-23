@@ -79,32 +79,34 @@ class EditUser extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 32),
-              MyFormField(
+              MyFormField<String>(
                 controlName: 'name',
                 label: 'Username'.tr,
                 icon: CupertinoIcons.person_alt_circle,
                 disabled: controller.formGroup.control('name').disabled,
               ),
               const SizedBox(height: 16),
-              MyFormField(
+              MyFormField<String>(
                 controlName: 'fullName',
                 label: 'Full Name'.tr,
                 icon: CupertinoIcons.person,
                 disabled: controller.formGroup.control('fullName').disabled,
               ),
               const SizedBox(height: 16),
-              MyFormField(
+              MyFormField<String>(
                 controlName: 'phone',
                 label: 'Phone Number'.tr,
                 icon: CupertinoIcons.phone,
                 disabled: controller.formGroup.control('phone').disabled,
+                showErrors: (control) => control.invalid && control.dirty,
               ),
               const SizedBox(height: 16),
-              MyFormField(
+              MyFormField<String>(
                 controlName: 'email',
                 label: 'Email'.tr,
                 icon: CupertinoIcons.mail,
                 disabled: controller.formGroup.control('email').disabled,
+                showErrors: (control) => control.invalid && control.dirty,
               ),
             ],
           ),

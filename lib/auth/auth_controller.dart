@@ -52,7 +52,7 @@ class AuthController extends GetxController {
       }
     } catch (e) {
       Get.back();
-      error.value = 'Check your username or password';
+      error.value = 'Username or Password is Incorrect';
     } finally {
       loading.value = false;
     }

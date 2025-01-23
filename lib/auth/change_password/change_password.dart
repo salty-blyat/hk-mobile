@@ -103,6 +103,7 @@ class ChangePassword extends StatelessWidget {
                 password: true,
                 label: 'Confirm Password'.tr,
                 icon: CupertinoIcons.lock,
+                showErrors: (control) => control.invalid && control.dirty,
               ),
             ],
           ),

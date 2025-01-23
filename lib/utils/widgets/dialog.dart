@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:staff_view_ui/auth/auth_controller.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/pages/app-info/app_info_operation_screen.dart';
@@ -39,7 +40,7 @@ class Modal {
                   ],
                 ),
                 MyButton(
-                  label: 'Ok'.tr,
+                  label: 'OK'.tr,
                   onPressed: () {
                     Navigator.of(Get.context!).pop();
                   },
@@ -221,6 +222,77 @@ class Modal {
           ),
         ),
       ),
+    );
+  }
+
+  static showLogoutDialog() {
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Logout'.tr,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  Text(
+                    'Are you sure to logout?'.tr,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: MyButton(
+                          label: 'Cancel'.tr.toUpperCase(),
+                          color: AppTheme.secondaryColor,
+                          textColor: Colors.black,
+                          onPressed: Get.back, // Closes the dialog
+                        ),
+                      ),
+                      const SizedBox(width: 24), // Space between buttons
+                      Expanded(
+                        child: MyButton(
+                          label: 'Ok'.tr.toUpperCase(),
+                          color: AppTheme.dangerColor,
+                          onPressed: () {
+                            Get.back(); // Close the dialog
+                            loadingDialog();
+                            AuthController().logout();
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              right: 0,
+              child: IconButton(
+                icon: const Icon(CupertinoIcons.clear),
+                onPressed: Get.back, // Close the dialog
+              ),
+            )
+          ],
+        ),
+      ),
+      barrierDismissible: true,
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/auth/change_password/change_password_service.dart';
+import 'package:staff_view_ui/helpers/common_validators.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
@@ -17,18 +18,20 @@ class ChangePasswordController extends GetxController {
     'name': FormControl<String>(disabled: true),
     'oldPassword': FormControl<String>(
       value: null,
-      validators: [Validators.required],
+      validators: [Validators.delegate(CommonValidators.required)],
     ),
     'newPassword': FormControl<String>(
       value: null,
-      validators: [Validators.required],
+      validators: [Validators.delegate(CommonValidators.required)],
     ),
     'confirmPassword': FormControl<String>(
       value: null,
-      validators: [Validators.required],
+      validators: [Validators.delegate(CommonValidators.required)],
     ),
   }, [
-    Validators.mustMatch('newPassword', 'confirmPassword', markAsDirty: false),
+    Validators.delegate(CommonValidators.mustMatch(
+        'newPassword', 'confirmPassword',
+        markAsDirty: false)),
   ]);
   final isPasswordVisible = false.obs;
   final isConfirmPasswordVisible = false.obs;
