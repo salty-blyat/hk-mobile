@@ -42,7 +42,7 @@ class MyFormField<T> extends StatelessWidget {
   Widget _buildFormField(
       BuildContext context, RxBool isPasswordVisible, RxBool isDisabled) {
     return SizedBox(
-      height: context.height * 0.07,
+      height: 72,
       child: ReactiveTextField<T>(
         maxLines: password ? 1 : maxLines,
         controller: controller,
@@ -73,8 +73,8 @@ class MyFormField<T> extends StatelessWidget {
             fontWeight: FontWeight.normal,
           ),
           filled: isDisabled.value,
-          helperStyle: const TextStyle(height: 0.7),
-          errorStyle: const TextStyle(height: 0.7),
+          helperStyle: const TextStyle(height: 0.8),
+          errorStyle: const TextStyle(height: 0.8),
 
           fillColor: isDisabled.value ? Colors.grey[200] : null,
           // prefixIconColor: isDisabled.value ? Colors.grey[600] : null,

@@ -19,95 +19,98 @@ class ChangePassword extends StatelessWidget {
       appBar: AppBar(
         title: Text('Change Password'.tr),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: ReactiveForm(
-          formGroup: controller.formGroup,
-          child: Column(
-            children: [
-              const SizedBox(height: 16),
-              Obx(
-                () => Container(
-                  height: 84,
-                  width: 84,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  child: controller.info.value?.profile?.isNotEmpty == true
-                      ? CircleAvatar(
-                          child: ClipOval(
-                            child: Image.network(
-                              controller.info.value!.profile!,
-                              fit: BoxFit.cover,
-                              height: 84,
-                              width: 84,
-                            ),
+      body: Obx(
+        () => controller.loading.value
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: ReactiveForm(
+                  formGroup: controller.formGroup,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 16),
+                      Obx(
+                        () => Container(
+                          height: 84,
+                          width: 84,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(100),
                           ),
-                        )
-                      : CircleAvatar(
-                          backgroundColor:
-                              AppTheme.primaryColor.withOpacity(0.8),
+                          child: controller.info.value?.profile?.isNotEmpty ==
+                                  true
+                              ? CircleAvatar(
+                                  child: ClipOval(
+                                    child: Image.network(
+                                      controller.info.value!.profile!,
+                                      fit: BoxFit.cover,
+                                      height: 84,
+                                      width: 84,
+                                    ),
+                                  ),
+                                )
+                              : CircleAvatar(
+                                  backgroundColor:
+                                      AppTheme.primaryColor.withOpacity(0.8),
+                                  child: Text(
+                                    controller.info.value?.fullName
+                                            ?.substring(0, 1)
+                                            .toUpperCase() ??
+                                        '',
+                                    style: const TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Obx(
+                        () => Center(
                           child: Text(
-                            controller.info.value?.fullName
-                                    ?.substring(0, 1)
-                                    .toUpperCase() ??
-                                '',
+                            controller.info.value?.fullName ?? '',
                             style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              fontSize: 18,
+                              color: Colors.black,
                             ),
                           ),
                         ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Obx(
-                () => Center(
-                  child: Text(
-                    controller.info.value?.fullName ?? '',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
-                    ),
+                      ),
+                      const SizedBox(
+                        height: 32,
+                      ),
+                      MyFormField<String>(
+                        controlName: 'name',
+                        label: 'Username'.tr,
+                        icon: CupertinoIcons.person_alt_circle,
+                        disabled: controller.formGroup.control('name').disabled,
+                      ),
+                      MyFormField<String>(
+                        controlName: 'oldPassword',
+                        password: true,
+                        label: 'Old Password'.tr,
+                        icon: CupertinoIcons.lock,
+                      ),
+                      MyFormField<String>(
+                        controlName: 'newPassword',
+                        label: 'New Password'.tr,
+                        password: true,
+                        icon: CupertinoIcons.lock,
+                      ),
+                      MyFormField<String>(
+                        controlName: 'confirmPassword',
+                        password: true,
+                        label: 'Confirm Password'.tr,
+                        icon: CupertinoIcons.lock,
+                        showErrors: (control) =>
+                            control.invalid && control.dirty,
+                      ),
+                    ],
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 32,
-              ),
-              MyFormField<String>(
-                controlName: 'name',
-                label: 'Username'.tr,
-                icon: CupertinoIcons.person_alt_circle,
-                disabled: controller.formGroup.control('name').disabled,
-              ),
-              const SizedBox(height: 16),
-              MyFormField<String>(
-                controlName: 'oldPassword',
-                password: true,
-                label: 'Old Password'.tr,
-                icon: CupertinoIcons.lock,
-              ),
-              const SizedBox(height: 16),
-              MyFormField<String>(
-                controlName: 'newPassword',
-                label: 'New Password'.tr,
-                password: true,
-                icon: CupertinoIcons.lock,
-              ),
-              const SizedBox(height: 16),
-              MyFormField<String>(
-                controlName: 'confirmPassword',
-                password: true,
-                label: 'Confirm Password'.tr,
-                icon: CupertinoIcons.lock,
-                showErrors: (control) => control.invalid && control.dirty,
-              ),
-            ],
-          ),
-        ),
       ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.only(

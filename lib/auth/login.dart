@@ -20,8 +20,7 @@ class LoginScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       bottomNavigationBar: Padding(
         padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom +
-              24, // Dynamic padding above keyboard
+          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
           left: 16,
           right: 16,
         ),
@@ -38,7 +37,8 @@ class LoginScreen extends StatelessWidget {
         }),
       ),
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        scrolledUnderElevation: 0,
+        backgroundColor: Colors.white,
         actions: [
           IconButton(
             onPressed: () {
@@ -48,7 +48,7 @@ class LoginScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: SafeArea(
+      body: SingleChildScrollView(
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () {
@@ -97,7 +97,7 @@ class LoginScreen extends StatelessWidget {
                       controller.error.value = '';
                     },
                   ),
-                  const SizedBox(height: 8),
+
                   MyFormField(
                     icon: CupertinoIcons.lock,
                     password: true,
@@ -107,6 +107,7 @@ class LoginScreen extends StatelessWidget {
                       if (value == null || value.isEmpty) {
                         return '';
                       }
+
                       return null;
                     },
                     onChanged: (value) {

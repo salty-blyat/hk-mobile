@@ -27,8 +27,13 @@ class OvertimeOperationScreen extends StatelessWidget {
       controller.find(id);
     }
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+          left: 16,
+          right: 16,
+        ),
         child: Obx(() {
           return MyButton(
             label: 'Submit',
@@ -49,6 +54,7 @@ class OvertimeOperationScreen extends StatelessWidget {
             fontFamilyFallback: ['Gilroy', 'Kantumruy'],
           ),
         ),
+        scrolledUnderElevation: 0,
         backgroundColor: Colors.white,
         leading: IconButton(
           onPressed: () => Get.back(),

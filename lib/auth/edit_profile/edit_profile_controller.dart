@@ -57,6 +57,7 @@ class EditUserController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    getUserInfo();
     formGroup.valueChanges.listen((value) {
       formValid.value = formGroup.valid;
     });
@@ -121,6 +122,7 @@ class EditUserController extends GetxController {
 
   Future<void> getUserInfo() async {
     loading.value = true;
+
     try {
       var response = await _editProfileService.getUserInfo();
 
@@ -128,7 +130,7 @@ class EditUserController extends GetxController {
       setFormValue(userInfo);
       info.value = userInfo;
     } catch (e) {
-      print('Error: $e');
+      print('Error fetching user info: $e');
     } finally {
       loading.value = false;
     }

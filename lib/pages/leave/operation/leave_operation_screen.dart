@@ -30,8 +30,13 @@ class LeaveOperationScreen extends StatelessWidget {
     }
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+          left: 16,
+          right: 16,
+        ),
         child: Obx(() {
           return MyButton(
             label: 'Submit',
@@ -45,6 +50,7 @@ class LeaveOperationScreen extends StatelessWidget {
         }),
       ),
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         title: Text(
           'Leave Request'.tr,
           style: context.textTheme.titleLarge?.copyWith(

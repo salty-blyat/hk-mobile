@@ -101,7 +101,7 @@ class ChangePasswordController extends GetxController {
       formGroup.patchValue({'name': userInfo.name});
       info.value = userInfo;
     } catch (e) {
-      print('Error reading from local storage: $e');
+      print(e);
     } finally {
       loading.value = false;
     }

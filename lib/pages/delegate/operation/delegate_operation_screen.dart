@@ -5,7 +5,6 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/pages/delegate/operation/delegate_operation_controller.dart';
 import 'package:staff_view_ui/pages/staff/staff_select.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
-import 'package:staff_view_ui/utils/widgets/date_picker.dart';
 import 'package:staff_view_ui/utils/widgets/date_range_picker.dart';
 
 class DelegateOperationScreen extends StatelessWidget {
@@ -23,8 +22,13 @@ class DelegateOperationScreen extends StatelessWidget {
     }
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+          left: 16,
+          right: 16,
+        ),
         child: Obx(() {
           return MyButton(
             label: 'Save',
