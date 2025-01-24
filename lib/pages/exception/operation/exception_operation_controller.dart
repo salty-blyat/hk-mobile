@@ -123,6 +123,7 @@ class ExceptionOperationController extends GetxController {
   void updateExceptionType(int value) {
     formGroup.control('exceptionTypeId').value = value;
     exceptionTypeId.value = value;
+    disableForm();
   }
 
   void updateTotalDays(double value) {
@@ -130,6 +131,7 @@ class ExceptionOperationController extends GetxController {
   }
 
   void setFormValue(ExceptionModel exception) {
+    exceptionTypeId.value = exception.exceptionTypeId!;
     formGroup.patchValue({
       'id': exception.id,
       'requestNo': exception.requestNo,
@@ -141,11 +143,12 @@ class ExceptionOperationController extends GetxController {
       'approverId': exception.approverId,
       'exceptionTypeId': exception.exceptionTypeId,
       'scanType': exception.scanType,
-      'scanTime': exception.scanTime,
+      'scanTime': exception.scanTime?.toLocal(),
       'duration': exception.duration,
       'totalDays':
           exception.totalDays! < 1 ? exception.totalHours : exception.totalDays,
       'totalHours': exception.totalHours,
+      'absentType': exception.absentType,
     });
     formGroup.control('attachments').value = [
       {
@@ -157,6 +160,28 @@ class ExceptionOperationController extends GetxController {
     filePickerController.isImage.value =
         Const.isImage(exception.attachments?.first.url ?? '');
     filePickerController.attachments.value = exception.attachments ?? [];
+  }
+
+  disableForm() {
+    if (exceptionTypeId.value == EXCEPTION_TYPE.ABSENT_EXCEPTION.value) {
+      formGroup.control('scanType').markAsDisabled();
+      formGroup.control('scanTime').markAsDisabled();
+      formGroup.control('terminalId').markAsDisabled();
+      formGroup.control('totalDays').markAsEnabled();
+      formGroup.control('totalHours').markAsEnabled();
+      formGroup.control('absentType').markAsEnabled();
+      formGroup.control('fromDate').markAsEnabled();
+      formGroup.control('toDate').markAsEnabled();
+    } else if (exceptionTypeId.value == EXCEPTION_TYPE.MISS_SCAN.value) {
+      formGroup.control('scanType').markAsEnabled();
+      formGroup.control('scanTime').markAsEnabled();
+      formGroup.control('terminalId').markAsEnabled();
+      formGroup.control('totalDays').markAsDisabled();
+      formGroup.control('totalHours').markAsDisabled();
+      formGroup.control('absentType').markAsDisabled();
+      formGroup.control('fromDate').markAsDisabled();
+      formGroup.control('toDate').markAsDisabled();
+    }
   }
 
   Future<void> submit() async {
@@ -171,53 +196,51 @@ class ExceptionOperationController extends GetxController {
       formGroup.control('absentType').value = 0;
       formGroup.control('fromDate').value = formGroup.control('scanTime').value;
       formGroup.control('toDate').value = formGroup.control('scanTime').value;
-      formGroup.control('scanTime').value =
-          formGroup.control('scanTime').value.toIso8601String();
     }
     formGroup.control('requestedDate').value = DateTime.now();
 
-    // try {
-    if (unit.value == '1') {
-      formGroup.control('totalHours').value = 0.0;
-    } else {
-      var dayField = formGroup.control('totalDays').value;
-      formGroup.control('totalHours').value = dayField;
-      dayField = dayField / 8;
-      formGroup.control('totalDays').value = dayField;
+    try {
+      if (unit.value == '1') {
+        formGroup.control('totalHours').value = 0.0;
+      } else {
+        var dayField = formGroup.control('totalDays').value;
+        formGroup.control('totalHours').value = dayField;
+        dayField = dayField / 8;
+        formGroup.control('totalDays').value = dayField;
+      }
+
+      // Show loading dialog
+      Modal.loadingDialog();
+
+      var model = {
+        'requestedDate': formGroup.control('date').value.toIso8601String(),
+        'fromDate': formGroup.control('fromDate').value.toIso8601String(),
+        'toDate': formGroup.control('toDate').value.toIso8601String(),
+        'date': formGroup.control('toDate').value.toIso8601String(),
+        'scanTime': formGroup.control('scanTime').value?.toIso8601String(),
+      };
+
+      if (id.value == 0) {
+        await exceptionService.add(
+            ExceptionModel.fromJson({...formGroup.rawValue, ...model}),
+            ExceptionModel.fromJson);
+      } else {
+        await exceptionService.edit(
+            ExceptionModel.fromJson(
+                {...formGroup.rawValue, ...model, 'id': id.value}),
+            ExceptionModel.fromJson);
+      }
+
+      // Close the loading dialog
+      Get.back(); // Navigate back or close extra layers if needed
+      Get.back(); // Navigate back or close extra layers if needed
+    } catch (e) {
+      print(e);
+      // Handle specific errors if necessary
+    } finally {
+      // Ensure the loading dialog is dismissed
+      // Modal.closeLoadingDialog();
     }
-
-    // Show loading dialog
-    Modal.loadingDialog();
-
-    var model = {
-      'requestedDate': formGroup.control('date').value.toIso8601String(),
-      'fromDate': formGroup.control('fromDate').value.toIso8601String(),
-      'toDate': formGroup.control('toDate').value.toIso8601String(),
-      'date': formGroup.control('toDate').value.toIso8601String(),
-    };
-    print(formGroup.rawValue);
-
-    if (id.value == 0) {
-      await exceptionService.add(
-          ExceptionModel.fromJson({...formGroup.rawValue, ...model}),
-          ExceptionModel.fromJson);
-    } else {
-      await exceptionService.edit(
-          ExceptionModel.fromJson(
-              {...formGroup.rawValue, ...model, 'id': id.value}),
-          ExceptionModel.fromJson);
-    }
-
-    // Close the loading dialog
-    Get.back(); // Navigate back or close extra layers if needed
-    Get.back(); // Navigate back or close extra layers if needed
-    // } catch (e) {
-    //   print(e);
-    //   // Handle specific errors if necessary
-    // } finally {
-    //   // Ensure the loading dialog is dismissed
-    //   // Modal.closeLoadingDialog();
-    // }
   }
 
   void calculateTotalDays() {

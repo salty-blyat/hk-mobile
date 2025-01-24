@@ -26,7 +26,9 @@ ExceptionModel _$ExceptionModelFromJson(Map<String, dynamic> json) =>
           .toList(),
       attachmentString: json['attachmentString'] as String?,
       scanType: (json['scanType'] as num?)?.toInt(),
-      scanTime: json['scanTime'] as String?,
+      scanTime: json['scanTime'] == null
+          ? null
+          : DateTime.parse(json['scanTime'] as String),
       date:
           json['date'] == null ? null : DateTime.parse(json['date'] as String),
       duration: (json['duration'] as num?)?.toDouble(),
@@ -76,7 +78,7 @@ Map<String, dynamic> _$ExceptionModelToJson(ExceptionModel instance) =>
       'attachments': instance.attachments,
       'attachmentString': instance.attachmentString,
       'scanType': instance.scanType,
-      'scanTime': instance.scanTime,
+      'scanTime': instance.scanTime?.toIso8601String(),
       'date': instance.date?.toIso8601String(),
       'duration': instance.duration,
       'totalDays': instance.totalDays,

@@ -16,7 +16,6 @@ class WorkingController extends GetxController {
     try {
       isLoading.value = true;
       working.value = await workingService.getWorking();
-      print('Working: ${working.value}');
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;

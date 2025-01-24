@@ -16,7 +16,7 @@ class ExceptionModel extends BaseModel {
   final List<Attachment>? attachments;
   final String? attachmentString;
   final int? scanType;
-  final String? scanTime;
+  final DateTime? scanTime;
   final DateTime? date;
   final double? duration;
   final double? totalDays;

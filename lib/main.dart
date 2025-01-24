@@ -27,6 +27,7 @@ import 'package:staff_view_ui/pages/request/request_screen.dart';
 import 'package:staff_view_ui/pages/request/view/request_view_screen.dart';
 import 'package:staff_view_ui/pages/scan/scan-check/scan_check_screen.dart';
 import 'package:staff_view_ui/pages/scan/scan_screen.dart';
+import 'package:staff_view_ui/pages/working/history/history_screen.dart';
 import 'package:staff_view_ui/pages/working/working_screen.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/translation.dart';
@@ -139,6 +140,8 @@ class MyApp extends StatelessWidget {
                 GetPage(
                     name: '/exception-operation',
                     page: () => ExceptionOperationScreen()),
+                GetPage(
+                    name: '/attendance-record', page: () => HistoryScreen()),
               ],
               builder: (context, child) {
                 return MediaQuery(

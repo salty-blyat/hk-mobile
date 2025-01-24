@@ -25,33 +25,28 @@ class WorkingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // floatingActionButton: FloatingActionButton(
-      //   shape: RoundedRectangleBorder(
-      //     borderRadius: BorderRadius.circular(100),
-      //   ),
-      //   onPressed: () {
-      //     // TODO: Implement download functionality
-      //   },
-      //   child: const Icon(CupertinoIcons.clock),
-      // ),
       appBar: AppBar(
-        title: Text('Worksheet'.tr),
         actions: [
           TextButton(
             onPressed: () {
               // TODO: Implement download functionality
             },
-            child: const Row(
+            child: Row(
               children: [
-                // Text('History'.tr,
-                //     style: const TextStyle(
-                //         color: Colors.white,
-                //         fontSize: 16,
-                //         fontWeight: FontWeight.bold,
-                //         fontFamilyFallback: ['Gilroy', 'Kantumruy'])),
-                SizedBox(width: 5),
-                Icon(CupertinoIcons.arrow_down_circle,
+                const Icon(CupertinoIcons.arrow_down_circle,
                     size: 24, color: Colors.white),
+                const SizedBox(width: 16),
+                TextButton(
+                  onPressed: () {
+                    Get.toNamed('/attendance-record');
+                  },
+                  child: Text('History'.tr,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontFamilyFallback: ['Gilroy', 'Kantumruy'])),
+                ),
               ],
             ),
           ),
