@@ -263,6 +263,9 @@ class ExceptionOperationScreen extends StatelessWidget {
           formGroup: controller.formGroup,
           fromDateControlName: 'fromDate',
           toDateControlName: 'toDate',
+          onDateSelected: (dateRange) {
+            controller.calculateTotalDays();
+          },
         ),
         const SizedBox(
           height: 16,

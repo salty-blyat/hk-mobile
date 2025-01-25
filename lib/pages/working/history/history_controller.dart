@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
 import 'package:staff_view_ui/models/attendance_record_model.dart';
@@ -52,6 +54,7 @@ class HistoryController extends GetxController {
       'operators': 'contains',
       'value': '${year.value}-01-01 ~ ${year.value}-12-31'
     });
+    queryParam.value.filters = jsonEncode(filters);
     final result = await attendanceRecordService.search(queryParam.value);
     lists.value = result.results as List<AttendanceRecordModel>;
     loading.value = false;

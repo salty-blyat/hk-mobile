@@ -6,6 +6,7 @@ import 'package:staff_view_ui/models/attendance_record_model.dart';
 import 'package:staff_view_ui/pages/working/history/history_controller.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
 import 'package:staff_view_ui/utils/khmer_date_formater.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/calendar.dart';
 import 'package:staff_view_ui/utils/widgets/tag.dart';
 import 'package:staff_view_ui/utils/widgets/year_select.dart';
@@ -90,7 +91,8 @@ class HistoryScreen extends BaseList<AttendanceRecordModel> {
                   style: const TextStyle(fontSize: 14),
                 ),
                 TextSpan(
-                    text: ' ${DateFormat('h:mm a').format(item.time!)}',
+                    text:
+                        ' ${DateFormat('h:mm a').format(item.time!.toLocal())}',
                     style: const TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
@@ -106,8 +108,10 @@ class HistoryScreen extends BaseList<AttendanceRecordModel> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Tag(
-            color: Colors.black,
-            text: item.checkInOutTypeNameKh!,
+            color: item.checkInOutTypeName!.contains('In')
+                ? AppTheme.successColor
+                : AppTheme.dangerColor,
+            text: item.checkInOutTypeNameKh!.trim(),
           ),
         ],
       ),

@@ -47,17 +47,15 @@ class AppInfoOperationScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
                   MyFormField(
                     controlName: 'coreUrl',
                     label: 'Security URL'.tr,
                   ),
-                  const SizedBox(height: 16),
                   MyFormField(
                     controlName: 'apiUrl',
                     label: 'Pavr URL'.tr,
                   ),
-                  const SizedBox(height: 16),
                   MyFormField(
                     controlName: 'tenant',
                     label: 'Tenant'.tr,

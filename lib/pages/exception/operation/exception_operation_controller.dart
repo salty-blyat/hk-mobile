@@ -126,10 +126,6 @@ class ExceptionOperationController extends GetxController {
     disableForm();
   }
 
-  void updateTotalDays(double value) {
-    formGroup.control('totalDays').value = value;
-  }
-
   void setFormValue(ExceptionModel exception) {
     exceptionTypeId.value = exception.exceptionTypeId!;
     formGroup.patchValue({
@@ -248,7 +244,8 @@ class ExceptionOperationController extends GetxController {
     final toDateControl = formGroup.control('toDate');
     final totalDays =
         toDateControl.value.difference(fromDateControl.value).inDays;
-    formGroup.control('totalDays').value = totalDays;
+    formGroup.control('totalDays').value =
+        double.parse(totalDays.toString()) + 1;
   }
 
   void updateScanTime(DateTime date, TimeOfDay time) {
