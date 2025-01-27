@@ -1,8 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
@@ -13,7 +11,6 @@ import 'package:staff_view_ui/pages/request/operation/request_operation_controll
 import 'package:staff_view_ui/pages/request/operation/request_reject.dart';
 import 'package:staff_view_ui/pages/request/request_service.dart';
 import 'package:staff_view_ui/pages/request/operation/request_undo.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 enum RequestType {
   leave(1),
@@ -117,15 +114,14 @@ class RequestViewController extends GetxController {
     return false;
   }
 
-  void showApproveDialog(BuildContext context, int requestStatus, int id) {
-    showModalBottomSheet(
+  void showApproveDialog(
+      BuildContext context, int requestStatus, int id) async {
+    final result = await showModalBottomSheet(
       context: context,
-      isScrollControlled: true, // Enables full-screen height adjustments
-      backgroundColor: Colors
-          .transparent, // Makes the modal background match the top rounded corners
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
         return Padding(
-          // Adjusts padding for the keyboard
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Container(
@@ -137,10 +133,10 @@ class RequestViewController extends GetxController {
               ),
             ),
             child: DraggableScrollableSheet(
-              initialChildSize: 0.4, // Initial height (40% of screen)
-              minChildSize: 0.2, // Minimum height (20% of screen)
-              maxChildSize: 0.8, // Maximum height (80% of screen)
-              expand: false, // Prevents full screen expansion
+              initialChildSize: 0.4,
+              minChildSize: 0.2,
+              maxChildSize: 0.8,
+              expand: false,
               builder:
                   (BuildContext context, ScrollController scrollController) {
                 return SingleChildScrollView(
@@ -148,7 +144,6 @@ class RequestViewController extends GetxController {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Handle at the top center
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
@@ -178,6 +173,16 @@ class RequestViewController extends GetxController {
         );
       },
     );
+
+    // You can perform actions when the modal is closed here
+    if (result != null) {
+      // This block will execute when modal is closed and a result is returned
+      print("Modal closed with result: $result");
+    } else {
+      Get.delete<RequestOperationController>();
+      // This block will execute if the modal is closed without a result (via pop without data)
+      print("Modal was closed without a result.");
+    }
   }
 
   @override
