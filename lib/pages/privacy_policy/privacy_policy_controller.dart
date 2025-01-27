@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/app_setting.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -10,6 +11,14 @@ class PrivacyPolicyController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    webViewController = WebViewController()..loadRequest(Uri.parse(privacyUrl));
+    webViewController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(Colors.white)
+      ..setNavigationDelegate(NavigationDelegate(
+        onProgress: (int progress) {
+          // Update loading bar.
+        },
+      ))
+      ..loadRequest(Uri.parse(privacyUrl));
   }
 }

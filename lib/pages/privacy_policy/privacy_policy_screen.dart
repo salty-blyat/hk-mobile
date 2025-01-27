@@ -14,10 +14,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Privacy Policy'.tr),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 0),
-        child: WebViewWidget(controller: controller.webViewController),
-      ),
+      body: WebViewWidget(controller: controller.webViewController),
     );
   }
 }

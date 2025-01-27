@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/const.dart';
@@ -85,9 +84,10 @@ class MenusController extends GetxController {
       'icon': CupertinoIcons.doc_plaintext,
       'route': '/document',
       'badge': 0,
-      'isShow': false,
+      'isShow': true,
     },
   ].obs;
+
   @override
   void onInit() async {
     super.onInit();
