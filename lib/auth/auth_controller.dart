@@ -46,7 +46,6 @@ class AuthController extends GetxController {
     );
     if (response.statusCode == 200) {
       ClientInfo info = ClientInfo.fromJson(response.data);
-      _firebaseService.handlePassToken();
       if (info.mfaRequired == true) {
         Get.snackbar('MFA', response.data['message']);
         Get.toNamed('/verify-mfa', arguments: {
@@ -57,6 +56,7 @@ class AuthController extends GetxController {
       if (info.changePasswordRequired == true) {
         Get.offAllNamed('/change-password');
       } else {
+        _firebaseService.handlePassToken();
         _authService.saveToken(info);
         Get.offAllNamed('/menu');
       }

@@ -42,7 +42,7 @@ class AuthService {
     setOptions(false);
 
     final response = await dioClient.post(
-      '/auth/verify-mfa',
+      '/auth/mfa',
       data: map,
       options: dio.Options(
         headers: dioClient.options.headers,
