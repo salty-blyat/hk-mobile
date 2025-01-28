@@ -92,6 +92,9 @@ class ExceptionOperationScreen extends StatelessWidget {
 
   Widget _buildExceptionTypeButtons(BuildContext context) {
     return Obx(() {
+      final lists = exceptionTypeController.exceptionTypes
+          .where((item) => item.id != 0)
+          .toList();
       if (exceptionTypeController.isLoading.value) {
         return Skeletonizer(
           ignoreContainers: true,
@@ -124,7 +127,7 @@ class ExceptionOperationScreen extends StatelessWidget {
         );
       }
 
-      if (exceptionTypeController.exceptionTypes.isEmpty) {
+      if (lists.isEmpty) {
         return const SizedBox.shrink();
       }
 
@@ -132,9 +135,9 @@ class ExceptionOperationScreen extends StatelessWidget {
         height: 45,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: exceptionTypeController.exceptionTypes.length,
+          itemCount: lists.length,
           itemBuilder: (context, index) {
-            final exceptionType = exceptionTypeController.exceptionTypes[index];
+            final exceptionType = lists[index];
             return Padding(
               padding: const EdgeInsets.only(right: 8),
               child: Obx(() {

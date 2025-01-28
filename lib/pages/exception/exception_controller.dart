@@ -15,12 +15,16 @@ class ExceptionController extends GetxController {
   final lists = <ExceptionModel>[].obs;
   final year = DateTime.now().year.obs;
   final canLoadMore = false.obs;
+  final exceptionTypeId = 0.obs;
   final queryParameters = QueryParam(
     pageIndex: 1,
     pageSize: 25,
     sorts: 'fromDate-',
     filters: '[]',
   ).obs;
+
+  final exceptionType = RxInt(0);
+
   @override
   void onInit() {
     search();
@@ -54,9 +58,17 @@ class ExceptionController extends GetxController {
 
     queryParameters.update((params) {
       final rangeDate = '${year.value}-01-01~${year.value}-12-31';
-      params?.filters = jsonEncode([
+      final filters = [
         {'field': 'fromDate', 'operator': 'contains', 'value': rangeDate},
-      ]);
+      ];
+      if (exceptionType.value != 0) {
+        filters.add({
+          'field': 'exceptionTypeId',
+          'operator': 'eq',
+          'value': exceptionType.value.toString()
+        });
+      }
+      params?.filters = jsonEncode(filters);
     });
 
     try {

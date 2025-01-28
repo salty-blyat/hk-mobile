@@ -27,36 +27,91 @@ class DocumentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          title.tr,
-          style: context.textTheme.titleLarge!.copyWith(color: Colors.white),
+        title: Container(
+          height: 40,
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.1),
+            border: Border.all(color: Colors.white.withOpacity(0.1)),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: SearchBar(
+            textStyle: WidgetStateProperty.all(
+              const TextStyle(
+                color: Colors.white,
+                fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+                fontSize: 18,
+              ),
+            ),
+            hintText: 'Search'.tr,
+            hintStyle: WidgetStateProperty.all(
+              TextStyle(
+                  color: Colors.white.withOpacity(0.5),
+                  fontSize: 18,
+                  fontFamilyFallback: const ['Gilroy', 'Kantumruy']),
+            ),
+            leading: const Icon(Icons.search),
+            backgroundColor: WidgetStateProperty.all(Colors.transparent),
+            shadowColor: WidgetStateProperty.all(Colors.transparent),
+            shape: WidgetStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onChanged: (value) {
+              controller.searchText.value = value;
+              controller.lists.clear();
+              controller.currentPage = 1;
+              controller.search();
+            },
+          ),
         ),
       ),
-      body: Obx(() {
-        if (isLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (controller.lists.isEmpty) {
-          return const NoData();
-        }
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: controller.lists.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Obx(
-                () => DownloadButton(
-                  text: controller.lists[index].title ?? '',
-                  controller: controller,
-                  link: controller.lists[index].attachment?.url ?? '',
-                  size: controller.lists[index].size ?? '0 B',
-                ),
-              ),
+      body: Column(
+        children: [
+          buildHeaderWidget(),
+          Expanded(child: Obx(() {
+            if (isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (controller.lists.isEmpty) {
+              return const NoData();
+            }
+            return ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: controller.lists.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Obx(
+                    () => DownloadButton(
+                      text: controller.lists[index].title ?? '',
+                      controller: controller,
+                      link: controller.lists[index].attachment?.url ?? '',
+                      size: controller.lists[index].size ?? '0 B',
+                    ),
+                  ),
+                );
+              },
             );
-          },
-        );
-      }),
+          })),
+        ],
+      ),
+    );
+  }
+
+  Widget buildHeaderWidget() {
+    return Container(
+      width: double.infinity,
+      // height: 35,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      padding: const EdgeInsets.only(left: 16),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: headerWidget(),
+      ),
     );
   }
 
@@ -83,8 +138,7 @@ class DownloadButton extends StatelessWidget {
         controller.download(link, text);
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        height: 60,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
@@ -126,31 +180,35 @@ class DownloadButton extends StatelessWidget {
                   color: Theme.of(context).colorScheme.primary,
                 ),
               const SizedBox(width: 8),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    text.tr,
-                    style: const TextStyle(color: Colors.black),
-                  ),
-                  const SizedBox(height: 4),
-                  Obx(() {
-                    if (controller.loading.value) {
-                      return Skeletonizer(
-                        enabled: true,
-                        child: Text(
-                          '0 B',
-                          style: TextStyle(color: Colors.grey.shade700),
-                        ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      text.tr,
+                      style: const TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Obx(() {
+                      if (controller.loading.value) {
+                        return Skeletonizer(
+                          enabled: true,
+                          child: Text(
+                            '0 B',
+                            style: TextStyle(color: Colors.grey.shade700),
+                          ),
+                        );
+                      }
+                      return Text(
+                        size ?? '0 B',
+                        style: TextStyle(color: Colors.grey.shade700),
                       );
-                    }
-                    return Text(
-                      size ?? '0 B',
-                      style: TextStyle(color: Colors.grey.shade700),
-                    );
-                  }),
-                ],
+                    }),
+                  ],
+                ),
               ),
             ],
           );

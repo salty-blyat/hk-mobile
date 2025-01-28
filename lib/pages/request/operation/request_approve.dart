@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -66,23 +68,34 @@ class ApproveRequest extends StatelessWidget {
     controller.formGroup.control('nextApproverId').markAsEnabled();
     return Column(
       children: [
-        Align(
+        Container(
           alignment: Alignment.topLeft,
-          child: IconButton(
-            style: ButtonStyle(
-              padding: WidgetStateProperty.all(EdgeInsets.zero),
-            ),
-            onPressed: () {
-              controller.hideNextApprover();
-            },
-            icon: const Icon(
-              Icons.arrow_back,
-              color: AppTheme.primaryColor,
-              size: 28,
+          child: Transform.translate(
+            offset: const Offset(0, -16),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(8),
+                onTap: () {
+                  controller.hideNextApprover();
+                },
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.arrow_back,
+                        color: AppTheme.primaryColor,
+                        size: 24,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
         ),
-        const SizedBox(height: 16),
         ReactiveForm(
           formGroup: controller.formGroup,
           child: Column(

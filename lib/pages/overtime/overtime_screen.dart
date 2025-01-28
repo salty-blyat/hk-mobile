@@ -172,6 +172,7 @@ class OvertimeScreen extends BaseList<Overtime> {
                 child: ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
+                    elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4),
                     ),
@@ -203,6 +204,7 @@ class OvertimeScreen extends BaseList<Overtime> {
 
                 return ElevatedButton(
                   style: ElevatedButton.styleFrom(
+                    elevation: 0,
                     backgroundColor: isSelected
                         ? Theme.of(context).colorScheme.primary
                         : Colors.white,

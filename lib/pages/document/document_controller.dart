@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -13,10 +14,13 @@ class DocumentController extends GetxController {
   final service = DocumentService();
   final formValid = false.obs;
   final lists = <DocumentModel>[].obs;
+
   final canLoadMore = false.obs;
   final isDownloading = false.obs;
   final downloading = ''.obs;
   final downloadProgress = 0.0.obs;
+  final searchText = ''.obs;
+  int currentPage = 1;
   final queryParameters = QueryParam(
     pageIndex: 1,
     pageSize: 25,
@@ -51,6 +55,19 @@ class DocumentController extends GetxController {
 
   Future<void> search() async {
     loading.value = true;
+
+    queryParameters.update((params) {
+      final filters = [];
+      if (searchText.value.isNotEmpty) {
+        filters.add({
+          'field': 'search',
+          'operator': 'contains',
+          'value': searchText.value
+        });
+      }
+      params?.filters = jsonEncode(filters);
+    });
+
     try {
       final response = await service.search(queryParameters.value);
       lists.assignAll(response.results as Iterable<DocumentModel>);

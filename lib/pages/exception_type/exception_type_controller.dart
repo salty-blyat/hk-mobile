@@ -24,7 +24,9 @@ enum EXCEPTION_TYPE {
 class ExceptionTypeController extends GetxController {
   final ExceptionTypeService exceptionTypeService = ExceptionTypeService();
 
-  final exceptionTypes = <ExceptionTypeModel>[].obs;
+  final exceptionTypes = <ExceptionTypeModel>[
+    ExceptionTypeModel(id: 0, name: 'All'.tr), // Default "All" item
+  ].obs;
   final isLoading = false.obs;
 
   @override
@@ -38,7 +40,7 @@ class ExceptionTypeController extends GetxController {
       isLoading.value = true;
       final fetchedExceptionTypes =
           await exceptionTypeService.getExceptionType();
-      exceptionTypes.assignAll(fetchedExceptionTypes);
+      exceptionTypes.addAll(fetchedExceptionTypes);
     } catch (e) {
       isLoading.value = false;
     } finally {
