@@ -44,6 +44,7 @@ class MyFormField<T> extends StatelessWidget {
     return SizedBox(
       height: 72,
       child: ReactiveTextField<T>(
+        textAlignVertical: TextAlignVertical.bottom,
         maxLines: password ? 1 : maxLines,
         controller: controller,
         validationMessages: {
@@ -57,16 +58,19 @@ class MyFormField<T> extends StatelessWidget {
         onChanged: onChanged,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          prefix: Padding(
-            padding: const EdgeInsetsDirectional.symmetric(horizontal: 4.0),
-            child: icon != null
-                ? Icon(
-                    icon,
-                    size: 18,
-                    color: isDisabled.value ? Colors.grey[600] : null,
-                  )
-                : null,
+          prefixIconConstraints: const BoxConstraints(
+            maxWidth: 48,
+            maxHeight: 48,
           ),
+          prefixIcon: icon != null
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 12, right: 4),
+                  child: Icon(icon,
+                      size: 18,
+                      color:
+                          isDisabled.value ? Colors.grey[600] : Colors.black87),
+                )
+              : null,
           labelText: label.tr,
           labelStyle: context.textTheme.bodyMedium!.copyWith(
             color: Colors.black,

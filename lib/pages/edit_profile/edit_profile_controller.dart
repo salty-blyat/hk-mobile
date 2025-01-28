@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
-import 'package:staff_view_ui/auth/edit_profile/edit_profile_service.dart';
+import 'package:staff_view_ui/pages/edit_profile/edit_profile_service.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/common_validators.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';

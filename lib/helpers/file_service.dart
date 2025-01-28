@@ -6,8 +6,8 @@ import 'package:staff_view_ui/helpers/token_interceptor.dart';
 Future<void> downloadAndOpenFile(
     String url, String fileName, Function(double) percentage) async {
   try {
-    var directory = await getExternalStorageDirectory();
-    final filePath = "${directory?.path}/$fileName}.${url.split('.').last}";
+    var directory = await getDownloadsDirectory();
+    final filePath = "${directory?.path}/$fileName.${url.split('.').last}";
 
     final dio = DioClient().dio;
     final response = await dio.download(

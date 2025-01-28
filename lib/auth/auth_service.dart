@@ -54,6 +54,27 @@ class AuthService {
     }
   }
 
+  Future<dio.Response> forgotPassword(dynamic model) async {
+    // Set base options for Dio
+    dioClient.options.baseUrl = authUrl;
+    dioClient.options.headers.addAll({
+      'disableErrorNotification': 'yes',
+      'X-ACCEPT-REFRESH-TOKEN': 'true',
+    });
+
+    final response = await dioClient.post(
+      '/auth/forget-password',
+      data: model,
+      options: dio.Options(
+        headers: dioClient.options.headers,
+        contentType: dio.Headers.jsonContentType,
+        responseType: dio.ResponseType.json,
+      ),
+    );
+
+    return response;
+  }
+
   Future<void> saveToLocalStorage(String key, String value) async {
     try {
       await secureStorage.write(key: key, value: value);
@@ -95,5 +116,51 @@ class AuthService {
         responseType: dio.ResponseType.json,
       ),
     );
+  }
+
+  Future<dio.Response> verifyOtp(Map<String, dynamic> model) async {
+    // Set base options for Dio
+    dioClient.options.baseUrl = authUrl;
+    dioClient.options.headers.addAll({
+      'disableErrorNotification': 'yes',
+      'X-ACCEPT-REFRESH-TOKEN': 'true',
+    });
+
+    final response = await dioClient.post(
+      '/auth/forget-password-verify-otp',
+      data: model,
+      options: dio.Options(
+        headers: dioClient.options.headers,
+        contentType: dio.Headers.jsonContentType,
+        responseType: dio.ResponseType.json,
+      ),
+    );
+
+    return response;
+  }
+
+  Future<dio.Response> resetPassword(Map<String, Object?> model) async {
+    // Set base options for Dio
+    dioClient.options.baseUrl = authUrl;
+    dioClient.options.headers.addAll({
+      'disableErrorNotification': 'yes',
+      'X-ACCEPT-REFRESH-TOKEN': 'true',
+    });
+
+    try {
+      final response = await dioClient.post(
+        '/auth/reset-password',
+        data: model,
+        options: dio.Options(
+          headers: dioClient.options.headers,
+          contentType: dio.Headers.jsonContentType,
+          responseType: dio.ResponseType.json,
+        ),
+      );
+
+      return response;
+    } catch (e) {
+      throw Exception('Login error: $e');
+    }
   }
 }

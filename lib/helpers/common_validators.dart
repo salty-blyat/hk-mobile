@@ -90,4 +90,35 @@ class CommonValidators {
         ? null
         : {'Phone number is not valid!'.tr: true};
   }
+
+  // Multiple Email Validator
+  static Map<String, dynamic>? phoneOrEmailValidator(
+      AbstractControl<dynamic> control) {
+    bool isEmptyInputValue(String? value) {
+      return value == null || value.isEmpty;
+    }
+
+    bool isEmail(String value) {
+      const emailPattern = r"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$";
+      final regex = RegExp(emailPattern);
+      return regex.hasMatch(value);
+    }
+
+    bool isPhoneNumber(String value) {
+      const phonePattern =
+          r"^((\+\d{1,3}|0)(\d{2})(\d{6,7})(([\/])(\+\d{1,3}|0)(\d{2})(\d{6,7}))*)*$";
+      value = value.replaceAll(RegExp(r'\u200B'), '').replaceAll(' ', '');
+      final regex = RegExp(phonePattern);
+      return regex.hasMatch(value);
+    }
+
+    final value = control.value;
+    if (isEmptyInputValue(value)) {
+      return null;
+    }
+
+    return isEmail(value) || isPhoneNumber(value)
+        ? null
+        : {'Email or phone number is not valid!'.tr: true};
+  }
 }

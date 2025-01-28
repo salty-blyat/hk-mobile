@@ -131,23 +131,23 @@ class LoginScreen extends StatelessWidget {
                           ],
                         )
                       : const SizedBox.shrink()),
-                  // Align(
-                  //   alignment: Alignment.centerRight,
-                  //   child: TextButton(
-                  //     style: TextButton.styleFrom(
-                  //       foregroundColor: Theme.of(context).colorScheme.primary,
-                  //     ),
-                  //     onPressed: () {
-                  //       Get.toNamed('/forget-password');
-                  //     },
-                  //     child: Text(
-                  //       '${'Forgot Password'.tr}?',
-                  //       style: const TextStyle(
-                  //         fontFamilyFallback: ['Gilroy', 'Kantumruy'],
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        foregroundColor: Theme.of(context).colorScheme.primary,
+                      ),
+                      onPressed: () {
+                        Get.toNamed('/forget-password');
+                      },
+                      child: Text(
+                        '${'Forgot Password'.tr}?',
+                        style: const TextStyle(
+                          fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

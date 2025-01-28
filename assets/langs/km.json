@@ -255,7 +255,7 @@
   "Please enter the verification code we send to your phone or email": "សូមបញ្ចូលលេខកូដផ្ទៀងផ្ទាត់ដែលយើងផ្ញើទៅទូរស័ព្ទ ឬអ៊ីមែលរបស់អ្នក",
   "Verify": "ផ្ទៀងផ្ទាត់",
   "Reset password": "កំណត់លេខសម្ងាត់ឡើងវិញ",
-  "At latest 6 characters, with uppercase lowercase number and symbol": "ចុងក្រោយបំផុត 6 តួអក្សរដែលមានអក្សរធំ និងនិមិត្តសញ្ញា",
+  "At latest 6 characters, with uppercase lowercase number and symbol": "យ៉ាងតិចបំផុត 6 តួអក្សរដែលមានអក្សរធំ និងនិមិត្តសញ្ញា",
   "New password": "លេខសម្ងាត់ថ្មី",
   "Update Password": "ធ្វើបច្ចុប្បន្នភាពពាក្យសម្ងាត់",
   "Input is required!": "ទាមទារការបញ្ចូល!",
@@ -351,5 +351,10 @@
   "Flash": "ពិល",
   "Days": "ថ្ងៃ",
   "Hours": "ម៉ោង",
-  "Select Date & Time": "ជ្រើសថ្ងៃនិងម៉ោង"
+  "Select Date & Time": "ជ្រើសថ្ងៃនិងម៉ោង",
+  "Cannot find user!": "រកមិនឃើញអ្នកប្រើប្រាស់ទេ!",
+  "Invalid OTP": "លេខកូដមិនត្រឹមត្រូវទេ",
+  "OTP has expired": "លេខកូដបានផុតកំណត់",
+  "Failed to verify OTP": "កំហុសក្នុងការផ្ទៀងផ្ទាត់លេខកូដ",
+  "Email or phone number is not valid!": "អ៊ីមែល ឬ ទូរស័ព្ទមិនត្រឹមត្រូវទេ!"
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-import 'package:staff_view_ui/auth/edit_profile/edit_profile_controller.dart';
+import 'package:staff_view_ui/pages/edit_profile/edit_profile_controller.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
 import 'package:staff_view_ui/utils/widgets/input.dart';
