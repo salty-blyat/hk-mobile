@@ -1,55 +1,75 @@
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import 'package:skeletonizer/skeletonizer.dart';
-// import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
 
-// class DocumentTypeSelect extends StatelessWidget {
-//   DocumentTypeSelect({super.key});
-//   final LookupController controller = Get.put(LookupController());
+class DocumentTypeSelect extends StatelessWidget {
+  DocumentTypeSelect({
+    super.key,
+    this.lookupTypeId = 0,
+    required this.selectedId,
+    required this.onSelect,
+  });
+  final LookupController controller = Get.put(LookupController());
+  final int lookupTypeId;
+  final RxInt selectedId;
+  final Function(int) onSelect;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Obx(() {
-      
-//       return Container(
-//         height: 45,
-//         margin: const EdgeInsets.only(top: 0, bottom: 10),
-//         child: ListView.builder(
-//           scrollDirection: Axis.horizontal,
-//           itemCount: controller.exceptionTypes.length,
-//           itemBuilder: (context, index) {
-//             final exceptionType = controller.exceptionTypes[index];
-//             return Padding(
-//               padding: const EdgeInsets.only(right: 8),
-//               child: Obx(() {
-//                 final isSelected =
-//                     controller.exceptionType.value == exceptionType.id;
+  @override
+  Widget build(BuildContext context) {
+    controller.fetchLookups(lookupTypeId);
 
-//                 return ElevatedButton(
-//                   style: ElevatedButton.styleFrom(
-//                     elevation: 0,
-//                     backgroundColor: isSelected
-//                         ? Theme.of(context).colorScheme.primary
-//                         : Colors.white,
-//                     foregroundColor: isSelected ? Colors.white : Colors.black,
-//                     side: BorderSide(
-//                       color: Theme.of(context).colorScheme.primary,
-//                     ),
-//                     shape: RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.circular(4),
-//                     ),
-//                   ),
-//                   onPressed: () {
-//                     controller.exceptionType.value = exceptionType.id!;
-//                     controller.search();
-//                   },
-//                   child: Text(exceptionType.name ?? ''),
-//                 );
-//               }),
-//             );
-//           },
-//         ),
-//       );
-//     });
-//   }
-// }
+    return Obx(() {
+      final List<dynamic> lists =
+          controller.lookups.map((lookup) => lookup.toJson()).toList();
+      if (lists.isNotEmpty) {
+        lists.insert(0, {
+          'id': 0,
+          'lookupTypeId': 27,
+          'name': 'All',
+          'nameKh': 'ទាំងអស់',
+        });
+      }
+
+      return Container(
+        height: 45,
+        margin: const EdgeInsets.only(top: 10),
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: lists.length,
+          itemBuilder: (context, index) {
+            final documentType = lists[index];
+
+            return Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: Obx(() {
+                // Check if this documentType is selected
+                final isSelected = selectedId.value == documentType['id'];
+
+                return ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    backgroundColor: isSelected
+                        ? Theme.of(context).colorScheme.primary
+                        : Colors.white,
+                    foregroundColor: isSelected ? Colors.white : Colors.black,
+                    side: BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  onPressed: () {
+                    onSelect(
+                        documentType['id']); // Pass the id of the selected item
+                  },
+                  child: Text(documentType['nameKh'] ?? ''), // Display 'nameKh'
+                );
+              }),
+            );
+          },
+        ),
+      );
+    });
+  }
+}

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/pages/document/document_controller.dart';
+import 'package:staff_view_ui/pages/document/document_type_select.dart';
+import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
 import 'package:staff_view_ui/utils/widgets/no_data.dart';
 
 class DocumentScreen extends StatelessWidget {
@@ -107,10 +109,14 @@ class DocumentScreen extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(4),
       ),
-      padding: const EdgeInsets.only(left: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: headerWidget(),
+        child: DocumentTypeSelect(
+          lookupTypeId: LookupTypeEnum.documentType.value,
+          selectedId: controller.documentTypeId,
+          onSelect: controller.onSelectDocType,
+        ),
       ),
     );
   }

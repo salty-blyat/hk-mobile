@@ -85,7 +85,7 @@ class BaseList<T> extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(4),
       ),
-      padding: const EdgeInsets.only(left: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Align(
         alignment: Alignment.centerLeft,
         child: headerWidget(),
