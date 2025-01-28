@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
 
 class DocumentTypeSelect extends StatelessWidget {
@@ -19,6 +20,34 @@ class DocumentTypeSelect extends StatelessWidget {
     controller.fetchLookups(lookupTypeId);
 
     return Obx(() {
+      if (controller.isLoading.value) {
+        return Skeletonizer(
+          child: Container(
+            height: 45,
+            margin: const EdgeInsets.only(top: 10),
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 10,
+              itemBuilder: (context, index) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  child: const Text('Document Types'),
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+      if (controller.lookups.isEmpty) {
+        return const SizedBox.shrink();
+      }
+
       final List<dynamic> lists =
           controller.lookups.map((lookup) => lookup.toJson()).toList();
       if (lists.isNotEmpty) {

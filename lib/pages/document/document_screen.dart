@@ -120,8 +120,6 @@ class DocumentScreen extends StatelessWidget {
       ),
     );
   }
-
-  Widget headerWidget() => const SizedBox.shrink();
 }
 
 class DownloadButton extends StatelessWidget {
