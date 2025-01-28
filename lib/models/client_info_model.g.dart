@@ -25,6 +25,8 @@ ClientInfo _$ClientInfoFromJson(Map<String, dynamic> json) => ClientInfo(
       apps: (json['apps'] as List<dynamic>?)
           ?.map((e) => App.fromJson(e as Map<String, dynamic>))
           .toList(),
+      mfaRequired: json['mfaRequired'] as bool?,
+      mfaToken: json['mfaToken'] as String?,
     );
 
 Map<String, dynamic> _$ClientInfoToJson(ClientInfo instance) =>
@@ -38,6 +40,8 @@ Map<String, dynamic> _$ClientInfoToJson(ClientInfo instance) =>
       'branchId': instance.branchId,
       'refreshToken': instance.refreshToken,
       'changePasswordRequired': instance.changePasswordRequired,
+      'mfaRequired': instance.mfaRequired,
+      'mfaToken': instance.mfaToken,
       'isEnabled2FA': instance.isEnabled2FA,
       'verifyMethod2FA': instance.verifyMethod2FA,
       'permissions': instance.permissions,

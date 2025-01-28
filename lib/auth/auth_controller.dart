@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
@@ -34,27 +36,33 @@ class AuthController extends GetxController {
 
   // Login Form Group
 
-  final isPasswordVisible = false.obs;
-
   Rx<ClientInfo?> auth = Rxn<ClientInfo>();
 
   login() async {
-    loading.value = true;
-    try {
-      Modal.loadingDialog();
-      final response = await _authService.login(
-        formGroup.value,
-        false,
-      );
-      if (response == 200) {
-        _firebaseService.handlePassToken();
+    Modal.loadingDialog();
+    final response = await _authService.login(
+      formGroup.value,
+      false,
+    );
+    if (response.statusCode == 200) {
+      ClientInfo info = ClientInfo.fromJson(response.data);
+      _firebaseService.handlePassToken();
+      if (info.mfaRequired == true) {
+        Get.snackbar('MFA', response.data['message']);
+        Get.toNamed('/verify-mfa', arguments: {
+          'mfaToken': info.mfaToken,
+        });
+        return;
+      }
+      if (info.changePasswordRequired == true) {
+        Get.offAllNamed('/change-password');
+      } else {
+        _authService.saveToken(info);
         Get.offAllNamed('/menu');
       }
-    } catch (e) {
+    } else {
       Get.back();
-      error.value = 'Username or Password is Incorrect';
-    } finally {
-      loading.value = false;
+      error.value = response.data['message'].toString().tr;
     }
   }
 
