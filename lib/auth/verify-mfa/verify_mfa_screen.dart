@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
-import 'package:staff_view_ui/auth/verify_otp/verify_otp_controller.dart';
+import 'package:staff_view_ui/auth/verify-mfa/verify_mfa_controller.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 
-class VerifyOtpScreen extends StatelessWidget {
-  VerifyOtpScreen({super.key});
-  final VerifyOtpController controller = Get.put(VerifyOtpController());
+class VerifyMfaScreen extends StatelessWidget {
+  VerifyMfaScreen({super.key});
+  final VerifyMfaController controller = Get.put(VerifyMfaController());
 
   @override
   Widget build(BuildContext context) {

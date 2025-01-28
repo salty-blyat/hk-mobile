@@ -1,6 +1,5 @@
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:staff_view_ui/helpers/token_interceptor.dart';
 
 Future<void> downloadAndOpenFile(
@@ -27,18 +26,5 @@ Future<void> downloadAndOpenFile(
     }
   } catch (e) {
     throw Exception('Failed to download file');
-  }
-}
-
-Future<bool> requestPermission(Permission permission) async {
-  if (await permission.isGranted) {
-    return true;
-  } else {
-    var req = await permission.request();
-    if (req.isGranted) {
-      return true;
-    } else {
-      return false;
-    }
   }
 }

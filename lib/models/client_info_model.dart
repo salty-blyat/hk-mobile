@@ -14,13 +14,32 @@ class ClientInfo {
   String? branchId;
   String? refreshToken;
   bool? changePasswordRequired;
+  bool? mfaRequired;
+  String? mfaToken;
   bool? isEnabled2FA;
   int? verifyMethod2FA;
   List<int>? permissions;
   String? profile;
   List<App>? apps;
-  ClientInfo({this.id, this.name, this.fullName, this.email, this.phone, this.token, this.branchId, this.refreshToken, this.changePasswordRequired, this.isEnabled2FA, this.verifyMethod2FA, this.permissions, this.profile, this.apps});
+  ClientInfo(
+      {this.id,
+      this.name,
+      this.fullName,
+      this.email,
+      this.phone,
+      this.token,
+      this.branchId,
+      this.refreshToken,
+      this.changePasswordRequired,
+      this.isEnabled2FA,
+      this.verifyMethod2FA,
+      this.permissions,
+      this.profile,
+      this.apps,
+      this.mfaRequired,
+      this.mfaToken});
 
-  factory ClientInfo.fromJson(Map<String, dynamic> json) => _$ClientInfoFromJson(json);
+  factory ClientInfo.fromJson(Map<String, dynamic> json) =>
+      _$ClientInfoFromJson(json);
   Map<String, dynamic> toJson() => _$ClientInfoToJson(this);
 }

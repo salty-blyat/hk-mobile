@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:staff_view_ui/auth/forgot_password/forgot_password_screen.dart';
 import 'package:staff_view_ui/auth/input_new_password/input_new_password_screen.dart';
 import 'package:staff_view_ui/auth/login.dart';
+import 'package:staff_view_ui/auth/verify-mfa/verify_mfa_screen.dart';
 import 'package:staff_view_ui/auth/verify_otp/verify_otp_screen.dart';
 import 'package:staff_view_ui/pages/change_password/change_password.dart';
 import 'package:staff_view_ui/pages/edit_profile/edit_profile.dart';
@@ -51,6 +52,7 @@ class Routes {
     GetPage(name: '/attendance-record', page: () => HistoryScreen()),
     GetPage(name: '/forget-password', page: () => ForgotPasswordScreen()),
     GetPage(name: '/verify-otp', page: () => VerifyOtpScreen()),
+    GetPage(name: '/verify-mfa', page: () => VerifyMfaScreen()),
     GetPage(name: '/input-new-password', page: () => InputNewPasswordScreen()),
   ];
 }

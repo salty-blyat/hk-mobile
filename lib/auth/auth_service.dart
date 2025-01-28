@@ -11,56 +11,50 @@ class AuthService {
   final dio.Dio dioClient = dio.Dio();
   final secureStorage = const FlutterSecureStorage();
 
-  Future<dynamic> login(dynamic model, bool isSingleLogin) async {
-    // Set base options for Dio
+  setOptions(bool isSingleLogin) {
     dioClient.options.baseUrl = authUrl;
     dioClient.options.headers.addAll({
       'disableErrorNotification': 'yes',
       'X-ACCEPT-REFRESH-TOKEN': 'true',
     });
-
-    // Add single login header if required
     if (isSingleLogin) {
       dioClient.options.headers['X-SINGLE-SESSION'] = 'true';
     }
+  }
 
-    try {
-      final response = await dioClient.post(
-        '/auth/login',
-        data: model,
-        options: dio.Options(
-          headers: dioClient.options.headers,
-          contentType: dio.Headers.jsonContentType,
-          responseType: dio.ResponseType.json,
-        ),
-      );
+  Future<dio.Response> login(dynamic model, bool isSingleLogin) async {
+    setOptions(isSingleLogin);
 
-      if (response.statusCode == 200) {
-        final result = response.data;
-        ClientInfo clientInfo = ClientInfo.fromJson(result);
+    final response = await dioClient.post(
+      '/auth/login',
+      data: model,
+      options: dio.Options(
+        headers: dioClient.options.headers,
+        contentType: dio.Headers.jsonContentType,
+        responseType: dio.ResponseType.json,
+      ),
+    );
 
-        // Save to secure storage
-        await saveToLocalStorage(
-            Const.authorized['Authorized']!, jsonEncode(result));
+    return response;
+  }
 
-        await saveToLocalStorage('accessToken', clientInfo.token ?? '');
-        await saveToLocalStorage('refreshToken', clientInfo.refreshToken ?? '');
-        return response.statusCode;
-      } else {
-        throw Exception('Failed to login: ${response.statusMessage}');
-      }
-    } catch (e) {
-      throw Exception('Login error: $e');
-    }
+  Future<dio.Response> verifyMfa(Map<String, String> map) async {
+    setOptions(false);
+
+    final response = await dioClient.post(
+      '/auth/mfa',
+      data: map,
+      options: dio.Options(
+        headers: dioClient.options.headers,
+        contentType: dio.Headers.jsonContentType,
+        responseType: dio.ResponseType.json,
+      ),
+    );
+    return response;
   }
 
   Future<dio.Response> forgotPassword(dynamic model) async {
-    // Set base options for Dio
-    dioClient.options.baseUrl = authUrl;
-    dioClient.options.headers.addAll({
-      'disableErrorNotification': 'yes',
-      'X-ACCEPT-REFRESH-TOKEN': 'true',
-    });
+    setOptions(false);
 
     final response = await dioClient.post(
       '/auth/forget-password',
@@ -79,7 +73,7 @@ class AuthService {
     try {
       await secureStorage.write(key: key, value: value);
     } catch (e) {
-      throw Exception('Error saving to secure storage: $e');
+      throw Exception('Error reading from secure storage: $e');
     }
   }
 
@@ -100,13 +94,7 @@ class AuthService {
   }
 
   Future<dio.Response> logout() async {
-    // Set base options for Dio
-    dioClient.options.baseUrl = authUrl;
-    dioClient.options.headers.addAll({
-      'disableErrorNotification': 'yes',
-      'X-ACCEPT-REFRESH-TOKEN': 'true',
-      'Authorization': 'Bearer ${await readFromLocalStorage('accessToken')}',
-    });
+    setOptions(false);
 
     return await dioClient.get(
       '/auth/logout',
@@ -119,12 +107,7 @@ class AuthService {
   }
 
   Future<dio.Response> verifyOtp(Map<String, dynamic> model) async {
-    // Set base options for Dio
-    dioClient.options.baseUrl = authUrl;
-    dioClient.options.headers.addAll({
-      'disableErrorNotification': 'yes',
-      'X-ACCEPT-REFRESH-TOKEN': 'true',
-    });
+    setOptions(false);
 
     final response = await dioClient.post(
       '/auth/forget-password-verify-otp',
@@ -140,27 +123,23 @@ class AuthService {
   }
 
   Future<dio.Response> resetPassword(Map<String, Object?> model) async {
-    // Set base options for Dio
-    dioClient.options.baseUrl = authUrl;
-    dioClient.options.headers.addAll({
-      'disableErrorNotification': 'yes',
-      'X-ACCEPT-REFRESH-TOKEN': 'true',
-    });
+    final response = await dioClient.post(
+      '/auth/reset-password',
+      data: model,
+      options: dio.Options(
+        headers: dioClient.options.headers,
+        contentType: dio.Headers.jsonContentType,
+        responseType: dio.ResponseType.json,
+      ),
+    );
 
-    try {
-      final response = await dioClient.post(
-        '/auth/reset-password',
-        data: model,
-        options: dio.Options(
-          headers: dioClient.options.headers,
-          contentType: dio.Headers.jsonContentType,
-          responseType: dio.ResponseType.json,
-        ),
-      );
+    return response;
+  }
 
-      return response;
-    } catch (e) {
-      throw Exception('Login error: $e');
-    }
+  Future<void> saveToken(ClientInfo info) async {
+    await saveToLocalStorage(
+        Const.authorized['Authorized']!, jsonEncode(info.toJson()));
+    await saveToLocalStorage('accessToken', info.token ?? '');
+    await saveToLocalStorage('refreshToken', info.refreshToken ?? '');
   }
 }

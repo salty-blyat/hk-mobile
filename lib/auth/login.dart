@@ -11,7 +11,6 @@ import 'package:staff_view_ui/utils/widgets/input.dart';
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
   final AuthController controller = Get.put(AuthController());
-  final MenuController menuController = Get.put(MenuController());
 
   @override
   Widget build(BuildContext context) {
