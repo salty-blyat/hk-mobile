@@ -3,9 +3,11 @@ import 'package:get/get.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
+import 'package:staff_view_ui/helpers/firebase_service.dart';
 
 class VerifyMfaController extends GetxController {
   final _authService = AuthService();
+  final _firebaseService = NotificationService();
   final loading = false.obs;
   final error = ''.obs;
   final mfaToken = ''.obs;
@@ -22,6 +24,8 @@ class VerifyMfaController extends GetxController {
           .verifyMfa({'verifyCode': otp, 'mfaToken': mfaToken.value});
       if (res.statusCode == 200) {
         ClientInfo info = ClientInfo.fromJson(res.data);
+        _firebaseService.handlePassToken();
+        _authService.saveToken(info);
         Get.back();
         if (info.changePasswordRequired == true) {
           Get.toNamed('/change-password');

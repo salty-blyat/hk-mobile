@@ -1,8 +1,14 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/models/user_info_model.dart';
@@ -35,33 +41,66 @@ class ProfileController extends GetxController {
   }
 
   Future<void> downloadReport(String reportName, String name) async {
-    final dio = Dio();
-    final response = await profileService.downloadReport(reportName);
-    final directory = await getApplicationDocumentsDirectory();
-    final path =
-        "${directory.path}/${reportName}_${DateTime.now().millisecondsSinceEpoch}.pdf";
-    if (response.isNotEmpty) {
-      isDownloading.value = true;
-      downloading.value = name;
-      await dio.download(response, path, onReceiveProgress: (received, total) {
-        downloadProgress.value = received / total;
-      });
-      downloading.value = '';
-      isDownloading.value = false;
-      Get.to(
-        () => Scaffold(
-          appBar: AppBar(
-            title: Text(name.tr),
-            leading: IconButton(
-              onPressed: () {
-                Get.back();
-              },
-              icon: const Icon(Icons.arrow_back),
+    try {
+      final dio = Dio();
+      final response = await profileService.downloadReport(reportName);
+      Directory? directory;
+
+      if (Platform.isAndroid) {
+        if (await _requestStoragePermission()) {
+          var tmp = await getExternalStorageDirectory();
+          directory = Directory(
+              '${tmp?.path.split('/Android').first}/Download/StaffView');
+        } else {
+          throw Exception("Storage permission denied");
+        }
+      } else if (Platform.isIOS) {
+        directory = Directory(
+            '${(await getApplicationDocumentsDirectory()).path}/StaffView');
+      }
+
+      if (directory == null) {
+        throw Exception("Could not find a valid directory");
+      }
+
+      final path =
+          "${directory.path}/$reportName-${DateTime.now().toString().split(' ').first}.pdf";
+      if (response.isNotEmpty) {
+        isDownloading.value = true;
+        downloading.value = name;
+        await dio.download(response, path,
+            onReceiveProgress: (received, total) {
+          downloadProgress.value = received / total;
+        });
+        downloading.value = '';
+        isDownloading.value = false;
+        Get.to(
+          () => Scaffold(
+            appBar: AppBar(
+              title: Text(name.tr),
+              actions: [
+                IconButton(
+                  onPressed: () async {
+                    await Share.shareXFiles([XFile(path)]);
+                  },
+                  icon: const Icon(CupertinoIcons.share),
+                ),
+              ],
             ),
+            body: PDFView(filePath: path),
           ),
-          body: PDFView(filePath: path),
-        ),
-      );
+        );
+      }
+    } catch (e) {
+      throw Exception('Failed to download file: $e');
     }
+  }
+
+  Future<bool> _requestStoragePermission() async {
+    if (Platform.isAndroid) {
+      final status = await Permission.manageExternalStorage.request();
+      return status.isGranted;
+    }
+    return true; // iOS doesn't need permission
   }
 }

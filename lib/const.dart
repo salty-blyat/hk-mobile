@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 
 class Const {
   static const String version = '1.9';
-  static const String date = '28-01-2025';
+  static const String date = '29-01-2025';
   static const String staffId = "StaffId";
   static String numberFormat(double value) {
     return NumberFormat('###.##').format(value);

@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
@@ -40,29 +39,36 @@ class AuthController extends GetxController {
 
   login() async {
     Modal.loadingDialog();
-    final response = await _authService.login(
-      formGroup.value,
-      false,
-    );
-    if (response.statusCode == 200) {
-      ClientInfo info = ClientInfo.fromJson(response.data);
-      if (info.mfaRequired == true) {
-        Get.snackbar('MFA', response.data['message']);
-        Get.toNamed('/verify-mfa', arguments: {
-          'mfaToken': info.mfaToken,
-        });
-        return;
-      }
-      if (info.changePasswordRequired == true) {
-        Get.offAllNamed('/change-password');
-      } else {
+    try {
+      final response = await _authService.login(
+        formGroup.value,
+        false,
+      );
+      if (response.statusCode == 200) {
+        Get.back();
+        ClientInfo info = ClientInfo.fromJson(response.data);
+        if (info.mfaRequired == true) {
+          Get.snackbar('MFA', response.data['message']);
+          Get.toNamed('/verify-mfa', arguments: {
+            'mfaToken': info.mfaToken,
+          });
+          return;
+        }
         _firebaseService.handlePassToken();
         _authService.saveToken(info);
-        Get.offAllNamed('/menu');
+        if (info.changePasswordRequired == true) {
+          Get.toNamed('/change-password');
+        } else {
+          Get.offAllNamed('/menu');
+        }
+      } else {
+        Get.back();
+        error.value = response.data['message'].toString().tr;
       }
-    } else {
+    } on DioException catch (e) {
       Get.back();
-      error.value = response.data['message'].toString().tr;
+      error.value =
+          e.response?.data['message'].toString().tr ?? 'Something went wrong';
     }
   }
 

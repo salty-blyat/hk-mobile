@@ -56,7 +56,7 @@ class DocumentScreen extends StatelessWidget {
             shadowColor: WidgetStateProperty.all(Colors.transparent),
             shape: WidgetStateProperty.all(
               RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(4),
               ),
             ),
             onChanged: (value) {

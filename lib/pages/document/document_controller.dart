@@ -102,11 +102,19 @@ class DocumentController extends GetxController {
   Future<void> download(String link, String text) async {
     isDownloading.value = true;
     downloading.value = text;
-    await downloadAndOpenFile(link, text, (value) {
-      downloadProgress.value = value;
-    });
-    downloading.value = '';
-    isDownloading.value = false;
+    try {
+      await downloadAndSaveFile(link, text, (value) {
+        downloadProgress.value = value;
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error during download: $e");
+      }
+    } finally {
+      downloadProgress.value = 0;
+      downloading.value = '';
+      isDownloading.value = false;
+    }
   }
 
   Future<String> getContentLength(String url) async {
