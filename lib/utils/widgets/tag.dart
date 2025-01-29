@@ -12,18 +12,23 @@ class Tag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Text(
-        text.tr,
-        style: TextStyle(
-          color: color,
-          fontSize: 10,
-          fontFamilyFallback: const ['Gilroy', 'Kantumruy'],
+    return IntrinsicWidth(
+      child: Container(
+        height: 22,
+        padding:
+            const EdgeInsets.symmetric(horizontal: 6), // Auto width padding
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          text.tr,
+          style: TextStyle(
+            color: color,
+            fontSize: 12,
+            fontFamilyFallback: const ['Gilroy', 'Kantumruy'],
+          ),
         ),
       ),
     );
