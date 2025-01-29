@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -58,7 +60,10 @@ class OvertimeOperationScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         leading: IconButton(
           onPressed: () => Get.back(),
-          icon: const Icon(CupertinoIcons.chevron_back, color: Colors.black),
+          icon: Icon(
+            Platform.isIOS ? CupertinoIcons.chevron_back : Icons.arrow_back,
+            color: Colors.black,
+          ),
         ),
       ),
       body: Obx(

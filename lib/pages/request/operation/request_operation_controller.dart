@@ -43,11 +43,11 @@ class RequestOperationController extends GetxController {
 
   void approve() {
     formGroup.markAsTouched();
-    formGroup.control('nextApproverId').patchValue(0);
     if (!loading.value) {
       loading.value = true;
       Modal.loadingDialog();
-      requestService.approve(formGroup.rawValue).then((value) {
+      requestService
+          .approve({...formGroup.rawValue, 'nextApproverId': 0}).then((value) {
         if (value.statusCode == 200) {
           requestViewController.checkCanDoAction();
           requestViewController.findById(formGroup.value['id'] as int);

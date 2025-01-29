@@ -1,5 +1,6 @@
-import 'dart:math';
+import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -36,7 +37,7 @@ class ApproveRequest extends StatelessWidget {
             children: [
               ReactiveTextField<String>(
                 formControlName: 'note',
-                maxLines: 3,
+                maxLines: 2,
                 decoration: InputDecoration(
                   labelText: '${'Note'.tr} (${'Optional'.tr})',
                 ),
@@ -71,7 +72,7 @@ class ApproveRequest extends StatelessWidget {
         Container(
           alignment: Alignment.topLeft,
           child: Transform.translate(
-            offset: const Offset(0, -16),
+            offset: const Offset(-8, -16),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
@@ -79,15 +80,17 @@ class ApproveRequest extends StatelessWidget {
                 onTap: () {
                   controller.hideNextApprover();
                 },
-                child: const Padding(
-                  padding: EdgeInsets.all(8.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        Icons.arrow_back,
-                        color: AppTheme.primaryColor,
-                        size: 24,
+                        Platform.isIOS
+                            ? CupertinoIcons.chevron_back
+                            : Icons.arrow_back,
+                        color: Colors.black,
+                        size: 28,
                       ),
                     ],
                   ),
@@ -102,7 +105,7 @@ class ApproveRequest extends StatelessWidget {
             children: [
               ReactiveTextField<String>(
                 formControlName: 'note',
-                maxLines: 3,
+                maxLines: 2,
                 decoration: InputDecoration(
                   labelText: '${'Note'.tr} (${'Optional'.tr})',
                 ),
