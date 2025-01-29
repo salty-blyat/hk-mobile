@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/models/working_sheet.dart';
 import 'package:staff_view_ui/pages/working/working_controller.dart';
 import 'package:staff_view_ui/utils/theme.dart';
@@ -65,18 +66,115 @@ class WorkingScreen extends StatelessWidget {
           children: [
             Container(
               width: double.infinity,
-              height: 35,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(4),
               ),
-              padding:
-                  const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Text(
-                'Summary'.tr,
-                style: const TextStyle(color: Colors.black54),
+                'Summary'.tr.toUpperCase(),
+                style: const TextStyle(
+                  color: Colors.black54,
+                  fontSize: 16,
+                  fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+                ),
               ),
             ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppTheme.secondaryColor,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            _buildRichText(
+                                '${workingController.total.value.actual} ',
+                                'h'),
+                            const Text(
+                              '/',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 2.5,
+                                fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+                              ),
+                            ),
+                            _buildRichText(
+                                '${workingController.total.value.expected} ',
+                                'h'),
+                          ],
+                        ),
+                        Text(
+                          'Working hour'.tr,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8), // Add spacing between containers
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppTheme.secondaryColor,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        _buildRichText(
+                          '${workingController.total.value.permission} ',
+                          'h',
+                        ),
+                        Text(
+                          'Absent authorized'.tr,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppTheme.secondaryColor,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        _buildRichText(
+                          '${workingController.total.value.absent} ',
+                          'h',
+                        ),
+                        Text(
+                          'Absent unauthorized'.tr,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
             Expanded(
               // Wrap the ListView.builder in Expanded
               child: RefreshIndicator(
@@ -135,6 +233,31 @@ class WorkingScreen extends StatelessWidget {
           ],
         );
       }),
+    );
+  }
+
+  Widget _buildRichText(String value, String unit) {
+    return RichText(
+      text: TextSpan(
+        style: const TextStyle(color: Colors.black),
+        children: [
+          TextSpan(
+            text: '${Const.numberFormat(double.parse(value))} ',
+            style: const TextStyle(
+              fontSize: 18,
+              fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          TextSpan(
+            text: unit.tr,
+            style: const TextStyle(
+              fontSize: 16,
+              fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
