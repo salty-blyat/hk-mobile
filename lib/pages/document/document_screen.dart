@@ -70,7 +70,7 @@ class DocumentScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          buildHeaderWidget(),
+          _buildHeaderWidget(),
           Expanded(child: Obx(() {
             if (isLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -101,7 +101,7 @@ class DocumentScreen extends StatelessWidget {
     );
   }
 
-  Widget buildHeaderWidget() {
+  Widget _buildHeaderWidget() {
     return Container(
       width: double.infinity,
       // height: 35,

@@ -170,15 +170,16 @@ class ExceptionScreen extends BaseList<ExceptionModel> {
               scrollDirection: Axis.horizontal,
               itemCount: 10,
               itemBuilder: (context, index) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
+                padding: const EdgeInsets.only(right: 8),
                 child: ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
+                    elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
-                  child: const Text('Exception'),
+                  child: Text('All'.tr),
                 ),
               ),
             ),
@@ -206,6 +207,7 @@ class ExceptionScreen extends BaseList<ExceptionModel> {
                 return ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
+                    shadowColor: Colors.transparent,
                     backgroundColor: isSelected
                         ? Theme.of(context).colorScheme.primary
                         : Colors.white,

@@ -168,7 +168,7 @@ class OvertimeScreen extends BaseList<Overtime> {
               scrollDirection: Axis.horizontal,
               itemCount: 10,
               itemBuilder: (context, index) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
+                padding: const EdgeInsets.only(right: 8),
                 child: ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
@@ -177,7 +177,7 @@ class OvertimeScreen extends BaseList<Overtime> {
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
-                  child: const Text('Leave'),
+                  child: Text('All'.tr),
                 ),
               ),
             ),
@@ -205,6 +205,7 @@ class OvertimeScreen extends BaseList<Overtime> {
                 return ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
+                    shadowColor: Colors.transparent,
                     backgroundColor: isSelected
                         ? Theme.of(context).colorScheme.primary
                         : Colors.white,

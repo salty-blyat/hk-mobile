@@ -93,7 +93,7 @@ class _FilePickerWidgetState extends State<FilePickerWidget>
                       },
                     ),
                     ListTile(
-                      title: Text('Photo'.tr),
+                      title: Text('Gallery'.tr),
                       leading: const Icon(
                         CupertinoIcons.photo_fill,
                         color: Colors.black54,

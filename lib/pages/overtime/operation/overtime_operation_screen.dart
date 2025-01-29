@@ -73,7 +73,7 @@ class OvertimeOperationScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         _buildOvertimeTypeButtons(context),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 16),
                         _buildRequestDetails(),
                         const SizedBox(height: 16),
                         _buildDateField(),
@@ -133,9 +133,8 @@ class OvertimeOperationScreen extends StatelessWidget {
         return const SizedBox.shrink();
       }
 
-      return Container(
+      return SizedBox(
         height: 45,
-        margin: const EdgeInsets.only(top: 0, bottom: 10),
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: lists.length, // Use filtered list
@@ -149,6 +148,8 @@ class OvertimeOperationScreen extends StatelessWidget {
 
                 return ElevatedButton(
                   style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    shadowColor: Colors.transparent,
                     backgroundColor: isSelected
                         ? Theme.of(context).colorScheme.primary
                         : Colors.white,

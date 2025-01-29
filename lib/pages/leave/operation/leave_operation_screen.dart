@@ -148,6 +148,8 @@ class LeaveOperationScreen extends StatelessWidget {
 
                 return ElevatedButton(
                   style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    shadowColor: Colors.transparent,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4),
                     ),

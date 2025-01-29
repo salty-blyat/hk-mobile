@@ -146,6 +146,8 @@ class ExceptionOperationScreen extends StatelessWidget {
 
                 return ElevatedButton(
                   style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    shadowColor: Colors.transparent,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4),
                     ),
@@ -156,7 +158,6 @@ class ExceptionOperationScreen extends StatelessWidget {
                     side: BorderSide(
                       color: Colors.grey.shade500,
                     ),
-                    elevation: 0,
                   ),
                   onPressed: () =>
                       controller.updateExceptionType(exceptionType.id!),
