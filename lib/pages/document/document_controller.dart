@@ -14,7 +14,7 @@ class DocumentController extends GetxController {
   final service = DocumentService();
   final formValid = false.obs;
   final lists = <DocumentModel>[].obs;
-
+  final documentTypeId = 0.obs;
   final canLoadMore = false.obs;
   final isDownloading = false.obs;
   final downloading = ''.obs;
@@ -53,6 +53,11 @@ class DocumentController extends GetxController {
     }
   }
 
+  void onSelectDocType(int documentId) {
+    documentTypeId.value = documentId;
+    search();
+  }
+
   Future<void> search() async {
     loading.value = true;
 
@@ -63,6 +68,13 @@ class DocumentController extends GetxController {
           'field': 'search',
           'operator': 'contains',
           'value': searchText.value
+        });
+      }
+      if (documentTypeId.value != 0) {
+        filters.add({
+          'field': 'docTypeId',
+          'operator': 'eq',
+          'value': documentTypeId.value.toString()
         });
       }
       params?.filters = jsonEncode(filters);
