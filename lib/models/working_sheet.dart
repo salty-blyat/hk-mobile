@@ -1,10 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:staff_view_ui/helpers/base_service.dart';
 
 part 'working_sheet.g.dart';
 
 @JsonSerializable()
-class Worksheets {
-  int? id;
+class Worksheets extends BaseModel {
   DateTime? date;
   String? day;
   double? expectedWorkingHour;
@@ -31,7 +31,6 @@ class Worksheets {
   String? extData;
 
   Worksheets({
-    this.id,
     this.date,
     this.day,
     this.expectedWorkingHour,

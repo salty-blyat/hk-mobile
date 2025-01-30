@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,7 +12,6 @@ class OvertimeController extends GetxController {
   final loading = false.obs;
   final isLoadingMore = false.obs;
   final overtimeService = OvertimeService();
-  final formValid = false.obs;
   final lists = <Overtime>[].obs;
   final year = DateTime.now().year.obs;
   final canLoadMore = false.obs;

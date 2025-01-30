@@ -31,14 +31,15 @@ class WorkingScreen extends StatelessWidget {
         centerTitle: false,
         title: YearMonthSelect(
           onYearMonthSelected: (int year, int month) {
-            print('Selected: $year-$month');
+            workingController.yearMonth.value = '$year-${month.toString()}';
+            // print(workingController.yearMonth.value);
+            print('$year-${month.toString().padLeft(2, '0')}');
+            workingController.getWorking();
           },
         ),
         actions: [
           TextButton(
-            onPressed: () {
-              // TODO: Implement download functionality
-            },
+            onPressed: () {},
             child: Row(
               children: [
                 const Icon(CupertinoIcons.arrow_down_circle,
@@ -64,10 +65,10 @@ class WorkingScreen extends StatelessWidget {
       ),
       body: Obx(() {
         if (workingController.working.isEmpty &&
-            !workingController.isLoading.value) {
+            !workingController.loading.value) {
           return const Center(child: Text('No data found'));
         }
-        if (workingController.isLoading.value) {
+        if (workingController.loading.value) {
           return const Center(child: CircularProgressIndicator());
         }
         return Column(
@@ -146,7 +147,7 @@ class WorkingScreen extends StatelessWidget {
                   itemCount: workingController.working.length,
                   itemBuilder: (context, index) {
                     return Skeletonizer(
-                      enabled: workingController.isLoading.value,
+                      enabled: workingController.loading.value,
                       child: ListTile(
                         trailing: workingController.working[index].type! !=
                                 TYPE.offDuty.value

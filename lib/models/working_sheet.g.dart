@@ -7,7 +7,6 @@ part of 'working_sheet.dart';
 // **************************************************************************
 
 Worksheets _$WorksheetsFromJson(Map<String, dynamic> json) => Worksheets(
-      id: (json['id'] as num?)?.toInt(),
       date:
           json['date'] == null ? null : DateTime.parse(json['date'] as String),
       day: json['day'] as String?,
