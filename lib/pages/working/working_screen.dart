@@ -8,6 +8,7 @@ import 'package:staff_view_ui/pages/working/working_controller.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/calendar.dart';
 import 'package:staff_view_ui/utils/widgets/tag.dart';
+import 'package:staff_view_ui/utils/widgets/year_month_select.dart';
 
 enum TYPE {
   present(1),
@@ -27,6 +28,12 @@ class WorkingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: false,
+        title: YearMonthSelect(
+          onYearMonthSelected: (int year, int month) {
+            print('Selected: $year-$month');
+          },
+        ),
         actions: [
           TextButton(
             onPressed: () {
@@ -41,12 +48,14 @@ class WorkingScreen extends StatelessWidget {
                   onPressed: () {
                     Get.toNamed('/attendance-record');
                   },
-                  child: Text('History'.tr,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          fontFamilyFallback: ['Gilroy', 'Kantumruy'])),
+                  child: Text(
+                    'History'.tr,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        fontFamilyFallback: ['Gilroy', 'Kantumruy']),
+                  ),
                 ),
               ],
             ),
@@ -80,101 +89,53 @@ class WorkingScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: AppTheme.secondaryColor,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          children: [
-                            _buildRichText(
-                                '${workingController.total.value.actual} ',
-                                'h'),
-                            const Text(
-                              '/',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 2.5,
-                                fontFamilyFallback: ['Gilroy', 'Kantumruy'],
-                              ),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _buildSummaryItem(
+                      Row(
+                        children: [
+                          _buildRichText(
+                              '${workingController.total.value.actual}', 'h'),
+                          const Text(
+                            '/',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 4,
+                              fontFamilyFallback: ['Gilroy', 'Kantumruy'],
                             ),
-                            _buildRichText(
-                                '${workingController.total.value.expected} ',
-                                'h'),
-                          ],
-                        ),
-                        Text(
-                          'Working hour'.tr,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 12,
                           ),
-                        ),
-                      ],
+                          _buildRichText(
+                              '${workingController.total.value.expected}', 'h'),
+                        ],
+                      ),
+                      'Working hour',
                     ),
-                  ),
-                  const SizedBox(width: 8), // Add spacing between containers
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: AppTheme.secondaryColor,
-                      borderRadius: BorderRadius.circular(4),
+                    const SizedBox(width: 8),
+                    _buildSummaryItem(
+                      _buildRichText(
+                          '${workingController.total.value.permission}', 'h'),
+                      'Absent authorized',
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        _buildRichText(
-                          '${workingController.total.value.permission} ',
-                          'h',
-                        ),
-                        Text(
-                          'Absent authorized'.tr,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
+                    const SizedBox(width: 8),
+                    _buildSummaryItem(
+                      _buildRichText(
+                          '${workingController.total.value.absent}', 'h'),
+                      'Absent unauthorized',
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: AppTheme.secondaryColor,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        _buildRichText(
-                          '${workingController.total.value.absent} ',
-                          'h',
-                        ),
-                        Text(
-                          'Absent unauthorized'.tr,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 16),
             Expanded(
               // Wrap the ListView.builder in Expanded
               child: RefreshIndicator(
@@ -236,18 +197,47 @@ class WorkingScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildSummaryItem(Widget child, String label) {
+    return Container(
+      height: 60,
+      alignment: Alignment.center,
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: AppTheme.secondaryColor,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          child,
+          Text(
+            label.tr,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildRichText(String value, String unit) {
     return RichText(
       text: TextSpan(
         style: const TextStyle(color: Colors.black),
         children: [
           TextSpan(
-            text: '${Const.numberFormat(double.parse(value))} ',
+            text: Const.numberFormat(double.parse(value)),
             style: const TextStyle(
               fontSize: 18,
               fontFamilyFallback: ['Gilroy', 'Kantumruy'],
               fontWeight: FontWeight.bold,
             ),
+          ),
+          const TextSpan(
+            text: ' ',
           ),
           TextSpan(
             text: unit.tr,

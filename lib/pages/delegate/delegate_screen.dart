@@ -43,12 +43,12 @@ class DelegateScreen extends StatelessWidget {
         title: Text('Delegate'.tr),
         actions: [
           IconButton(
-            iconSize: 30,
+            iconSize: 24,
             padding: const EdgeInsets.symmetric(horizontal: 16),
             onPressed: () {
               showMenu(
                 context: context,
-                position: const RelativeRect.fromLTRB(100, 100, 0, 0),
+                position: const RelativeRect.fromLTRB(100, 70, 0, 0),
                 items: FilterDelegateTypes.values
                     .map((e) => PopupMenuItem<FilterDelegateTypes>(
                           value: e,
