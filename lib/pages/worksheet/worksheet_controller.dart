@@ -11,6 +11,12 @@ class WorkingController extends GetxController {
 
   final Rx<Total> total =
       Total(actual: 0, expected: 0, absent: 0, permission: 0).obs;
+  @override
+  void onInit() {
+    super.onInit();
+    loading.value = true;
+  }
+
   Future<void> search() async {
     loading.value = true;
 
