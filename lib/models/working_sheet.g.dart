@@ -33,11 +33,14 @@ Worksheets _$WorksheetsFromJson(Map<String, dynamic> json) => Worksheets(
       actualOut: json['actualOut'] as String?,
       workingHour: (json['workingHour'] as num?)?.toDouble(),
       extData: json['extData'] as String?,
-    );
+    )
+      ..id = (json['id'] as num?)?.toInt()
+      ..note = json['note'] as String?;
 
 Map<String, dynamic> _$WorksheetsToJson(Worksheets instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'note': instance.note,
       'date': instance.date?.toIso8601String(),
       'day': instance.day,
       'expectedWorkingHour': instance.expectedWorkingHour,

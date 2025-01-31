@@ -4,11 +4,13 @@ import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/models/working_sheet.dart';
-import 'package:staff_view_ui/pages/working/working_controller.dart';
+import 'package:staff_view_ui/pages/attendance_cycle/attendance_cycle_select.dart';
+import 'package:staff_view_ui/pages/worksheet/worksheet_controller.dart';
+import 'package:staff_view_ui/utils/get_date.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/calendar.dart';
+import 'package:staff_view_ui/utils/widgets/no_data.dart';
 import 'package:staff_view_ui/utils/widgets/tag.dart';
-import 'package:staff_view_ui/utils/widgets/year_month_select.dart';
 
 enum TYPE {
   present(1),
@@ -22,53 +24,50 @@ enum TYPE {
 class WorkingScreen extends StatelessWidget {
   WorkingScreen({super.key});
 
-  final WorkingController workingController = Get.put(WorkingController());
+  final WorkingController controller = Get.put(WorkingController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        title: YearMonthSelect(
-          onYearMonthSelected: (int year, int month) {
-            workingController.yearMonth.value = '$year-${month.toString()}';
-            // print(workingController.yearMonth.value);
-            print('$year-${month.toString().padLeft(2, '0')}');
-            workingController.getWorking();
+        title: AttendanceCycleSelect(
+          onSelected: (value) {
+            controller.startDate.value = getDateOnlyString(value.start!);
+            controller.endDate.value = getDateOnlyString(value.end!);
+            controller.search();
           },
         ),
         actions: [
-          TextButton(
-            onPressed: () {},
-            child: Row(
-              children: [
-                const Icon(CupertinoIcons.arrow_down_circle,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(CupertinoIcons.arrow_down_circle,
                     size: 24, color: Colors.white),
-                const SizedBox(width: 16),
-                TextButton(
-                  onPressed: () {
-                    Get.toNamed('/attendance-record');
-                  },
-                  child: Text(
-                    'History'.tr,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        fontFamilyFallback: ['Gilroy', 'Kantumruy']),
-                  ),
+              ),
+              IconButton(
+                onPressed: () {
+                  Get.toNamed('/attendance-record');
+                },
+                icon: const Icon(
+                  Icons.history,
+                  // size: 24,
+                  color: Colors.white,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
       body: Obx(() {
-        if (workingController.working.isEmpty &&
-            !workingController.loading.value) {
-          return const Center(child: Text('No data found'));
+        if (controller.working.isEmpty && !controller.loading.value) {
+          return const NoData();
         }
-        if (workingController.loading.value) {
+        if (controller.loading.value) {
           return const Center(child: CircularProgressIndicator());
         }
         return Column(
@@ -105,7 +104,7 @@ class WorkingScreen extends StatelessWidget {
                       Row(
                         children: [
                           _buildRichText(
-                              '${workingController.total.value.actual}', 'h'),
+                              '${controller.total.value.actual}', 'h'),
                           const Text(
                             '/',
                             style: TextStyle(
@@ -116,7 +115,7 @@ class WorkingScreen extends StatelessWidget {
                             ),
                           ),
                           _buildRichText(
-                              '${workingController.total.value.expected}', 'h'),
+                              '${controller.total.value.expected}', 'h'),
                         ],
                       ),
                       'Working hour',
@@ -124,13 +123,12 @@ class WorkingScreen extends StatelessWidget {
                     const SizedBox(width: 8),
                     _buildSummaryItem(
                       _buildRichText(
-                          '${workingController.total.value.permission}', 'h'),
+                          '${controller.total.value.permission}', 'h'),
                       'Absent authorized',
                     ),
                     const SizedBox(width: 8),
                     _buildSummaryItem(
-                      _buildRichText(
-                          '${workingController.total.value.absent}', 'h'),
+                      _buildRichText('${controller.total.value.absent}', 'h'),
                       'Absent unauthorized',
                     ),
                   ],
@@ -141,39 +139,37 @@ class WorkingScreen extends StatelessWidget {
               // Wrap the ListView.builder in Expanded
               child: RefreshIndicator(
                 onRefresh: () async {
-                  await workingController.getWorking();
+                  await controller.search();
                 },
                 child: ListView.separated(
-                  itemCount: workingController.working.length,
+                  itemCount: controller.working.length,
                   itemBuilder: (context, index) {
                     return Skeletonizer(
-                      enabled: workingController.loading.value,
+                      enabled: controller.loading.value,
                       child: ListTile(
-                        trailing: workingController.working[index].type! !=
+                        trailing: controller.working[index].type! !=
                                 TYPE.offDuty.value
-                            ? !workingController.working[index].date!
+                            ? !controller.working[index].date!
                                     .isAfter(DateTime.now())
                                 ? Tag(
-                                    color: getTagColor(
-                                        workingController.working[index]),
-                                    text: getTag(
-                                        workingController.working[index]),
+                                    color:
+                                        getTagColor(controller.working[index]),
+                                    text: getTag(controller.working[index]),
                                   )
                                 : null
                             : null,
-                        tileColor:
-                            getTileColor(workingController.working[index]),
+                        tileColor: getTileColor(controller.working[index]),
                         title: Row(
                           children: [
                             Calendar(
-                              date: workingController.working[index].date!,
+                              date: controller.working[index].date!,
                             ),
                             const SizedBox(width: 10),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  getTitle(workingController.working[index]),
+                                  getTitle(controller.working[index]),
                                 ),
                               ],
                             )

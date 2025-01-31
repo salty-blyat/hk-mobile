@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
 import 'package:staff_view_ui/models/attendance_record_model.dart';
-import 'package:staff_view_ui/pages/working/history/history_service.dart';
+import 'package:staff_view_ui/pages/worksheet/history/history_service.dart';
 
 class HistoryController extends GetxController {
   final AttendanceRecordService attendanceRecordService =

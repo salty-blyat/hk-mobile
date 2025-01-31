@@ -20,8 +20,8 @@ import 'package:staff_view_ui/pages/request/history/request_history_screen.dart'
 import 'package:staff_view_ui/pages/request/request_screen.dart';
 import 'package:staff_view_ui/pages/request/view/request_view_screen.dart';
 import 'package:staff_view_ui/pages/scan/scan-check/scan_check_screen.dart';
-import 'package:staff_view_ui/pages/working/history/history_screen.dart';
-import 'package:staff_view_ui/pages/working/working_screen.dart';
+import 'package:staff_view_ui/pages/worksheet/history/history_screen.dart';
+import 'package:staff_view_ui/pages/worksheet/worksheet_screen.dart';
 import 'package:staff_view_ui/pages/scan/scan_screen.dart';
 import 'package:staff_view_ui/pages/privacy_policy/privacy_policy_screen.dart';
 

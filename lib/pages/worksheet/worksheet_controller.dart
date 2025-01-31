@@ -1,40 +1,29 @@
 import 'package:get/get.dart';
 import 'package:staff_view_ui/models/working_sheet.dart';
-import 'package:staff_view_ui/pages/working/working_service.dart';
+import 'package:staff_view_ui/pages/worksheet/worksheet_service.dart';
 
 class WorkingController extends GetxController {
   final loading = false.obs;
   final working = <Worksheets>[].obs;
   final WorkingService workingService = WorkingService();
-
-  final yearMonth = '${DateTime.now().year}-${DateTime.now().month}'.obs;
+  final startDate = ''.obs;
+  final endDate = ''.obs;
 
   final Rx<Total> total =
       Total(actual: 0, expected: 0, absent: 0, permission: 0).obs;
-
-  @override
-  void onInit() {
-    getWorking();
-    super.onInit();
-  }
-
-  Future<void> getWorking() async {
+  Future<void> search() async {
     loading.value = true;
 
     try {
-      final fromDate = '${yearMonth.value}-01';
-      final toDate = '${yearMonth.value}-31';
-
       final worksheets = await workingService.getWorking(
-        fromDate: fromDate,
-        toDate: toDate,
+        fromDate: startDate.value,
+        toDate: endDate.value,
       );
       working.assignAll(worksheets);
 
       calculateTotal();
     } catch (e) {
-      loading.value = false;
-      print("Error during getWorking: $e");
+      // loading.value = false;
     } finally {
       loading.value = false;
     }
