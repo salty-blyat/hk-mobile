@@ -101,10 +101,10 @@ class RequestViewScreen extends StatelessWidget {
         theme: TimelineThemeData(
           nodePosition: 0,
           color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
-          indicatorTheme: const IndicatorThemeData(
-            position: 0,
-            size: 18.0,
-          ),
+          // indicatorTheme: const IndicatorThemeData(
+          //   position: 0.04,
+          //   size: 18.0,
+          // ),
           connectorTheme: const ConnectorThemeData(
             thickness: 1,
           ),
@@ -181,62 +181,30 @@ class RequestViewScreen extends StatelessWidget {
                 return const Icon(
                   CupertinoIcons.clock,
                   color: AppTheme.warningColor,
-                  size: 20.0,
+                  size: 18,
                 );
               } else if (controller.showUndo.value) {
                 return const Icon(
                   CupertinoIcons.arrow_uturn_left_circle,
                   color: Colors.black,
-                  size: 20.0,
+                  size: 18.0,
                 );
               } else {
                 return const SizedBox.shrink();
               }
             }
             if (logs[index].status == LeaveStatus.approved.value) {
-              return const OutlinedDotIndicator(
-                borderWidth: 1.3,
-                size: 18.0,
-                color: AppTheme.successColor,
-                child: Icon(
-                  Icons.check,
-                  color: AppTheme.successColor,
-                  size: 12.0,
-                ),
-              );
+              return _buildStatusIndicator(
+                  AppTheme.successColor, Icons.check, 0.04);
             } else if (logs[index].status == LeaveStatus.pending.value) {
-              return const OutlinedDotIndicator(
-                borderWidth: 1.3,
-                size: 18.0,
-                color: AppTheme.primaryColor,
-                child: Icon(
-                  CupertinoIcons.circle_fill,
-                  color: AppTheme.primaryColor,
-                  size: 12.0,
-                ),
-              );
+              return _buildStatusIndicator(
+                  AppTheme.primaryColor, CupertinoIcons.circle_fill, 0.06);
             } else if (logs[index].status == LeaveStatus.rejected.value) {
-              return const OutlinedDotIndicator(
-                borderWidth: 1.3,
-                color: AppTheme.dangerColor,
-                size: 18.0,
-                child: Icon(
-                  CupertinoIcons.xmark,
-                  color: AppTheme.dangerColor,
-                  size: 12.0,
-                ),
-              );
+              return _buildStatusIndicator(
+                  AppTheme.dangerColor, CupertinoIcons.xmark, 0.04);
             } else if (logs[index].status == LeaveStatus.processing.value) {
-              return const OutlinedDotIndicator(
-                borderWidth: 1.3,
-                size: 18.0,
-                color: AppTheme.primaryColor,
-                child: Icon(
-                  CupertinoIcons.arrow_2_circlepath,
-                  color: AppTheme.primaryColor,
-                  size: 12.0,
-                ),
-              );
+              return _buildStatusIndicator(AppTheme.primaryColor,
+                  CupertinoIcons.arrow_2_circlepath, 0.05);
             } else {
               return const SizedBox.shrink();
             }
@@ -247,6 +215,20 @@ class RequestViewScreen extends StatelessWidget {
           //       : null,
           // ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildStatusIndicator(Color color, IconData icon, double? position) {
+    return OutlinedDotIndicator(
+      position: position,
+      borderWidth: 1.3,
+      size: 16,
+      color: color,
+      child: Icon(
+        icon,
+        color: color,
+        size: 12.0,
       ),
     );
   }
