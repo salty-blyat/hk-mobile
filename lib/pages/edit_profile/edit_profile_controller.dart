@@ -14,7 +14,6 @@ class EditUserController extends GetxController {
   final _editProfileService = EditProfileService();
   final loading = false.obs;
   final formValid = false.obs;
-  final error = ''.obs;
   final formKey = GlobalKey<FormState>();
 
   // Edit Profile Form Group
@@ -64,8 +63,6 @@ class EditUserController extends GetxController {
   }
 
   Future<void> submit() async {
-    loading.value = true;
-
     try {
       Modal.loadingDialog();
       final response =
@@ -103,9 +100,50 @@ class EditUserController extends GetxController {
       }
     } catch (e) {
       print(e);
-    } finally {
-      loading.value = false;
     }
+  }
+
+  void updateRequiredFields() {
+    final phoneControl = formGroup.control('phone') as FormControl<String>?;
+    final emailControl = formGroup.control('email') as FormControl<String>?;
+
+    if (phoneControl == null || emailControl == null) {
+      return; // Exit if controls are missing to prevent crashes
+    }
+
+    bool isPhoneEmpty =
+        phoneControl.value == null || phoneControl.value!.isEmpty;
+    bool isEmailEmpty =
+        emailControl.value == null || emailControl.value!.isEmpty;
+
+    // Define validators with the correct type
+    List<Validator<dynamic>> emailValidators = [
+      Validators.delegate(CommonValidators.multipleEmailValidator)
+    ];
+    List<Validator<dynamic>> phoneValidators = [
+      Validators.delegate(CommonValidators.multiplePhoneValidator)
+    ];
+
+    // Conditionally add 'required' validator
+    if (isPhoneEmpty) {
+      emailValidators.insert(0, Validators.delegate(CommonValidators.required));
+    }
+    if (isEmailEmpty) {
+      phoneValidators.insert(0, Validators.delegate(CommonValidators.required));
+    }
+    // Set validators only if they have changed
+    if (emailControl.validators.toString() != emailValidators.toString()) {
+      emailControl.setValidators(emailValidators);
+      emailControl.updateValueAndValidity();
+    }
+
+    if (phoneControl.validators.toString() != phoneValidators.toString()) {
+      phoneControl.setValidators(phoneValidators);
+      phoneControl.updateValueAndValidity();
+    }
+
+    emailControl.markAsDirty();
+    phoneControl.markAsDirty();
   }
 
   void setFormValue(ClientInfo info) {
@@ -128,6 +166,8 @@ class EditUserController extends GetxController {
 
       var userInfo = ClientInfo.fromJson(response.data);
       setFormValue(userInfo);
+      updateRequiredFields();
+
       info.value = userInfo;
     } catch (e) {
       print('Error fetching user info: $e');

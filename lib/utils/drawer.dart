@@ -71,21 +71,31 @@ class DrawerWidget extends StatelessWidget {
                             ),
                     ),
                     const SizedBox(height: 10),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(drawerController.auth.value?.fullName ?? '',
-                            style: const TextStyle(
-                                fontSize: 18,
+                    SizedBox(
+                      width: 270,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                                drawerController.auth.value?.fullName ?? '',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  overflow: TextOverflow.ellipsis,
+                                )),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(drawerController.auth.value?.phone ?? '',
+                              style: const TextStyle(
+                                fontSize: 14,
                                 color: Colors.white,
-                                fontWeight: FontWeight.bold)),
-                        Text(drawerController.auth.value?.phone ?? '',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.white,
-                            )),
-                      ],
+                              )),
+                        ],
+                      ),
                     ),
                   ],
                 ),

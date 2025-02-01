@@ -71,6 +71,7 @@ class EditUser extends StatelessWidget {
                             controller.formGroup.control('phone').disabled,
                         showErrors: (control) =>
                             control.invalid && control.dirty,
+                        onChanged: (value) => controller.updateRequiredFields(),
                       ),
                       MyFormField<String>(
                         controlName: 'email',
@@ -80,6 +81,7 @@ class EditUser extends StatelessWidget {
                             controller.formGroup.control('email').disabled,
                         showErrors: (control) =>
                             control.invalid && control.dirty,
+                        onChanged: (value) => controller.updateRequiredFields(),
                       ),
                     ],
                   ),

@@ -24,6 +24,12 @@ class CommonValidators {
       final formControl = control.control(controlName);
       final matchingFormControl = control.control(matchingControlName);
 
+      if (matchingFormControl.value == null ||
+          matchingFormControl.value.isEmpty) {
+        matchingFormControl.removeError(errorMessage);
+        return null; // Return null (no error) if either field is empty
+      }
+
       // Add error to matchingFormControl if values do not match
       if (formControl.value != matchingFormControl.value) {
         matchingFormControl.setErrors(
@@ -75,6 +81,10 @@ class CommonValidators {
 
       // Replace unwanted characters (like zero-width space or extra spaces)
       value = value.replaceAll(RegExp(r'\u200B'), '').replaceAll(' ', '');
+
+      if (value.contains('//') || value.endsWith('/')) {
+        return false;
+      }
 
       // Split by slash and check each number
       final phoneNumbers = value.split('/');

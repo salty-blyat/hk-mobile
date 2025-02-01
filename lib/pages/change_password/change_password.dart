@@ -31,8 +31,8 @@ class ChangePassword extends StatelessWidget {
                       const SizedBox(height: 16),
                       Obx(
                         () => Container(
-                          height: 84,
-                          width: 84,
+                          height: 94,
+                          width: 94,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(100),
@@ -44,8 +44,8 @@ class ChangePassword extends StatelessWidget {
                                     child: Image.network(
                                       controller.info.value!.profile!,
                                       fit: BoxFit.cover,
-                                      height: 84,
-                                      width: 84,
+                                      height: 94,
+                                      width: 94,
                                     ),
                                   ),
                                 )
