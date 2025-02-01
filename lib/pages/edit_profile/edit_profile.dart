@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 import 'package:staff_view_ui/pages/edit_profile/edit_profile_controller.dart';
-import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
 import 'package:staff_view_ui/utils/widgets/input.dart';
+import 'package:staff_view_ui/utils/widgets/profile_avatar.dart';
 
 class EditUser extends StatelessWidget {
   EditUser({super.key});
@@ -30,43 +30,11 @@ class EditUser extends StatelessWidget {
                     children: [
                       const SizedBox(height: 16),
                       Obx(
-                        () => GestureDetector(
-                          onTap: () => {},
-                          child: Container(
-                            height: 84,
-                            width: 84,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            child: controller.info.value?.profile?.isNotEmpty ==
-                                    true
-                                ? CircleAvatar(
-                                    child: ClipOval(
-                                      child: Image.network(
-                                        controller.info.value!.profile!,
-                                        fit: BoxFit.cover,
-                                        height: 84,
-                                        width: 84,
-                                      ),
-                                    ),
-                                  )
-                                : CircleAvatar(
-                                    backgroundColor:
-                                        AppTheme.primaryColor.withOpacity(0.8),
-                                    child: Text(
-                                      controller.info.value?.fullName
-                                              ?.substring(0, 1)
-                                              .toUpperCase() ??
-                                          '',
-                                      style: const TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                          ),
+                        () => ProfileAvatar(
+                          isEdit: true,
+                          profileImageUrl: controller.info.value?.profile,
+                          fullName: controller.info.value?.fullName,
+                          formGroup: controller.formGroup,
                         ),
                       ),
                       const SizedBox(height: 10),
