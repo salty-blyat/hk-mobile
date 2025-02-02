@@ -78,3 +78,16 @@ Map<String, dynamic> _$RequestModelToJson(RequestModel instance) =>
       'delegatorId': instance.delegatorId,
       'requestLogs': instance.requestLogs,
     };
+
+TotalModel _$TotalModelFromJson(Map<String, dynamic> json) => TotalModel(
+      totalLeave: (json['totalLeave'] as num?)?.toInt(),
+      totalOT: (json['totalOT'] as num?)?.toInt(),
+      totalException: (json['totalException'] as num?)?.toInt(),
+    );
+
+Map<String, dynamic> _$TotalModelToJson(TotalModel instance) =>
+    <String, dynamic>{
+      'totalLeave': instance.totalLeave,
+      'totalOT': instance.totalOT,
+      'totalException': instance.totalException,
+    };

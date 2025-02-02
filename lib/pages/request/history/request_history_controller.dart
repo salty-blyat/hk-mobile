@@ -14,6 +14,7 @@ class RequestHistoryController extends GetxController {
   final RxBool loading = false.obs;
   final RxBool canLoadMore = true.obs;
   final RxBool isLoadingMore = false.obs;
+  final RxInt selectedRequestType = 0.obs;
   final RxInt year = DateTime.now().year.obs;
 
   final queryParameters = QueryParam(
@@ -64,9 +65,19 @@ class RequestHistoryController extends GetxController {
 
     queryParameters.update((params) {
       final rangeDate = '${year.value}-01-01~${year.value}-12-31';
-      params?.filters = jsonEncode([
+      final filters = [
         {'field': 'createdDate', 'operator': 'contains', 'value': rangeDate},
-      ]);
+      ];
+      if (selectedRequestType.value != 0) {
+        filters.add(
+          {
+            'field': 'requestType',
+            'operator': 'eq',
+            'value': selectedRequestType.value.toString()
+          },
+        );
+      }
+      params?.filters = jsonEncode(filters);
     });
 
     try {

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/helpers/base_list_screen.dart';
 import 'package:staff_view_ui/models/request_model.dart';
 import 'package:staff_view_ui/pages/request/history/request_history_screen.dart';
@@ -9,6 +10,7 @@ import 'package:staff_view_ui/pages/request/request_controller.dart';
 import 'package:staff_view_ui/pages/request/view/request_view_screen.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
 import 'package:staff_view_ui/utils/style.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/calendar.dart';
 import 'package:staff_view_ui/utils/widgets/tag.dart';
 import 'package:staff_view_ui/utils/widgets/year_select.dart';
@@ -33,9 +35,6 @@ class RequestApproveScreen extends BaseList<RequestModel> {
 
   @override
   bool get fabButton => false;
-
-  @override
-  bool get showHeader => false;
 
   @override
   RxList<RequestModel> get items => controller.lists;
@@ -72,11 +71,31 @@ class RequestApproveScreen extends BaseList<RequestModel> {
 
   @override
   Widget headerWidget() {
-    return YearSelect(
-      onYearSelected: (year) {
-        controller.year.value = year;
-        onRefresh();
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Text(
+            'Pending'.tr.toUpperCase(),
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 16,
+              fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+            ),
+          ),
+        ),
+        Container(
+          height: 65,
+          margin: const EdgeInsets.only(bottom: 16),
+          child: _buildRequestTypeItem(),
+        ),
+      ],
     );
   }
 
@@ -155,5 +174,136 @@ class RequestApproveScreen extends BaseList<RequestModel> {
             arguments: {'id': item.id!, 'reqType': 0});
       },
     );
+  }
+
+  Widget _buildRequestTypeItem() {
+    return Obx(() {
+      if (controller.totalLeave.value == 0 &&
+          controller.totalOT.value == 0 &&
+          controller.totalException.value == 0) {
+        return Skeletonizer(
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: 4,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    minimumSize: const Size(86, 0),
+                    shadowColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  onPressed: () {},
+                  child: const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('10'),
+                      Text('Total'),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      }
+      List<int> requestValues = [
+        0, // This will represent the "Total" button
+        ...REQUEST_TYPE.values.map((type) => type.value)
+      ];
+
+      // Total counts for the "Total" button
+      int totalCount = controller.totalLeave.value +
+          controller.totalOT.value +
+          controller.totalException.value;
+
+      return ListView(
+        scrollDirection: Axis.horizontal,
+        children: requestValues.map((value) {
+          String title = "";
+          int count = 0;
+
+          if (value == 0) {
+            // Special case for "Total"
+            title = "Total";
+            count = totalCount;
+          } else {
+            // Standard request types (Leave, OT, Exception)
+            title = REQUEST_TYPE.values
+                .firstWhere((type) => type.value == value)
+                .name;
+            switch (
+                REQUEST_TYPE.values.firstWhere((type) => type.value == value)) {
+              case REQUEST_TYPE.Leave:
+                count = controller.totalLeave.value;
+                break;
+              case REQUEST_TYPE.OT:
+                count = controller.totalOT.value;
+                break;
+              case REQUEST_TYPE.Exception:
+                count = controller.totalException.value;
+                break;
+            }
+          }
+
+          return Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: ElevatedButton(
+              onPressed: () {
+                controller.selectedRequestType.value = value;
+                onRefresh();
+              },
+              style: ElevatedButton.styleFrom(
+                elevation: 0,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                shadowColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                backgroundColor: controller.selectedRequestType.value == value
+                    ? AppTheme.primaryColor
+                    : AppTheme.secondaryColor,
+                foregroundColor: controller.selectedRequestType.value == value
+                    ? Colors.white
+                    : Colors.black,
+              ),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 70),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        count.toString(),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        title.tr,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+      );
+    });
   }
 }

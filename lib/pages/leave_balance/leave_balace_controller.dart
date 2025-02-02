@@ -23,8 +23,11 @@ class LeaveBalanceController extends GetxController {
       isLoading.value = true;
       final response = await service.getLeaveBalance(year.value);
       leaveBalance.value = response['result'] as LeaveBalanceModel;
-      leaveTypes.assignAll(response['leaveTypes'] as Iterable<LeaveType>);
-      leaveTypes.insert(0, LeaveType(id: 0, name: 'Total'.tr));
+      final fetchedLeaveTypes = response['leaveTypes'] as Iterable<LeaveType>;
+      leaveTypes.assignAll([
+        LeaveType(id: 0, name: 'Total'.tr),
+        ...fetchedLeaveTypes,
+      ]);
     } catch (e) {
       isLoading.value = false;
       print('Error fetching leave balance: $e');

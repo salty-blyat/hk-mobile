@@ -42,4 +42,19 @@ class RequestApproveService extends BaseService<RequestModel> {
       throw Exception('Failed to search.');
     }
   }
+
+  Future<Map<String, dynamic>> getTotal() async {
+    try {
+      final response = await dio.get('$apiUrl/total');
+      if (response.statusCode == 200) {
+        final total = TotalModel.fromJson(response.data!);
+        return total.toJson();
+      } else {
+        throw Exception(
+            'Failed to get total. Status Code: ${response.statusCode}');
+      }
+    } catch (e, stackTrace) {
+      throw Exception('Failed to get total: $e');
+    }
+  }
 }

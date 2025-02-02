@@ -2,11 +2,14 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/helpers/base_list_screen.dart';
 import 'package:staff_view_ui/models/request_model.dart';
 import 'package:staff_view_ui/pages/request/history/request_history_controller.dart';
+import 'package:staff_view_ui/pages/request/request_controller.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
 import 'package:staff_view_ui/utils/style.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/calendar.dart';
 import 'package:staff_view_ui/utils/widgets/tag.dart';
 import 'package:staff_view_ui/utils/widgets/year_select.dart';
@@ -54,12 +57,22 @@ class RequestHistoryScreen extends BaseList<RequestModel> {
 
   @override
   Widget headerWidget() {
-    return YearSelect(
-      onYearSelected: (year) {
-        controller.year.value = year;
-        controller.lists.value = [];
-        onRefresh();
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        YearSelect(
+          onYearSelected: (year) {
+            controller.year.value = year;
+            controller.lists.value = [];
+            onRefresh();
+          },
+        ),
+        Container(
+          height: 45,
+          margin: const EdgeInsets.only(top: 0, bottom: 10),
+          child: _buildRequestTypeSelect(),
+        ),
+      ],
     );
   }
 
@@ -134,4 +147,73 @@ class RequestHistoryScreen extends BaseList<RequestModel> {
 
   @override
   RxList<RequestModel> get items => controller.lists;
+
+  Widget _buildRequestTypeSelect() {
+    // if (controller.loading.value) {
+    //   return Skeletonizer(
+    //     child: SizedBox(
+    //       height: 45,
+    //       child: ListView.builder(
+    //         scrollDirection: Axis.horizontal,
+    //         itemCount: 10,
+    //         itemBuilder: (context, index) => Padding(
+    //           padding: const EdgeInsets.only(right: 8),
+    //           child: ElevatedButton(
+    //             onPressed: () {},
+    //             style: ElevatedButton.styleFrom(
+    //               elevation: 0,
+    //               shape: RoundedRectangleBorder(
+    //                 borderRadius: BorderRadius.circular(4),
+    //               ),
+    //             ),
+    //             child: Text('All'.tr),
+    //           ),
+    //         ),
+    //       ),
+    //     ),
+    //   );
+    // }
+    List<int> requestValues = [
+      0,
+      ...REQUEST_TYPE.values.map((type) => type.value)
+    ];
+
+    return Obx(() => ListView(
+          scrollDirection: Axis.horizontal,
+          children: requestValues.map((value) {
+            String title = value == 0
+                ? "All"
+                : REQUEST_TYPE.values
+                    .firstWhere((type) => type.value == value)
+                    .name;
+            return Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: ElevatedButton(
+                onPressed: () {
+                  controller.selectedRequestType.value = value;
+
+                  onRefresh();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: controller.selectedRequestType.value == value
+                      ? AppTheme.primaryColor
+                      : Colors.white,
+                  foregroundColor: controller.selectedRequestType.value == value
+                      ? Colors.white
+                      : Colors.black,
+                  side: const BorderSide(
+                    color: AppTheme.primaryColor,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                child: Text(
+                  title.tr,
+                ),
+              ),
+            );
+          }).toList(),
+        ));
+  }
 }

@@ -1,7 +1,21 @@
+// ignore_for_file: constant_identifier_names
+
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
 import 'package:staff_view_ui/models/request_model.dart';
 import 'package:staff_view_ui/pages/request/request_service.dart';
+
+// ignore: camel_case_types
+enum REQUEST_TYPE {
+  Leave(1),
+  OT(2),
+  Exception(3);
+
+  final int value;
+  const REQUEST_TYPE(this.value);
+}
 
 class RequestApproveController extends GetxController {
   final loading = false.obs;
@@ -9,6 +23,12 @@ class RequestApproveController extends GetxController {
   final RequestApproveService service = RequestApproveService();
   final formValid = false.obs;
   final lists = <RequestModel>[].obs;
+  final selectedRequestType = 0.obs;
+
+  final totalLeave = 0.obs;
+  final totalOT = 0.obs;
+  final totalException = 0.obs;
+
   final year = DateTime.now().year.obs;
   final canLoadMore = false.obs;
   final queryParameters = QueryParam(
@@ -21,6 +41,7 @@ class RequestApproveController extends GetxController {
   @override
   void onInit() {
     search();
+    getTotal();
     super.onInit();
   }
 
@@ -55,6 +76,19 @@ class RequestApproveController extends GetxController {
     //     {'field': 'fromDate', 'operator': 'contains', 'value': rangeDate},
     //   ]);
     // });
+    queryParameters.update((params) {
+      final filters = [];
+      if (selectedRequestType.value != 0) {
+        filters.add(
+          {
+            'field': 'requestType',
+            'operator': 'eq',
+            'value': selectedRequestType.value.toString()
+          },
+        );
+      }
+      params?.filters = jsonEncode(filters);
+    });
 
     try {
       final response =
@@ -65,6 +99,20 @@ class RequestApproveController extends GetxController {
     } catch (e) {
       canLoadMore.value = false;
       print("Error during search: $e");
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  Future<void> getTotal() async {
+    loading.value = true;
+    try {
+      final total = await service.getTotal();
+      totalLeave.value = total['totalLeave'] ?? 0;
+      totalOT.value = total['totalOT'] ?? 0;
+      totalException.value = total['totalException'] ?? 0;
+    } catch (e) {
+      print("Error during getTotal: $e");
     } finally {
       loading.value = false;
     }

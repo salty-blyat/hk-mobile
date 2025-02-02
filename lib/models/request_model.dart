@@ -71,3 +71,21 @@ class RequestModel extends BaseModel {
 
   Map<String, dynamic> toJson() => _$RequestModelToJson(this);
 }
+
+@JsonSerializable()
+class TotalModel {
+  final int? totalLeave;
+  final int? totalOT;
+  final int? totalException;
+
+  TotalModel({
+    this.totalLeave,
+    this.totalOT,
+    this.totalException,
+  });
+
+  factory TotalModel.fromJson(Map<String, dynamic> json) =>
+      _$TotalModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TotalModelToJson(this);
+}
