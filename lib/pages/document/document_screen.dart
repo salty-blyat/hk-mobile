@@ -79,7 +79,6 @@ class DocumentScreen extends StatelessWidget {
               return const NoData();
             }
             return ListView.builder(
-              padding: const EdgeInsets.all(16),
               itemCount: controller.lists.length,
               itemBuilder: (context, index) {
                 return Padding(
@@ -104,12 +103,11 @@ class DocumentScreen extends StatelessWidget {
   Widget _buildHeaderWidget() {
     return Container(
       width: double.infinity,
-      // height: 35,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(4),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
       child: Align(
         alignment: Alignment.centerLeft,
         child: DocumentTypeSelect(

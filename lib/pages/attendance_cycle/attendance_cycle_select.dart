@@ -14,14 +14,11 @@ class AttendanceCycleSelect extends StatelessWidget {
     final AttendanceCycleController controller =
         Get.put(AttendanceCycleController());
 
-    // Use ever to listen for changes in loading state
     ever(controller.loading, (loading) {
       if (!loading) {
-        // Data has finished loading
         final selected = controller.lists.firstWhere(
           (e) => e.id == controller.selected.value,
-          orElse: () =>
-              AttendanceCycleModel(), // Provide a default value if not found
+          orElse: () => AttendanceCycleModel(),
         );
         onSelected.call(selected);
       }

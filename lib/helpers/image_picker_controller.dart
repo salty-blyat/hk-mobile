@@ -48,15 +48,19 @@ class FilePickerController extends GetxController {
   }
 
   // Pick a general file and automatically upload it as Base64
-  Future<Attachment?> pickFile() async {
-    final result = await FilePicker.platform.pickFiles();
+  Future<List<Attachment>?> pickFile() async {
+    final result = await FilePicker.platform.pickFiles(
+      allowMultiple: true,
+    );
     if (result != null) {
       Get.back();
-      selectedFile.value = File(result.files.single.path!);
-      mimeType.value = getMimeType(selectedFile.value!);
-      await uploadFileAsBase64(
-          selectedFile.value!); // Automatically upload after picking
-      return attachments.first;
+      for (var file in result.files) {
+        selectedFile.value = File(file.path!);
+        mimeType.value = getMimeType(selectedFile.value!);
+        await uploadFileAsBase64(
+            selectedFile.value!); // Automatically upload after picking
+      }
+      return attachments;
     }
     return null;
   }
@@ -147,5 +151,9 @@ class FilePickerController extends GetxController {
   void clearSelections() {
     selectedImage.value = null;
     selectedFile.value = null;
+  }
+
+  bool isImageUrl(String url) {
+    return Const.isImage(url);
   }
 }

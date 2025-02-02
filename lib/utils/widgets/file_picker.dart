@@ -1,58 +1,104 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:reactive_forms/reactive_forms.dart';
-import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/image_picker_controller.dart';
+import 'package:staff_view_ui/helpers/token_interceptor.dart';
 import 'package:staff_view_ui/utils/theme.dart';
-import 'package:staff_view_ui/utils/widgets/custom_slide_button.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-class FilePickerWidget extends StatefulWidget {
-  const FilePickerWidget({super.key, required this.formGroup});
+class FilePickerWidget extends StatelessWidget {
+  FilePickerWidget(
+      {super.key, required this.formGroup, this.controlName = 'attachments'});
   final FormGroup formGroup;
-
-  @override
-  State<FilePickerWidget> createState() => _FilePickerWidgetState();
-}
-
-class _FilePickerWidgetState extends State<FilePickerWidget>
-    with SingleTickerProviderStateMixin {
+  final String controlName;
   final filePickerController = Get.put(FilePickerController());
-  late final slidableController = SlidableController(this);
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => Slidable(
-        controller: slidableController,
-        key: const Key('attachment'),
-        enabled: filePickerController.attachments.isNotEmpty,
-        endActionPane: ActionPane(
-          extentRatio: 0.3,
-          motion: const ScrollMotion(),
-          children: [
-            CustomSlideButton(
-              onPressed: () {
-                if (filePickerController.attachments.isNotEmpty) {
-                  widget.formGroup.control('attachments').value = [];
-                  filePickerController.attachments.value = [];
-                  slidableController.close();
-                }
-              },
-              label: 'Delete'.tr,
-              icon: CupertinoIcons.delete_solid,
-              color: AppTheme.dangerColor,
-            ),
-          ],
-        ),
-        child: GestureDetector(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Obx(() {
+          if (filePickerController.attachments.isEmpty) {
+            return const SizedBox.shrink();
+          }
+          return Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (var attachment in filePickerController.attachments)
+                GestureDetector(
+                  onTap: () async {
+                    var filePath =
+                        '${(await getTemporaryDirectory()).path}/StaffView/${attachment.name}_${DateTime.now().millisecondsSinceEpoch}.${attachment.url.split('.').last}';
+                    var res = await DioClient()
+                        .dio
+                        .download(attachment.url, filePath);
+                    if (res.statusCode == 200) {
+                      OpenFile.open(filePath);
+                    }
+                  },
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.center,
+                    children: [
+                      Container(
+                        height: 64,
+                        width: 64,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(color: Colors.grey),
+                        ),
+                        child: filePickerController.isImageUrl(attachment.url)
+                            ? SizedBox(
+                                height: 64,
+                                width: 64,
+                                child: Image.network(
+                                  attachment.url,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : const Icon(CupertinoIcons.doc_fill),
+                      ),
+                      Positioned(
+                        right: -22,
+                        top: -22,
+                        child: IconButton(
+                          onPressed: () {
+                            formGroup
+                                .control(controlName)
+                                .value
+                                .remove(attachment);
+                            filePickerController.attachments.remove(attachment);
+                          },
+                          icon: Container(
+                            height: 16,
+                            width: 16,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            child: const Icon(
+                              CupertinoIcons.clear_thick_circled,
+                              color: AppTheme.dangerColor,
+                              size: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          );
+        }),
+        const SizedBox(height: 8),
+        GestureDetector(
           onTap: () {
-            if (filePickerController.attachments.isNotEmpty) {
-              launchUrl(Uri.parse(filePickerController.attachments.first.url));
-              return;
-            }
             showModalBottomSheet(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(0),
@@ -82,7 +128,7 @@ class _FilePickerWidgetState extends State<FilePickerWidget>
                         final attachment =
                             await filePickerController.pickImageFromCamera();
                         if (attachment != null) {
-                          widget.formGroup.control('attachments').value.add(
+                          formGroup.control('attachments').value.add(
                             {
                               'uid': attachment.uid,
                               'url': attachment.url,
@@ -102,7 +148,7 @@ class _FilePickerWidgetState extends State<FilePickerWidget>
                         final attachment =
                             await filePickerController.pickImageFromGallery();
                         if (attachment != null) {
-                          widget.formGroup.control('attachments').value.add(
+                          formGroup.control(controlName).value.add(
                             {
                               'uid': attachment.uid,
                               'url': attachment.url,
@@ -122,13 +168,15 @@ class _FilePickerWidgetState extends State<FilePickerWidget>
                         final attachment =
                             await filePickerController.pickFile();
                         if (attachment != null) {
-                          widget.formGroup.control('attachments').value.add(
-                            {
-                              'uid': attachment.uid,
-                              'url': attachment.url,
-                              'name': attachment.name,
-                            },
-                          );
+                          for (var attachment in attachment) {
+                            formGroup.control(controlName).value.add(
+                              {
+                                'uid': attachment.uid,
+                                'url': attachment.url,
+                                'name': attachment.name,
+                              },
+                            );
+                          }
                         }
                       },
                     ),
@@ -148,62 +196,23 @@ class _FilePickerWidgetState extends State<FilePickerWidget>
             );
           },
           child: Container(
-            height: 90,
+            height: 64,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(4),
               border: Border.all(color: Colors.grey),
             ),
             child: Center(
-              child: Obx(() {
-                if (filePickerController.attachments.isNotEmpty) {
-                  return filePickerController.isImage.value
-                      ? Image.network(
-                          filePickerController.attachments.first.url)
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(CupertinoIcons.doc_fill),
-                            Text('Attachment'.tr),
-                          ],
-                        );
-                }
-                return Obx(() {
-                  if (filePickerController.isUploading.value) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            '${'Uploading...'.tr} ${Const.percentageFormat(filePickerController.progress.value)}%',
-                            style: Get.textTheme.bodyLarge?.copyWith(
-                              color: Colors.black54,
-                              fontFamilyFallback: ['Gilroy', 'Kantumruy'],
-                            ),
-                          ),
-                          LinearProgressIndicator(
-                            backgroundColor: Colors.grey.shade200,
-                            color: Theme.of(context).colorScheme.primary,
-                            borderRadius: BorderRadius.circular(4),
-                            value: filePickerController.progress.value,
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(CupertinoIcons.cloud_upload),
-                      Text('Attachment'.tr),
-                    ],
-                  );
-                });
-              }),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(CupertinoIcons.cloud_upload),
+                  Text('Attachment'.tr),
+                ],
+              ),
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 }
