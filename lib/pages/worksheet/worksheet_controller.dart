@@ -1,4 +1,13 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:staff_view_ui/models/working_sheet.dart';
 import 'package:staff_view_ui/pages/worksheet/worksheet_service.dart';
 
@@ -8,6 +17,9 @@ class WorkingController extends GetxController {
   final WorkingService workingService = WorkingService();
   final startDate = ''.obs;
   final endDate = ''.obs;
+  final isDownloading = false.obs;
+  final downloading = ''.obs;
+  final downloadProgress = 0.0.obs;
 
   final Rx<Total> total =
       Total(actual: 0, expected: 0, absent: 0, permission: 0).obs;
@@ -58,6 +70,72 @@ class WorkingController extends GetxController {
         expected: expected,
         absent: absent,
         permission: permission);
+  }
+
+  Future<void> downloadReport(String reportName) async {
+    try {
+      final dio = Dio();
+      final response = await workingService.downloadReport(
+          reportName: reportName,
+          dateRange: '${startDate.value} ~ ${endDate.value}');
+      Directory? directory;
+
+      if (Platform.isAndroid) {
+        if (await _requestStoragePermission()) {
+          var tmp = await getExternalStorageDirectory();
+          directory = Directory(
+              '${tmp?.path.split('/Android').first}/Download/StaffView');
+        } else {
+          throw Exception("Storage permission denied");
+        }
+      } else if (Platform.isIOS) {
+        directory = Directory(
+            '${(await getApplicationDocumentsDirectory()).path}/StaffView');
+      }
+
+      if (directory == null) {
+        throw Exception("Could not find a valid directory");
+      }
+
+      final path =
+          "${directory.path}/${reportName}_$startDate-$endDate(${DateTime.now().toString().split(' ').first}).pdf";
+      if (response.statusCode == 200) {
+        isDownloading.value = true;
+        downloading.value = reportName;
+        await dio.download(response.data['url'], path,
+            onReceiveProgress: (received, total) {
+          downloadProgress.value = received / total;
+        });
+        downloading.value = '';
+        isDownloading.value = false;
+        Get.to(
+          () => Scaffold(
+            appBar: AppBar(
+              title: Text(reportName.tr),
+              actions: [
+                IconButton(
+                  onPressed: () async {
+                    await Share.shareXFiles([XFile(path)]);
+                  },
+                  icon: const Icon(CupertinoIcons.share),
+                ),
+              ],
+            ),
+            body: PDFView(filePath: path),
+          ),
+        );
+      }
+    } catch (e) {
+      throw Exception('Failed to download file: $e');
+    }
+  }
+
+  Future<bool> _requestStoragePermission() async {
+    if (Platform.isAndroid) {
+      final status = await Permission.manageExternalStorage.request();
+      return status.isGranted;
+    }
+    return true; // iOS doesn't need permission
   }
 }
 

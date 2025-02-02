@@ -16,7 +16,7 @@ class HistoryController extends GetxController {
   final queryParam = QueryParam(
     pageIndex: 1,
     pageSize: 10,
-    sorts: '',
+    sorts: 'time-',
     filters: '[]',
   ).obs;
 
