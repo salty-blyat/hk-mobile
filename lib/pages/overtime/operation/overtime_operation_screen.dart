@@ -24,10 +24,6 @@ class OvertimeOperationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (id != 0) {
-      controller.id.value = id;
-      controller.find(id);
-    }
     return Scaffold(
       resizeToAvoidBottomInset: true,
       bottomNavigationBar: Padding(

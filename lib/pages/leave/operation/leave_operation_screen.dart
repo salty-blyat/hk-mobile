@@ -13,6 +13,7 @@ import 'package:staff_view_ui/utils/widgets/button.dart';
 import 'package:staff_view_ui/utils/widgets/date_picker.dart';
 import 'package:staff_view_ui/utils/widgets/date_range_picker.dart';
 import 'package:staff_view_ui/utils/widgets/file_picker.dart';
+import 'package:staff_view_ui/utils/widgets/input.dart';
 
 class LeaveOperationScreen extends StatelessWidget {
   final LeaveOperationController controller =
@@ -26,11 +27,6 @@ class LeaveOperationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (id != 0) {
-      controller.id.value = id;
-      controller.find(id);
-    }
-
     return Scaffold(
       resizeToAvoidBottomInset: true,
       bottomNavigationBar: Padding(
@@ -277,12 +273,10 @@ class LeaveOperationScreen extends StatelessWidget {
           decoration: InputDecoration(labelText: 'Balance'.tr),
         ),
         const SizedBox(height: 16),
-        ReactiveTextField<String>(
-          formControlName: 'reason',
+        MyFormField(
+          label: 'Reason'.tr,
+          controlName: 'reason',
           maxLines: 2,
-          decoration: InputDecoration(
-            labelText: 'Reason'.tr,
-          ),
         ),
         const SizedBox(height: 16),
         StaffSelect(

@@ -5,6 +5,7 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/helpers/image_picker_controller.dart';
+import 'package:staff_view_ui/models/attachment_model.dart';
 import 'package:staff_view_ui/models/leave_model.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
 import 'package:staff_view_ui/pages/leave/leave_service.dart';
@@ -90,6 +91,10 @@ class LeaveOperationController extends GetxController {
     formGroup.valueChanges.listen((value) {
       formValid.value = formGroup.valid;
     });
+    id.value = Get.arguments['id'];
+    if (id.value != 0) {
+      find(id.value);
+    }
     super.onInit();
   }
 
@@ -157,16 +162,14 @@ class LeaveOperationController extends GetxController {
       formGroup.control('totalDays').markAsEnabled();
     }
     updateLeaveBalance(leave.leaveTypeId!);
-    formGroup.control('attachments').value = [
-      {
-        'name': leave.attachments?.first.name,
-        'url': leave.attachments?.first.url,
-        'uid': leave.attachments?.first.uid,
-      }
-    ];
-    filePickerController.isImage.value =
-        Const.isImage(leave.attachments?.first.url ?? '');
-    filePickerController.attachments.value = leave.attachments ?? [];
+    leave.attachments?.forEach((attachment) {
+      filePickerController.attachments.add(attachment);
+      formGroup.control('attachments').value.add({
+        'name': attachment.name,
+        'url': attachment.url,
+        'uid': attachment.uid,
+      });
+    });
   }
 
   void calculateTotalDays() async {
