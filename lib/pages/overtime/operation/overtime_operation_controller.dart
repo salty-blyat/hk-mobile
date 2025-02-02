@@ -79,19 +79,14 @@ class OvertimeOperationController extends GetxController {
   void onInit() {
     super.onInit();
 
-    // Will update next Time Bcuz it replace value of 'overtimeHours' field when init formGroup
-    // Listen to changes in 'fromTime' and 'toTime' and trigger the calculation.
-    print(firstTime);
     formGroup.control('fromTime').valueChanges.listen((_) {
       if (!firstTime) {
-        print('fromTime');
         calculateTotalHours();
       }
     });
 
     formGroup.control('toTime').valueChanges.listen((_) {
       if (!firstTime) {
-        print(firstTime);
         calculateTotalHours();
       }
     });
@@ -121,7 +116,6 @@ class OvertimeOperationController extends GetxController {
   }
 
   void setFormValue(Overtime overtime) {
-    print(overtime.overtimeHour);
     formGroup.patchValue({
       'id': overtime.id,
       'requestNo': overtime.requestNo,

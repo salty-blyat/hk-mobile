@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/base_list_screen.dart';
 import 'package:staff_view_ui/models/leave_model.dart';
+import 'package:staff_view_ui/pages/leave_balance/leave_balace_controller.dart';
+import 'package:staff_view_ui/pages/leave_balance/leave_balace_select.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
 import 'package:staff_view_ui/pages/leave/operation/leave_operation_screen.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
@@ -19,6 +21,8 @@ class LeaveScreen extends BaseList<Leave> {
   LeaveScreen({super.key});
 
   final LeaveController controller = Get.put(LeaveController());
+  final LeaveBalanceController leaveBalanceController =
+      Get.put(LeaveBalanceController());
 
   @override
   String get title => 'Leave';
@@ -64,11 +68,25 @@ class LeaveScreen extends BaseList<Leave> {
 
   @override
   Widget headerWidget() {
-    return YearSelect(
-      onYearSelected: (year) {
-        controller.year.value = year;
-        onRefresh();
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        YearSelect(
+          onYearSelected: (year) {
+            controller.year.value = year;
+            leaveBalanceController.year.value = year;
+            leaveBalanceController.getLeaveBalance();
+            onRefresh();
+          },
+        ),
+        LeaveBalaceSelect(
+          selectedId: controller.leaveTypeId,
+          onPressed: (leaveTypeId) {
+            controller.leaveTypeId.value = leaveTypeId;
+            onRefresh();
+          },
+        ),
+      ],
     );
   }
 

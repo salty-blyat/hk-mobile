@@ -25,6 +25,7 @@ class LeaveController extends GetxController {
   final formValid = false.obs;
   final lists = <Leave>[].obs;
   final year = DateTime.now().year.obs;
+  final leaveTypeId = 0.obs;
   final canLoadMore = false.obs;
   final queryParameters = QueryParam(
     pageIndex: 1,
@@ -78,9 +79,17 @@ class LeaveController extends GetxController {
 
     queryParameters.update((params) {
       final rangeDate = '${year.value}-01-01~${year.value}-12-31';
-      params?.filters = jsonEncode([
+      final filters = [
         {'field': 'fromDate', 'operator': 'contains', 'value': rangeDate},
-      ]);
+      ];
+      if (leaveTypeId.value != 0) {
+        filters.add({
+          'field': 'leaveTypeId',
+          'operator': 'eq',
+          'value': leaveTypeId.value.toString()
+        });
+      }
+      params?.filters = jsonEncode(filters);
     });
 
     try {
