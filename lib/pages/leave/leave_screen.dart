@@ -80,7 +80,9 @@ class LeaveScreen extends BaseList<Leave> {
         children: [
           CustomSlideButton(
             onPressed: () {
-              Get.to(() => LeaveOperationScreen(id: item.id ?? 0));
+              Get.to(() => LeaveOperationScreen(), arguments: {
+                'id': item.id,
+              });
             },
             label: 'Edit',
             icon: Icons.edit_square,

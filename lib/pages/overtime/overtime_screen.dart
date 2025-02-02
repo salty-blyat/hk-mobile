@@ -95,7 +95,9 @@ class OvertimeScreen extends BaseList<Overtime> {
         children: [
           CustomSlideButton(
             onPressed: () {
-              Get.to(() => OvertimeOperationScreen(id: item.id ?? 0));
+              Get.to(() => OvertimeOperationScreen(), arguments: {
+                'id': item.id,
+              });
             },
             label: 'Edit',
             icon: Icons.edit_square,

@@ -101,6 +101,10 @@ class OvertimeOperationController extends GetxController {
     formGroup.valueChanges.listen((value) {
       formValid.value = formGroup.valid;
     });
+    id.value = Get.arguments['id'];
+    if (id.value != 0) {
+      find(id.value);
+    }
   }
 
   void find(int id) async {
