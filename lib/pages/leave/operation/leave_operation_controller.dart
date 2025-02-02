@@ -90,7 +90,7 @@ class LeaveOperationController extends GetxController {
     formGroup.valueChanges.listen((value) {
       formValid.value = formGroup.valid;
     });
-    id.value = Get.arguments['id'];
+    id.value = Get.arguments?['id'] ?? 0;
     if (id.value != 0) {
       find(id.value);
     }

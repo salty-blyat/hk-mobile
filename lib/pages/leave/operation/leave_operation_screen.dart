@@ -21,9 +21,8 @@ class LeaveOperationScreen extends StatelessWidget {
   final LeaveTypeController leaveTypeController =
       Get.put(LeaveTypeController());
   final filePickerController = Get.put(FilePickerController());
-  final int id;
 
-  LeaveOperationScreen({super.key, this.id = 0});
+  LeaveOperationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -282,7 +281,7 @@ class LeaveOperationScreen extends StatelessWidget {
         StaffSelect(
           formControlName: 'approverId',
           formGroup: controller.formGroup,
-          isEdit: id != 0,
+          isEdit: Get.arguments['id'] != 0,
         ),
       ],
     );

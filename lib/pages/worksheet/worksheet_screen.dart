@@ -44,10 +44,30 @@ class WorkingScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             mainAxisSize: MainAxisSize.min,
             children: [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(CupertinoIcons.arrow_down_circle,
-                    size: 24, color: Colors.white),
+              Obx(
+                () {
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      if (controller.isDownloading.value)
+                        SizedBox(
+                          height: 28,
+                          width: 28,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        ),
+                      IconButton(
+                        onPressed: () {
+                          controller.downloadReport('AttendanceDetailReport');
+                        },
+                        icon: const Icon(CupertinoIcons.arrow_down_circle,
+                            size: 24, color: Colors.white),
+                      ),
+                    ],
+                  );
+                },
               ),
               IconButton(
                 onPressed: () {
