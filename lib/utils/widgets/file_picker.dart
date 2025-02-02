@@ -69,11 +69,9 @@ class FilePickerWidget extends StatelessWidget {
                         top: -22,
                         child: IconButton(
                           onPressed: () {
-                            formGroup
-                                .control(controlName)
-                                .value
-                                .remove(attachment);
                             filePickerController.attachments.remove(attachment);
+                            formGroup.control('attachments').value =
+                                filePickerController.attachments;
                           },
                           icon: Container(
                             height: 16,
