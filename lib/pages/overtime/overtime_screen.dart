@@ -43,7 +43,9 @@ class OvertimeScreen extends BaseList<Overtime> {
 
   @override
   void onFabPressed() {
-    Get.to(() => OvertimeOperationScreen());
+    Get.to(() => OvertimeOperationScreen(), arguments: {
+      'id': 0,
+    });
   }
 
   @override

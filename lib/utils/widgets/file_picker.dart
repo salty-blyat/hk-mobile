@@ -70,8 +70,14 @@ class FilePickerWidget extends StatelessWidget {
                         child: IconButton(
                           onPressed: () {
                             filePickerController.attachments.remove(attachment);
-                            formGroup.control('attachments').value =
-                                filePickerController.attachments;
+                            formGroup.control(controlName).value =
+                                filePickerController.attachments.map((e) {
+                              return {
+                                'uid': e.uid,
+                                'url': e.url,
+                                'name': e.name,
+                              };
+                            }).toList();
                           },
                           icon: Container(
                             height: 16,
