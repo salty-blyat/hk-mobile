@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ui';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +31,8 @@ class ScanController extends GetxController {
 
   Rx<String> qrCodeData = ''.obs;
   @override
-  void onInit() async {
-    super.onInit();
+  void onReady() async {
+    super.onReady();
     final pos = await determinePosition();
     latitude.value = pos.latitude;
     longitude.value = pos.longitude;
@@ -49,12 +48,12 @@ class ScanController extends GetxController {
   }
 
   void stopScanning() {
-    isScanning.value = false;
+    // isScanning.value = false;
     scannerController.stop();
   }
 
   void startScanning() {
-    isScanning.value = true;
+    // isScanning.value = true;
     scannerController.start();
   }
 
@@ -78,7 +77,6 @@ class ScanController extends GetxController {
       }
     } catch (e) {
       Get.back();
-      print(e);
     }
   }
 
@@ -107,7 +105,6 @@ class ScanController extends GetxController {
   }
 
   Future<void> pickImage(ImageSource source) async {
-    stopScanning();
     try {
       final pickedFile = await _picker.pickImage(source: source);
       if (pickedFile != null) {
@@ -120,6 +117,7 @@ class ScanController extends GetxController {
         } else {
           Alert.errorAlert(
               "Invalid QR Code", "Could not read QR code from the image.");
+          scannerController.start();
         }
       } else {
         Alert.errorAlert("No Image Selected", "Please pick an image.");
@@ -152,7 +150,6 @@ class ScanController extends GetxController {
       String decodedString = String.fromCharCodes(decodedBytes);
 
       qrCodeData.value = decodedString;
-      stopScanning();
       Get.to(() => ScanCheckScreen());
     } catch (e) {
       Alert.errorAlert('Error'.tr, 'QR Code invalid !'.tr);
@@ -256,7 +253,7 @@ class ScanController extends GetxController {
                                     fontSize: 16, color: Colors.black)),
                             Row(
                               children: [
-                                Icon(CupertinoIcons.down_arrow,
+                                const Icon(CupertinoIcons.down_arrow,
                                     color: AppTheme.successColor, size: 16),
                                 const SizedBox(width: 4),
                                 Text(
@@ -277,9 +274,9 @@ class ScanController extends GetxController {
                   const SizedBox(height: 16),
                   TextButton(
                     onPressed: () {
-                      Get.offAllNamed('/menu', arguments: {
-                        'redirect': '/attendance-record',
-                      });
+                      Get.offAllNamed('/menu');
+                      Get.toNamed('/working');
+                      Get.toNamed('/attendance-record');
                     },
                     child: Container(
                       padding: const EdgeInsets.all(16),
@@ -304,9 +301,7 @@ class ScanController extends GetxController {
                 padding: const EdgeInsets.all(16),
                 child: MyButton(
                   onPressed: () {
-                    Get.offAllNamed('/menu', arguments: {
-                      'redirect': null,
-                    });
+                    Get.offAllNamed('/menu');
                   },
                   label: 'Done'.tr,
                   icon: Icons.history,

@@ -150,8 +150,5 @@ class MenusController extends GetxController {
         }
       });
     }
-    if (Get.arguments['redirect'] != null) {
-      Get.toNamed(Get.arguments['redirect'] as String);
-    }
   }
 }
