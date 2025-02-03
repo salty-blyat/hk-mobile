@@ -5,30 +5,40 @@ part 'working_sheet.g.dart';
 
 @JsonSerializable()
 class Worksheets extends BaseModel {
-  DateTime? date;
-  String? day;
-  double? expectedWorkingHour;
-  double? absentAuthHour;
-  double? absentAvailableAuthHour;
-  double? absentUnAuthHour;
-  double? adrWorkingHour;
-  int? type;
-  double? dutyRated;
-  String? holiday;
-  int? holidayId;
-  int? missionId;
-  String? missionObjective;
-  String? leaveReason;
-  String? leaveType;
-  int? leaveId;
-  int? leaveTypeId;
-  String? shiftClockIn;
-  String? shiftClockOut;
-  double? actualWorkingHour;
-  String? actualIn;
-  String? actualOut;
-  double? workingHour;
-  String? extData;
+  final DateTime? date;
+  final String? day;
+  final double? expectedWorkingHour;
+  final double? absentAuthHour;
+  final double? absentAvailableAuthHour;
+  final double? absentUnAuthHour;
+  final double? adrWorkingHour;
+  final int? type;
+  final double? dutyRated;
+  final String? holiday;
+  final int? holidayId;
+  final int? missionId;
+  final String? missionObjective;
+  final String? leaveReason;
+  final String? leaveType;
+  final int? leaveId;
+  final int? leaveTypeId;
+  final String? shiftClockIn;
+  final String? shiftClockOut;
+  final double? actualWorkingHour;
+  final String? actualIn;
+  final String? actualOut;
+  final double? workingHour;
+  final String? extData;
+  final int? exceptionId;
+  final int? absentType;
+  final String? absentTypeNameKh;
+  final String? absentTypeNameEn;
+  final int? exceptionTypeId;
+  final String? exceptionTypeName;
+  final int? scanType;
+  final String? scanTypeNameEn;
+  final String? scanTypeNameKh;
+  final String? exceptionNote;
 
   Worksheets({
     this.date,
@@ -55,6 +65,16 @@ class Worksheets extends BaseModel {
     this.actualOut,
     this.workingHour,
     this.extData,
+    this.exceptionId,
+    this.absentType,
+    this.absentTypeNameKh,
+    this.absentTypeNameEn,
+    this.exceptionTypeId,
+    this.exceptionTypeName,
+    this.scanType,
+    this.scanTypeNameEn,
+    this.scanTypeNameKh,
+    this.exceptionNote,
   });
 
   factory Worksheets.fromJson(Map<String, dynamic> json) =>
