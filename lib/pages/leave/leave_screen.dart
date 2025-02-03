@@ -46,7 +46,7 @@ class LeaveScreen extends BaseList<Leave> {
 
   @override
   void onFabPressed() {
-    Get.to(LeaveOperationScreen(), arguments: {
+    Get.to(() => LeaveOperationScreen(), arguments: {
       'id': 0,
     });
   }

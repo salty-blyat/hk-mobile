@@ -281,7 +281,7 @@ class LeaveOperationScreen extends StatelessWidget {
         StaffSelect(
           formControlName: 'approverId',
           formGroup: controller.formGroup,
-          isEdit: Get.arguments['id'] != 0,
+          isEdit: controller.id.value != 0,
         ),
       ],
     );
