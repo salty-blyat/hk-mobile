@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:skeletonizer/skeletonizer.dart';
+
 import 'package:staff_view_ui/helpers/base_list_screen.dart';
 import 'package:staff_view_ui/models/request_model.dart';
 import 'package:staff_view_ui/pages/request/history/request_history_controller.dart';
@@ -149,30 +149,6 @@ class RequestHistoryScreen extends BaseList<RequestModel> {
   RxList<RequestModel> get items => controller.lists;
 
   Widget _buildRequestTypeSelect() {
-    // if (controller.loading.value) {
-    //   return Skeletonizer(
-    //     child: SizedBox(
-    //       height: 45,
-    //       child: ListView.builder(
-    //         scrollDirection: Axis.horizontal,
-    //         itemCount: 10,
-    //         itemBuilder: (context, index) => Padding(
-    //           padding: const EdgeInsets.only(right: 8),
-    //           child: ElevatedButton(
-    //             onPressed: () {},
-    //             style: ElevatedButton.styleFrom(
-    //               elevation: 0,
-    //               shape: RoundedRectangleBorder(
-    //                 borderRadius: BorderRadius.circular(4),
-    //               ),
-    //             ),
-    //             child: Text('All'.tr),
-    //           ),
-    //         ),
-    //       ),
-    //     ),
-    //   );
-    // }
     List<int> requestValues = [
       0,
       ...REQUEST_TYPE.values.map((type) => type.value)
