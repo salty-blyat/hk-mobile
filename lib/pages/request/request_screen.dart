@@ -13,7 +13,6 @@ import 'package:staff_view_ui/utils/style.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/calendar.dart';
 import 'package:staff_view_ui/utils/widgets/tag.dart';
-import 'package:staff_view_ui/utils/widgets/year_select.dart';
 
 class RequestApproveScreen extends BaseList<RequestModel> {
   RequestApproveScreen({super.key});
@@ -178,40 +177,6 @@ class RequestApproveScreen extends BaseList<RequestModel> {
 
   Widget _buildRequestTypeItem() {
     return Obx(() {
-      if (controller.totalLeave.value == 0 &&
-          controller.totalOT.value == 0 &&
-          controller.totalException.value == 0) {
-        return Skeletonizer(
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: 4,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    minimumSize: const Size(86, 0),
-                    shadowColor: Colors.transparent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                  onPressed: () {},
-                  child: const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('10'),
-                      Text('Total'),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        );
-      }
       List<int> requestValues = [
         0, // This will represent the "Total" button
         ...REQUEST_TYPE.values.map((type) => type.value)
