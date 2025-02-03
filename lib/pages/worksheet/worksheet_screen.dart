@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/models/working_sheet.dart';
 import 'package:staff_view_ui/pages/attendance_cycle/attendance_cycle_select.dart';
 import 'package:staff_view_ui/pages/worksheet/worksheet_controller.dart';
@@ -10,6 +9,7 @@ import 'package:staff_view_ui/utils/get_date.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/calendar.dart';
 import 'package:staff_view_ui/utils/widgets/no_data.dart';
+import 'package:staff_view_ui/utils/widgets/summary_box.dart';
 import 'package:staff_view_ui/utils/widgets/tag.dart';
 
 enum TYPE {
@@ -50,7 +50,7 @@ class WorkingScreen extends StatelessWidget {
                     alignment: Alignment.center,
                     children: [
                       if (controller.isDownloading.value)
-                        SizedBox(
+                        const SizedBox(
                           height: 28,
                           width: 28,
                           child: CircularProgressIndicator(
@@ -120,11 +120,14 @@ class WorkingScreen extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _buildSummaryItem(
-                      Row(
+                    SummaryBox(
+                      label: 'Working hour',
+                      child: Row(
                         children: [
-                          _buildRichText(
-                              '${controller.total.value.actual}', 'h'),
+                          RichTextWidget(
+                            value: '${controller.total.value.actual}',
+                            unit: 'h',
+                          ),
                           const Text(
                             '/',
                             style: TextStyle(
@@ -134,22 +137,28 @@ class WorkingScreen extends StatelessWidget {
                               fontFamilyFallback: ['Gilroy', 'Kantumruy'],
                             ),
                           ),
-                          _buildRichText(
-                              '${controller.total.value.expected}', 'h'),
+                          RichTextWidget(
+                            value: '${controller.total.value.expected}',
+                            unit: 'h',
+                          ),
                         ],
                       ),
-                      'Working hour',
                     ),
                     const SizedBox(width: 8),
-                    _buildSummaryItem(
-                      _buildRichText(
-                          '${controller.total.value.permission}', 'h'),
-                      'Absent authorized',
+                    SummaryBox(
+                      label: 'Absent authorized',
+                      child: RichTextWidget(
+                        value: '${controller.total.value.permission}',
+                        unit: 'h',
+                      ),
                     ),
                     const SizedBox(width: 8),
-                    _buildSummaryItem(
-                      _buildRichText('${controller.total.value.absent}', 'h'),
-                      'Absent unauthorized',
+                    SummaryBox(
+                      label: 'Absent unauthorized',
+                      child: RichTextWidget(
+                        value: '${controller.total.value.absent}',
+                        unit: 'h',
+                      ),
                     ),
                   ],
                 ),
@@ -166,34 +175,53 @@ class WorkingScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return Skeletonizer(
                       enabled: controller.loading.value,
-                      child: ListTile(
-                        trailing: controller.working[index].type! !=
-                                TYPE.offDuty.value
-                            ? !controller.working[index].date!
-                                    .isAfter(DateTime.now())
-                                ? Tag(
-                                    color:
-                                        getTagColor(controller.working[index]),
-                                    text: getTag(controller.working[index]),
-                                  )
-                                : null
-                            : null,
-                        tileColor: getTileColor(controller.working[index]),
-                        title: Row(
-                          children: [
-                            Calendar(
-                              date: controller.working[index].date!,
-                            ),
-                            const SizedBox(width: 10),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  getTitle(controller.working[index]),
-                                ),
-                              ],
-                            )
-                          ],
+                      child: GestureDetector(
+                        onTap: () {
+                          final working = controller.working[index];
+
+                          if (working.leaveId! != 0) {
+                            Get.toNamed('/request-view', arguments: {
+                              'id': working.leaveId,
+                              'reqType': RequestTypes.leave.value,
+                            });
+                            return;
+                          }
+                          if (working.type! == AttendanceTypes.present.value) {
+                            return controller.showDetail(
+                                context, working.date!);
+                          }
+
+                          // if(working.exc)
+                        },
+                        child: ListTile(
+                          trailing: controller.working[index].type! !=
+                                  TYPE.offDuty.value
+                              ? !controller.working[index].date!
+                                      .isAfter(DateTime.now())
+                                  ? Tag(
+                                      color: getTagColor(
+                                          controller.working[index]),
+                                      text: getTag(controller.working[index]),
+                                    )
+                                  : null
+                              : null,
+                          tileColor: getTileColor(controller.working[index]),
+                          title: Row(
+                            children: [
+                              Calendar(
+                                date: controller.working[index].date!,
+                              ),
+                              const SizedBox(width: 10),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    getTitle(controller.working[index]),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -211,60 +239,6 @@ class WorkingScreen extends StatelessWidget {
           ],
         );
       }),
-    );
-  }
-
-  Widget _buildSummaryItem(Widget child, String label) {
-    return Container(
-      height: 60,
-      alignment: Alignment.center,
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: AppTheme.secondaryColor,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          child,
-          Text(
-            label.tr,
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 12,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRichText(String value, String unit) {
-    return RichText(
-      text: TextSpan(
-        style: const TextStyle(color: Colors.black),
-        children: [
-          TextSpan(
-            text: Const.numberFormat(double.parse(value)),
-            style: const TextStyle(
-              fontSize: 18,
-              fontFamilyFallback: ['Gilroy', 'Kantumruy'],
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const TextSpan(
-            text: ' ',
-          ),
-          TextSpan(
-            text: unit.tr,
-            style: const TextStyle(
-              fontSize: 16,
-              fontFamilyFallback: ['Gilroy', 'Kantumruy'],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

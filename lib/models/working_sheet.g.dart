@@ -33,6 +33,16 @@ Worksheets _$WorksheetsFromJson(Map<String, dynamic> json) => Worksheets(
       actualOut: json['actualOut'] as String?,
       workingHour: (json['workingHour'] as num?)?.toDouble(),
       extData: json['extData'] as String?,
+      exceptionId: (json['exceptionId'] as num?)?.toInt(),
+      absentType: (json['absentType'] as num?)?.toInt(),
+      absentTypeNameKh: json['absentTypeNameKh'] as String?,
+      absentTypeNameEn: json['absentTypeNameEn'] as String?,
+      exceptionTypeId: (json['exceptionTypeId'] as num?)?.toInt(),
+      exceptionTypeName: json['exceptionTypeName'] as String?,
+      scanType: (json['scanType'] as num?)?.toInt(),
+      scanTypeNameEn: json['scanTypeNameEn'] as String?,
+      scanTypeNameKh: json['scanTypeNameKh'] as String?,
+      exceptionNote: json['exceptionNote'] as String?,
     )
       ..id = (json['id'] as num?)?.toInt()
       ..note = json['note'] as String?;
@@ -65,4 +75,14 @@ Map<String, dynamic> _$WorksheetsToJson(Worksheets instance) =>
       'actualOut': instance.actualOut,
       'workingHour': instance.workingHour,
       'extData': instance.extData,
+      'exceptionId': instance.exceptionId,
+      'absentType': instance.absentType,
+      'absentTypeNameKh': instance.absentTypeNameKh,
+      'absentTypeNameEn': instance.absentTypeNameEn,
+      'exceptionTypeId': instance.exceptionTypeId,
+      'exceptionTypeName': instance.exceptionTypeName,
+      'scanType': instance.scanType,
+      'scanTypeNameEn': instance.scanTypeNameEn,
+      'scanTypeNameKh': instance.scanTypeNameKh,
+      'exceptionNote': instance.exceptionNote,
     };
