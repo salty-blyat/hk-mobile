@@ -34,28 +34,32 @@ class WorkingDetailBottomSheet extends StatelessWidget {
             builder: (BuildContext context, ScrollController scrollController) {
               return Obx(() {
                 if (controller.isLoading.value) {
-                  return Column(
-                    children: [
-                      Align(
-                        alignment: Alignment.center,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            width: 50,
-                            height: 5,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[400],
-                              borderRadius: BorderRadius.circular(10),
+                  return SingleChildScrollView(
+                    controller: scrollController,
+                    child: Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.center,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              width: 50,
+                              height: 5,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[400],
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      const Expanded(
-                        child: Center(
-                          child: CircularProgressIndicator(),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.6,
+                          child: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   );
                 }
 
@@ -176,7 +180,7 @@ class WorkingDetailBottomSheet extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       SizedBox(
-                        height: 400,
+                        height: MediaQuery.of(context).size.height * 0.6,
                         child: ListView.builder(
                           controller: scrollController,
                           itemCount: controller.attendanceRecord.length,
