@@ -187,9 +187,8 @@ class WorkingScreen extends StatelessWidget {
                             return;
                           }
                           if (working.type! == AttendanceTypes.present.value) {
-                            controller.showDetail(context, working);
+                            return controller.showDetail(context, working);
                           }
-
                           // if(working.exc)
                         },
                         child: ListTile(

@@ -51,10 +51,4 @@ class WorkingDetailController extends GetxController {
       print(e);
     }
   }
-
-  @override
-  void onClose() {
-    super.onClose();
-    print("WorkingDetailController closed");
-  }
 }
