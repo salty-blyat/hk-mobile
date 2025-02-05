@@ -52,9 +52,9 @@ class WorkingDetailBottomSheet extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.6,
-                          child: const Center(
+                        const SizedBox(
+                          height: 350,
+                          child: Center(
                             child: CircularProgressIndicator(),
                           ),
                         ),
@@ -180,7 +180,7 @@ class WorkingDetailBottomSheet extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.6,
+                        height: MediaQuery.of(context).size.height * 0.55,
                         child: ListView.builder(
                           controller: scrollController,
                           itemCount: controller.attendanceRecord.length,

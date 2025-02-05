@@ -40,7 +40,7 @@ class WorkingDetailController extends GetxController {
     try {
       final queryParam = QueryParam(
         pageIndex: 1,
-        pageSize: 10,
+        pageSize: 9999,
         sorts: 'time-',
         filters:
             '[{"field":"time","operators":"contains","value":"${getDateOnlyString(date)} ~ ${getDateOnlyString(date)}"}]',
