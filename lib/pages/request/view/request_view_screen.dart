@@ -485,8 +485,7 @@ class RequestViewScreen extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         if (controller.requestData.value?['note'] != null) ...[
-          _buildInfo(CupertinoIcons.doc_plaintext,
-              controller.requestData.value?['note'] ?? ''),
+          _buildRichTextInfo(controller.requestData.value?['note'] ?? ''),
           const SizedBox(height: 8),
         ],
         if (controller.requestData.value?['attachments'].isNotEmpty)
@@ -562,6 +561,31 @@ class RequestViewScreen extends StatelessWidget {
         const SizedBox(width: 4),
         Text(value),
       ],
+    );
+  }
+
+  Widget _buildRichTextInfo(String value) {
+    return RichText(
+      text: TextSpan(
+        style: const TextStyle(
+          color: Colors.black,
+          fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+        ),
+        children: [
+          const WidgetSpan(
+            child: Icon(
+              CupertinoIcons.doc_plaintext,
+              size: 16,
+            ),
+          ),
+          const WidgetSpan(
+            child: SizedBox(width: 4),
+          ),
+          TextSpan(
+            text: value,
+          ),
+        ],
+      ),
     );
   }
 }
