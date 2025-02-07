@@ -15,10 +15,22 @@ import 'package:staff_view_ui/utils/widgets/tag.dart';
 enum TYPE {
   present(1),
   offDuty(4),
-  absent(5);
+  absent(5),
+  unknown(6);
 
   final int value;
   const TYPE(this.value);
+}
+
+enum ExceptionType {
+  missScan(1),
+  absentException(2),
+  lateException(3),
+  earlyException(4),
+  hourAbsent(5);
+
+  final int value;
+  const ExceptionType(this.value);
 }
 
 class WorkingScreen extends StatelessWidget {
@@ -178,7 +190,16 @@ class WorkingScreen extends StatelessWidget {
                       child: GestureDetector(
                         onTap: () {
                           final working = controller.working[index];
-
+                          if (working.missionId == 0 &&
+                              working.leaveId == 0 &&
+                              working.holidayId == 0 &&
+                              working.exceptionTypeId !=
+                                  ExceptionType.absentException.value &&
+                              working.type != TYPE.offDuty.value &&
+                              working.type != TYPE.absent.value &&
+                              working.type != TYPE.unknown.value) {
+                            return controller.showDetail(context, working);
+                          }
                           if (working.leaveId! != 0) {
                             Get.toNamed('/request-view', arguments: {
                               'id': working.leaveId,
@@ -186,10 +207,14 @@ class WorkingScreen extends StatelessWidget {
                             });
                             return;
                           }
-                          if (working.type! == AttendanceTypes.present.value) {
-                            return controller.showDetail(context, working);
+                          if (working.exceptionTypeId ==
+                              ExceptionType.absentException.value) {
+                            Get.toNamed('/request-view', arguments: {
+                              'id': working.exceptionId,
+                              'reqType': RequestTypes.exception.value,
+                            });
+                            return;
                           }
-                          // if(working.exc)
                         },
                         child: ListTile(
                           trailing: controller.working[index].type! !=

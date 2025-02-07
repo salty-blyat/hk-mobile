@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/version_server.dart';
@@ -50,7 +49,7 @@ class MenusController extends GetxController {
       'icon': CupertinoIcons.clock,
       'route': '/overtime',
       'badge': 0,
-      'isShow': true,
+      'isShow': false,
     },
     {
       'title': 'Absent Exception Request',
@@ -92,8 +91,10 @@ class MenusController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
+    await getSetting();
     menuItems.value =
         menuItems.where((element) => element['isShow'] == true).toList();
+
     totalRequest.value = await menuService.getTotal();
     menuItems.firstWhere(
             (element) => element['route'] == '/request-approval')['badge'] =
@@ -115,12 +116,30 @@ class MenusController extends GetxController {
                 Const.SETTING_KEY()['AppAndroidVersion'] ?? ''))
             .value ??
         '';
-    getSetting();
   }
 
   Future<void> getSetting() async {
     final setting = await menuService.getSetting();
+    final Map<String, int> visibilityMap = {
+      Const.SETTING_KEY()['LeaveVisibility']!: 3,
+      Const.SETTING_KEY()['OvertimeVisibility']!: 4,
+      Const.SETTING_KEY()['AbsentExceptionVisibility']!: 5,
+      Const.SETTING_KEY()['ExceptionVisibility']!: 6,
+      Const.SETTING_KEY()['ApproveVisibility']!: 7,
+      Const.SETTING_KEY()['DelegateVisibility']!: 8,
+    };
+
     for (var element in setting) {
+      if (visibilityMap.containsKey(element.key)) {
+        final index = visibilityMap[element.key];
+        if (index! < menuItems.length) {
+          menuItems[index] = {
+            ...menuItems[index],
+            'isShow': element.value == 'true',
+          };
+        }
+      }
+
       this.setting.add(element);
     }
   }

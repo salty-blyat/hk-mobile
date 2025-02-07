@@ -79,6 +79,7 @@ class Const {
         'OvertimeVisibility': 'OvertimeVisibility',
         'ExceptionVisibility': 'ExceptionVisibility',
         'ApproveVisibility': 'ApproveVisibility',
+        'DelegateVisibility': 'DelegateVisibility',
         'GeoTrackingPeriod': 'GeoTrackingPeriod',
         'TrackingDistant': 'TrackingDistant',
         'SelfApprove': 'SelfApprove',
