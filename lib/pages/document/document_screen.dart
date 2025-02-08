@@ -47,9 +47,10 @@ class DocumentScreen extends StatelessWidget {
             hintText: 'Search'.tr,
             hintStyle: WidgetStateProperty.all(
               TextStyle(
-                  color: Colors.white.withOpacity(0.5),
-                  fontSize: 18,
-                  fontFamilyFallback: const ['Gilroy', 'Kantumruy']),
+                color: Colors.white.withOpacity(0.5),
+                fontSize: 18,
+                fontFamilyFallback: const ['Gilroy', 'Kantumruy'],
+              ),
             ),
             leading: const Icon(Icons.search),
             backgroundColor: WidgetStateProperty.all(Colors.transparent),
@@ -78,21 +79,24 @@ class DocumentScreen extends StatelessWidget {
             if (controller.lists.isEmpty) {
               return const NoData();
             }
-            return ListView.builder(
-              itemCount: controller.lists.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Obx(
-                    () => DownloadButton(
-                      text: controller.lists[index].title ?? '',
-                      controller: controller,
-                      link: controller.lists[index].attachment?.url ?? '',
-                      size: controller.lists[index].size ?? '0 B',
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: ListView.builder(
+                itemCount: controller.lists.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Obx(
+                      () => DownloadButton(
+                        text: controller.lists[index].title ?? '',
+                        controller: controller,
+                        link: controller.lists[index].attachment?.url ?? '',
+                        size: controller.lists[index].size ?? '0 B',
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             );
           })),
         ],
