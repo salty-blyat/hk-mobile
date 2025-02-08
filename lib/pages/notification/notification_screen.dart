@@ -84,16 +84,18 @@ class NotificationScreen extends BaseList<NotificationModel> {
       ),
       title: Row(
         children: [
-          Text(
-            item.title!,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: item.isView == false ? FontWeight.bold : null,
+          Expanded(
+            child: Text(
+              item.title!,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: item.isView == false ? FontWeight.bold : null,
+              ),
+              maxLines: 1,
             ),
-            maxLines: 1,
           ),
-          const Spacer(),
+          const SizedBox(width: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
