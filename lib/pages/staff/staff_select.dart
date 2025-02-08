@@ -7,6 +7,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/models/user_info_model.dart';
 import 'package:staff_view_ui/pages/staff/staff_controller.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 
 class StaffSelect extends StatelessWidget {
   final String formControlName;
@@ -79,7 +80,7 @@ class StaffSelectDialog extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.1),
             border: Border.all(color: Colors.white.withOpacity(0.1)),
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: AppTheme.borderRadius,
           ),
           child: SearchBar(
             textStyle: WidgetStateProperty.all(

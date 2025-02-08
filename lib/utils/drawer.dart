@@ -8,6 +8,8 @@ import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/helpers/version_server.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/const.dart';
+import 'package:staff_view_ui/pages/app-info/app_info_controller.dart';
+import 'package:staff_view_ui/pages/menu/menu_controller.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
@@ -15,6 +17,7 @@ class DrawerWidget extends StatelessWidget {
   DrawerWidget({super.key});
   final DrawerController drawerController = Get.put(DrawerController());
   final AuthController authController = Get.put(AuthController());
+  final MenusController menuController = Get.put(MenusController());
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +113,7 @@ class DrawerWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
                       color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppTheme.borderRadius,
                     ),
                     child: const Icon(CupertinoIcons.create,
                         color: Colors.black87),
@@ -125,7 +128,7 @@ class DrawerWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
                       color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppTheme.borderRadius,
                     ),
                     child:
                         const Icon(CupertinoIcons.lock, color: Colors.black87),
@@ -140,7 +143,7 @@ class DrawerWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
                       color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppTheme.borderRadius,
                     ),
                     child:
                         const Icon(CupertinoIcons.globe, color: Colors.black87),
@@ -153,7 +156,7 @@ class DrawerWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
                       color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppTheme.borderRadius,
                     ),
                     child: const Icon(CupertinoIcons.checkmark_shield,
                         color: Colors.black87),
@@ -163,29 +166,34 @@ class DrawerWidget extends StatelessWidget {
                     Get.toNamed('/privacy-policy'); // Navigate to Profile
                   },
                 ),
-                const Divider(color: Color.fromARGB(255, 210, 210, 210)),
-                ListTile(
-                  leading: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(4),
+                if (menuController.showLogout.value)
+                  const Divider(color: Color.fromARGB(255, 210, 210, 210)),
+                if (menuController.showLogout.value)
+                  ListTile(
+                    leading: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: AppTheme.borderRadius,
+                      ),
+                      child: const Icon(CupertinoIcons.arrow_left_square,
+                          color: Colors.black87),
                     ),
-                    child: const Icon(CupertinoIcons.arrow_left_square,
-                        color: Colors.black87),
+                    title: Text('Logout'.tr),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Modal.showLogoutDialog();
+                    },
                   ),
-                  title: Text('Logout'.tr),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    Modal.showLogoutDialog();
-                  },
-                ),
               ],
             ),
           ),
           GestureDetector(
-            onDoubleTap: () {
-              Modal.showSettingDialog();
+            onDoubleTap: () async {
+              var res = await Modal.showSettingDialog();
+              if (res == null) {
+                Get.delete<AppInfoController>();
+              }
             },
             child: Padding(
               padding: const EdgeInsets.all(16.0),

@@ -176,7 +176,7 @@ class ExceptionScreen extends BaseList<ExceptionModel> {
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppTheme.borderRadius,
                     ),
                   ),
                   child: Text('All'.tr),
@@ -216,7 +216,7 @@ class ExceptionScreen extends BaseList<ExceptionModel> {
                       color: Theme.of(context).colorScheme.primary,
                     ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppTheme.borderRadius,
                     ),
                   ),
                   onPressed: () {

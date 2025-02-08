@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 
 class MyButton extends StatelessWidget {
   final String label;
@@ -34,7 +35,7 @@ class MyButton extends StatelessWidget {
             ? Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
             : textColor ?? Theme.of(context).colorScheme.onPrimary,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: AppTheme.borderRadius,
         ),
         disabledBackgroundColor:
             (color ?? Theme.of(context).colorScheme.primary).withOpacity(0.38),

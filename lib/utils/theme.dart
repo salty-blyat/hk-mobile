@@ -9,6 +9,7 @@ class AppTheme {
   static const Color warningColor = Color(0xFFF59E0B);
   static const Color secondaryColor = Color(0xFFEDEEF0);
   static const Color defaultColor = Color(0xFF5F5F5F);
+  static BorderRadiusGeometry borderRadius = BorderRadius.circular(4);
   static const TextStyle style = TextStyle(
     fontSize: 16.0,
     fontFamilyFallback: ['Gilroy', 'Kantumruy'],
@@ -92,23 +93,23 @@ class AppTheme {
           color: Colors.black,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.all(Radius.circular(4)),
           borderSide: const BorderSide(color: Colors.grey),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.all(Radius.circular(4)),
           borderSide: const BorderSide(color: primaryColor),
         ),
         disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.all(Radius.circular(4)),
           borderSide: const BorderSide(color: Colors.grey),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.all(Radius.circular(4)),
           borderSide: const BorderSide(color: Colors.red),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.all(Radius.circular(4)),
           borderSide: const BorderSide(color: Colors.red),
         ),
         errorStyle: style.copyWith(color: Colors.red, fontSize: 12),
@@ -134,13 +135,13 @@ class AppTheme {
       ),
       timePickerTheme: TimePickerThemeData(
         dayPeriodShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: AppTheme.borderRadius,
         ),
         hourMinuteShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: AppTheme.borderRadius,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: AppTheme.borderRadius,
         ),
         cancelButtonStyle: ButtonStyle(
           textStyle: WidgetStateProperty.all(
@@ -190,7 +191,7 @@ class AppTheme {
           ),
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: AppTheme.borderRadius,
         ),
       ),
       dropdownMenuTheme: DropdownMenuThemeData(
@@ -212,7 +213,7 @@ class AppTheme {
         titleTextStyle: style,
         contentTextStyle: style,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: AppTheme.borderRadius,
         ),
       ),
     );

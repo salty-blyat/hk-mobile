@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 
 class DocumentTypeSelect extends StatelessWidget {
   DocumentTypeSelect({
@@ -35,7 +36,7 @@ class DocumentTypeSelect extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppTheme.borderRadius,
                     ),
                   ),
                   child: Text('All'.tr),
@@ -87,7 +88,7 @@ class DocumentTypeSelect extends StatelessWidget {
                       color: Theme.of(context).colorScheme.primary,
                     ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppTheme.borderRadius,
                     ),
                   ),
                   onPressed: () {

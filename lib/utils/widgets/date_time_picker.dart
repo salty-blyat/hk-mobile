@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 
 class DateTimeController extends GetxController {
   var selectedDateTime = Rxn<DateTime>();
@@ -97,7 +98,7 @@ class DateTimePicker extends StatelessWidget {
                       ),
                       backgroundColor: Colors.grey.shade200,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: AppTheme.borderRadius,
                       ),
                     ),
                     child: Obx(() => Text(tempTime.value.format(context),

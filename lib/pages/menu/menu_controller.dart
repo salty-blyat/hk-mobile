@@ -15,6 +15,7 @@ class MenusController extends GetxController {
   var androidLink = ''.obs;
   var iosVersion = '...'.obs;
   var androidVersion = '...'.obs;
+  var showLogout = false.obs;
   var menuItems = [
     {
       'title': 'My Profile',
@@ -91,15 +92,13 @@ class MenusController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    await getSetting();
-    menuItems.value =
-        menuItems.where((element) => element['isShow'] == true).toList();
+    Future.wait([
+      getVersion(),
+      getSetting(),
+    ]);
+  }
 
-    totalRequest.value = await menuService.getTotal();
-    menuItems.firstWhere(
-            (element) => element['route'] == '/request-approval')['badge'] =
-        totalRequest.value;
-    menuItems.refresh();
+  Future<void> getVersion() async {
     androidLink.value = (await menuService
                 .getSettingPrivate(Const.SETTING_KEY()['AppAndroidUrl'] ?? ''))
             .value ??
@@ -139,9 +138,20 @@ class MenusController extends GetxController {
           };
         }
       }
+      if (element.key == Const.SETTING_KEY()['LogoutVisibility']) {
+        showLogout.value = element.value == 'true';
+      }
 
       this.setting.add(element);
     }
+    menuItems.value =
+        menuItems.where((element) => element['isShow'] == true).toList();
+
+    totalRequest.value = await menuService.getTotal();
+    menuItems.firstWhere(
+            (element) => element['route'] == '/request-approval')['badge'] =
+        totalRequest.value;
+    menuItems.refresh();
   }
 
   @override

@@ -77,7 +77,7 @@ class RequestApproveScreen extends BaseList<RequestModel> {
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: AppTheme.borderRadius,
           ),
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Text(
@@ -229,7 +229,7 @@ class RequestApproveScreen extends BaseList<RequestModel> {
                     const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
                 shadowColor: Colors.transparent,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: AppTheme.borderRadius,
                 ),
                 backgroundColor: controller.selectedRequestType.value == value
                     ? AppTheme.primaryColor

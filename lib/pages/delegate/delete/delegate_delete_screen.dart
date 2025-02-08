@@ -5,6 +5,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/pages/delegate/delete/delegate_delete_controller.dart';
 import 'package:staff_view_ui/utils/khmer_date_formater.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 
 class DelegateDeleteScreen extends StatelessWidget {
   final int id;
@@ -204,7 +205,7 @@ class _Footer extends StatelessWidget {
     return Expanded(
         child: ElevatedButton(
       style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        shape: RoundedRectangleBorder(borderRadius: AppTheme.borderRadius),
         elevation: 0,
         backgroundColor: backgroundColor,
         foregroundColor: foregroundColor,

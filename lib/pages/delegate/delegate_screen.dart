@@ -303,7 +303,7 @@ class DelegateScreen extends StatelessWidget {
       height: 35,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: AppTheme.borderRadius,
       ),
       padding: const EdgeInsets.only(left: 16),
       child: Align(

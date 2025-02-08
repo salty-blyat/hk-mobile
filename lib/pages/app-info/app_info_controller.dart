@@ -8,9 +8,9 @@ import 'package:staff_view_ui/helpers/storage.dart';
 class AppInfoController extends GetxController {
   final storage = Storage();
   final formGroup = FormGroup({
-    'coreUrl': FormControl<String>(),
-    'apiUrl': FormControl<String>(),
-    'tenant': FormControl<String>(),
+    'coreUrl': FormControl<String>(validators: [Validators.required]),
+    'apiUrl': FormControl<String>(validators: [Validators.required]),
+    'tenant': FormControl<String>(validators: [Validators.required]),
   });
   final isValid = false.obs;
   @override
@@ -31,7 +31,7 @@ class AppInfoController extends GetxController {
     formGroup.patchValue(value);
   }
 
-  save() {
+  save() async {
     var setting = jsonDecode(storage.read('setting') ?? '');
     setting['AUTH_API_URL'] = formGroup.value['coreUrl'];
     setting['BASE_API_URL'] = formGroup.value['apiUrl'];
@@ -39,7 +39,6 @@ class AppInfoController extends GetxController {
     storage.write('setting', jsonEncode(setting));
     AppSetting.setting = setting;
     Get.back();
-    super.onClose();
   }
 
   @override

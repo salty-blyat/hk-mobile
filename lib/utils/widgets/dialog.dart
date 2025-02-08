@@ -117,9 +117,9 @@ class Modal {
   }
 
   static showSettingDialog() {
-    Get.dialog(Dialog(
+    return Get.dialog(Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: AppTheme.borderRadius,
       ),
       child: SizedBox(
         height: 370,
@@ -133,7 +133,7 @@ class Modal {
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: AppTheme.borderRadius,
         ),
         child: SizedBox(
           height: 250,
@@ -182,7 +182,7 @@ class Modal {
                       selected: isSelected,
                       selectedColor: AppTheme.primaryColor,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: AppTheme.borderRadius,
                         side: BorderSide(
                           color: isSelected
                               ? AppTheme.primaryColor
@@ -229,7 +229,7 @@ class Modal {
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: AppTheme.borderRadius,
         ),
         child: SizedBox(
           height: 160,

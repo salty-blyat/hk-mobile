@@ -208,7 +208,7 @@ class ScanController extends GetxController {
                         left: 16, right: 16, bottom: 8, top: 16),
                     decoration: BoxDecoration(
                       color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppTheme.borderRadius,
                     ),
                     child: Column(
                       children: [

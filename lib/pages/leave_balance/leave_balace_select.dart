@@ -34,7 +34,7 @@ class LeaveBalaceSelect extends StatelessWidget {
                       minimumSize: const Size(86, 0),
                       shadowColor: Colors.transparent,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: AppTheme.borderRadius,
                       ),
                     ),
                     onPressed: () {},
@@ -80,7 +80,7 @@ class LeaveBalaceSelect extends StatelessWidget {
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
                     shadowColor: Colors.transparent,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppTheme.borderRadius,
                     ),
                     backgroundColor: isSelected
                         ? AppTheme.primaryColor

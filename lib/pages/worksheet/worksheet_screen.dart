@@ -109,7 +109,7 @@ class WorkingScreen extends StatelessWidget {
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: AppTheme.borderRadius,
               ),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Text(
@@ -126,7 +126,7 @@ class WorkingScreen extends StatelessWidget {
               padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: AppTheme.borderRadius,
               ),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,

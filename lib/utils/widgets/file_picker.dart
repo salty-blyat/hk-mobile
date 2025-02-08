@@ -50,7 +50,7 @@ class FilePickerWidget extends StatelessWidget {
                         height: 64,
                         width: 64,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: AppTheme.borderRadius,
                           border: Border.all(color: Colors.grey),
                         ),
                         child: filePickerController.isImageUrl(attachment.url)
@@ -132,7 +132,7 @@ class FilePickerWidget extends StatelessWidget {
                         final attachment =
                             await filePickerController.pickImageFromCamera();
                         if (attachment != null) {
-                          formGroup.control('attachments').value.add(
+                          formGroup.control(controlName).value.add(
                             {
                               'uid': attachment.uid,
                               'url': attachment.url,
@@ -202,7 +202,7 @@ class FilePickerWidget extends StatelessWidget {
           child: Container(
             height: 64,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: AppTheme.borderRadius,
               border: Border.all(color: Colors.grey),
             ),
             child: Center(

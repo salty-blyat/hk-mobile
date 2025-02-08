@@ -144,7 +144,7 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
                   color: AppTheme.primaryColor,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: AppTheme.borderRadius,
                 ),
                 child: const Icon(
                   Icons.edit,

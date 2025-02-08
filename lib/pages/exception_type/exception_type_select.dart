@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/pages/exception_type/exception_type_controller.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 
 class ExceptionTypeSelect extends StatelessWidget {
   ExceptionTypeSelect({super.key, this.exceptionTypeId = 0});
@@ -23,7 +24,7 @@ class ExceptionTypeSelect extends StatelessWidget {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppTheme.borderRadius,
                     ),
                   ),
                   onPressed: () {},
@@ -56,7 +57,7 @@ class ExceptionTypeSelect extends StatelessWidget {
                     elevation: 0,
                     shadowColor: Colors.transparent,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppTheme.borderRadius,
                     ),
                     backgroundColor: isSelected
                         ? Theme.of(context).colorScheme.primary

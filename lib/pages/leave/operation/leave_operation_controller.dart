@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
@@ -14,7 +13,6 @@ import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class LeaveOperationController extends GetxController {
-  final dio = Dio();
   final LeaveController leaveController = Get.find<LeaveController>();
   final filePickerController = Get.put(FilePickerController());
   final storage = Storage();
@@ -23,6 +21,7 @@ class LeaveOperationController extends GetxController {
   final formValid = false.obs;
   final id = 0.obs;
   final leaveId = 0.obs;
+  final isLeaveUnit = false.obs;
   var leaveBalance = 0.0.obs;
 
   final formGroup = FormGroup({
@@ -117,6 +116,7 @@ class LeaveOperationController extends GetxController {
     }
     leaveUnit.value = unit;
     updateBalance();
+    calculateTotalDays();
   }
 
   /// Updates the leave type
@@ -217,7 +217,6 @@ class LeaveOperationController extends GetxController {
       Get.back(); // Navigate back or close extra layers if needed
       Get.back(); // Navigate back or close extra layers if needed
     } catch (e) {
-      print(e);
       // Handle specific errors if necessary
     } finally {
       // Ensure the loading dialog is dismissed

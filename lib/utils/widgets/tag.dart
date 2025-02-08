@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 
 class Tag extends StatelessWidget {
   const Tag({
@@ -19,7 +20,7 @@ class Tag extends StatelessWidget {
             const EdgeInsets.symmetric(horizontal: 6), // Auto width padding
         decoration: BoxDecoration(
           color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: AppTheme.borderRadius,
         ),
         alignment: Alignment.center,
         child: Text(

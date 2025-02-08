@@ -9,6 +9,7 @@ import 'package:staff_view_ui/helpers/image_picker_controller.dart';
 import 'package:staff_view_ui/pages/overtime/operation/overtime_operation_controller.dart';
 import 'package:staff_view_ui/pages/overtime_type/overtime_type_controller.dart';
 import 'package:staff_view_ui/pages/staff/staff_select.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
 import 'package:staff_view_ui/utils/widgets/file_picker.dart';
 
@@ -159,7 +160,7 @@ class OvertimeOperationScreen extends StatelessWidget {
                       color: Theme.of(context).colorScheme.primary,
                     ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppTheme.borderRadius,
                     ),
                   ),
                   onPressed: () =>

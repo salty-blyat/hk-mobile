@@ -6,6 +6,7 @@ import 'package:staff_view_ui/helpers/base_service.dart';
 import 'package:staff_view_ui/models/leave_model.dart';
 import 'package:staff_view_ui/pages/leave/delete/leave_delete_screen.dart';
 import 'package:staff_view_ui/pages/leave/leave_service.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 
 enum LeaveStatus {
   pending(74),
@@ -110,7 +111,7 @@ class LeaveController extends GetxController {
     Get.dialog(
       Dialog(
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: AppTheme.borderRadius,
           child: Container(
             color: Colors.white,
             width: double.infinity,

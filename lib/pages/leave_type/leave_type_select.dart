@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/pages/leave_type/leave_type_controller.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 
 class LeaveTypeSelect extends StatelessWidget {
   LeaveTypeSelect({super.key, this.leaveTypeId = 0});
@@ -23,7 +24,7 @@ class LeaveTypeSelect extends StatelessWidget {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppTheme.borderRadius,
                     ),
                   ),
                   onPressed: () {},
@@ -54,7 +55,7 @@ class LeaveTypeSelect extends StatelessWidget {
                 return ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppTheme.borderRadius,
                     ),
                     backgroundColor: isSelected
                         ? Theme.of(context).colorScheme.primary

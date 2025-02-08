@@ -33,4 +33,13 @@ class LeaveTypeController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  void enableLeaveUnit(int id, Function isAllowHour) {
+    for (var element in leaveTypes) {
+      if (element.id == id) {
+        isAllowHour.call(element.isAllowHour);
+        return;
+      }
+    }
+  }
 }

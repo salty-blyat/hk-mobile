@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/no_data.dart';
 
 class BaseList<T> extends StatelessWidget {
@@ -83,7 +84,7 @@ class BaseList<T> extends StatelessWidget {
       // height: 35,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: AppTheme.borderRadius,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Align(

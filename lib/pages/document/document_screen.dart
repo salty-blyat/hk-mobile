@@ -6,6 +6,7 @@ import 'package:staff_view_ui/pages/document/document_controller.dart';
 import 'package:staff_view_ui/pages/document/document_type_select.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
 import 'package:staff_view_ui/utils/widgets/no_data.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 
 class DocumentScreen extends StatelessWidget {
   DocumentScreen({super.key});
@@ -34,7 +35,7 @@ class DocumentScreen extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.1),
             border: Border.all(color: Colors.white.withOpacity(0.1)),
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: AppTheme.borderRadius,
           ),
           child: SearchBar(
             textStyle: WidgetStateProperty.all(
@@ -56,7 +57,7 @@ class DocumentScreen extends StatelessWidget {
             shadowColor: WidgetStateProperty.all(Colors.transparent),
             shape: WidgetStateProperty.all(
               RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: AppTheme.borderRadius,
               ),
             ),
             onChanged: (value) {
@@ -105,7 +106,7 @@ class DocumentScreen extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: AppTheme.borderRadius,
       ),
       padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
       child: Align(

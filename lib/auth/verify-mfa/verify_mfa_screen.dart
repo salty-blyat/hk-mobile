@@ -20,7 +20,7 @@ class VerifyMfaScreen extends StatelessWidget {
       textStyle: Theme.of(context).textTheme.bodyLarge,
       decoration: BoxDecoration(
         color: fillColor,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: AppTheme.borderRadius,
         border: Border.all(color: Colors.transparent),
       ),
     );
@@ -74,7 +74,7 @@ class VerifyMfaScreen extends StatelessWidget {
                     errorPinTheme: defaultPinTheme.copyWith(
                       decoration: BoxDecoration(
                         color: errorColor,
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: AppTheme.borderRadius,
                       ),
                     ),
                     onChanged: (value) {

@@ -12,6 +12,7 @@ import 'package:staff_view_ui/pages/exception_type/exception_type_controller.dar
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_select.dart';
 import 'package:staff_view_ui/pages/staff/staff_select.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
 import 'package:staff_view_ui/utils/widgets/date_picker.dart';
 import 'package:staff_view_ui/utils/widgets/date_range_picker.dart';
@@ -114,7 +115,7 @@ class ExceptionOperationScreen extends StatelessWidget {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppTheme.borderRadius,
                     ),
                     backgroundColor: Colors.grey.shade200,
                     foregroundColor: Colors.black,
@@ -154,7 +155,7 @@ class ExceptionOperationScreen extends StatelessWidget {
                     elevation: 0,
                     shadowColor: Colors.transparent,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppTheme.borderRadius,
                     ),
                     backgroundColor: isSelected
                         ? Theme.of(context).colorScheme.primary

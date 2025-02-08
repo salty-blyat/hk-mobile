@@ -7,6 +7,7 @@ import 'package:staff_view_ui/models/delegate_model.dart';
 import 'package:staff_view_ui/pages/delegate/delegate_screen.dart';
 import 'package:staff_view_ui/pages/delegate/delegate_service.dart';
 import 'package:staff_view_ui/pages/delegate/delete/delegate_delete_screen.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 
 class DelegateController extends GetxController {
   final loading = false.obs;
@@ -47,7 +48,7 @@ class DelegateController extends GetxController {
     Get.dialog(
       Dialog(
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: AppTheme.borderRadius,
           child: Container(
             color: Colors.white,
             width: double.infinity,

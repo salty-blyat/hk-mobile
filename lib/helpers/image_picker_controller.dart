@@ -29,7 +29,7 @@ class FilePickerController extends GetxController {
       selectedImage.value = File(pickedFile.path);
       await uploadFileAsBase64(
           selectedImage.value!); // Automatically upload after picking
-      return attachments.first;
+      return attachments.last;
     }
     return null;
   }
@@ -42,7 +42,7 @@ class FilePickerController extends GetxController {
       selectedImage.value = File(pickedFile.path);
       await uploadFileAsBase64(
           selectedImage.value!); // Automatically upload after picking
-      return attachments.first;
+      return attachments.last;
     }
     return null;
   }
@@ -52,6 +52,7 @@ class FilePickerController extends GetxController {
     final result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
     );
+    var attachmentLength = attachments.length;
     if (result != null) {
       Get.back();
       for (var file in result.files) {
@@ -60,7 +61,7 @@ class FilePickerController extends GetxController {
         await uploadFileAsBase64(
             selectedFile.value!); // Automatically upload after picking
       }
-      return attachments;
+      return attachments.sublist(attachmentLength);
     }
     return null;
   }

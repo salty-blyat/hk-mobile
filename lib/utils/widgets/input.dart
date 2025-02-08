@@ -84,13 +84,14 @@ class MyFormField<T> extends StatelessWidget {
           // prefixIconColor: isDisabled.value ? Colors.grey[600] : null,
           suffixIcon: password
               ? IconButton(
-                  icon: Icon(isPasswordVisible.value
-                      ? Icons.visibility_off
-                      : Icons.visibility),
+                  icon: Icon(
+                    isPasswordVisible.value
+                        ? Icons.visibility_off
+                        : Icons.visibility_off,
+                  ),
                   onPressed: () {
                     isPasswordVisible.value = !isPasswordVisible.value;
                   },
-                  iconSize: 18,
                 )
               : null,
         ),

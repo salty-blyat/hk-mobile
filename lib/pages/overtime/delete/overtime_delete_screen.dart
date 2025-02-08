@@ -7,6 +7,7 @@ import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/pages/overtime/delete/overtime_delete_controller.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
 import 'package:staff_view_ui/utils/khmer_date_formater.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 
 class OvertimeDeleteScreen extends StatelessWidget {
   final int id;
@@ -211,7 +212,7 @@ class _Footer extends StatelessWidget {
     return Expanded(
         child: ElevatedButton(
       style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        shape: RoundedRectangleBorder(borderRadius: AppTheme.borderRadius),
         elevation: 0,
         backgroundColor: backgroundColor,
         foregroundColor: foregroundColor,

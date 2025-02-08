@@ -181,7 +181,7 @@ class RequestHistoryScreen extends BaseList<RequestModel> {
                     color: AppTheme.primaryColor,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: AppTheme.borderRadius,
                   ),
                 ),
                 child: Text(

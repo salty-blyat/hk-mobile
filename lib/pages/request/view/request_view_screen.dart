@@ -59,7 +59,7 @@ class RequestViewScreen extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: AppTheme.borderRadius,
         border: Border.all(color: Colors.grey.shade400),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -241,7 +241,7 @@ class RequestViewScreen extends StatelessWidget {
         disabledForegroundColor: Colors.white,
         backgroundColor: color,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: AppTheme.borderRadius,
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16),
       ),
@@ -350,7 +350,7 @@ class RequestViewScreen extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: AppTheme.borderRadius,
         border: Border.all(color: Colors.grey.shade400),
       ),
       child: _buildRequestDetails(),

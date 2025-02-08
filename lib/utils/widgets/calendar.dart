@@ -17,7 +17,7 @@ class Calendar extends StatelessWidget {
       width: 50,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: AppTheme.borderRadius,
         boxShadow: [
           BoxShadow(
             color: Colors.grey.shade300,
@@ -34,8 +34,8 @@ class Calendar extends StatelessWidget {
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primary,
               borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
+                topLeft: Radius.circular(4),
+                topRight: Radius.circular(4),
               ),
             ),
             child: Center(
