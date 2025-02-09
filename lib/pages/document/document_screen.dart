@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -26,6 +28,8 @@ class DocumentScreen extends StatelessWidget {
   }
 
   bool get canLoadMore => true;
+
+  Timer? _debounce;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,36 +41,51 @@ class DocumentScreen extends StatelessWidget {
             border: Border.all(color: Colors.white.withOpacity(0.1)),
             borderRadius: AppTheme.borderRadius,
           ),
-          child: SearchBar(
-            textStyle: WidgetStateProperty.all(
-              const TextStyle(
+          child: Theme(
+            data: ThemeData(
+              textSelectionTheme: const TextSelectionThemeData(
+                cursorColor: Colors.white,
+                selectionHandleColor: AppTheme.primaryColor,
+              ),
+              iconTheme: const IconThemeData(
                 color: Colors.white,
-                fontFamilyFallback: ['Gilroy', 'Kantumruy'],
-                fontSize: 18,
               ),
             ),
-            hintText: 'Search'.tr,
-            hintStyle: WidgetStateProperty.all(
-              TextStyle(
-                color: Colors.white.withOpacity(0.5),
-                fontSize: 18,
-                fontFamilyFallback: const ['Gilroy', 'Kantumruy'],
+            child: SearchBar(
+              textStyle: WidgetStateProperty.all(
+                const TextStyle(
+                  color: Colors.white,
+                  fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+                  fontSize: 18,
+                ),
               ),
-            ),
-            leading: const Icon(Icons.search),
-            backgroundColor: WidgetStateProperty.all(Colors.transparent),
-            shadowColor: WidgetStateProperty.all(Colors.transparent),
-            shape: WidgetStateProperty.all(
-              RoundedRectangleBorder(
-                borderRadius: AppTheme.borderRadius,
+              hintText: 'Search'.tr,
+              hintStyle: WidgetStateProperty.all(
+                TextStyle(
+                  color: Colors.white.withOpacity(0.5),
+                  fontSize: 18,
+                  fontFamilyFallback: const ['Gilroy', 'Kantumruy'],
+                ),
               ),
+              leading: const Icon(Icons.search),
+              backgroundColor: WidgetStateProperty.all(Colors.transparent),
+              shadowColor: WidgetStateProperty.all(Colors.transparent),
+              shape: WidgetStateProperty.all(
+                RoundedRectangleBorder(
+                  borderRadius: AppTheme.borderRadius,
+                ),
+              ),
+              onChanged: (value) {
+                if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+                _debounce = Timer(const Duration(milliseconds: 500), () {
+                  controller.searchText.value = value;
+                  controller.lists.clear();
+                  controller.currentPage = 1;
+                  controller.search();
+                });
+              },
             ),
-            onChanged: (value) {
-              controller.searchText.value = value;
-              controller.lists.clear();
-              controller.currentPage = 1;
-              controller.search();
-            },
           ),
         ),
       ),

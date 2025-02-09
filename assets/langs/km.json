@@ -356,5 +356,7 @@
   "Invalid OTP": "លេខកូដមិនត្រឹមត្រូវទេ",
   "OTP has expired": "លេខកូដបានផុតកំណត់",
   "Failed to verify OTP": "កំហុសក្នុងការផ្ទៀងផ្ទាត់លេខកូដ",
-  "Email or phone number is not valid!": "អ៊ីមែល ឬ ទូរស័ព្ទមិនត្រឹមត្រូវទេ!"
+  "Email or phone number is not valid!": "អ៊ីមែល ឬ ទូរស័ព្ទមិនត្រឹមត្រូវទេ!",
+  "Overtime hour must be greater than 0": "ម៉ោងបន្ថែមមិនអាចតូចជាង 0 ម៉ោងទេ",
+  "Total days or hours must greater than 0": "ចំនួនថ្ងៃ ឬ ម៉ោងមិនអាចតូចជាង 0 ទេ"
 }
