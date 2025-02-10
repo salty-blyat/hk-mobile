@@ -324,5 +324,7 @@
   "day": "Leave (day)",
   "hour": "Leave (hour)",
   "NewVersion": "New version",
-  "is available in": "is available in"
+  "is available in": "is available in",
+  "Overtime hour must be greater than 0": "Overtime hour must be greater than 0",
+  "Total days or hours must greater than 0": "Total days or hours must be greater than 0"
 }

@@ -136,7 +136,7 @@ class OvertimeScreen extends BaseList<Overtime> {
                 color: Get.theme.colorScheme.primary,
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 8),
             Tag(
               color: Colors.black,
               text: '${Const.numberFormat(item.overtimeHour!)} ${'Hour'.tr}',

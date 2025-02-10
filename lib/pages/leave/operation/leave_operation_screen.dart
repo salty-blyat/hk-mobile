@@ -239,6 +239,7 @@ class LeaveOperationScreen extends StatelessWidget {
         Expanded(
           child: Obx(() {
             return DropdownButtonFormField<String>(
+              dropdownColor: Colors.white,
               value: controller.leaveUnit.value.isEmpty
                   ? null
                   : controller.leaveUnit.value,

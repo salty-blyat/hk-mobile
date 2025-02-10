@@ -419,7 +419,8 @@ class RequestViewScreen extends StatelessWidget {
         const SizedBox(height: 8),
         if (controller.requestData.value?['attachments'].isNotEmpty)
           GestureDetector(
-            child: _buildInfo(CupertinoIcons.doc, 'Attachment'.tr),
+            child:
+                _buildInfo(CupertinoIcons.doc, 'Attachment'.tr, isLink: true),
             onTap: () async {
               final Uri uri = Uri.parse(
                   controller.requestData.value?['attachments'][0]['url'] ?? '');
@@ -494,7 +495,8 @@ class RequestViewScreen extends StatelessWidget {
         ],
         if (controller.requestData.value?['attachments'].isNotEmpty)
           GestureDetector(
-            child: _buildInfo(CupertinoIcons.doc, 'Attachment'.tr),
+            child:
+                _buildInfo(CupertinoIcons.doc, 'Attachment'.tr, isLink: true),
             onTap: () async {
               final Uri uri = Uri.parse(
                   controller.requestData.value?['attachments'][0]['url'] ?? '');
@@ -554,11 +556,30 @@ class RequestViewScreen extends StatelessWidget {
             ? _buildInfo(CupertinoIcons.doc_plaintext,
                 controller.requestData.value?['note'] ?? '')
             : const SizedBox.shrink(),
+        const SizedBox(height: 8),
+        if (controller.requestData.value?['attachments'].isNotEmpty)
+          GestureDetector(
+            child:
+                _buildInfo(CupertinoIcons.doc, 'Attachment'.tr, isLink: true),
+            onTap: () async {
+              final Uri uri = Uri.parse(
+                  controller.requestData.value?['attachments'][0]['url'] ?? '');
+
+              if (await canLaunchUrl(uri)) {
+                await launchUrl(
+                  uri,
+                  mode: LaunchMode.externalApplication,
+                );
+              } else {
+                throw 'Could not launch $uri';
+              }
+            },
+          ),
       ],
     );
   }
 
-  Widget _buildInfo(IconData icon, String value) {
+  Widget _buildInfo(IconData icon, String value, {bool isLink = false}) {
     return Container(
       alignment: Alignment.centerLeft,
       child: RichText(
@@ -579,6 +600,11 @@ class RequestViewScreen extends StatelessWidget {
             ),
             TextSpan(
               text: value,
+              style: isLink
+                  ? const TextStyle(
+                      color: AppTheme.primaryColor,
+                    )
+                  : null,
             ),
           ],
         ),

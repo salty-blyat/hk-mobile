@@ -132,7 +132,7 @@ class ExceptionScreen extends BaseList<ExceptionModel> {
                 color: Get.theme.colorScheme.primary,
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 8),
             Tag(
               color: Colors.black,
               text: item.totalDays! >= 1
