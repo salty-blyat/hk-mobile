@@ -106,7 +106,8 @@ class Modal {
           },
           child: const Center(
               child: CircularProgressIndicator(
-            color: AppTheme.primaryColor,
+            color: Colors.white,
+            strokeWidth: 2,
           )),
         ),
       ),
