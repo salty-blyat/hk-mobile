@@ -56,3 +56,29 @@ String convertToKhmerTimeAgo(DateTime? targetDate) {
   }
   return '';
 }
+
+String convertToKhmerDateTime(DateTime dateTime) {
+  List<String> khmerMonths = [
+    'មករា',
+    'កុម្ភៈ',
+    'មីនា',
+    'មេសា',
+    'ឧសភា',
+    'មិថុនា',
+    'កក្កដា',
+    'សីហា',
+    'កញ្ញា',
+    'តុលា',
+    'វិច្ឆិកា',
+    'ធ្នូ'
+  ];
+
+  var date = dateTime.toLocal();
+  String khmerMonth = khmerMonths[date.month - 1];
+
+  // Format the date and time
+  String formattedDate =
+      '${date.day} $khmerMonth ${date.year} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
+
+  return formattedDate;
+}

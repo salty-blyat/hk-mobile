@@ -53,7 +53,7 @@ class RequestApproveService extends BaseService<RequestModel> {
         throw Exception(
             'Failed to get total. Status Code: ${response.statusCode}');
       }
-    } catch (e, stackTrace) {
+    } catch (e) {
       throw Exception('Failed to get total: $e');
     }
   }

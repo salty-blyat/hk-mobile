@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
 import 'package:staff_view_ui/models/exception_model.dart';
+import 'package:staff_view_ui/pages/exception/delete/exception_delete_screen.dart';
 import 'package:staff_view_ui/pages/exception/exception_service.dart';
-import 'package:staff_view_ui/pages/leave/delete/leave_delete_screen.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 
 class ExceptionController extends GetxController {
@@ -95,7 +95,7 @@ class ExceptionController extends GetxController {
             color: Colors.white,
             width: double.infinity,
             height: 380,
-            child: LeaveDeleteScreen(id: id),
+            child: ExceptionDeleteScreen(id: id),
           ),
         ),
       ),

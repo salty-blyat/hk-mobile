@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/models/timeline_model.dart';
+import 'package:staff_view_ui/pages/exception/exception_screen.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
 import 'package:staff_view_ui/pages/request/view/request_view_controller.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
@@ -395,13 +396,19 @@ class RequestViewScreen extends StatelessWidget {
         const SizedBox(height: 8),
         Row(
           children: [
-            _buildInfo(
-              CupertinoIcons.calendar,
-              controller.requestData.value?['totalDays'] < 1
-                  ? '${Const.numberFormat(controller.requestData.value?['totalHours'])} ${'Hour'.tr}'
-                  : '${Const.numberFormat(controller.requestData.value?['totalDays'])} ${'Day'.tr}',
+            Row(
+              children: [
+                const Icon(CupertinoIcons.calendar, size: 16),
+                const SizedBox(width: 4),
+                Tag(
+                  color: Colors.black,
+                  text: controller.requestData.value?['totalDays'] < 1
+                      ? '${Const.numberFormat(controller.requestData.value?['totalHours'])} ${'Hour'.tr}'
+                      : '${Const.numberFormat(controller.requestData.value?['totalDays'])} ${'Day'.tr}',
+                ),
+              ],
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 4),
             Text(
               controller.requestData.value?['totalDays'] > 1
                   ? '${convertToKhmerDate(DateTime.parse(controller.requestData.value?['fromDate'] ?? ''))} - ${convertToKhmerDate(DateTime.parse(controller.requestData.value?['toDate'] ?? ''))}'
@@ -521,9 +528,29 @@ class RequestViewScreen extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildInfo(
-              CupertinoIcons.bookmark,
-              controller.requestData.value?['exceptionTypeName'] ?? '',
+            Row(
+              children: [
+                controller.requestData.value?['exceptionTypeId'] ==
+                        ExceptionType.absentException.value
+                    ? _buildInfo(
+                        CupertinoIcons.bookmark,
+                        controller.requestData.value?['absentTypeNameKh'] ?? '',
+                      )
+                    : _buildInfo(
+                        CupertinoIcons.bookmark,
+                        controller.requestData.value?['exceptionTypeName'] ??
+                            '',
+                      ),
+                const SizedBox(width: 8),
+                controller.requestData.value?['exceptionTypeId'] ==
+                        ExceptionType.missScan.value
+                    ? Tag(
+                        color: Colors.black,
+                        text: controller.requestData.value?['scanTypeNameKh'] ??
+                            '',
+                      )
+                    : const SizedBox.shrink(),
+              ],
             ),
             Tag(
               text: controller.model.value.statusNameKh ?? '',
@@ -532,30 +559,45 @@ class RequestViewScreen extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 8),
-        Row(
-          children: [
-            _buildInfo(
-              CupertinoIcons.calendar,
-              controller.requestData.value?['totalDays'] < 1
-                  ? '${Const.numberFormat(controller.requestData.value?['totalHours'])} ${'Hour'.tr}'
-                  : '${Const.numberFormat(controller.requestData.value?['totalDays'])} ${'Day'.tr}',
-            ),
-            const SizedBox(width: 8),
-            Text(
-              controller.requestData.value?['totalDays'] > 1
-                  ? '${convertToKhmerDate(DateTime.parse(controller.requestData.value?['fromDate'] ?? ''))} - ${convertToKhmerDate(DateTime.parse(controller.requestData.value?['toDate'] ?? ''))}'
-                  : convertToKhmerDate(DateTime.parse(
-                      controller.requestData.value?['fromDate'] ?? '')),
-            ),
-          ],
-        ),
-        controller.requestData.value?['note'] != null
-            ? const SizedBox(height: 8)
-            : const SizedBox.shrink(),
-        controller.requestData.value?['note'] != null
-            ? _buildInfo(CupertinoIcons.doc_plaintext,
-                controller.requestData.value?['note'] ?? '')
-            : const SizedBox.shrink(),
+        controller.requestData.value?['exceptionTypeId'] ==
+                ExceptionType.missScan.value
+            ? Row(
+                children: [
+                  _buildInfo(
+                      CupertinoIcons.calendar,
+                      convertToKhmerDateTime(DateTime.parse(
+                          controller.requestData.value?['requestedDate'] ??
+                              ''))),
+                ],
+              )
+            : Row(
+                children: [
+                  Row(
+                    children: [
+                      const Icon(CupertinoIcons.calendar, size: 16),
+                      const SizedBox(width: 4),
+                      Tag(
+                        color: Colors.black,
+                        text: controller.requestData.value?['totalDays'] < 1
+                            ? '${Const.numberFormat(controller.requestData.value?['totalHours'])} ${'Hour'.tr}'
+                            : '${Const.numberFormat(controller.requestData.value?['totalDays'])} ${'Day'.tr}',
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    controller.requestData.value?['totalDays'] > 1
+                        ? '${convertToKhmerDate(DateTime.parse(controller.requestData.value?['fromDate'] ?? ''))} - ${convertToKhmerDate(DateTime.parse(controller.requestData.value?['toDate'] ?? ''))}'
+                        : convertToKhmerDate(DateTime.parse(
+                            controller.requestData.value?['fromDate'] ?? '')),
+                  ),
+                ],
+              ),
+        if (controller.requestData.value?['note'].isNotEmpty) ...[
+          const SizedBox(height: 8),
+          _buildInfo(CupertinoIcons.doc_plaintext,
+              controller.requestData.value?['note'])
+        ],
         const SizedBox(height: 8),
         if (controller.requestData.value?['attachments'].isNotEmpty)
           GestureDetector(

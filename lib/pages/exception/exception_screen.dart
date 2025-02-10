@@ -17,6 +17,14 @@ import 'package:staff_view_ui/utils/widgets/custom_slide_button.dart';
 import 'package:staff_view_ui/utils/widgets/tag.dart';
 import 'package:staff_view_ui/utils/widgets/year_select.dart';
 
+enum ExceptionType {
+  missScan(1),
+  absentException(2);
+
+  const ExceptionType(this.value);
+  final int value;
+}
+
 class ExceptionScreen extends BaseList<ExceptionModel> {
   ExceptionScreen({super.key});
 
@@ -119,7 +127,9 @@ class ExceptionScreen extends BaseList<ExceptionModel> {
         titleAlignment: ListTileTitleAlignment.center,
         leading: Calendar(date: item.fromDate!),
         subtitle: Text(
-          item.absentTypeNameKh ?? '',
+          item.exceptionTypeId == ExceptionType.absentException.value
+              ? item.absentTypeNameKh ?? ''
+              : item.note ?? '',
           overflow: TextOverflow.ellipsis,
         ),
         title: Row(
@@ -133,12 +143,17 @@ class ExceptionScreen extends BaseList<ExceptionModel> {
               ),
             ),
             const SizedBox(width: 8),
-            Tag(
-              color: Colors.black,
-              text: item.totalDays! >= 1
-                  ? '${Const.numberFormat(item.totalDays ?? 0)} ${'Day'.tr}'
-                  : '${Const.numberFormat(item.totalHours ?? 0)} ${'Hour'.tr}',
-            ),
+            item.exceptionTypeId == ExceptionType.missScan.value
+                ? Tag(
+                    color: Colors.black,
+                    text: item.scanTypeNameKh!,
+                  )
+                : Tag(
+                    color: Colors.black,
+                    text: item.totalDays! >= 1
+                        ? '${Const.numberFormat(item.totalDays ?? 0)} ${'Day'.tr}'
+                        : '${Const.numberFormat(item.totalHours ?? 0)} ${'Hour'.tr}',
+                  ),
           ],
         ),
         trailing: Column(

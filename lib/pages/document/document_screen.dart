@@ -112,6 +112,7 @@ class DocumentScreen extends StatelessWidget {
                         controller: controller,
                         link: controller.lists[index].attachment?.url ?? '',
                         size: controller.lists[index].size ?? '0 B',
+                        fileName: controller.lists[index].attachment?.name,
                       ),
                     ),
                   );
@@ -149,12 +150,14 @@ class DownloadButton extends StatelessWidget {
   final DocumentController controller;
   final String link;
   final String? size;
+  final String? fileName;
   const DownloadButton({
     super.key,
     required this.text,
     required this.controller,
     required this.link,
     this.size,
+    this.fileName,
   });
 
   @override
@@ -200,10 +203,10 @@ class DownloadButton extends StatelessWidget {
                   ),
                 )
               else
-                Icon(
-                  CupertinoIcons.arrow_down_circle,
-                  size: 32,
-                  color: Theme.of(context).colorScheme.primary,
+                Image.asset(
+                  getFileType(fileName),
+                  width: 38,
+                  height: 38,
                 ),
               const SizedBox(width: 8),
               Expanded(
@@ -241,5 +244,31 @@ class DownloadButton extends StatelessWidget {
         }),
       ),
     );
+  }
+
+  String getFileType(String? fileName) {
+    if (fileName == null || fileName.isEmpty) {
+      return 'assets/images/default.png';
+    }
+
+    String extension = fileName.split('.').last.toLowerCase();
+
+    switch (extension) {
+      case 'pdf':
+        return 'assets/images/pdf.png';
+      case 'doc':
+      case 'docx':
+        return 'assets/images/docx.png';
+      case 'xls':
+      case 'xlsx':
+        return 'assets/images/excel.png';
+      case 'jpg':
+      case 'jpeg':
+        return 'assets/images/jpeg.png';
+      case 'png':
+        return 'assets/images/png.png';
+      default:
+        return 'assets/images/default.png';
+    }
   }
 }

@@ -4,6 +4,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/image_picker_controller.dart';
 import 'package:staff_view_ui/models/exception_model.dart';
+import 'package:staff_view_ui/pages/exception/exception_controller.dart';
 import 'package:staff_view_ui/pages/exception/exception_service.dart';
 import 'package:staff_view_ui/pages/exception_type/exception_type_controller.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
@@ -16,6 +17,8 @@ class ExceptionOperationController extends GetxController {
   final unit = '1'.obs;
   final filePickerController = Get.put(FilePickerController());
   final ExceptionService exceptionService = ExceptionService();
+  final ExceptionController exceptionController =
+      Get.find<ExceptionController>();
   final formGroup = fb.group({
     'id': FormControl<int>(
       value: 0,
@@ -42,7 +45,7 @@ class ExceptionOperationController extends GetxController {
       value: DateTime.now(),
     ),
     'note': FormControl<String>(
-      value: '',
+      value: null,
     ),
     'attachments': FormControl<List<dynamic>>(
       value: [],
@@ -227,6 +230,7 @@ class ExceptionOperationController extends GetxController {
             ExceptionModel.fromJson);
       }
 
+      exceptionController.search();
       // Close the loading dialog
       Get.back(); // Navigate back or close extra layers if needed
       Get.back(); // Navigate back or close extra layers if needed
