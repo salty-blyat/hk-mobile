@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
@@ -46,13 +45,12 @@ class ProfileController extends GetxController {
       Directory? directory;
 
       if (Platform.isAndroid) {
-        if (await _requestStoragePermission()) {
-          var tmp = await getExternalStorageDirectory();
-          directory = Directory(
-              '${tmp?.path.split('/Android').first}/Download/StaffView');
-        } else {
-          throw Exception("Storage permission denied");
-        }
+        // if (await _requestStoragePermission()) {
+        var tmp = await getExternalStorageDirectory();
+        directory = Directory('${tmp?.path.split('/Android').first}/Download');
+        // } else {
+        //   throw Exception("Storage permission denied");
+        // }
       } else if (Platform.isIOS) {
         directory = Directory(
             '${(await getApplicationDocumentsDirectory()).path}/StaffView');
@@ -95,11 +93,11 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future<bool> _requestStoragePermission() async {
-    if (Platform.isAndroid) {
-      final status = await Permission.manageExternalStorage.request();
-      return status.isGranted;
-    }
-    return true; // iOS doesn't need permission
-  }
+  // Future<bool> _requestStoragePermission() async {
+  //   if (Platform.isAndroid) {
+  //     final status = await Permission.manageExternalStorage.request();
+  //     return status.isGranted;
+  //   }
+  //   return true; // iOS doesn't need permission
+  // }
 }

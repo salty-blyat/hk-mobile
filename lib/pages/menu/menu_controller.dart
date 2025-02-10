@@ -50,7 +50,7 @@ class MenusController extends GetxController {
       'icon': CupertinoIcons.clock,
       'route': '/overtime',
       'badge': 0,
-      'isShow': false,
+      'isShow': true,
     },
     {
       'title': 'Absent Exception Request',

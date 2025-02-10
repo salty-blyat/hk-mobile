@@ -85,8 +85,8 @@ class MenuScreen extends StatelessWidget {
                                         Positioned(
                                           right: 0,
                                           child: Container(
-                                            width: 16,
-                                            height: 16,
+                                            width: 18,
+                                            height: 18,
                                             padding: const EdgeInsets.all(1),
                                             decoration: BoxDecoration(
                                               color: AppTheme.dangerColor,

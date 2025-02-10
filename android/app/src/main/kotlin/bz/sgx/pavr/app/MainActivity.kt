@@ -16,7 +16,7 @@ class MainActivity : FlutterActivity() {
             if (call.method == "getAppVersion") {
                 try {
                     // Retrieve version name from BuildConfig
-                    val versionName = "3.1"
+                    val versionName = "3.2"
                     result.success(versionName)
                 } catch (e: Exception) {
                     // Handle any exception and return an error

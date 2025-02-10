@@ -64,11 +64,13 @@ class AuthController extends GetxController {
       } else {
         Get.back();
         error.value = response.data['message'].toString().tr;
+        Get.focusScope?.unfocus();
       }
     } on DioException catch (e) {
       Get.back();
       error.value =
           e.response?.data['message'].toString().tr ?? 'Something went wrong';
+      Get.focusScope?.unfocus();
     }
   }
 
