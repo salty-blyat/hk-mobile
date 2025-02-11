@@ -326,5 +326,7 @@
   "NewVersion": "New version",
   "is available in": "is available in",
   "Overtime hour must be greater than 0": "Overtime hour must be greater than 0",
-  "Total days or hours must greater than 0": "Total days or hours must be greater than 0"
+  "Total days or hours must greater than 0": "Total days or hours must be greater than 0",
+  "Turn On Location Services to Allow Scan Attendance": "Turn On Location Services to Allow \n\"Scan Attendance\"",
+  "Go To Settings": "Go To Settings"
 }

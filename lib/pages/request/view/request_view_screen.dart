@@ -424,25 +424,35 @@ class RequestViewScreen extends StatelessWidget {
         _buildInfo(CupertinoIcons.doc_plaintext,
             controller.requestData.value?['reason'] ?? ''),
         const SizedBox(height: 8),
-        if (controller.requestData.value?['attachments'].isNotEmpty)
-          GestureDetector(
-            child:
-                _buildInfo(CupertinoIcons.doc, 'Attachment'.tr, isLink: true),
-            onTap: () async {
-              final Uri uri = Uri.parse(
-                  controller.requestData.value?['attachments'][0]['url'] ?? '');
+        if (controller.requestData.value?['attachments'] != null &&
+            controller.requestData.value?['attachments'].isNotEmpty)
+          ...controller.requestData.value?['attachments']
+              .asMap()
+              .entries
+              .map(
+                (entry) => GestureDetector(
+                  key: Key(entry.key.toString()), // Key based on index
+                  child: _buildInfo(
+                    CupertinoIcons.doc,
+                    '${'Attachment'.tr} ${entry.key + 1}',
+                    isLink: true,
+                  ),
+                  onTap: () async {
+                    final Uri uri = Uri.parse(entry.value['url'] ?? '');
 
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(
-                  uri,
-                  mode: LaunchMode
-                      .externalApplication, // Use external browser if in-app fails
-                );
-              } else {
-                throw 'Could not launch $uri';
-              }
-            },
-          ),
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(
+                        uri,
+                        mode: LaunchMode
+                            .externalApplication, // Use external browser
+                      );
+                    } else {
+                      throw 'Could not launch $uri';
+                    }
+                  },
+                ),
+              )
+              .toList(),
       ],
     );
   }
@@ -601,24 +611,35 @@ class RequestViewScreen extends StatelessWidget {
               controller.requestData.value!['note'].toString())
         ],
         const SizedBox(height: 8),
-        if (controller.requestData.value?['attachments'].isNotEmpty)
-          GestureDetector(
-            child:
-                _buildInfo(CupertinoIcons.doc, 'Attachment'.tr, isLink: true),
-            onTap: () async {
-              final Uri uri = Uri.parse(
-                  controller.requestData.value?['attachments'][0]['url'] ?? '');
+        if (controller.requestData.value?['attachments'] != null &&
+            controller.requestData.value?['attachments'].isNotEmpty)
+          ...controller.requestData.value?['attachments']
+              .asMap()
+              .entries
+              .map(
+                (entry) => GestureDetector(
+                  key: Key(entry.key.toString()), // Key based on index
+                  child: _buildInfo(
+                    CupertinoIcons.doc,
+                    '${'Attachment'.tr} ${entry.key + 1}',
+                    isLink: true,
+                  ),
+                  onTap: () async {
+                    final Uri uri = Uri.parse(entry.value['url'] ?? '');
 
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(
-                  uri,
-                  mode: LaunchMode.externalApplication,
-                );
-              } else {
-                throw 'Could not launch $uri';
-              }
-            },
-          ),
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(
+                        uri,
+                        mode: LaunchMode
+                            .externalApplication, // Use external browser
+                      );
+                    } else {
+                      throw 'Could not launch $uri';
+                    }
+                  },
+                ),
+              )
+              .toList(),
       ],
     );
   }

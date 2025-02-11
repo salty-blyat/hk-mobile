@@ -15,20 +15,20 @@ class MyFormField<T> extends StatelessWidget {
   final bool Function(AbstractControl<dynamic> control)? showErrors;
   final void Function(FormControl<T>)? onChanged;
 
-  const MyFormField({
-    super.key,
-    required this.label,
-    this.icon,
-    this.disabled = false,
-    this.password = false,
-    this.validator,
-    this.controller,
-    this.maxLines = 1,
-    this.controlName,
-    this.enableSuggestions = false,
-    this.showErrors,
-    this.onChanged,
-  });
+  const MyFormField(
+      {super.key,
+      required this.label,
+      this.icon,
+      this.disabled = false,
+      this.password = false,
+      this.validator,
+      this.controller,
+      this.maxLines = 1,
+      this.controlName,
+      this.enableSuggestions = false,
+      this.showErrors,
+      this.onChanged,
+      obs});
 
   @override
   Widget build(BuildContext context) {
@@ -84,14 +84,13 @@ class MyFormField<T> extends StatelessWidget {
           // prefixIconColor: isDisabled.value ? Colors.grey[600] : null,
           suffixIcon: password
               ? IconButton(
-                  icon: Icon(
-                    isPasswordVisible.value
-                        ? Icons.visibility_off
-                        : Icons.visibility_off,
-                  ),
+                  icon: Icon(isPasswordVisible.value
+                      ? Icons.visibility_off
+                      : Icons.visibility),
                   onPressed: () {
                     isPasswordVisible.value = !isPasswordVisible.value;
                   },
+                  iconSize: 18,
                 )
               : null,
         ),

@@ -65,7 +65,6 @@ class NotificationController extends GetxController {
           response.results.length == queryParameters.value.pageSize;
     } catch (e) {
       canLoadMore.value = false;
-      print("Error during search: $e");
     } finally {
       loading.value = false;
     }
@@ -73,21 +72,23 @@ class NotificationController extends GetxController {
 
   viewNotification(NotificationModel item) async {
     try {
-      var model = {
-        'id': item.id,
-        'isView': true,
-        'createdDate': item.createdDate!.toIso8601String(),
-        'message': item.message,
-        'title': item.title,
-        'requestId': item.requestId,
-        'staffId': item.staffId,
-        'viewDate': DateTime.now().toIso8601String(),
-      };
-      queryParameters.update((params) {
-        params?.pageIndex = 1;
-      });
-      await service.edit(
-          NotificationModel.fromJson(model), NotificationModel.fromJson);
+      if (item.isView != true) {
+        var model = {
+          'id': item.id,
+          'isView': true,
+          'createdDate': item.createdDate!.toIso8601String(),
+          'message': item.message,
+          'title': item.title,
+          'requestId': item.requestId,
+          'staffId': item.staffId,
+          'viewDate': DateTime.now().toIso8601String(),
+        };
+        queryParameters.update((params) {
+          params?.pageIndex = 1;
+        });
+        await service.edit(
+            NotificationModel.fromJson(model), NotificationModel.fromJson);
+      }
       Get.toNamed('/request-view', arguments: {
         'id': item.requestId,
         'reqType': 0,

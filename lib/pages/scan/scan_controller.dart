@@ -22,8 +22,10 @@ class ScanController extends GetxController {
   var selectedImage = Rx<File?>(null);
 
   final scannerController = MobileScannerController(
-      cameraResolution: const Size(1280, 720),
-      detectionSpeed: DetectionSpeed.noDuplicates);
+    cameraResolution: const Size(1280, 720),
+    detectionSpeed: DetectionSpeed.normal,
+    detectionTimeoutMs: 1000,
+  );
   var isScanning = true.obs;
   var isFlashOn = false.obs;
   var latitude = 0.0.obs;
@@ -31,8 +33,12 @@ class ScanController extends GetxController {
 
   Rx<String> qrCodeData = ''.obs;
   @override
-  void onReady() async {
-    super.onReady();
+  void onInit() {
+    super.onInit();
+    getLocation();
+  }
+
+  void getLocation() async {
     final pos = await determinePosition();
     latitude.value = pos.latitude;
     longitude.value = pos.longitude;
@@ -48,17 +54,19 @@ class ScanController extends GetxController {
   }
 
   void stopScanning() {
-    // isScanning.value = false;
     scannerController.stop();
   }
 
   void startScanning() {
-    // isScanning.value = true;
     scannerController.start();
   }
 
   Future<void> scanAttendance() async {
     try {
+      if (latitude.value == 0.0 || longitude.value == 0.0) {
+        getLocation();
+        return;
+      }
       Modal.loadingDialog();
       final QrScanModel qrScanModel = getQrScanModel();
       final scanService = ScanService();
@@ -77,35 +85,69 @@ class ScanController extends GetxController {
       }
     } catch (e) {
       Get.back();
+      Modal.errorDialog('Error'.tr, 'Failed to scan attendance'.tr);
     }
   }
 
   Future<Position> determinePosition() async {
-    bool serviceEnabled;
     LocationPermission permission;
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      throw Exception('Location services are disabled.');
-    }
+    await Geolocator.isLocationServiceEnabled();
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        throw Exception('Location permissions are denied.');
+        startScanning();
+        return await Geolocator.getCurrentPosition();
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      throw Exception('Location permissions are permanently denied.');
+      alertDialog('Location services are disabled'.tr, [
+        CupertinoDialogAction(
+          isDestructiveAction: true,
+          onPressed: () {
+            Get.offAllNamed('/menu');
+          },
+          child: Text('Back'.tr,
+              style: AppTheme.style
+                  .copyWith(fontSize: 16, fontWeight: FontWeight.normal)),
+        ),
+        CupertinoDialogAction(
+          isDefaultAction: true,
+          onPressed: () {
+            Geolocator.openAppSettings();
+            startScanning();
+            Get.back();
+          },
+          child: Text('Go To Settings'.tr,
+              style: AppTheme.style
+                  .copyWith(fontSize: 16, fontWeight: FontWeight.normal)),
+        ),
+      ]);
     }
 
     return await Geolocator.getCurrentPosition();
   }
 
+  void alertDialog(String title, List<Widget> actions) {
+    showCupertinoDialog<void>(
+      context: Get.context!,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: Text(
+          'Turn On Location Services to Allow Scan Attendance'.tr,
+          style: AppTheme.style
+              .copyWith(fontSize: 16, fontWeight: FontWeight.normal),
+        ),
+        actions: actions,
+      ),
+    );
+  }
+
   Future<void> pickImage(ImageSource source) async {
     try {
+      stopScanning();
       final pickedFile = await _picker.pickImage(source: source);
       if (pickedFile != null) {
         selectedImage.value = File(pickedFile.path);
@@ -117,14 +159,12 @@ class ScanController extends GetxController {
         } else {
           Alert.errorAlert(
               "Invalid QR Code", "Could not read QR code from the image.");
-          scannerController.start();
         }
-      } else {
-        Alert.errorAlert("No Image Selected", "Please pick an image.");
-        startScanning();
       }
     } catch (e) {
       Alert.errorAlert("Error", "Failed to pick an image: $e");
+    } finally {
+      startScanning();
     }
   }
 
@@ -148,6 +188,9 @@ class ScanController extends GetxController {
       String convertCode = code.replaceFirst(prefix, "");
       List<int> decodedBytes = base64Decode(convertCode);
       String decodedString = String.fromCharCodes(decodedBytes);
+      if (latitude.value == 0.0 || longitude.value == 0.0) {
+        getLocation();
+      }
 
       qrCodeData.value = decodedString;
       Get.to(() => ScanCheckScreen());
@@ -237,12 +280,12 @@ class ScanController extends GetxController {
                           color: Colors.grey.shade400,
                           thickness: 1,
                         ),
-                        Info(
+                        _Info(
                             title: '${'Date'.tr}:',
                             value: data.dateTime != null
                                 ? convertToKhmerDate(data.dateTime!)
                                 : ''),
-                        Info(
+                        _Info(
                             title: '${'Terminal'.tr}:',
                             value: data.terminalName!),
                         Row(
@@ -268,6 +311,7 @@ class ScanController extends GetxController {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 8),
                       ],
                     ),
                   ),
@@ -317,11 +361,10 @@ class ScanController extends GetxController {
   }
 }
 
-class Info extends StatelessWidget {
+class _Info extends StatelessWidget {
   final String title;
   final String value;
-  const Info({
-    super.key,
+  const _Info({
     required this.title,
     required this.value,
   });

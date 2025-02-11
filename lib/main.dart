@@ -19,13 +19,13 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init();
+  await AppSetting().initSetting();
   await Firebase.initializeApp();
   await ShowNotificationService.initialize();
-  await GetStorage.init();
   final Translate translationService = Translate();
   await translationService.loadTranslations();
   NotificationService.initialize();
-  await AppSetting().initSetting();
   var initialRoute = '/login';
 
   try {

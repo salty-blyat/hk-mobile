@@ -23,6 +23,7 @@ class Const {
     'Token': 'token',
     'RefreshToken': 'refreshToken',
     'AccessToken': 'accessToken',
+    'MenuItems': 'MenuItems',
   };
   static const List<Map<String, dynamic>> languages = [
     {

@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/const.dart';
+import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/helpers/version_server.dart';
 import 'package:staff_view_ui/models/setting_model.dart';
 import 'package:staff_view_ui/pages/menu/menu_screen.dart';
@@ -9,6 +11,7 @@ import 'package:staff_view_ui/pages/menu/menu_service.dart';
 
 class MenusController extends GetxController {
   final menuService = MenuService();
+  final storage = Storage();
   var totalRequest = 0.obs;
   var setting = <SettingModel>[].obs;
   var iosLink = ''.obs;
@@ -16,7 +19,7 @@ class MenusController extends GetxController {
   var iosVersion = '...'.obs;
   var androidVersion = '...'.obs;
   var showLogout = false.obs;
-  var menuItems = [
+  var defaultMenuItems = [
     {
       'title': 'My Profile',
       'icon': CupertinoIcons.person,
@@ -88,10 +91,24 @@ class MenusController extends GetxController {
       'isShow': true,
     },
   ].obs;
+  var menuItems = [].obs;
 
   @override
   void onInit() async {
+    menuItems.value = defaultMenuItems;
     super.onInit();
+    final setting = storage.read(Const.authorized['MenuItems']!);
+    if (setting != null) {
+      // Decode the setting JSON to a list of dynamic items
+      List<dynamic> settingListJson = jsonDecode(setting);
+
+      // Map each item to a SettingModel object
+      List<SettingModel> settingList = settingListJson
+          .map((e) => SettingModel.fromJson(e as Map<String, dynamic>))
+          .toList();
+
+      setSetting(settingList);
+    }
     Future.wait([
       getVersion(),
       getSetting(),
@@ -119,6 +136,11 @@ class MenusController extends GetxController {
 
   Future<void> getSetting() async {
     final setting = await menuService.getSetting();
+    storage.write(Const.authorized['MenuItems']!, jsonEncode(setting));
+    setSetting(setting);
+  }
+
+  Future<void> setSetting(List<SettingModel> setting) async {
     final Map<String, int> visibilityMap = {
       Const.SETTING_KEY()['LeaveVisibility']!: 3,
       Const.SETTING_KEY()['OvertimeVisibility']!: 4,
@@ -131,9 +153,9 @@ class MenusController extends GetxController {
     for (var element in setting) {
       if (visibilityMap.containsKey(element.key)) {
         final index = visibilityMap[element.key];
-        if (index! < menuItems.length) {
-          menuItems[index] = {
-            ...menuItems[index],
+        if (index! < defaultMenuItems.length) {
+          defaultMenuItems[index] = {
+            ...defaultMenuItems[index],
             'isShow': element.value == 'true',
           };
         }
@@ -145,7 +167,7 @@ class MenusController extends GetxController {
       this.setting.add(element);
     }
     menuItems.value =
-        menuItems.where((element) => element['isShow'] == true).toList();
+        defaultMenuItems.where((element) => element['isShow'] == true).toList();
 
     totalRequest.value = await menuService.getTotal();
     menuItems.firstWhere(
