@@ -495,7 +495,8 @@ class RequestViewScreen extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 8),
-        if (controller.requestData.value?['note'] != null) ...[
+        if (controller.requestData.value?['note'] != null &&
+            controller.requestData.value!['note'].toString().isNotEmpty) ...[
           _buildInfo(CupertinoIcons.doc_plaintext,
               controller.requestData.value?['note'] ?? ''),
           const SizedBox(height: 8),
@@ -593,10 +594,11 @@ class RequestViewScreen extends StatelessWidget {
                   ),
                 ],
               ),
-        if (controller.requestData.value?['note'].isNotEmpty) ...[
+        if (controller.requestData.value?['note'] != null &&
+            controller.requestData.value!['note'].toString().isNotEmpty) ...[
           const SizedBox(height: 8),
           _buildInfo(CupertinoIcons.doc_plaintext,
-              controller.requestData.value?['note'])
+              controller.requestData.value!['note'].toString())
         ],
         const SizedBox(height: 8),
         if (controller.requestData.value?['attachments'].isNotEmpty)
