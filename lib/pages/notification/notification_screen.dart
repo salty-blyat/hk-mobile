@@ -5,6 +5,7 @@ import 'package:staff_view_ui/helpers/base_list_screen.dart';
 import 'package:staff_view_ui/models/notification_model.dart';
 import 'package:staff_view_ui/pages/notification/notification_controller.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
+import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/calendar.dart';
 import 'package:staff_view_ui/utils/widgets/year_select.dart';
 
@@ -69,8 +70,23 @@ class NotificationScreen extends BaseList<NotificationModel> {
       onTap: () => controller.viewNotification(item),
       titleAlignment: ListTileTitleAlignment.center,
       leading: Stack(
+        clipBehavior: Clip.none, // Ensure shadows are not clipped
         children: [
-          Calendar(date: item.createdDate!),
+          Material(
+            elevation: 1, // Adds a shadow
+            borderRadius: BorderRadius.circular(8),
+            child: Calendar(date: item.createdDate!),
+          ),
+          if (item.isView == false)
+            const Positioned(
+              top: 0,
+              left: -12,
+              child: Icon(
+                Icons.circle,
+                size: 10,
+                color: AppTheme.primaryColor,
+              ),
+            ),
         ],
       ),
       subtitle: Text(
