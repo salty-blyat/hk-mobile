@@ -9,6 +9,7 @@ class AppTheme {
   static const Color warningColor = Color(0xFFF59E0B);
   static const Color secondaryColor = Color(0xFFEDEEF0);
   static const Color defaultColor = Color(0xFF5F5F5F);
+  static const Color secondaryColorRgb = Color(0xFF0163AA);
   static BorderRadiusGeometry borderRadius = BorderRadius.circular(4);
   static const TextStyle style = TextStyle(
     fontSize: 16.0,

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/models/working_sheet.dart';
 import 'package:staff_view_ui/pages/attendance_cycle/attendance_cycle_select.dart';
 import 'package:staff_view_ui/pages/worksheet/worksheet_controller.dart';
@@ -190,17 +191,7 @@ class WorkingScreen extends StatelessWidget {
                       child: GestureDetector(
                         onTap: () {
                           final working = controller.working[index];
-                          if (working.missionId == 0 &&
-                              working.leaveId == 0 &&
-                              working.holidayId == 0 &&
-                              working.exceptionTypeId !=
-                                  ExceptionType.absentException.value &&
-                              working.type != TYPE.offDuty.value &&
-                              working.type != TYPE.absent.value &&
-                              working.type != TYPE.unknown.value) {
-                            return controller.showDetail(context, working);
-                          }
-                          if (working.leaveId! != 0) {
+                          if (working.leaveId != 0) {
                             Get.toNamed('/request-view', arguments: {
                               'id': working.leaveId,
                               'reqType': RequestTypes.leave.value,
@@ -215,19 +206,14 @@ class WorkingScreen extends StatelessWidget {
                             });
                             return;
                           }
+                          if (working.missionId != 0) return;
+                          if (working.holidayId != 0) return;
+                          if (working.type == TYPE.present.value) {
+                            controller.showDetail(context, working);
+                          }
                         },
                         child: ListTile(
-                          trailing: controller.working[index].type! !=
-                                  TYPE.offDuty.value
-                              ? !controller.working[index].date!
-                                      .isAfter(DateTime.now())
-                                  ? Tag(
-                                      color: getTagColor(
-                                          controller.working[index]),
-                                      text: getTag(controller.working[index]),
-                                    )
-                                  : null
-                              : null,
+                          trailing: getTrailingTag(controller.working[index]),
                           tileColor: getTileColor(controller.working[index]),
                           title: Row(
                             children: [
@@ -235,14 +221,14 @@ class WorkingScreen extends StatelessWidget {
                                 date: controller.working[index].date!,
                               ),
                               const SizedBox(width: 10),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    getTitle(controller.working[index]),
-                                  ),
-                                ],
-                              )
+                              Expanded(
+                                child: Text(
+                                  getTitle(controller.working[index]),
+                                  style: const TextStyle(
+                                      overflow: TextOverflow.ellipsis),
+                                  maxLines: 2,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -251,7 +237,7 @@ class WorkingScreen extends StatelessWidget {
                   },
                   separatorBuilder: (context, index) {
                     return Container(
-                      color: Colors.grey.shade400,
+                      color: Colors.grey.shade300,
                       width: double.infinity,
                       height: 1,
                     );
@@ -266,15 +252,34 @@ class WorkingScreen extends StatelessWidget {
   }
 }
 
+Widget? getTrailingTag(Worksheets working) {
+  // Skip if any of these conditions are met
+  if (working.leaveId != 0 ||
+      working.exceptionTypeId == ExceptionType.absentException.value ||
+      working.missionId != 0 ||
+      working.holidayId != 0 ||
+      working.type == TYPE.offDuty.value) {
+    return null;
+  }
+
+  // Show the tag for absent or working type
+  return Tag(
+    color: getTagColor(working),
+    text: getTag(working),
+  );
+}
+
 Color getTileColor(Worksheets working) {
+  if (working.leaveId != 0) return AppTheme.warningColor.withOpacity(0.09);
+  if (working.missionId != 0) return AppTheme.successColor.withOpacity(0.09);
+  if (working.holidayId != 0) {
+    return AppTheme.secondaryColorRgb.withOpacity(0.09);
+  }
   if (working.type == TYPE.offDuty.value) {
-    return Colors.grey.shade300;
+    return Colors.grey.shade200;
   }
   if (working.type == TYPE.absent.value) {
-    if (working.date!.isAfter(DateTime.now())) {
-      return Colors.grey.shade50;
-    }
-    return AppTheme.dangerColor.withOpacity(0.12);
+    return AppTheme.dangerColor.withOpacity(0.09);
   }
   return Colors.grey.shade50;
 }
@@ -300,28 +305,23 @@ Color getTagColor(Worksheets working) {
 }
 
 String getTitle(Worksheets working) {
-  if (working.holiday?.isNotEmpty == true) {
-    return working.holiday!;
+  if (working.leaveId != 0) return working.leaveReason!;
+  if (working.exceptionTypeId == ExceptionType.absentException.value) {
+    return working.absentTypeNameKh!;
   }
-  if (working.leaveReason?.isNotEmpty == true) {
-    return working.leaveReason!;
+  if (working.missionId != 0) return working.missionObjective!;
+  if (working.holidayId != 0) return working.holiday!;
+
+  if (working.type == TYPE.offDuty.value) return 'Day off'.tr;
+
+  if (working.type == TYPE.absent.value) {
+    return working.date!.isAfter(DateTime.now())
+        ? ''
+        : 'Absent unauthorized'.tr;
   }
-  if (working.missionObjective?.isNotEmpty == true) {
-    return working.missionObjective!;
-  }
-  if (working.type! == TYPE.present.value) {
-    return '${'Working'.tr} ${working.adrWorkingHour}${'h'.tr} / ${working.expectedWorkingHour}${'h'.tr}';
-  }
-  if (working.type! == TYPE.offDuty.value) {
-    return 'Day off'.tr;
-  }
-  if (working.type! == TYPE.absent.value) {
-    if (working.date!.isAfter(DateTime.now())) {
-      return '';
-    }
-    return 'Absent unauthorized'.tr;
-  }
-  return '';
+
+  // Only check for 'Working' status when none of the above conditions match
+  return '${'Working'.tr} ${Const.numberFormat(working.adrWorkingHour!)}${'h'.tr} / ${Const.numberFormat(working.expectedWorkingHour!)}${'h'.tr}';
 }
 
 String getTag(Worksheets working) {
