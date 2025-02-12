@@ -6,7 +6,6 @@ class MyFormField<T> extends StatelessWidget {
   final String label;
   final IconData? icon;
   final bool disabled;
-  final bool password;
   final String? Function(String?)? validator;
   final TextEditingController? controller;
   final int? maxLines;
@@ -20,7 +19,6 @@ class MyFormField<T> extends StatelessWidget {
       required this.label,
       this.icon,
       this.disabled = false,
-      this.password = false,
       this.validator,
       this.controller,
       this.maxLines = 1,
@@ -32,26 +30,21 @@ class MyFormField<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!password) {
-      return _buildFormField(context, false.obs, disabled.obs);
-    }
-    final isPasswordVisible = false.obs;
-    return Obx(() => _buildFormField(context, isPasswordVisible, disabled.obs));
+    return _buildFormField(context, disabled.obs);
   }
 
-  Widget _buildFormField(
-      BuildContext context, RxBool isPasswordVisible, RxBool isDisabled) {
+  Widget _buildFormField(BuildContext context, RxBool isDisabled) {
     return SizedBox(
       height: 72,
       child: ReactiveTextField<T>(
+        keyboardType: TextInputType.visiblePassword,
         textAlignVertical: TextAlignVertical.bottom,
-        maxLines: password ? 1 : maxLines,
+        maxLines: maxLines,
         controller: controller,
         validationMessages: {
           ValidationMessage.required: (_) => 'Input is required!'.tr,
         },
         formControlName: controlName,
-        obscureText: password ? !isPasswordVisible.value : false,
         enableSuggestions: enableSuggestions,
         autocorrect: false,
         showErrors: showErrors,
@@ -79,20 +72,7 @@ class MyFormField<T> extends StatelessWidget {
           filled: isDisabled.value,
           helperStyle: const TextStyle(height: 0.8),
           errorStyle: const TextStyle(height: 0.8),
-
           fillColor: isDisabled.value ? Colors.grey[200] : null,
-          // prefixIconColor: isDisabled.value ? Colors.grey[600] : null,
-          suffixIcon: password
-              ? IconButton(
-                  icon: Icon(isPasswordVisible.value
-                      ? Icons.visibility_off
-                      : Icons.visibility),
-                  onPressed: () {
-                    isPasswordVisible.value = !isPasswordVisible.value;
-                  },
-                  iconSize: 18,
-                )
-              : null,
         ),
       ),
     );

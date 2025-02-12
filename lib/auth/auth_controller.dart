@@ -9,11 +9,13 @@ import 'package:staff_view_ui/helpers/firebase_service.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
+import 'package:staff_view_ui/utils/widgets/snack_bar.dart';
 
 class AuthController extends GetxController {
   final language = 'km'.obs;
   final _authService = AuthService();
   final _firebaseService = NotificationService();
+  final passwordController = TextEditingController();
   final loading = false.obs;
   final formValid = false.obs;
   final error = ''.obs;
@@ -38,6 +40,7 @@ class AuthController extends GetxController {
   Rx<ClientInfo?> auth = Rxn<ClientInfo>();
 
   login() async {
+    Get.focusScope?.unfocus();
     Modal.loadingDialog();
     try {
       final response = await _authService.login(
@@ -45,10 +48,13 @@ class AuthController extends GetxController {
         false,
       );
       if (response.statusCode == 200) {
-        Get.back();
+        if (Get.isDialogOpen == true) {
+          Get.back();
+        }
+        error.value = '';
         ClientInfo info = ClientInfo.fromJson(response.data);
         if (info.mfaRequired == true) {
-          Get.snackbar('MFA', response.data['message']);
+          successSnackbar('MFA'.tr, response.data['message']);
           Get.toNamed('/verify-mfa', arguments: {
             'mfaToken': info.mfaToken,
           });
@@ -64,13 +70,11 @@ class AuthController extends GetxController {
       } else {
         Get.back();
         error.value = response.data['message'].toString().tr;
-        Get.focusScope?.unfocus();
       }
     } on DioException catch (e) {
       Get.back();
       error.value =
           e.response?.data['message'].toString().tr ?? 'Something went wrong';
-      Get.focusScope?.unfocus();
     }
   }
 

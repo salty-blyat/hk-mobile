@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
-import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/image_picker_controller.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/models/overtime_model.dart';
 import 'package:staff_view_ui/pages/overtime/overtime_controller.dart';
 import 'package:staff_view_ui/pages/overtime/overtime_service.dart';
+import 'package:staff_view_ui/utils/file_type.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -138,20 +138,19 @@ class OvertimeOperationController extends GetxController {
     });
 
     overtimeType.value = overtime.overtimeTypeId!;
-    formGroup.control('attachments').value = [
-      {
-        'name': overtime.attachments?.first.name,
-        'url': overtime.attachments?.first.url,
-        'uid': overtime.attachments?.first.uid,
-      }
-    ];
-    filePickerController.isImage.value =
-        Const.isImage(overtime.attachments?.first.url ?? '');
-    filePickerController.attachments.value = overtime.attachments ?? [];
+    overtime.attachments?.forEach((attachment) {
+      filePickerController.attachments.add(attachment);
+      formGroup.control('attachments').value.add({
+        'name': attachment.name,
+        'url': attachment.url,
+        'uid': attachment.uid,
+      });
+    });
   }
 
   Future<void> submit() async {
     if (loading.isTrue) return;
+    Get.focusScope?.unfocus();
 
     try {
       Modal.loadingDialog();
@@ -250,7 +249,7 @@ class OvertimeOperationController extends GetxController {
             ],
           ),
           Expanded(
-              child: Const.isImage(url)
+              child: isImageType(url)
                   ? WebViewWidget(controller: controller)
                   : PDFView(
                       filePath: filePickerController.filePath.value,

@@ -4,6 +4,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/helpers/common_validators.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
+import 'package:staff_view_ui/utils/widgets/snack_bar.dart';
 
 class ForgotPasswordController extends GetxController {
   final formGroup = fb.group({
@@ -29,13 +30,14 @@ class ForgotPasswordController extends GetxController {
   }
 
   void submit() async {
+    Get.focusScope?.unfocus();
     if (formGroup.valid) {
       Modal.loadingDialog();
       try {
         var res = await _authService.forgotPassword(formGroup.value);
         if (res.statusCode == 200) {
           Get.back();
-          Get.snackbar('Forgot Password', res.data['message']);
+          successSnackbar('Success'.tr, res.data['message']);
           Get.toNamed('/verify-otp', arguments: {
             'userId': res.data['userId'],
           });

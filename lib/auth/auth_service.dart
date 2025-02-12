@@ -123,6 +123,8 @@ class AuthService {
   }
 
   Future<dio.Response> resetPassword(Map<String, Object?> model) async {
+    setOptions(false);
+
     final response = await dioClient.post(
       '/auth/reset-password',
       data: model,

@@ -1,8 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/helpers/common_validators.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
+import 'package:staff_view_ui/utils/widgets/snack_bar.dart';
 
 class InputNewPasswordController extends GetxController {
   final formGroup = fb.group({
@@ -42,6 +44,7 @@ class InputNewPasswordController extends GetxController {
   }
 
   void submit() async {
+    Get.focusScope?.unfocus();
     if (formGroup.valid) {
       Modal.loadingDialog();
       try {
@@ -50,12 +53,16 @@ class InputNewPasswordController extends GetxController {
           'password': formGroup.value['password'],
         });
         if (res.statusCode == 200) {
-          Get.snackbar('Forgot Password', 'Password reset successfully');
+          successSnackbar('Success'.tr, 'Password reset successfully');
           Get.offAllNamed('/login');
         } else {
           throw Exception('Failed to send verification code');
         }
+      } on DioException catch (e) {
+        print(e.response?.data);
+        error.value = 'Failed to send verification code';
       } catch (e) {
+        print(e);
         error.value = 'Failed to send verification code';
       }
     }

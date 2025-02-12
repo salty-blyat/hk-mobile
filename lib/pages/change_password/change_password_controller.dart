@@ -5,6 +5,7 @@ import 'package:staff_view_ui/pages/change_password/change_password_service.dart
 import 'package:staff_view_ui/helpers/common_validators.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
+import 'package:staff_view_ui/utils/widgets/snack_bar.dart';
 
 class ChangePasswordController extends GetxController {
   final _changePasswordService = ChangePasswordService();
@@ -50,45 +51,20 @@ class ChangePasswordController extends GetxController {
   }
 
   Future<void> submit() async {
-    loading.value = true;
+    Get.focusScope?.unfocus();
+    if (formGroup.valid) {
+      try {
+        Modal.loadingDialog();
+        final response =
+            await _changePasswordService.changePassword(formGroup.rawValue);
 
-    try {
-      Modal.loadingDialog();
-      final response =
-          await _changePasswordService.changePassword(formGroup.rawValue);
-
-      if (response.statusCode == 200) {
-        Get.snackbar(
-          "Success".tr,
-          "Change password successfully".tr,
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.white,
-          colorText: Colors.black,
-          icon: const Icon(
-            Icons.check_circle_outline,
-            color: Colors.green,
-            size: 40,
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          boxShadows: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
-          overlayColor: Colors.transparent,
-          isDismissible: true,
-        );
-
-        Get.offAllNamed('/menu');
-      } else {
-        Modal.errorDialog('Unsuccessful', '$response.statusMessage');
+        if (response.statusCode == 200) {
+          successSnackbar('Success', 'Change password successfully');
+          Get.offAllNamed('/menu');
+        }
+      } catch (e) {
+        print(e);
       }
-    } catch (e) {
-      print(e);
-    } finally {
-      loading.value = false;
     }
   }
 

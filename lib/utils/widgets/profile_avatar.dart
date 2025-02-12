@@ -11,6 +11,7 @@ class ProfileAvatar extends StatefulWidget {
   final double size;
   final bool isEdit;
   final FormGroup? formGroup;
+  bool loading;
 
   ProfileAvatar({
     super.key,
@@ -19,6 +20,7 @@ class ProfileAvatar extends StatefulWidget {
     this.size = 94,
     this.isEdit = false,
     this.formGroup,
+    this.loading = false,
     // Default primary color
   });
 
@@ -41,28 +43,39 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(100),
           ),
-          child: widget.profileImageUrl?.isNotEmpty == true
-              ? CircleAvatar(
-                  child: ClipOval(
-                    child: Image.network(
-                      widget.profileImageUrl!,
-                      fit: BoxFit.cover,
-                      height: widget.size,
-                      width: widget.size,
+          child: widget.loading
+              ? SizedBox(
+                  height: widget.size,
+                  width: widget.size,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.grey.shade200,
+                    child: const Center(
+                      child: CircularProgressIndicator(),
                     ),
                   ),
                 )
-              : CircleAvatar(
-                  backgroundColor: AppTheme.primaryColor.withOpacity(0.6),
-                  child: Text(
-                    widget.fullName?.substring(0, 1).toUpperCase() ?? '',
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+              : widget.profileImageUrl?.isNotEmpty == true
+                  ? CircleAvatar(
+                      child: ClipOval(
+                        child: Image.network(
+                          widget.profileImageUrl!,
+                          fit: BoxFit.cover,
+                          height: widget.size,
+                          width: widget.size,
+                        ),
+                      ),
+                    )
+                  : CircleAvatar(
+                      backgroundColor: AppTheme.primaryColor.withOpacity(0.6),
+                      child: Text(
+                        widget.fullName?.substring(0, 1).toUpperCase() ?? '',
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
         ),
         if (widget.isEdit)
           Positioned(
@@ -96,6 +109,12 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
                             color: Colors.black54,
                           ),
                           onTap: () async {
+                            if (widget.loading) {
+                              return;
+                            }
+                            setState(() {
+                              widget.loading = true;
+                            });
                             final attachment = await filePickerController
                                 .pickImageFromCamera();
                             if (attachment != null) {
@@ -105,6 +124,9 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
                                 widget.profileImageUrl = attachment.url;
                               });
                             }
+                            setState(() {
+                              widget.loading = false;
+                            });
                           },
                         ),
                         ListTile(
@@ -114,8 +136,13 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
                             color: Colors.black54,
                           ),
                           onTap: () async {
+                            if (widget.loading) {
+                              return;
+                            }
                             final attachment = await filePickerController
-                                .pickImageFromGallery();
+                                .pickImageFromGallery((value) => setState(() {
+                                      widget.loading = value;
+                                    }));
                             if (attachment != null) {
                               widget.formGroup?.control('profile').value =
                                   attachment.url;
@@ -123,6 +150,9 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
                                 widget.profileImageUrl = attachment.url;
                               });
                             }
+                            setState(() {
+                              widget.loading = false;
+                            });
                           },
                         ),
                         ListTile(

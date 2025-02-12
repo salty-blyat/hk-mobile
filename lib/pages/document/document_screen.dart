@@ -6,6 +6,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/pages/document/document_controller.dart';
 import 'package:staff_view_ui/pages/document/document_type_select.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
+import 'package:staff_view_ui/utils/file_type.dart';
 import 'package:staff_view_ui/utils/widgets/no_data.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 
@@ -243,31 +244,5 @@ class DownloadButton extends StatelessWidget {
         }),
       ),
     );
-  }
-
-  String getFileType(String? fileName) {
-    if (fileName == null || fileName.isEmpty) {
-      return 'assets/images/default.png';
-    }
-
-    String extension = fileName.split('.').last.toLowerCase();
-
-    switch (extension) {
-      case 'pdf':
-        return 'assets/images/pdf.png';
-      case 'doc':
-      case 'docx':
-        return 'assets/images/docx.png';
-      case 'xls':
-      case 'xlsx':
-        return 'assets/images/excel.png';
-      case 'jpg':
-      case 'jpeg':
-        return 'assets/images/jpeg.png';
-      case 'png':
-        return 'assets/images/png.png';
-      default:
-        return 'assets/images/default.png';
-    }
   }
 }

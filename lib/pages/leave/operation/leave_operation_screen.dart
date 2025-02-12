@@ -115,13 +115,11 @@ class LeaveOperationScreen extends StatelessWidget {
             height: 45,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: 10,
+              itemCount: 5,
               itemBuilder: (context, index) => Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: ElevatedButton(
-                  onPressed: () {
-                    controller.calculateTotalDays();
-                  },
+                  onPressed: () {},
                   child: const Text('Leave'),
                 ),
               ),
@@ -161,7 +159,15 @@ class LeaveOperationScreen extends StatelessWidget {
                       color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
-                  onPressed: () => controller.updateLeaveType(leaveType.id!),
+                  onPressed: () {
+                    controller.updateLeaveType(leaveType.id!);
+                    leaveTypeController.enableLeaveUnit(
+                        controller.leaveType.value,
+                        (value) => controller.isAllowHour.value = value);
+                    if (!controller.isAllowHour.value) {
+                      controller.updateLeaveUnit('1');
+                    }
+                  },
                   child: Text(leaveType.name ?? ''),
                 );
               }),
@@ -236,31 +242,40 @@ class LeaveOperationScreen extends StatelessWidget {
           );
         }),
         const SizedBox(width: 16),
-        Expanded(
-          child: Obx(() {
-            return DropdownButtonFormField<String>(
-              dropdownColor: Colors.white,
-              value: controller.leaveUnit.value.isEmpty
-                  ? null
-                  : controller.leaveUnit.value,
-              items: LeaveUnit.values
-                  .map((unit) => DropdownMenuItem(
-                        value: unit.value.toString(),
-                        child: Text(
-                          unit.name.toString().tr,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.black,
-                            fontFamilyFallback: ['Gilroy', 'Kantumruy'],
-                          ),
+        Expanded(child: Obx(() {
+          return DropdownButtonFormField<String>(
+            dropdownColor: Colors.white,
+            value: controller.leaveUnit.value.isEmpty
+                ? null
+                : controller.leaveUnit.value,
+            items: LeaveUnit.values
+                .map((unit) => DropdownMenuItem(
+                      value: unit.value.toString(),
+                      child: Text(
+                        unit.name.toString().tr,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                          fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+                          fontWeight: FontWeight.normal,
                         ),
-                      ))
-                  .toList(),
-              onChanged: (value) => controller.updateLeaveUnit(value!),
-              decoration: InputDecoration(labelText: 'Leave unit'.tr),
-            );
-          }),
-        ),
+                      ),
+                    ))
+                .toList(),
+            onChanged: controller.isAllowHour.value
+                ? (value) {
+                    controller.updateLeaveUnit(value!);
+                  }
+                : null, // Disable onChanged if not allowed
+            decoration: InputDecoration(
+              labelText: 'Leave unit'.tr,
+              fillColor: Colors.grey.shade200,
+              filled: !controller.isAllowHour.value,
+              enabled:
+                  controller.isAllowHour.value, // Dynamically disable field
+            ),
+          );
+        })),
       ],
     );
   }

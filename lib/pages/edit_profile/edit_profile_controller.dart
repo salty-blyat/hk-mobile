@@ -9,6 +9,7 @@ import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/common_validators.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
+import 'package:staff_view_ui/utils/widgets/snack_bar.dart';
 
 class EditUserController extends GetxController {
   final _editProfileService = EditProfileService();
@@ -63,43 +64,23 @@ class EditUserController extends GetxController {
   }
 
   Future<void> submit() async {
-    try {
-      Modal.loadingDialog();
-      final response =
-          await _editProfileService.editProfile(formGroup.rawValue);
+    Get.focusScope?.unfocus();
+    if (formGroup.valid) {
+      try {
+        Modal.loadingDialog();
+        final response =
+            await _editProfileService.editProfile(formGroup.rawValue);
 
-      if (response.statusCode == 200) {
-        await _editProfileService.saveToLocalStorage(
-            Const.authorized['Authorized']!, jsonEncode(formGroup.rawValue));
-        Get.snackbar(
-          "Success".tr,
-          "Edit profile successfully".tr,
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.white,
-          colorText: Colors.black,
-          icon: const Icon(
-            Icons.check_circle_outline,
-            color: Colors.green,
-            size: 40,
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          boxShadows: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
-          overlayColor: Colors.transparent,
-          isDismissible: true,
-        );
+        if (response.statusCode == 200) {
+          await _editProfileService.saveToLocalStorage(
+              Const.authorized['Authorized']!, jsonEncode(formGroup.rawValue));
+          successSnackbar('Success', 'Edit profile successfully');
 
-        Get.offAllNamed('/menu');
-      } else {
-        Modal.errorDialog('Unsuccessful', '$response.statusMessage');
+          Get.offAllNamed('/menu');
+        }
+      } catch (e) {
+        print(e);
       }
-    } catch (e) {
-      print(e);
     }
   }
 

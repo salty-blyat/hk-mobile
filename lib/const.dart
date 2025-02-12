@@ -39,21 +39,6 @@ class Const {
       'code': 'en'
     },
   ];
-  static bool isImage(String url) {
-    final lowerUrl = url.toLowerCase();
-    final imageExtensions = [
-      '.jpg',
-      '.jpeg',
-      '.png',
-      '.gif',
-      '.bmp',
-      '.webp',
-      '.svg'
-    ];
-
-    return imageExtensions.any((extension) => lowerUrl.endsWith(extension));
-  }
-
   static Map<String, String> SETTING_KEY() => {
         'StaffAutoId': 'StaffAutoId',
         'StaffLeaveAutoId': 'StaffLeaveAutoId',

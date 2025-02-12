@@ -83,6 +83,7 @@ class DelegatepOperationController extends GetxController {
 
   Future<void> submit() async {
     if (loading.isTrue) return;
+    Get.focusScope?.unfocus();
 
     try {
       // Show loading dialog

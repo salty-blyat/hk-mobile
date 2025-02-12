@@ -12,10 +12,10 @@ import 'package:staff_view_ui/pages/scan/scan-check/scan_check_screen.dart';
 import 'package:staff_view_ui/pages/scan/scan_service.dart';
 import 'package:staff_view_ui/utils/khmer_date_formater.dart';
 import 'package:staff_view_ui/utils/theme.dart';
-import 'package:staff_view_ui/utils/widgets/alert.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
 import 'package:staff_view_ui/utils/widgets/profile_avatar.dart';
+import 'package:staff_view_ui/utils/widgets/snack_bar.dart';
 
 class ScanController extends GetxController {
   final ImagePicker _picker = ImagePicker();
@@ -157,12 +157,11 @@ class ScanController extends GetxController {
         if (qrCode != null) {
           handleQRCode(qrCode);
         } else {
-          Alert.errorAlert(
-              "Invalid QR Code", "Could not read QR code from the image.");
+          errorSnackbar('Error'.tr, 'Could not read QR code from the image.');
         }
       }
     } catch (e) {
-      Alert.errorAlert("Error", "Failed to pick an image: $e");
+      errorSnackbar('Error'.tr, 'Failed to pick an image: $e');
     } finally {
       startScanning();
     }
@@ -195,7 +194,7 @@ class ScanController extends GetxController {
       qrCodeData.value = decodedString;
       Get.to(() => ScanCheckScreen());
     } catch (e) {
-      Alert.errorAlert('Error'.tr, 'QR Code invalid !'.tr);
+      errorSnackbar('Error'.tr, 'QR Code invalid !'.tr);
     }
   }
 

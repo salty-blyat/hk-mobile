@@ -357,7 +357,46 @@ class RequestViewScreen extends StatelessWidget {
         borderRadius: AppTheme.borderRadius,
         border: Border.all(color: Colors.grey.shade400),
       ),
-      child: _buildRequestDetails(),
+      child: Column(
+        children: [
+          _buildRequestDetails(),
+          const SizedBox(height: 8),
+          if (controller.requestData.value?['attachments'] != null &&
+              controller.requestData.value?['attachments'].isNotEmpty)
+            ...controller.requestData.value?['attachments']
+                .asMap()
+                .entries
+                .map(
+                  (entry) => GestureDetector(
+                    key: Key(entry.key.toString()), // Key based on index
+                    child: Column(
+                      children: [
+                        _buildInfo(
+                          CupertinoIcons.doc,
+                          '${'Attachment'.tr} ${entry.key + 1}',
+                          isLink: true,
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
+                    onTap: () async {
+                      final Uri uri = Uri.parse(entry.value['url'] ?? '');
+
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(
+                          uri,
+                          mode: LaunchMode
+                              .externalApplication, // Use external browser
+                        );
+                      } else {
+                        throw 'Could not launch $uri';
+                      }
+                    },
+                  ),
+                )
+                .toList(),
+        ],
+      ),
     );
   }
 
@@ -423,36 +462,6 @@ class RequestViewScreen extends StatelessWidget {
         const SizedBox(height: 8),
         _buildInfo(CupertinoIcons.doc_plaintext,
             controller.requestData.value?['reason'] ?? ''),
-        const SizedBox(height: 8),
-        if (controller.requestData.value?['attachments'] != null &&
-            controller.requestData.value?['attachments'].isNotEmpty)
-          ...controller.requestData.value?['attachments']
-              .asMap()
-              .entries
-              .map(
-                (entry) => GestureDetector(
-                  key: Key(entry.key.toString()), // Key based on index
-                  child: _buildInfo(
-                    CupertinoIcons.doc,
-                    '${'Attachment'.tr} ${entry.key + 1}',
-                    isLink: true,
-                  ),
-                  onTap: () async {
-                    final Uri uri = Uri.parse(entry.value['url'] ?? '');
-
-                    if (await canLaunchUrl(uri)) {
-                      await launchUrl(
-                        uri,
-                        mode: LaunchMode
-                            .externalApplication, // Use external browser
-                      );
-                    } else {
-                      throw 'Could not launch $uri';
-                    }
-                  },
-                ),
-              )
-              .toList(),
       ],
     );
   }
@@ -504,31 +513,12 @@ class RequestViewScreen extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 8),
         if (controller.requestData.value?['note'] != null &&
             controller.requestData.value!['note'].toString().isNotEmpty) ...[
+          const SizedBox(height: 8),
           _buildInfo(CupertinoIcons.doc_plaintext,
               controller.requestData.value?['note'] ?? ''),
-          const SizedBox(height: 8),
         ],
-        if (controller.requestData.value?['attachments'].isNotEmpty)
-          GestureDetector(
-            child:
-                _buildInfo(CupertinoIcons.doc, 'Attachment'.tr, isLink: true),
-            onTap: () async {
-              final Uri uri = Uri.parse(
-                  controller.requestData.value?['attachments'][0]['url'] ?? '');
-
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(
-                  uri,
-                  mode: LaunchMode.externalApplication,
-                );
-              } else {
-                throw 'Could not launch $uri';
-              }
-            },
-          ),
       ],
     );
   }
@@ -610,36 +600,6 @@ class RequestViewScreen extends StatelessWidget {
           _buildInfo(CupertinoIcons.doc_plaintext,
               controller.requestData.value!['note'].toString())
         ],
-        const SizedBox(height: 8),
-        if (controller.requestData.value?['attachments'] != null &&
-            controller.requestData.value?['attachments'].isNotEmpty)
-          ...controller.requestData.value?['attachments']
-              .asMap()
-              .entries
-              .map(
-                (entry) => GestureDetector(
-                  key: Key(entry.key.toString()), // Key based on index
-                  child: _buildInfo(
-                    CupertinoIcons.doc,
-                    '${'Attachment'.tr} ${entry.key + 1}',
-                    isLink: true,
-                  ),
-                  onTap: () async {
-                    final Uri uri = Uri.parse(entry.value['url'] ?? '');
-
-                    if (await canLaunchUrl(uri)) {
-                      await launchUrl(
-                        uri,
-                        mode: LaunchMode
-                            .externalApplication, // Use external browser
-                      );
-                    } else {
-                      throw 'Could not launch $uri';
-                    }
-                  },
-                ),
-              )
-              .toList(),
       ],
     );
   }

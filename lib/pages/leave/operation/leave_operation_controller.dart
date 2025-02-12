@@ -1,6 +1,3 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/helpers/image_picker_controller.dart';
@@ -10,7 +7,6 @@ import 'package:staff_view_ui/pages/leave/leave_service.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class LeaveOperationController extends GetxController {
   final LeaveController leaveController = Get.find<LeaveController>();
@@ -22,6 +18,7 @@ class LeaveOperationController extends GetxController {
   final id = 0.obs;
   final leaveId = 0.obs;
   final isLeaveUnit = false.obs;
+  final isAllowHour = false.obs;
   var leaveBalance = 0.0.obs;
 
   final formGroup = FormGroup({
@@ -183,6 +180,7 @@ class LeaveOperationController extends GetxController {
 
   Future<void> submit() async {
     if (loading.isTrue) return;
+    Get.focusScope?.unfocus();
 
     try {
       if (leaveUnit.value == '1') {
@@ -243,41 +241,6 @@ class LeaveOperationController extends GetxController {
 
     formGroup.control('showBalance').value =
         '${Const.numberFormat(balance)} = ${Const.numberFormat(leaveBalance)} - ${Const.numberFormat(minus)}';
-  }
-
-  void showAttachments() async {
-    final controller = WebViewController();
-    var url = formGroup.control('attachments').value.first['url'];
-
-    controller.loadRequest(Uri.parse(url));
-
-    Get.dialog(Dialog.fullscreen(
-      backgroundColor: Colors.white,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Row(
-            children: [
-              const SizedBox(width: 16),
-              Text('Attachment'.tr, style: const TextStyle(fontSize: 16)),
-              const Spacer(),
-              IconButton(
-                onPressed: () {
-                  Get.back();
-                },
-                icon: const Icon(CupertinoIcons.clear),
-              ),
-            ],
-          ),
-          Expanded(
-              child: Const.isImage(url)
-                  ? WebViewWidget(controller: controller)
-                  : PDFView(
-                      filePath: filePickerController.filePath.value,
-                    )),
-        ],
-      ),
-    ));
   }
 
   @override

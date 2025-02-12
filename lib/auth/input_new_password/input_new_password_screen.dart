@@ -1,10 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/auth/input_new_password/input_new_password_controller.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
-import 'package:staff_view_ui/utils/widgets/input.dart';
+import 'package:staff_view_ui/utils/widgets/password_input.dart';
 
 class InputNewPasswordScreen extends StatelessWidget {
   InputNewPasswordScreen({super.key});
@@ -44,19 +43,15 @@ class InputNewPasswordScreen extends StatelessWidget {
               formGroup: controller.formGroup,
               child: Column(
                 children: [
-                  MyFormField(
-                    icon: CupertinoIcons.lock,
+                  PasswordField(
                     label: 'Password'.tr,
-                    controlName: 'password',
-                    showErrors: (control) => control.invalid && control.dirty,
-                    password: true,
+                    formControlName: 'password',
+                    textInputAction: TextInputAction.next,
                   ),
-                  MyFormField(
-                    icon: CupertinoIcons.lock,
+                  PasswordField(
                     label: 'Confirm Password'.tr,
-                    controlName: 'confirmPassword',
-                    password: true,
-                    showErrors: (control) => control.invalid && control.dirty,
+                    formControlName: 'confirmPassword',
+                    textInputAction: TextInputAction.done,
                   ),
                   const SizedBox(height: 8),
                   Obx(

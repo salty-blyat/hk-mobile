@@ -9,6 +9,8 @@ import 'package:staff_view_ui/app_setting.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/token_interceptor.dart';
 import 'package:staff_view_ui/models/attachment_model.dart';
+import 'package:staff_view_ui/utils/file_type.dart';
+import 'package:staff_view_ui/utils/widgets/snack_bar.dart';
 
 class FilePickerController extends GetxController {
   final ImagePicker _picker = ImagePicker();
@@ -35,8 +37,9 @@ class FilePickerController extends GetxController {
   }
 
   // Pick an image from the gallery and automatically upload it as Base64
-  Future<Attachment?> pickImageFromGallery() async {
+  Future<Attachment?> pickImageFromGallery(Function(bool) setLoading) async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    setLoading.call(true);
     if (pickedFile != null) {
       Get.back();
       selectedImage.value = File(pickedFile.path);
@@ -57,7 +60,7 @@ class FilePickerController extends GetxController {
       Get.back();
       for (var file in result.files) {
         selectedFile.value = File(file.path!);
-        mimeType.value = getMimeType(selectedFile.value!);
+        mimeType.value = getMimeType(file: selectedFile.value);
         await uploadFileAsBase64(
             selectedFile.value!); // Automatically upload after picking
       }
@@ -83,10 +86,10 @@ class FilePickerController extends GetxController {
       // Prepare the request data
       Map<String, dynamic> data = {
         'fileName': file.path.split('/').last,
-        'mimeType': getMimeType(file),
+        'mimeType': getMimeType(file: file),
         'base64': base64String,
       };
-      isImage.value = Const.isImage(data['fileName']);
+      isImage.value = isImageType(data['fileName']);
 
       // Send the request using dio
       var response = await dio.post(
@@ -108,44 +111,14 @@ class FilePickerController extends GetxController {
         progress.value = 1;
         attachments.add(Attachment.fromJson(response.data));
       } else {
-        Get.snackbar(
-            'Error', 'Failed to upload file. Status: ${response.statusCode}');
+        errorSnackbar('Error'.tr,
+            'Failed to upload file. Status: ${response.statusCode}');
       }
     } catch (e) {
-      Get.snackbar('Error', 'An error occurred: $e');
+      errorSnackbar('Error'.tr, 'An error occurred: $e');
     } finally {
       isUploading.value = false;
     }
-  }
-
-  // Function to get MIME type manually based on file extension
-  String getMimeType(File file) {
-    String extension = file.path.split('.').last.toLowerCase();
-
-    // Map of file extensions to MIME types
-    const mimeTypes = {
-      'jpg': 'image/jpeg',
-      'jpeg': 'image/jpeg',
-      'png': 'image/png',
-      'gif': 'image/gif',
-      'bmp': 'image/bmp',
-      'tiff': 'image/tiff',
-      'pdf': 'application/pdf',
-      'txt': 'text/plain',
-      'csv': 'text/csv',
-      'html': 'text/html',
-      'js': 'application/javascript',
-      'css': 'text/css',
-      'zip': 'application/zip',
-      'rar': 'application/x-rar-compressed',
-      'mp4': 'video/mp4',
-      'mp3': 'audio/mp3',
-      'avi': 'video/x-msvideo',
-      'wav': 'audio/wav',
-    };
-
-    // Return MIME type based on extension or 'application/octet-stream' if not found
-    return mimeTypes[extension] ?? 'application/octet-stream';
   }
 
   // Clear selections
@@ -155,6 +128,6 @@ class FilePickerController extends GetxController {
   }
 
   bool isImageUrl(String url) {
-    return Const.isImage(url);
+    return isImageType(url);
   }
 }

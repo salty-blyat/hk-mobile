@@ -7,6 +7,7 @@ import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
 import 'package:staff_view_ui/utils/widgets/input.dart';
+import 'package:staff_view_ui/utils/widgets/password_input.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -86,34 +87,19 @@ class LoginScreen extends StatelessWidget {
                     icon: CupertinoIcons.person,
                     label: 'Username',
                     controlName: 'username',
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return '';
-                      }
-                      return null;
-                    },
                     onChanged: (value) {
                       controller.error.value = '';
                     },
                   ),
-
-                  MyFormField(
-                    icon: CupertinoIcons.lock,
-                    password: true,
+                  PasswordField(
                     label: 'Password',
-                    controlName: 'password',
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return '';
-                      }
-
-                      return null;
-                    },
+                    controller: controller.passwordController,
+                    formControlName: 'password',
+                    textInputAction: TextInputAction.done,
                     onChanged: (value) {
                       controller.error.value = '';
                     },
                   ),
-                  // const SizedBox(height: 16),
                   Obx(() => controller.error.value.isNotEmpty
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

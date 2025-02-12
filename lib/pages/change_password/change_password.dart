@@ -6,6 +6,7 @@ import 'package:staff_view_ui/pages/change_password/change_password_controller.d
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
 import 'package:staff_view_ui/utils/widgets/input.dart';
+import 'package:staff_view_ui/utils/widgets/password_input.dart';
 
 class ChangePassword extends StatelessWidget {
   ChangePassword({super.key});
@@ -87,25 +88,20 @@ class ChangePassword extends StatelessWidget {
                         icon: CupertinoIcons.person_alt_circle,
                         disabled: controller.formGroup.control('name').disabled,
                       ),
-                      MyFormField<String>(
-                        controlName: 'oldPassword',
-                        password: true,
+                      PasswordField(
+                        formControlName: 'oldPassword',
                         label: 'Old Password'.tr,
-                        icon: CupertinoIcons.lock,
+                        textInputAction: TextInputAction.next,
                       ),
-                      MyFormField<String>(
-                        controlName: 'newPassword',
+                      PasswordField(
+                        formControlName: 'newPassword',
                         label: 'New Password'.tr,
-                        password: true,
-                        icon: CupertinoIcons.lock,
+                        textInputAction: TextInputAction.next,
                       ),
-                      MyFormField<String>(
-                        controlName: 'confirmPassword',
-                        password: true,
+                      PasswordField(
+                        formControlName: 'confirmPassword',
                         label: 'Confirm Password'.tr,
-                        icon: CupertinoIcons.lock,
-                        showErrors: (control) =>
-                            control.invalid && control.dirty,
+                        textInputAction: TextInputAction.done,
                       ),
                     ],
                   ),

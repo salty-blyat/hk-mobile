@@ -168,7 +168,6 @@ class MenusController extends GetxController {
     }
     menuItems.value =
         defaultMenuItems.where((element) => element['isShow'] == true).toList();
-
     totalRequest.value = await menuService.getTotal();
     menuItems.firstWhere(
             (element) => element['route'] == '/request-approval')['badge'] =

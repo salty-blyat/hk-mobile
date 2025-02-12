@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
-import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/image_picker_controller.dart';
 import 'package:staff_view_ui/models/exception_model.dart';
 import 'package:staff_view_ui/pages/exception/exception_controller.dart';
@@ -149,16 +148,14 @@ class ExceptionOperationController extends GetxController {
       'totalHours': exception.totalHours,
       'absentType': exception.absentType,
     });
-    formGroup.control('attachments').value = [
-      {
-        'name': exception.attachments?.first.name,
-        'url': exception.attachments?.first.url,
-        'uid': exception.attachments?.first.uid,
-      }
-    ];
-    filePickerController.isImage.value =
-        Const.isImage(exception.attachments?.first.url ?? '');
-    filePickerController.attachments.value = exception.attachments ?? [];
+    exception.attachments?.forEach((attachment) {
+      filePickerController.attachments.add(attachment);
+      formGroup.control('attachments').value.add({
+        'name': attachment.name,
+        'url': attachment.url,
+        'uid': attachment.uid,
+      });
+    });
   }
 
   disableForm() {

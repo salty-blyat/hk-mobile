@@ -149,8 +149,8 @@ class FilePickerWidget extends StatelessWidget {
                         color: Colors.black54,
                       ),
                       onTap: () async {
-                        final attachment =
-                            await filePickerController.pickImageFromGallery();
+                        final attachment = await filePickerController
+                            .pickImageFromGallery((b) {});
                         if (attachment != null) {
                           formGroup.control(controlName).value.add(
                             {
