@@ -106,9 +106,15 @@ class DelegatepOperationController extends GetxController {
             Delegate.fromJson);
       }
 
+      Get.back();
+      Get.back();
+
+      Modal.successDialog(
+          'Success'.tr,
+          (id.value == 0
+              ? 'Delegate has been saved successfully'.tr
+              : 'Delegate has been updated successfully'.tr));
       delegateController.search();
-      Get.back();
-      Get.back();
     } catch (e) {
       print(e);
     }

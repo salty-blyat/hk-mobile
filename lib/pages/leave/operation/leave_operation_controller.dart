@@ -210,10 +210,15 @@ class LeaveOperationController extends GetxController {
             Leave.fromJson);
       }
 
+      Get.back();
+      Get.back();
+
+      Modal.successDialog(
+          'Success'.tr,
+          (id.value == 0
+              ? 'Leave has been submitted successfully'.tr
+              : 'Leave has been updated successfully'.tr));
       leaveController.search();
-      // Close the loading dialog
-      Get.back(); // Navigate back or close extra layers if needed
-      Get.back(); // Navigate back or close extra layers if needed
     } catch (e) {
       // Handle specific errors if necessary
     } finally {

@@ -4,12 +4,15 @@ import 'package:staff_view_ui/helpers/common_validators.dart';
 import 'package:staff_view_ui/pages/request/request_controller.dart';
 import 'package:staff_view_ui/pages/request/request_service.dart';
 import 'package:staff_view_ui/pages/request/view/request_view_controller.dart';
+import 'package:staff_view_ui/pages/staff/staff_controller.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
 class RequestOperationController extends GetxController {
   final requestService = RequestApproveService();
   final RequestViewController requestViewController =
       Get.put(RequestViewController());
+  final StaffSelectController staffSelectController =
+      Get.put(StaffSelectController());
   final RequestApproveController requestApproveController =
       Get.put(RequestApproveController());
   final loading = false.obs;
@@ -54,6 +57,7 @@ class RequestOperationController extends GetxController {
           requestApproveController.search();
           Get.back();
           Get.back();
+          Modal.successDialog('Success'.tr, 'Request has been approved'.tr);
           loading.value = false;
         }
       });
@@ -73,6 +77,9 @@ class RequestOperationController extends GetxController {
           requestApproveController.search();
           Get.back();
           Get.back();
+          Modal.successDialog('Success'.tr,
+              '${'Request has been approved'.tr} ${'and sent to next approver'.tr} ${staffSelectController.selectedStaff.value}');
+          Get.delete<StaffSelectController>();
           loading.value = false;
         }
       });
@@ -92,6 +99,7 @@ class RequestOperationController extends GetxController {
           requestApproveController.search();
           Get.back();
           Get.back();
+          Modal.successDialog('Success'.tr, 'Request has been rejected'.tr);
           loading.value = false;
         }
       });
@@ -110,6 +118,8 @@ class RequestOperationController extends GetxController {
           requestApproveController.search();
           Get.back();
           Get.back();
+          Modal.successDialog(
+              'Success'.tr, 'Request has been undo successfully'.tr);
           loading.value = false;
         }
       });

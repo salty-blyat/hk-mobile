@@ -227,10 +227,15 @@ class ExceptionOperationController extends GetxController {
             ExceptionModel.fromJson);
       }
 
+      Get.back();
+      Get.back();
+
+      Modal.successDialog(
+          'Success'.tr,
+          (id.value == 0
+              ? 'Exception has been submitted successfully'.tr
+              : 'Exception has been updated successfully'.tr));
       exceptionController.search();
-      // Close the loading dialog
-      Get.back(); // Navigate back or close extra layers if needed
-      Get.back(); // Navigate back or close extra layers if needed
     } catch (e) {
       print(e);
       // Handle specific errors if necessary

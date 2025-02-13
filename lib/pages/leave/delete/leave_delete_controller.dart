@@ -3,6 +3,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/models/leave_model.dart';
 import 'package:staff_view_ui/pages/leave/leave_controller.dart';
 import 'package:staff_view_ui/pages/leave/leave_service.dart';
+import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
 class LeaveDeleteController extends GetxController {
   final leaveService = LeaveService();
@@ -35,6 +36,7 @@ class LeaveDeleteController extends GetxController {
       var res = await leaveService.delete(Leave.fromJson(formGroup.rawValue));
       if (res) {
         Get.back();
+        Modal.successDialog('Success'.tr, 'Request has been deleted'.tr);
         leaveController.search();
         operationLoading.value = false;
       } else {

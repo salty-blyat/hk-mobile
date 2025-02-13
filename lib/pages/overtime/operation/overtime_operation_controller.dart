@@ -177,9 +177,16 @@ class OvertimeOperationController extends GetxController {
         );
       }
 
+      Get.back();
+      Get.back();
+
+      Modal.successDialog(
+          'Success'.tr,
+          (id.value == 0
+              ? 'Overtime has been submitted successfully'.tr
+              : 'Overtime has been updated successfully'.tr));
+
       overtimeController.search();
-      Get.back();
-      Get.back();
     } catch (e) {
       print(e);
     }

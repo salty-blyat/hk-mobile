@@ -3,6 +3,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/models/exception_model.dart';
 import 'package:staff_view_ui/pages/exception/exception_controller.dart';
 import 'package:staff_view_ui/pages/exception/exception_service.dart';
+import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
 class ExceptionDeleteController extends GetxController {
   final exceptionService = ExceptionService();
@@ -39,6 +40,7 @@ class ExceptionDeleteController extends GetxController {
           .delete(ExceptionModel.fromJson(formGroup.rawValue));
       if (res) {
         Get.back();
+        Modal.successDialog('Success'.tr, 'Request has been deleted'.tr);
         exceptionController.search();
       }
     } catch (e) {

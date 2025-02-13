@@ -15,38 +15,36 @@ class Modal {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        child: SizedBox(
-          height: 250,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  children: [
-                    const SizedBox(height: 12),
-                    const Icon(CupertinoIcons.checkmark_circle,
-                        size: 70, color: AppTheme.successColor),
-                    const SizedBox(height: 10),
-                    Text(
-                      title.tr,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Column(
+                children: [
+                  const SizedBox(height: 12),
+                  const Icon(CupertinoIcons.checkmark_circle,
+                      size: 70, color: AppTheme.successColor),
+                  const SizedBox(height: 10),
+                  Text(
+                    title.tr,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
-                    const SizedBox(height: 10),
-                    Text(message.tr),
-                  ],
-                ),
-                MyButton(
-                  label: 'OK'.tr,
-                  onPressed: () {
-                    Navigator.of(Get.context!).pop();
-                  },
-                ),
-              ],
-            ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(message.tr, textAlign: TextAlign.center),
+                  const SizedBox(height: 10),
+                ],
+              ),
+              MyButton(
+                label: 'OK'.tr,
+                onPressed: () {
+                  Navigator.of(Get.context!).pop();
+                },
+              ),
+            ],
           ),
         ),
       ),
@@ -59,36 +57,34 @@ class Modal {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        child: SizedBox(
-          height: 250,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  children: [
-                    const SizedBox(height: 12),
-                    const Icon(CupertinoIcons.clear_circled,
-                        size: 70, color: AppTheme.dangerColor),
-                    const SizedBox(height: 10),
-                    Text(
-                      title.tr,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Column(
+                children: [
+                  const SizedBox(height: 12),
+                  const Icon(CupertinoIcons.clear_circled,
+                      size: 70, color: AppTheme.dangerColor),
+                  const SizedBox(height: 10),
+                  Text(
+                    title.tr,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
-                    const SizedBox(height: 10),
-                    Text(message.tr, textAlign: TextAlign.center),
-                  ],
-                ),
-                MyButton(
-                  label: 'Ok'.tr,
-                  onPressed: () => Navigator.of(Get.context!).pop(),
-                ),
-              ],
-            ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(message.tr, textAlign: TextAlign.center),
+                  const SizedBox(height: 10),
+                ],
+              ),
+              MyButton(
+                label: 'Ok'.tr,
+                onPressed: () => Navigator.of(Get.context!).pop(),
+              ),
+            ],
           ),
         ),
       ),

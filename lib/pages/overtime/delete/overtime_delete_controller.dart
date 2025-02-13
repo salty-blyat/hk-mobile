@@ -3,6 +3,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/models/overtime_model.dart';
 import 'package:staff_view_ui/pages/overtime/overtime_controller.dart';
 import 'package:staff_view_ui/pages/overtime/overtime_service.dart';
+import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
 class OvertimeDeleteController extends GetxController {
   final overtimeService = OvertimeService();
@@ -38,6 +39,7 @@ class OvertimeDeleteController extends GetxController {
           await overtimeService.delete(Overtime.fromJson(formGroup.rawValue));
       if (res) {
         Get.back();
+        Modal.successDialog('Success'.tr, 'Request has been deleted'.tr);
         overtimeController.search();
       }
     } catch (e) {

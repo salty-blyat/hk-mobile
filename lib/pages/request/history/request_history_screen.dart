@@ -171,6 +171,8 @@ class RequestHistoryScreen extends BaseList<RequestModel> {
                   onRefresh();
                 },
                 style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  shadowColor: Colors.transparent,
                   backgroundColor: controller.selectedRequestType.value == value
                       ? AppTheme.primaryColor
                       : Colors.white,

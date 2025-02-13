@@ -3,6 +3,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/models/delegate_model.dart';
 import 'package:staff_view_ui/pages/delegate/delegate_controller.dart';
 import 'package:staff_view_ui/pages/delegate/delegate_service.dart';
+import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
 class DelegateDeleteController extends GetxController {
   final delegateService = DelegateService();
@@ -49,6 +50,7 @@ class DelegateDeleteController extends GetxController {
           await delegateService.delete(Delegate.fromJson(formGroup.rawValue));
       if (res) {
         Get.back();
+        Modal.successDialog('Success'.tr, 'Request has been deleted'.tr);
         delegateController.search();
       }
     } catch (e) {
