@@ -8,6 +8,7 @@ import 'package:staff_view_ui/helpers/version_server.dart';
 import 'package:staff_view_ui/models/setting_model.dart';
 import 'package:staff_view_ui/pages/menu/menu_screen.dart';
 import 'package:staff_view_ui/pages/menu/menu_service.dart';
+import 'package:staff_view_ui/route.dart';
 
 class MenusController extends GetxController {
   final menuService = MenuService();
@@ -21,75 +22,12 @@ class MenusController extends GetxController {
   var showLogout = false.obs;
   var defaultMenuItems = [
     {
-      'title': 'My Profile',
+      'title': 'HouseKeeping',
       'icon': CupertinoIcons.person,
-      'route': '/profile',
+      'route': RouteName.houseKeeping,
       'badge': 0,
       'isShow': true,
-    },
-    {
-      'title': 'Scan Attendance',
-      'icon': CupertinoIcons.qrcode_viewfinder,
-      'route': '/scan-attendance',
-      'badge': 0,
-      'isShow': true,
-    },
-    {
-      'title': 'Worksheet',
-      'icon': CupertinoIcons.calendar,
-      'route': '/working',
-      'badge': 0,
-      'isShow': true,
-    },
-    {
-      'title': 'Leave',
-      'icon': CupertinoIcons.calendar_circle,
-      'route': '/leave',
-      'badge': 0,
-      'isShow': true,
-    },
-    {
-      'title': 'Overtime',
-      'icon': CupertinoIcons.clock,
-      'route': '/overtime',
-      'badge': 0,
-      'isShow': true,
-    },
-    {
-      'title': 'Absent Exception Request',
-      'icon': CupertinoIcons.refresh_circled,
-      'route': '/absent_exception',
-      'badge': 0,
-      'isShow': false,
-    },
-    {
-      'title': 'Exception',
-      'icon': CupertinoIcons.refresh_circled,
-      'route': '/exception',
-      'badge': 0,
-      'isShow': true,
-    },
-    {
-      'title': 'Request/Approve',
-      'icon': CupertinoIcons.doc_plaintext,
-      'route': '/request-approval',
-      'badge': 0,
-      'isShow': true,
-    },
-    {
-      'title': 'Delegate',
-      'icon': CupertinoIcons.person_2,
-      'route': '/delegate',
-      'badge': 0,
-      'isShow': true,
-    },
-    {
-      'title': 'Document',
-      'icon': CupertinoIcons.doc_plaintext,
-      'route': '/document',
-      'badge': 0,
-      'isShow': true,
-    },
+    } 
   ].obs;
   var menuItems = [].obs;
 
@@ -97,18 +35,18 @@ class MenusController extends GetxController {
   void onInit() async {
     menuItems.value = defaultMenuItems;
     super.onInit();
-    final setting = storage.read(Const.authorized['MenuItems']!);
-    if (setting != null) {
-      // Decode the setting JSON to a list of dynamic items
-      List<dynamic> settingListJson = jsonDecode(setting);
+    // final setting = storage.read(Const.authorized['MenuItems']!);
+    // if (setting != null) {
+    //   // Decode the setting JSON to a list of dynamic items
+    //   List<dynamic> settingListJson = jsonDecode(setting);
 
-      // Map each item to a SettingModel object
-      List<SettingModel> settingList = settingListJson
-          .map((e) => SettingModel.fromJson(e as Map<String, dynamic>))
-          .toList();
+    //   // Map each item to a SettingModel object
+    //   List<SettingModel> settingList = settingListJson
+    //       .map((e) => SettingModel.fromJson(e as Map<String, dynamic>))
+    //       .toList();
 
-      setSetting(settingList);
-    }
+    //   setSetting(settingList);
+    // }
     Future.wait([
       getVersion(),
       getSetting(),
@@ -141,37 +79,37 @@ class MenusController extends GetxController {
   }
 
   Future<void> setSetting(List<SettingModel> setting) async {
-    final Map<String, int> visibilityMap = {
-      Const.SETTING_KEY()['LeaveVisibility']!: 3,
-      Const.SETTING_KEY()['OvertimeVisibility']!: 4,
-      Const.SETTING_KEY()['AbsentExceptionVisibility']!: 5,
-      Const.SETTING_KEY()['ExceptionVisibility']!: 6,
-      Const.SETTING_KEY()['ApproveVisibility']!: 7,
-      Const.SETTING_KEY()['DelegateVisibility']!: 8,
-    };
+    // final Map<String, int> visibilityMap = {
+    //   Const.SETTING_KEY()['LeaveVisibility']!: 3,
+    //   Const.SETTING_KEY()['OvertimeVisibility']!: 4,
+    //   Const.SETTING_KEY()['AbsentExceptionVisibility']!: 5,
+    //   Const.SETTING_KEY()['ExceptionVisibility']!: 6,
+    //   Const.SETTING_KEY()['ApproveVisibility']!: 7,
+    //   Const.SETTING_KEY()['DelegateVisibility']!: 8,
+    // };
 
-    for (var element in setting) {
-      if (visibilityMap.containsKey(element.key)) {
-        final index = visibilityMap[element.key];
-        if (index! < defaultMenuItems.length) {
-          defaultMenuItems[index] = {
-            ...defaultMenuItems[index],
-            'isShow': element.value == 'true',
-          };
-        }
-      }
-      if (element.key == Const.SETTING_KEY()['LogoutVisibility']) {
-        showLogout.value = element.value == 'true';
-      }
+    // for (var element in setting) {
+    //   if (visibilityMap.containsKey(element.key)) {
+    //     final index = visibilityMap[element.key];
+    //     if (index! < defaultMenuItems.length) {
+    //       defaultMenuItems[index] = {
+    //         ...defaultMenuItems[index],
+    //         'isShow': element.value == 'true',
+    //       };
+    //     }
+    //   }
+    //   if (element.key == Const.SETTING_KEY()['LogoutVisibility']) {
+    //     showLogout.value = element.value == 'true';
+    //   }
 
-      this.setting.add(element);
-    }
+    //   this.setting.add(element);
+    // }
     menuItems.value =
         defaultMenuItems.where((element) => element['isShow'] == true).toList();
     totalRequest.value = await menuService.getTotal();
-    menuItems.firstWhere(
-            (element) => element['route'] == '/request-approval')['badge'] =
-        totalRequest.value;
+    // menuItems.firstWhere(
+    //         (element) => element['route'] == '/request-approval')['badge'] =
+    //     totalRequest.value;
     menuItems.refresh();
   }
 

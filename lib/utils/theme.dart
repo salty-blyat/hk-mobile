@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   static const Color menuColor = Color(0xFF068047);
-  static const Color primaryColor = Color(0xFF0B3B5C);
+  static const Color primaryColor = Color(0xFF0D4A4D); 
   static const Color primaryColorLigt = Color(0xFF885EA0);
   static const Color dangerColor = Color(0xFFc5000f);
   static const Color successColor = Color(0xFF068047);

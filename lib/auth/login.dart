@@ -65,7 +65,7 @@ class LoginScreen extends StatelessWidget {
                   Align(
                       alignment: Alignment.center,
                       child:
-                          Image.asset('assets/images/logo.jpg', height: 100)),
+                          Image.asset('assets/images/logo.png', height: 100)),
                   const SizedBox(height: 16),
                   GestureDetector(
                     onDoubleTap: () {

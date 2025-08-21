@@ -7,7 +7,7 @@ import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/notification_service.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/helpers/token_interceptor.dart';
-import 'package:staff_view_ui/pages/request/view/request_view_screen.dart';
+// import 'package:staff_view_ui/pages/request/view/request_view_screen.dart';
 
 class NotificationService {
   static final FirebaseMessaging _firebaseMessaging =
@@ -51,9 +51,9 @@ class NotificationService {
   }
 
   static Future<void> _messageClickHandler(RemoteMessage message) async {
-    int? requestId = jsonDecode(message.data['Data'])['requestId'];
-    Get.to(() => RequestViewScreen(),
-        arguments: {'id': requestId, 'reqType': 0});
+    // int? requestId = jsonDecode(message.data['Data'])['requestId'];
+    // Get.to(() => RequestViewScreen(),
+    //     arguments: {'id': requestId, 'reqType': 0});
   }
 
   handlePassToken() async {

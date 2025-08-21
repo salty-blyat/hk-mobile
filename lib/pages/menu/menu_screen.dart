@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:staff_view_ui/helpers/version_server.dart';
 import 'package:staff_view_ui/pages/menu/menu_controller.dart';
 import 'package:staff_view_ui/pages/profile/profile_controller.dart';
+import 'package:staff_view_ui/route.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/drawer.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -26,7 +27,7 @@ class MenuScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              Get.toNamed('/notification');
+              Get.toNamed(RouteName.notification);
             },
             icon: const Icon(CupertinoIcons.bell, color: Colors.white),
           ),

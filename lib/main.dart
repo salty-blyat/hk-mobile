@@ -31,7 +31,7 @@ Future<void> main() async {
   try {
     var storage = const FlutterSecureStorage();
     final token = await storage.read(key: 'accessToken');
-    initialRoute = token != null ? '/menu' : '/login';
+    initialRoute = token != null ? RouteName.menu : RouteName.login;
   } catch (e) {
     if (kDebugMode) {
       print('Error reading token: $e');
