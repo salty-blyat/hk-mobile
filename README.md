@@ -1,6 +1,6 @@
-# StaffView App
+# House Keeping APP
 
-Start Project: Dec 30, 2024
+Start Project: Aug 21, 2025
 
 ## Get Package
 

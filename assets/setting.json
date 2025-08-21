@@ -1,14 +1,14 @@
 {
-  "LANG_URL": "https://core.sgx.bz/sec/files/langs/sa",
-  "BASE_API_URL": "https://latest.sgx.bz/hr/api",
+  "LANG_URL": "https://core.sgx.bz/sec/files/langs/hotel",
+  "BASE_API_URL": "https://latest.sgx.bz/hotel/api",
   "AUTH_API_URL": "https://core.sgx.bz/api",
   "AUTH_UI_URL": "https://core.sgx.bz",
   "RECAPTCHA_SITE_KEY": "6LfL17QgAAAAAOyIb8bbx_oTT5ErpBDpYZ3yAm6o",
-  "APP_NAME": "HR APP",
+  "APP_NAME": "House Keeping",
   "APP_ICON": "https://core.sgx.bz/files/22/12/logo_text-black-02_.png",
   "RECAPTCHA_ENABLE": "false",
   "PRIVACY_URL": "https://ryrith.github.io/hrapp/privacy.html",
   "TENANT_CODE": "s8server",
-  "APP_CODE": "StaffView",
-  "APP_VERSION": "1.9"
+  "APP_CODE": "Hotel",
+  "APP_VERSION": "1.0"
 }
