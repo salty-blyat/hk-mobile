@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
+import 'package:multiselect/multiselect.dart';
 import 'package:staff_view_ui/helpers/base_list_screen.dart';
 import 'package:staff_view_ui/models/housekeeping_model.dart';
 import 'package:staff_view_ui/models/lookup_model.dart';
@@ -19,6 +21,8 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   final HousekeepingController controller = Get.put(HousekeepingController());
   final LookupController lookupController = Get.find<LookupController>();
 
+  Timer? _debounce;
+
   @override
   String get title => 'Housekeeping';
   @override
@@ -34,6 +38,10 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
 
   @override
   bool get canLoadMore => controller.canLoadMore.value;
+
+  void dispose() {
+    _debounce?.cancel();
+  }
 
   @override
   RxList<Housekeeping> get items => controller.list;
@@ -55,7 +63,6 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
       return null;
     }
 
-    ;
     return Container(
       color: Colors.grey.shade200,
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
@@ -65,10 +72,22 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
               value: selected.length == itemCount,
               onChanged: (value) => onTap()),
           Expanded(
-            child: GestureDetector(
-              onTap: () => onTap(),
-              child: Text(
-                section.tr,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Material(
+                color: Colors.transparent, // keep background transparent
+                child: InkWell(
+                  onTap: () => onTap(),
+                  borderRadius: BorderRadius.circular(4),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 4, vertical: 2), // makes ripple area bigger
+                    child: Text(
+                      section.tr,
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -177,7 +196,6 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
     );
   }
 
-  Timer? _debounce;
   @override
   Widget headerWidget() {
     return SearchBar(
@@ -220,20 +238,91 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
         ),
       ),
       onChanged: (value) {
-        debounce(controller.searchText, (_) {
+        if (_debounce?.isActive ?? false) _debounce?.cancel();
+        _debounce = Timer(const Duration(milliseconds: 500), () {
           controller.searchText.value = value;
           controller.list.clear();
           controller.currentPage = 1;
           controller.search();
-        }, time: const Duration(milliseconds: 500));
+        });
       },
       trailing: [
-        IconButton(
-          icon: const Icon(Icons.filter_list),
-          onPressed: () {
-            // controller.showFilterDialog();
+        Builder(
+          builder: (context) {
+            return IconButton(
+              icon: const Icon(Icons.filter_list),
+              onPressed: () async {
+                final RenderBox button =
+                    context.findRenderObject() as RenderBox;
+                final RenderBox overlay =
+                    Overlay.of(context).context.findRenderObject() as RenderBox;
+
+                final RelativeRect position = RelativeRect.fromRect(
+                  Rect.fromPoints(
+                    button.localToGlobal(Offset.zero, ancestor: overlay),
+                    button.localToGlobal(button.size.bottomRight(Offset.zero),
+                        ancestor: overlay),
+                  ),
+                  Offset.zero & overlay.size,
+                );
+
+                final result = await showMenu(
+                  context: context,
+                  position: position,
+                  items: [
+                    PopupMenuItem(
+                      height: 35,
+                      value: 0,
+                      onTap: () {
+                        controller.houseKeepingStatus.value = 0;
+                        controller.search();
+                      },
+                      child: SizedBox(
+                        width: 85,
+                        child: Row(children: [
+                          Text(
+                            "All".tr,
+                            style: const TextStyle(fontSize: 11),
+                          )
+                        ]),
+                      ),
+                    ),
+                    ...lookupController.lookups.map((LookupModel item) {
+                      return PopupMenuItem(
+                        height: 35,
+                        onTap: () {
+                          controller.houseKeepingStatus.value = item.valueId!;
+                          controller.search();
+                        },
+                        value: item.valueId,
+                        child: SizedBox(
+                          width: 85,
+                          child: Row(children: [
+                            NetworkImg(
+                              src: item.image,
+                              height: 16,
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            Text(
+                              item.nameEn ?? "",
+                              style: TextStyle(fontSize: 11),
+                            )
+                          ]),
+                        ),
+                      );
+                    })
+                  ],
+                );
+
+                if (result != null) {
+                  print("Selected: $result");
+                }
+              },
+            );
           },
-        )
+        ),
       ],
     );
   }
@@ -304,7 +393,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
 
   @override
   Widget buildItem(Housekeeping item) {
-    var selected = controller.selected.contains(item);
+    var selected = controller.selected.any((e) => e.roomId == item.roomId);
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4),
@@ -344,9 +433,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                         style: TextStyle(
                           fontSize: 14,
                           height: 1.3,
-                          color: controller.selected.contains(item)
-                              ? Colors.white
-                              : Colors.black,
+                          color: selected ? Colors.white : Colors.black,
                         ),
                       ),
                       Text(

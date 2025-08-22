@@ -23,7 +23,7 @@ enum LookupTypeEnum {
   cancelReason,
   accountStatus,
   nightAuditStatus,
-}
+} 
 
 extension LookupTypeEnumExtension on LookupTypeEnum {
   static const Map<LookupTypeEnum, int> _values = {
