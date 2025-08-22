@@ -53,7 +53,7 @@ class ProfileController extends GetxController {
         // }
       } else if (Platform.isIOS) {
         directory = Directory(
-            '${(await getApplicationDocumentsDirectory()).path}/StaffView');
+            '${(await getApplicationDocumentsDirectory()).path}/Housekeeping');
       }
 
       if (directory == null) {

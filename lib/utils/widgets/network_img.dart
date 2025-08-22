@@ -32,14 +32,17 @@ class NetworkImg extends StatelessWidget {
       children: [
         bytes != null
             ? Image.memory(
+                key: ValueKey(src),
                 bytes,
                 fit: BoxFit.contain,
                 height: height,
+                gaplessPlayback: true, // prevent image flicker
               )
             : Image.network(
                 src ?? '',
                 height: height,
                 width: double.infinity,
+                gaplessPlayback: true,
                 fit: BoxFit.cover,
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) return child;

@@ -4,7 +4,7 @@
         android:name="android.hardware.camera"
         android:required="false" />
     <application
-        android:label="StaffView"
+        android:label="Housekeeping"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true"

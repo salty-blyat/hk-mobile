@@ -1,8 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/helpers/base_list_screen.dart';
-import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/models/housekeeping_model.dart';
 import 'package:staff_view_ui/models/lookup_model.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
@@ -11,7 +12,6 @@ import 'package:staff_view_ui/utils/style.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
 import 'package:staff_view_ui/utils/widgets/network_img.dart';
-import 'package:staff_view_ui/utils/widgets/tag.dart';
 
 class HousekeepingScreen extends BaseList<Housekeeping> {
   HousekeepingScreen({super.key});
@@ -38,39 +38,38 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   @override
   RxList<Housekeeping> get items => controller.list;
 
-  // @override
-  // Future<void> onLoadMore() async {
-  //   await controller.onLoadMore();
-  // }
   Widget buildStickyHeader(String section, int itemCount, int sectionId) {
+    List<Housekeeping> select =
+        controller.list.where((e) => e.roomTypeId == sectionId).toList();
+    List<Housekeeping> selected =
+        controller.selected.where((e) => e.roomTypeId == sectionId).toList();
+    Function? onTap() {
+      if (select.length == selected.length) {
+        controller.selected.removeWhere((e) => e.roomTypeId == sectionId);
+      } else {
+        controller.selected.assignAll({
+          ...controller.selected,
+          ...select,
+        });
+      }
+      return null;
+    }
+
+    ;
     return Container(
       color: Colors.grey.shade200,
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
       child: Row(
         children: [
           Checkbox(
-            value: false,
-            onChanged: (value) {
-              List<Housekeeping> select = controller.list
-                  .where((e) => e.roomTypeId == sectionId)
-                  .toList();
-              List<Housekeeping> selected = controller.selected
-                  .where((e) => e.roomTypeId == sectionId)
-                  .toList();
-
-              if (select.length == selected.length) {
-                controller.selected
-                    .removeWhere((e) => e.roomTypeId == sectionId);
-              } else {
-                controller.selected.addAll(select);
-              }
-              print(select);
-            },
-          ),
+              value: selected.length == itemCount,
+              onChanged: (value) => onTap()),
           Expanded(
-            child: Text(
-              section.tr,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+            child: GestureDetector(
+              onTap: () => onTap(),
+              child: Text(
+                section.tr,
+              ),
             ),
           ),
           Row(
@@ -78,7 +77,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
               Container(
                 padding: const EdgeInsets.only(right: 12.0),
                 child: Text(
-                  "0/$itemCount",
+                  "Selected ${selected.length} of $itemCount",
                   style: const TextStyle(
                     fontSize: 14,
                   ),
@@ -130,10 +129,6 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                     return null;
                   }
                 },
-                // separatorBuilder: (context, index) =>
-                //     Container(height: 1, color: Colors.grey.shade100),
-                // itemCount: items.length +
-                //     (isLoadingMore && isLastSection(section) ? 1 : 0),
               ),
             ),
           ),
@@ -146,11 +141,11 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   Map<String, List<Housekeeping>> groupItems(List<Housekeeping> items) {
     final roomTypeNames = items.map((e) => e.roomTypeName);
     final distinctRoomTypeNames = [];
-    roomTypeNames.forEach((e) {
+    for (var e in roomTypeNames) {
       if (!distinctRoomTypeNames.contains(e)) {
         distinctRoomTypeNames.add(e);
       }
-    });
+    }
     return {
       // 'All': items, // one group with all items
       for (var roomType in distinctRoomTypeNames)
@@ -161,6 +156,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   @override
   Future<void> onRefresh() async {
     controller.queryParameters.value.pageIndex = 1;
+    controller.selected.clear();
     controller.search();
   }
 
@@ -181,122 +177,112 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
     );
   }
 
+  Timer? _debounce;
   @override
   Widget headerWidget() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SearchBar(
-          constraints: const BoxConstraints(
-            minHeight: 36, // reduce height
-            maxHeight: 36,
-          ),
-          padding: WidgetStateProperty.all(
-            const EdgeInsets.symmetric(
-                horizontal: 8, vertical: 0), // tighter padding
-          ),
-          textStyle: WidgetStateProperty.all(
-            const TextStyle(
-              color: AppTheme.primaryColor,
-              fontFamilyFallback: ['Gilroy', 'Kantumruy'],
-              fontSize: 18,
-            ),
-          ),
-          hintText: 'Search'.tr,
-          hintStyle: WidgetStateProperty.all(
-            TextStyle(
-                color: AppTheme.primaryColor.withOpacity(0.5),
-                fontSize: 12,
-                fontFamilyFallback: const ['Gilroy', 'Kantumruy']),
-          ),
-          leading: Icon(
-            Icons.search,
-            size: 18,
-            color: AppTheme.primaryColor.withOpacity(0.5),
-          ),
-          backgroundColor: WidgetStateProperty.all(Colors.transparent),
-          shadowColor: WidgetStateProperty.all(Colors.transparent),
-          shape: WidgetStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-              side: const BorderSide(
-                color: Color.fromARGB(255, 241, 241, 241),
-                width: 1,
-              ),
-            ),
-          ),
-          onChanged: (value) {
-            controller.searchText.value = value;
-            controller.list.clear();
-            controller.currentPage = 1;
-            controller.search();
-          },
+    return SearchBar(
+      constraints: const BoxConstraints(
+        minHeight: 36,
+        maxHeight: 36,
+      ),
+      padding: WidgetStateProperty.all(
+        const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+      ),
+      textStyle: WidgetStateProperty.all(
+        const TextStyle(
+          color: AppTheme.primaryColor,
+          fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+          fontSize: 18,
         ),
-        // _buildHousekeepingTypeButtons()
+      ),
+      // hintText: 'Search'.tr,
+      hintText: 'Search',
+      hintStyle: WidgetStateProperty.all(
+        TextStyle(
+            color: AppTheme.primaryColor.withOpacity(0.5),
+            fontSize: 12,
+            fontFamilyFallback: const ['Gilroy', 'Kantumruy']),
+      ),
+      leading: Icon(
+        Icons.search,
+        size: 18,
+        color: AppTheme.primaryColor.withOpacity(0.5),
+      ),
+      backgroundColor: WidgetStateProperty.all(Colors.transparent),
+      shadowColor: WidgetStateProperty.all(Colors.transparent),
+      shape: WidgetStateProperty.all(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(0),
+          side: const BorderSide(
+            color: Color.fromARGB(255, 241, 241, 241),
+            width: 1,
+          ),
+        ),
+      ),
+      onChanged: (value) {
+        debounce(controller.searchText, (_) {
+          controller.searchText.value = value;
+          controller.list.clear();
+          controller.currentPage = 1;
+          controller.search();
+        }, time: const Duration(milliseconds: 500));
+      },
+      trailing: [
+        IconButton(
+          icon: const Icon(Icons.filter_list),
+          onPressed: () {
+            // controller.showFilterDialog();
+          },
+        )
       ],
     );
   }
 
   @override
   Widget buildBottomNavigationBar() {
-    return Obx(
-      () => Row(
-        children: lookupController.lookups.map((LookupModel item) {
-          final lookupColor = item.color != null
-              ? Color(int.parse(item.color!.replaceFirst('#', '0xFF')))
-              : const Color.fromARGB(255, 8, 8, 8);
-          final color = item.color != null
-              ? (() {
-                  final base =
-                      Color(int.parse(item.color!.replaceFirst('#', '0xFF')));
-                  final hsl = HSLColor.fromColor(base);
-                  return hsl
-                      .withLightness((hsl.lightness + 0.35).clamp(0.0, 1.0))
-                      .toColor();
-                })()
-              : const Color.fromARGB(255, 8, 8, 8);
-
-          if (item.image == null) return Container();
-
-          return Expanded(
-            child: Container(
-              decoration: const BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Color.fromARGB(66, 156, 156, 156),
-                    blurRadius: 10,
-                    spreadRadius: 0.03,
-                    offset: Offset(0, -1),
-                  ),
-                ],
-              ),
-              child: MyButton(
-                color: Style.getLookupColor(item.color),
-                borderRadius: const BorderRadius.vertical(
-                    bottom: Radius.zero, top: Radius.circular(12)),
-                onPressed: () => print("${item.valueId} ${item.nameEn} tapped"),
-                label: item.nameEn ?? "",
-                child: SizedBox(
-                  height: 40,
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 2),
-                      NetworkImg(src: item.image, height: 18),
-                      const SizedBox(height: 4),
-                      Text(item.nameEn ?? "",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: Style.getLookupTextColor(item.color),
-                              fontSize: Get.textTheme.bodySmall!.fontSize)),
-                    ],
+    return Obx(() => Row(
+          children: lookupController.lookups.map((LookupModel item) {
+            if (item.image == null) return Container();
+            return Expanded(
+              child: Container(
+                decoration: const BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color.fromARGB(66, 156, 156, 156),
+                      blurRadius: 10,
+                      spreadRadius: 0.03,
+                      offset: Offset(0, -1),
+                    ),
+                  ],
+                ),
+                child: MyButton(
+                  color: Style.getLookupColor(item.color),
+                  borderRadius: const BorderRadius.vertical(
+                      bottom: Radius.zero, top: Radius.circular(12)),
+                  onPressed: () =>
+                      print("${item.valueId} ${item.nameEn} tapped"),
+                  label: item.nameEn ?? "",
+                  child: SizedBox(
+                    height: 50,
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 2),
+                        NetworkImg(src: item.image, height: 18),
+                        const SizedBox(height: 4),
+                        // TODO: Implement NAME KH ALSO
+                        Text(item.nameEn ?? "",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Style.getLookupTextColor(item.color),
+                                fontSize: Get.textTheme.bodySmall!.fontSize)),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-        }).toList(),
-      ),
-    );
+            );
+          }).toList(),
+        ));
   }
 
   @override
@@ -311,63 +297,90 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
       // ],),
       IconButton(
         icon: const Icon(Icons.more_vert),
-        onPressed: () {
-          // more menu
-        },
+        onPressed: () {},
       ),
     ];
   }
 
   @override
   Widget buildItem(Housekeeping item) {
-    return Obx(
-      () => Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: controller.selected.contains(item)
-              ? Style.getLookupColor(item.statusColor)
-              : Colors.transparent,
+    var selected = controller.selected.contains(item);
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 2,
+            offset: const Offset(0, 2),
+          ),
+        ],
+        border: Border.all(
+          color: selected ? AppTheme.primaryColor : Colors.transparent,
+          width: 1,
         ),
-        child: InkWell(
-            borderRadius: BorderRadius.circular(4),
-            onTap: () {
-              if (controller.selected.contains(item)) {
-                controller.selected.remove(item);
-              } else {
-                controller.selected.add(item);
-              }
-            },
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.blockName ?? '',
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontSize: 11),
-                        ),
-                        Text(
-                          item.roomNumber!.tr,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Tag(
-                    color: Style.getLookupTextColor(item.statusColor),
-                    text: item.statusNameEn!,
-                  ),
-                ],
-              ),
-            )),
+        color: selected ? AppTheme.primaryColor : Colors.white,
       ),
+      child: InkWell(
+          borderRadius: BorderRadius.circular(4),
+          onTap: () {
+            if (selected) {
+              controller.selected.remove(item);
+            } else {
+              controller.selected.add(item);
+            }
+          },
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.roomNumber ?? '',
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14,
+                          height: 1.3,
+                          color: controller.selected.contains(item)
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                      ),
+                      Text(
+                        item.blockName!.tr,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 9,
+                          color: selected ? Colors.white : Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Transform.scale(
+                  scale: 0.9,
+                  child: Row(
+                    children: [
+                      NetworkImg(src: item.statusImage, height: 18),
+                      const SizedBox(
+                        width: 2,
+                      ),
+                      Text(
+                        item.statusNameEn!,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: selected ? Colors.white : Colors.black,
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          )),
     );
   }
 }

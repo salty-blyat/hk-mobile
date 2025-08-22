@@ -34,7 +34,7 @@ class FilePickerWidget extends StatelessWidget {
                 GestureDetector(
                   onTap: () async {
                     var filePath =
-                        '${(await getTemporaryDirectory()).path}/StaffView/${attachment.name}_${DateTime.now().millisecondsSinceEpoch}.${attachment.url.split('.').last}';
+                        '${(await getTemporaryDirectory()).path}/Housekeeping/${attachment.name}_${DateTime.now().millisecondsSinceEpoch}.${attachment.url.split('.').last}';
                     var res = await DioClient()
                         .dio
                         .download(attachment.url, filePath);

@@ -81,6 +81,7 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(3),
         ),
+        side:  BorderSide(color: Colors.grey.shade600, width: 0.9), 
       ),
 
       // AppBar theme
