@@ -4,12 +4,12 @@ import 'package:staff_view_ui/models/setting_model.dart';
 class MenuService {
   final dio = DioClient();
 
-  Future<int> getTotal() async {
-    final response = await dio.get('request/total');
-    return response?.data['totalLeave'] +
-        response?.data['totalOT'] +
-        response?.data['totalException'];
-  }
+  // Future<int> getTotal() async {
+  //   final response = await dio.get('request/total');
+  //   return response?.data['totalLeave'] +
+  //       response?.data['totalOT'] +
+  //       response?.data['totalException'];
+  // }
 
   Future<List<SettingModel>> getSetting() async {
     final response = await dio.get('setting');

@@ -8,6 +8,7 @@ import 'package:staff_view_ui/utils/widgets/no_data.dart';
 class BaseList<T> extends StatelessWidget {
   BaseList({super.key});
   String get title => '';
+  bool get isCenterTitle => true;
   bool get isLoading => false;
   bool get isLoadingMore => false;
   bool get fabButton => true;
@@ -20,11 +21,14 @@ class BaseList<T> extends StatelessWidget {
   RxList<T> get items => RxList.empty();
   List<Widget> actions() => [];
   Widget buildItem(T item) => const SizedBox.shrink();
+  Widget buildBottomNavigationBar() => const SizedBox.shrink();
+ 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: isCenterTitle,
         title: Text(
           title.tr,
           style: context.textTheme.titleLarge!.copyWith(color: Colors.white),
@@ -74,10 +78,10 @@ class BaseList<T> extends StatelessWidget {
           ),
         ],
       ),
+      bottomNavigationBar: buildBottomNavigationBar(),
     );
   }
 
-  /// Builds the header section (can be overridden if needed)
   Widget buildHeaderWidget() {
     return Container(
       width: double.infinity,

@@ -58,7 +58,8 @@ class BaseModel {
 class BaseService<T extends BaseModel> {
   final dio = DioClient().dio;
   final String endpoint;
-  final String baseUrl = '${AppSetting.setting['BASE_API_URL']}/mobile';
+  // final String baseUrl = '${AppSetting.setting['BASE_API_URL']}/mobile';
+  final String baseUrl = '${AppSetting.setting['BASE_API_URL']}';
   late String apiUrl = '$baseUrl/$endpoint';
 
   BaseService(this.endpoint);

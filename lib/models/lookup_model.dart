@@ -7,20 +7,24 @@ class LookupModel {
   final int? id;
   final int? lookupTypeId;
   final String? name;
-  final String? nameKh;
+  final String? nameEn;
   final int? ordering;
   final String? note;
   final dynamic image;
+  final int? valueId;
+  final String? color;
   final String? lookupTypeName;
 
   LookupModel({
     this.id,
     this.lookupTypeId,
     this.name,
-    this.nameKh,
+    this.nameEn,
     this.ordering,
     this.note,
+    this.valueId,
     this.image,
+    this.color,
     this.lookupTypeName,
   });
 

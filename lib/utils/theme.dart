@@ -12,7 +12,7 @@ class AppTheme {
   static const Color secondaryColorRgb = Color(0xFF0163AA);
   static BorderRadiusGeometry borderRadius = BorderRadius.circular(4);
   static const TextStyle style = TextStyle(
-    fontSize: 16.0,
+    fontSize: 12.0,
     fontFamilyFallback: ['Gilroy', 'Kantumruy'],
   );
   static ThemeData get lightTheme {

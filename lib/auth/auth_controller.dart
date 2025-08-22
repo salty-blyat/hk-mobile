@@ -8,6 +8,7 @@ import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/firebase_service.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
+import 'package:staff_view_ui/route.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
 import 'package:staff_view_ui/utils/widgets/snack_bar.dart';
 
@@ -55,7 +56,7 @@ class AuthController extends GetxController {
         ClientInfo info = ClientInfo.fromJson(response.data);
         if (info.mfaRequired == true) {
           successSnackbar('MFA'.tr, response.data['message']);
-          Get.toNamed('/verify-mfa', arguments: {
+          Get.toNamed(RouteName.verifyMfa, arguments: {
             'mfaToken': info.mfaToken,
           });
           return;
@@ -63,9 +64,9 @@ class AuthController extends GetxController {
         _firebaseService.handlePassToken();
         _authService.saveToken(info);
         if (info.changePasswordRequired == true) {
-          Get.toNamed('/change-password');
+          Get.toNamed(RouteName.changePassword);
         } else {
-          Get.offAllNamed('/menu');
+          Get.offAllNamed(RouteName.houseKeeping);
         }
       } else {
         Get.back();
