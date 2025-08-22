@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/helpers/base_list_screen.dart';
+import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/models/housekeeping_model.dart';
 import 'package:staff_view_ui/models/lookup_model.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
+import 'package:staff_view_ui/utils/style.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
 import 'package:staff_view_ui/utils/widgets/network_img.dart';
@@ -39,32 +41,51 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   // @override
   // Future<void> onLoadMore() async {
   //   await controller.onLoadMore();
-  // } 
-  Widget buildStickyHeader(String section, int? itemCount) {
+  // }
+  Widget buildStickyHeader(String section, int itemCount, int sectionId) {
     return Container(
       color: Colors.grey.shade200,
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
       child: Row(
         children: [
           Checkbox(
-              value: false,
-              onChanged: (value) {
-                print(value);
-              }),
-            Text(
+            value: false,
+            onChanged: (value) {
+              List<Housekeeping> select = controller.list
+                  .where((e) => e.roomTypeId == sectionId)
+                  .toList();
+              List<Housekeeping> selected = controller.selected
+                  .where((e) => e.roomTypeId == sectionId)
+                  .toList();
+
+              if (select.length == selected.length) {
+                controller.selected
+                    .removeWhere((e) => e.roomTypeId == sectionId);
+              } else {
+                controller.selected.addAll(select);
+              }
+              print(select);
+            },
+          ),
+          Expanded(
+            child: Text(
               section.tr,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ), 
-            Text(
-             'asdfdasfasdfs',
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
             ),
+          ),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.only(right: 12.0),
+                child: Text(
+                  "0/$itemCount",
+                  style: const TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -82,26 +103,39 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
           return section == groupedItems.entries.last.key;
         }
 
+        var roomTypeId = items.isNotEmpty ? items.first.roomTypeId : 0;
+
         return SliverStickyHeader(
-          header: buildStickyHeader(section, items.length),
-          sliver: SliverList.separated(
-            itemBuilder: (context, index) {
-              if (index < items.length) {
-                return buildItem(items[index]);
-              } else if (isLoadingMore && isLastSection(section)) {
-                // Add a loading indicator as the last item only for the last section
-                return const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Center(child: CircularProgressIndicator()),
-                );
-              } else {
-                return null;
-              }
-            },
-            separatorBuilder: (context, index) =>
-                Container(height: 1, color: Colors.grey.shade100),
-            itemCount: items.length +
-                (isLoadingMore && isLastSection(section) ? 1 : 0),
+          header: buildStickyHeader(section, items.length, roomTypeId!),
+          sliver: SliverPadding(
+            padding: const EdgeInsets.all(4),
+            sliver: SliverGrid(
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 200.0,
+                mainAxisSpacing: 8.0,
+                crossAxisSpacing: 8.0,
+                childAspectRatio: 4.0,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  if (index < items.length) {
+                    return buildItem(items[index]);
+                  } else if (isLoadingMore && isLastSection(section)) {
+                    // Add a loading indicator as the last item only for the last section
+                    return const Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  } else {
+                    return null;
+                  }
+                },
+                // separatorBuilder: (context, index) =>
+                //     Container(height: 1, color: Colors.grey.shade100),
+                // itemCount: items.length +
+                //     (isLoadingMore && isLastSection(section) ? 1 : 0),
+              ),
+            ),
           ),
         );
       }).toList(),
@@ -153,6 +187,14 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SearchBar(
+          constraints: const BoxConstraints(
+            minHeight: 36, // reduce height
+            maxHeight: 36,
+          ),
+          padding: WidgetStateProperty.all(
+            const EdgeInsets.symmetric(
+                horizontal: 8, vertical: 0), // tighter padding
+          ),
           textStyle: WidgetStateProperty.all(
             const TextStyle(
               color: AppTheme.primaryColor,
@@ -164,10 +206,14 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
           hintStyle: WidgetStateProperty.all(
             TextStyle(
                 color: AppTheme.primaryColor.withOpacity(0.5),
-                fontSize: 18,
+                fontSize: 12,
                 fontFamilyFallback: const ['Gilroy', 'Kantumruy']),
           ),
-          leading: const Icon(Icons.search),
+          leading: Icon(
+            Icons.search,
+            size: 18,
+            color: AppTheme.primaryColor.withOpacity(0.5),
+          ),
           backgroundColor: WidgetStateProperty.all(Colors.transparent),
           shadowColor: WidgetStateProperty.all(Colors.transparent),
           shape: WidgetStateProperty.all(
@@ -210,7 +256,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                 })()
               : const Color.fromARGB(255, 8, 8, 8);
 
-          if (item.image == null) return new Container();
+          if (item.image == null) return Container();
 
           return Expanded(
             child: Container(
@@ -225,8 +271,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                 ],
               ),
               child: MyButton(
-                color: color,
-                textColor: Colors.black,
+                color: Style.getLookupColor(item.color),
                 borderRadius: const BorderRadius.vertical(
                     bottom: Radius.zero, top: Radius.circular(12)),
                 onPressed: () => print("${item.valueId} ${item.nameEn} tapped"),
@@ -241,7 +286,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                       Text(item.nameEn ?? "",
                           style: TextStyle(
                               fontWeight: FontWeight.w600,
-                              color: lookupColor,
+                              color: Style.getLookupTextColor(item.color),
                               fontSize: Get.textTheme.bodySmall!.fontSize)),
                     ],
                   ),
@@ -276,57 +321,52 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   @override
   Widget buildItem(Housekeeping item) {
     return Obx(
-      () => ListTile(
-        onTap: () {
-          if (controller.selected.contains(item)) {
-            controller.selected.remove(item);
-          } else {
-            controller.selected.add(item);
-          }
-        },
-        titleAlignment: ListTileTitleAlignment.center,
-        leading: Checkbox(
-          value: controller.selected.contains(item),
-          onChanged: (bool? newValue) {
-            if (newValue == true) {
-              controller.selected.add(item);
-            } else {
-              controller.selected.remove(item);
-            }
-          },
+      () => Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          color: controller.selected.contains(item)
+              ? Style.getLookupColor(item.statusColor)
+              : Colors.transparent,
         ),
-        subtitle: Text(
-          item.blockName ?? '',
-          overflow: TextOverflow.ellipsis,
-        ),
-        title: Row(
-          children: [
-            Text(
-              item.roomNumber!.tr,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 16,
-                color: Get.theme.colorScheme.primary,
+        child: InkWell(
+            borderRadius: BorderRadius.circular(4),
+            onTap: () {
+              if (controller.selected.contains(item)) {
+                controller.selected.remove(item);
+              } else {
+                controller.selected.add(item);
+              }
+            },
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.blockName ?? '',
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 11),
+                        ),
+                        Text(
+                          item.roomNumber!.tr,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Tag(
+                    color: Style.getLookupTextColor(item.statusColor),
+                    text: item.statusNameEn!,
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-        trailing: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              item.roomNumber!,
-              style: Get.textTheme.bodySmall!.copyWith(color: Colors.black),
-            ),
-            const SizedBox(height: 12),
-            Tag(
-              // color: Style.getStatusColor(item.status ?? 0) ?? Colors.red,
-              color: Colors.red,
-              text: item.statusNameKh!,
-            ),
-          ],
-        ),
+            )),
       ),
     );
   }

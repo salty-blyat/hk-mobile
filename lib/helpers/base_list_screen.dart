@@ -30,7 +30,7 @@ class BaseList<T> extends StatelessWidget {
       appBar: AppBar(
         centerTitle: isCenterTitle,
         title: Text(
-          title.tr,
+          title.tr, 
           style: context.textTheme.titleLarge!.copyWith(color: Colors.white),
         ),
         actions: actions(),
