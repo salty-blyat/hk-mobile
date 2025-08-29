@@ -13,15 +13,19 @@ class MyButton extends StatelessWidget {
   final BorderRadius? borderRadius;
   final BorderSide? borderSide;
   final Widget? child;
+  final EdgeInsets? padding;
+  final double? width;
 
   const MyButton({
     super.key,
     required this.label,
     required this.onPressed,
+    this.width,
     this.child,
     this.disabled = false,
     this.loading = false,
     this.icon,
+    this.padding,
     this.color,
     this.textColor,
     this.borderRadius,
@@ -32,7 +36,8 @@ class MyButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
-          minimumSize: const Size(double.infinity, 40),
+          minimumSize: Size(width ?? double.infinity, 40),
+           padding: padding,
           textStyle:
               const TextStyle(fontFamilyFallback: ['Gilroy', 'Kantumruy']),
           backgroundColor: disabled

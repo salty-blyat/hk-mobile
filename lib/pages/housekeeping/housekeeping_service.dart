@@ -6,7 +6,7 @@ import 'package:staff_view_ui/models/housekeeping_model.dart';
 class HousekeepingService  {
   final dio = DioClient() ; 
   Future<List<Housekeeping>> search({required String date, Map<String, dynamic>? queryParameters}) async {
-    var response = await dio.get('/housekeeping/$date', queryParameters: queryParameters);
+    var response = await dio.get('housekeeping/$date', queryParameters: queryParameters);
     if (response?.statusCode == 200) {
       return (response?.data['results'] as List)
           .map((e) => Housekeeping.fromJson(e))

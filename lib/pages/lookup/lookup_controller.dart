@@ -2,6 +2,34 @@ import 'package:get/get.dart';
 import 'package:staff_view_ui/models/lookup_model.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_service.dart';
 
+enum HkActivityTypeEnum {
+  markCleaning,
+  markClean,
+  markInspect,
+  markDirty,
+  markOOO,
+  markOOS,
+  fixOOO,
+  fixOOS,
+  markStatus,
+}
+
+extension HkActivityTypeEnumExtension on HkActivityTypeEnum {
+  static const Map<HkActivityTypeEnum, int> _values = {
+    HkActivityTypeEnum.markCleaning: 1,
+    HkActivityTypeEnum.markClean: 2,
+    HkActivityTypeEnum.markInspect: 3,
+    HkActivityTypeEnum.markDirty: 4,
+    HkActivityTypeEnum.markOOO: 5,
+    HkActivityTypeEnum.markOOS: 6,
+    HkActivityTypeEnum.fixOOO: 7,
+    HkActivityTypeEnum.fixOOS: 8,
+    HkActivityTypeEnum.markStatus: 9,
+  };
+
+  int get value => _values[this]!;
+}
+
 enum LookupTypeEnum {
   gender,
   nationality,
@@ -23,7 +51,7 @@ enum LookupTypeEnum {
   cancelReason,
   accountStatus,
   nightAuditStatus,
-} 
+}
 
 extension LookupTypeEnumExtension on LookupTypeEnum {
   static const Map<LookupTypeEnum, int> _values = {

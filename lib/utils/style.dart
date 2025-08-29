@@ -14,8 +14,7 @@ class Style {
     }
     return Color(int.parse(hexColor.replaceFirst('#', '0xFF')));
   }
-
-  /// Returns the background color (lighter variant)
+ 
   static Color getLookupColor(String? hexColor) {
     if (hexColor == null) {
       return const Color.fromARGB(255, 8, 8, 8);
@@ -26,4 +25,18 @@ class Style {
 
     return hsl.withLightness((hsl.lightness + 0.35).clamp(0.0, 9.0)).toColor();
   }
+
+   
+  // static Color getHousekeepingColor(String? hexColor) {
+  //   if (hexColor == null) {
+  //     return const Color.fromARGB(255, 8, 8, 8);
+  //   }
+
+  //   final base = Color(int.parse(hexColor.replaceFirst('#', '0xFF')));
+  //   final hsl = HSLColor.fromColor(base);
+
+  //   return hsl.withLightness((hsl.lightness + 0.35).clamp(0.0, 9.0)).toColor();
+  // }
+
+  
 }

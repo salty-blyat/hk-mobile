@@ -125,6 +125,22 @@ class Modal {
     ));
   }
 
+  static showFormDialog(Widget child) {
+    return Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: AppTheme.borderRadius,
+        ),
+        child: SizedBox(
+          height: 370,
+          width: double.infinity,
+          child: child,
+        ),
+      ),
+      // barrierDismissible: false, // TODO: uncomment this out later);
+    ); 
+  }
+
   static showLanguageDialog() {
     Get.dialog(
       Dialog(

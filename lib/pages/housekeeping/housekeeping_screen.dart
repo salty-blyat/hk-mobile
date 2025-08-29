@@ -1,25 +1,25 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
-import 'package:multiselect/multiselect.dart';
 import 'package:staff_view_ui/helpers/base_list_screen.dart';
 import 'package:staff_view_ui/models/housekeeping_model.dart';
 import 'package:staff_view_ui/models/lookup_model.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
-import 'package:staff_view_ui/utils/style.dart';
+import 'package:staff_view_ui/pages/task/create_task_screen.dart';
+import 'package:staff_view_ui/route.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
+import 'package:staff_view_ui/utils/widgets/dialog.dart';
 import 'package:staff_view_ui/utils/widgets/network_img.dart';
 
 class HousekeepingScreen extends BaseList<Housekeeping> {
   HousekeepingScreen({super.key});
 
   final HousekeepingController controller = Get.put(HousekeepingController());
-  final LookupController lookupController = Get.find<LookupController>();
+  final LookupController lookupController = Get.put(LookupController());
 
   Timer? _debounce;
 
@@ -45,15 +45,21 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
 
   @override
   RxList<Housekeeping> get items => controller.list;
+  @override
+  Future<void> onRefresh() async {
+    controller.queryParameters.value.pageIndex = 1;
+    controller.selected.clear();
+    controller.search();
+  }
 
   Widget buildStickyHeader(String section, int itemCount, int sectionId) {
     List<Housekeeping> select =
-        controller.list.where((e) => e.roomTypeId == sectionId).toList();
+        controller.list.where((e) => e.floorId == sectionId).toList();
     List<Housekeeping> selected =
-        controller.selected.where((e) => e.roomTypeId == sectionId).toList();
+        controller.selected.where((e) => e.floorId == sectionId).toList();
     Function? onTap() {
       if (select.length == selected.length) {
-        controller.selected.removeWhere((e) => e.roomTypeId == sectionId);
+        controller.selected.removeWhere((e) => e.floorId == sectionId);
       } else {
         controller.selected.assignAll({
           ...controller.selected,
@@ -64,8 +70,10 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
     }
 
     return Container(
-      color: Colors.grey.shade200,
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+      decoration: BoxDecoration(color: Colors.white, boxShadow: [
+        BoxShadow(color: Colors.grey.shade300, blurRadius: 4, spreadRadius: 1)
+      ]),
       child: Row(
         children: [
           Checkbox(
@@ -80,8 +88,8 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                   onTap: () => onTap(),
                   borderRadius: BorderRadius.circular(4),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 4, vertical: 2), // makes ripple area bigger
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                     child: Text(
                       section.tr,
                       style: const TextStyle(fontSize: 14),
@@ -113,70 +121,62 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   Widget buildStickyList(List<Housekeeping> items) {
     final groupedItems = groupItems(items);
 
-    return CustomScrollView(
-      slivers: groupedItems.entries.map((entry) {
-        final section = entry.key;
-        final items = entry.value;
-        bool isLastSection(String section) {
-          return section == groupedItems.entries.last.key;
-        }
+    return Container(
+      color: AppTheme.greyBg,
+      child: CustomScrollView(
+        slivers: groupedItems.entries.map((entry) {
+          final section = entry.key;
+          final items = entry.value;
+          bool isLastSection(String section) {
+            return section == groupedItems.entries.last.key;
+          }
 
-        var roomTypeId = items.isNotEmpty ? items.first.roomTypeId : 0;
+          var floorId = items.isNotEmpty ? items.first.floorId : 0;
 
-        return SliverStickyHeader(
-          header: buildStickyHeader(section, items.length, roomTypeId!),
-          sliver: SliverPadding(
-            padding: const EdgeInsets.all(4),
-            sliver: SliverGrid(
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 200.0,
-                mainAxisSpacing: 8.0,
-                crossAxisSpacing: 8.0,
-                childAspectRatio: 4.0,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  if (index < items.length) {
-                    return buildItem(items[index]);
-                  } else if (isLoadingMore && isLastSection(section)) {
-                    // Add a loading indicator as the last item only for the last section
-                    return const Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  } else {
-                    return null;
-                  }
-                },
+          return SliverStickyHeader(
+            header: buildStickyHeader(section, items.length, floorId!),
+            sliver: SliverPadding(
+              padding: const EdgeInsets.all(4),
+              sliver: SliverGrid(
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 200.0,
+                  mainAxisSpacing: 8.0,
+                  crossAxisSpacing: 8.0,
+                  childAspectRatio: 4.0,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    if (index < items.length) {
+                      return buildItem(items[index]);
+                    } else if (isLoadingMore && isLastSection(section)) {
+                      // Add a loading indicator as the last item only for the last section
+                      return const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    } else {
+                      return null;
+                    }
+                  },
+                ),
               ),
             ),
-          ),
-        );
-      }).toList(),
+          );
+        }).toList(),
+      ),
     );
   }
 
   @override
   Map<String, List<Housekeeping>> groupItems(List<Housekeeping> items) {
-    final roomTypeNames = items.map((e) => e.roomTypeName);
-    final distinctRoomTypeNames = [];
-    for (var e in roomTypeNames) {
-      if (!distinctRoomTypeNames.contains(e)) {
-        distinctRoomTypeNames.add(e);
-      }
-    }
-    return {
-      // 'All': items, // one group with all items
-      for (var roomType in distinctRoomTypeNames)
-        roomType: items.where((e) => e.roomTypeName == roomType).toList(),
-    };
-  }
+    final distinctFloorNames =
+        items.map((e) => e.floorName ?? "Unknown").toSet().toList();
 
-  @override
-  Future<void> onRefresh() async {
-    controller.queryParameters.value.pageIndex = 1;
-    controller.selected.clear();
-    controller.search();
+    return {
+      for (var floorName in distinctFloorNames)
+        floorName:
+            items.where((e) => (e.floorName ?? "Unknown") == floorName).toList()
+    };
   }
 
   @override
@@ -271,47 +271,33 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                   position: position,
                   items: [
                     PopupMenuItem(
+                      padding: EdgeInsets.zero,
                       height: 35,
                       value: 0,
                       onTap: () {
                         controller.houseKeepingStatus.value = 0;
                         controller.search();
                       },
-                      child: SizedBox(
-                        width: 85,
-                        child: Row(children: [
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 4, horizontal: 8),
+                        width: 110,
+                        child: const Row(children: [
+                          Icon(
+                            Icons.layers_outlined,
+                            size: 16,
+                            color: AppTheme.primaryColor,
+                          ),
+                          SizedBox(width: 4),
                           Text(
-                            "All".tr,
-                            style: const TextStyle(fontSize: 11),
+                            "All",
+                            style: const TextStyle(fontSize: 12),
                           )
                         ]),
                       ),
                     ),
                     ...lookupController.lookups.map((LookupModel item) {
-                      return PopupMenuItem(
-                        height: 35,
-                        onTap: () {
-                          controller.houseKeepingStatus.value = item.valueId!;
-                          controller.search();
-                        },
-                        value: item.valueId,
-                        child: SizedBox(
-                          width: 85,
-                          child: Row(children: [
-                            NetworkImg(
-                              src: item.image,
-                              height: 16,
-                            ),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                              item.nameEn ?? "",
-                              style: TextStyle(fontSize: 11),
-                            )
-                          ]),
-                        ),
-                      );
+                      return _buildPopoverItem(item);
                     })
                   ],
                 );
@@ -327,88 +313,111 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
     );
   }
 
+  PopupMenuItem _buildPopoverItem(LookupModel item) {
+    return PopupMenuItem(
+      padding: EdgeInsets.zero,
+      height: 35,
+      onTap: () {
+        controller.houseKeepingStatus.value = item.valueId!;
+        controller.search();
+      },
+      value: item.valueId,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        width: 110,
+        child: Row(children: [
+          NetworkImg(
+            src: item.image,
+            height: 16,
+          ),
+          const SizedBox(
+            width: 4,
+          ),
+          Expanded(
+            child: Text(item.nameEn ?? "",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 12)),
+          ),
+          const SizedBox(
+            width: 4,
+          ),
+          controller.houseKeepingStatus.value == item.valueId
+              ? const Icon(Icons.check,
+                  size: 16, textDirection: TextDirection.rtl)
+              : const SizedBox()
+        ]),
+      ),
+    );
+  }
+
   @override
   Widget buildBottomNavigationBar() {
-    return Obx(() => Row(
-          children: lookupController.lookups.map((LookupModel item) {
-            if (item.image == null) return Container();
-            return Expanded(
-              child: Container(
-                decoration: const BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color.fromARGB(66, 156, 156, 156),
-                      blurRadius: 10,
-                      spreadRadius: 0.03,
-                      offset: Offset(0, -1),
-                    ),
-                  ],
+    return Container(
+        padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+        child: MyButton(
+            label: '',
+            onPressed: () => Modal.showFormDialog(
+                  _buildCreateTask(),
                 ),
-                child: MyButton(
-                  color: Style.getLookupColor(item.color),
-                  borderRadius: const BorderRadius.vertical(
-                      bottom: Radius.zero, top: Radius.circular(12)),
-                  onPressed: () =>
-                      print("${item.valueId} ${item.nameEn} tapped"),
-                  label: item.nameEn ?? "",
-                  child: SizedBox(
-                    height: 50,
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 2),
-                        NetworkImg(src: item.image, height: 18),
-                        const SizedBox(height: 4),
-                        // TODO: Implement NAME KH ALSO
-                        Text(item.nameEn ?? "",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Style.getLookupTextColor(item.color),
-                                fontSize: Get.textTheme.bodySmall!.fontSize)),
-                      ],
-                    ),
-                  ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.add_rounded,
+                  size: 14,
                 ),
-              ),
-            );
-          }).toList(),
-        ));
+                Text("Task".tr)
+              ],
+            )));
+  }
+
+  Widget _buildCreateTask() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ElevatedButton(
+          onPressed: () => Get.back(),
+          child: CreateTaskScreen(),
+        ),
+      ],
+    );
   }
 
   @override
   List<Widget> actions() {
     return [
-      // Row(children: [
-      //   Text("20"),
-      //   Column(children: [
-      //     Text("21"),
-      //     Text("22"),
-      //   ]),
-      // ],),
+      // IconButton(
+      //     onPressed: () =>
+      //         controller.housekeepingView.value = HousekeepingView.room.value,
+      //     icon: Icon(Icons.grid_view)),
+      // IconButton(
+      //     onPressed: () =>
+      //         controller.housekeepingView.value = HousekeepingView.block.value,
+      //     icon: Icon(Icons.view_list)),
+
       IconButton(
-        icon: const Icon(Icons.more_vert),
-        onPressed: () {},
-      ),
+          onPressed: () => Get.toNamed(RouteName.task),
+          icon: const Icon(Icons.task_outlined)),
     ];
   }
 
   @override
   Widget buildItem(Housekeeping item) {
     var selected = controller.selected.any((e) => e.roomId == item.roomId);
+    var selectedTextColor = selected ? Colors.white : Colors.black;
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 2,
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
             offset: const Offset(0, 2),
           ),
         ],
-        border: Border.all(
-          color: selected ? AppTheme.primaryColor : Colors.transparent,
-          width: 1,
-        ),
-        color: selected ? AppTheme.primaryColor : Colors.white,
+        color: selected ? AppTheme.primaryColor.withOpacity(0.7) : Colors.white,
       ),
       child: InkWell(
           borderRadius: BorderRadius.circular(4),
@@ -419,54 +428,63 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
               controller.selected.add(item);
             }
           },
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.roomNumber ?? '',
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 14,
-                          height: 1.3,
-                          color: selected ? Colors.white : Colors.black,
-                        ),
+          child: Stack(
+            children: [
+              // Positioned(
+              //   top: 0,
+              //   right: 0,
+              //   child: Container(
+              //     width: 14,
+              //     height: 14,
+              //     child:
+              //         NetworkImg(src: item.houseKeepingStatusImage, height: 18),
+              //   ),
+              // ),
+              Container(
+                padding: const EdgeInsets.all(8),  
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.roomNumber ?? '',
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 14,
+                                height: 1.3,
+                                color: selectedTextColor),
+                          ),
+                          Text(
+                            item.blockName!.tr,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 9, color: selectedTextColor),
+                          ),
+                        ],
                       ),
-                      Text(
-                        item.blockName!.tr,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 9,
-                          color: selected ? Colors.white : Colors.black,
-                        ),
+                    ),
+                    Transform.scale(
+                      scale: 0.9,
+                      child: Row(
+                        children: [
+                          NetworkImg(src: item.statusImage, height: 18),
+                          const SizedBox(
+                            width: 2,
+                          ),
+                          Text(
+                            item.statusNameEn!,
+                            style: TextStyle(
+                                fontSize: 11, color: selectedTextColor),
+                          )
+                        ],
                       ),
-                    ],
-                  ),
+                    )
+                  ],
                 ),
-                Transform.scale(
-                  scale: 0.9,
-                  child: Row(
-                    children: [
-                      NetworkImg(src: item.statusImage, height: 18),
-                      const SizedBox(
-                        width: 2,
-                      ),
-                      Text(
-                        item.statusNameEn!,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: selected ? Colors.white : Colors.black,
-                        ),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
+              ),
+            ],
           )),
     );
   }

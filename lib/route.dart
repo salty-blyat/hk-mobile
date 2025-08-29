@@ -12,11 +12,13 @@ import 'package:staff_view_ui/pages/notification/notification_screen.dart';
 import 'package:staff_view_ui/pages/profile/profile_screen.dart';
 import 'package:staff_view_ui/pages/absent_exception/absent_exception_screen.dart';
 import 'package:staff_view_ui/pages/privacy_policy/privacy_policy_screen.dart';
+import 'package:staff_view_ui/pages/task/task_screen.dart'; 
 
 class Routes {
   static final List<GetPage> pages = [
     GetPage(name: RouteName.menu, page: () => MenuScreen()),
     GetPage(name: RouteName.houseKeeping, page: () => HousekeepingScreen()),
+    GetPage(name: RouteName.task, page: () => TaskScreen()),
 
     GetPage(name: RouteName.login, page: () => LoginScreen()),
     GetPage(name: RouteName.profile, page: () => ProfileScreen()),
@@ -35,6 +37,7 @@ class RouteName {
   static const String menu = '/menu';
   static const String profile = '/profile';
   static const String login = '/login';
+  static const String task = '/task';
   static const String absentException = '/absent_exception';
   static const String privacyPolicy = '/privacy-policy';
   static const String changePassword = '/change-password';
