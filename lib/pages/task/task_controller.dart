@@ -3,7 +3,40 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
 import 'package:staff_view_ui/models/housekeeping_model.dart';
 import 'package:staff_view_ui/models/task_model.dart';
+import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
 import 'package:staff_view_ui/pages/task/task_service.dart';
+
+enum RequestStatus {
+  pending,
+  inProgress,
+  done,
+  cancel,
+}
+
+extension RequestStatusExtension on RequestStatus {
+  static const Map<RequestStatus, int> _values = {
+    RequestStatus.pending: 1,
+    RequestStatus.inProgress: 2,
+    RequestStatus.done: 3,
+    RequestStatus.cancel: 4,
+  };
+
+  int get value => _values[this]!;
+}
+
+enum TaskFromEnum {
+  internal,
+  guest,
+}
+
+extension TaskFromEnumExtension on TaskFromEnum {
+  static const Map<TaskFromEnum, int> _values = {
+    TaskFromEnum.internal: 1,
+    TaskFromEnum.guest: 2,
+  };
+
+  int get value => _values[this]!;
+}
 
 class TaskController extends GetxController {
   final RxString searchText = ''.obs;
@@ -14,17 +47,26 @@ class TaskController extends GetxController {
   final RxBool canLoadMore = true.obs;
 
   final FormGroup formGroup = fb.group({
-    'roomIds': FormControl<List<int>>(
-      value: [],
+    'taskFrom': FormControl<int>(
+      value: TaskFromEnum.internal.value,
       validators: [Validators.required],
     ),
-    'staffId': FormControl<int>(validators: [Validators.required]),
-    'hkActivityType':
-        FormControl<int>(value: 2, validators: [Validators.required]),
-    'houseKeepingStatus':
-        FormControl<String>(validators: [Validators.required]),
-    'note': FormControl<String>(validators: [Validators.required]),
+    'requestTime': FormControl<DateTime>(
+        value: DateTime.now(), validators: [Validators.required]),
+    'roomIds':
+        FormControl<List<int>>(value: [], validators: [Validators.required]),
+    // 'requestNo': FormControl<>(value: null, validators: [Validators.required]),
+    'staffId': FormControl<int>(value: null, validators: [Validators.required]),
+    'serviceTypeId':
+        FormControl<int>(value: 0, validators: [Validators.required]),
+    'serviceItemId': FormControl<int>(
+        value: 0, disabled: true, validators: [Validators.required]),
+    'quantity': FormControl<int>(value: 0, validators: [Validators.required]),
+    'status': FormControl<int>(
+        value: RequestStatus.pending.value, validators: [Validators.required]),
+    'note': FormControl<String>(validators: []),
   });
+  var serviceTypeId = 0.obs;
 
   int currentPage = 1;
   final int pageSize = 20;
@@ -39,24 +81,22 @@ class TaskController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     await search();
+    formGroup.control('serviceTypeId').valueChanges.listen((value) {
+      if (value == 0) {
+        formGroup.control('serviceItemId').markAsDisabled();
+      } else {
+        formGroup.control('serviceItemId').markAsEnabled();
+      }
+      formGroup.control('quantity').value = 0;
+      formGroup.control('serviceItemId').value = 0;
+      print('quan ${formGroup.control('quantity').value}');
+    });
   }
 
   Future<void> search() async {
     loading.value = true;
-    var filter = [
-      // {
-      //   "field": "reservationId",
-      //   "operator": "eq",
-      //   "value": "49",
-      //   "logic": null,
-      //   "manual": true,
-      //   "filters": null
-      // }
-    ];
+    var filter = [];
 
-    // queryParameters.update((params) {
-    //   params?.pageIndex = (params.pageIndex ?? 0) + 1;
-    // });
     if (searchText.value.isNotEmpty) {
       filter.add({
         'field': 'search',
@@ -92,6 +132,7 @@ class TaskController extends GetxController {
         'value': searchText.value
       });
     }
+    print(formGroup.value);
     // var response = await service.search(date: selectedDate, queryParameters: {
     //   'pageIndex': currentPage,
     //   'pageSize': pageSize,

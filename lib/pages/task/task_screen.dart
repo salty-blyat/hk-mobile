@@ -42,6 +42,7 @@ class TaskScreen extends BaseList<TaskModel> {
   Future<void> onRefresh() async {
     controller.queryParameters.value.pageIndex = 1;
     controller.search();
+    controller.formGroup.reset();
   }
 
   @override

@@ -71,8 +71,9 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+      // color: Colors.white,
       decoration: BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(color: Colors.grey.shade300, blurRadius: 4, spreadRadius: 1)
+        BoxShadow(color: Colors.grey.shade100, blurRadius: 4, spreadRadius: 1)
       ]),
       child: Row(
         children: [
@@ -122,10 +123,10 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
     final groupedItems = groupItems(items);
 
     return Container(
-      color: AppTheme.greyBg,
+      color: Colors.white,
       child: CustomScrollView(
         slivers: groupedItems.entries.map((entry) {
-          final section = entry.key;
+          final section = "${entry.key} | ${entry.value.first.blockName!}";
           final items = entry.value;
           bool isLastSection(String section) {
             return section == groupedItems.entries.last.key;
@@ -142,7 +143,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                   maxCrossAxisExtent: 200.0,
                   mainAxisSpacing: 8.0,
                   crossAxisSpacing: 8.0,
-                  childAspectRatio: 4.0,
+                  childAspectRatio: 3.0,
                 ),
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
@@ -355,10 +356,11 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   Widget buildBottomNavigationBar() {
     return Container(
         padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-        child: MyButton(
+        child: Obx(() => MyButton(
+            disabled: controller.selected.isEmpty,
             label: '',
             onPressed: () => Modal.showFormDialog(
-                  _buildCreateTask(),
+                  CreateTaskScreen(),
                 ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -369,33 +371,12 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                 ),
                 Text("Task".tr)
               ],
-            )));
-  }
-
-  Widget _buildCreateTask() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ElevatedButton(
-          onPressed: () => Get.back(),
-          child: CreateTaskScreen(),
-        ),
-      ],
-    );
+            ))));
   }
 
   @override
   List<Widget> actions() {
     return [
-      // IconButton(
-      //     onPressed: () =>
-      //         controller.housekeepingView.value = HousekeepingView.room.value,
-      //     icon: Icon(Icons.grid_view)),
-      // IconButton(
-      //     onPressed: () =>
-      //         controller.housekeepingView.value = HousekeepingView.block.value,
-      //     icon: Icon(Icons.view_list)),
-
       IconButton(
           onPressed: () => Get.toNamed(RouteName.task),
           icon: const Icon(Icons.task_outlined)),
@@ -412,7 +393,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
         borderRadius: BorderRadius.circular(4),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -430,18 +411,18 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
           },
           child: Stack(
             children: [
-              // Positioned(
-              //   top: 0,
-              //   right: 0,
-              //   child: Container(
-              //     width: 14,
-              //     height: 14,
-              //     child:
-              //         NetworkImg(src: item.houseKeepingStatusImage, height: 18),
-              //   ),
-              // ),
+              Positioned(
+                top: 0,
+                right: 0,
+                child: Container(
+                  width: 14,
+                  height: 14,
+                  child:
+                      NetworkImg(src: item.houseKeepingStatusImage, height: 18),
+                ),
+              ),
               Container(
-                padding: const EdgeInsets.all(8),  
+                padding: const EdgeInsets.all(8),
                 child: Row(
                   children: [
                     Expanded(
@@ -449,38 +430,47 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            item.roomNumber ?? '',
+                            "${item.roomNumber ?? ''}, ${item.roomTypeName ?? ''}",
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                                fontSize: 14,
-                                height: 1.3,
-                                color: selectedTextColor),
+                                fontSize: 14, color: selectedTextColor),
                           ),
-                          Text(
-                            item.blockName!.tr,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontSize: 9, color: selectedTextColor),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Row(
+                            children: [
+                              NetworkImg(src: item.statusImage, height: 14),
+                              const SizedBox(
+                                width: 2,
+                              ),
+                              Text(
+                                item.statusNameEn!,
+                                style: TextStyle(
+                                    fontSize: 11, color: selectedTextColor),
+                              )
+                            ],
                           ),
                         ],
                       ),
                     ),
-                    Transform.scale(
-                      scale: 0.9,
-                      child: Row(
-                        children: [
-                          NetworkImg(src: item.statusImage, height: 18),
-                          const SizedBox(
-                            width: 2,
-                          ),
-                          Text(
-                            item.statusNameEn!,
-                            style: TextStyle(
-                                fontSize: 11, color: selectedTextColor),
-                          )
-                        ],
-                      ),
-                    )
+                    // Transform.scale(
+                    //   scale: 0.9,
+                    //   child:
+                    //    Row(
+                    //     children: [
+                    //       NetworkImg(src: item.statusImage, height: 18),
+                    //       const SizedBox(
+                    //         width: 2,
+                    //       ),
+                    //       Text(
+                    //         item.statusNameEn!,
+                    //         style: TextStyle(
+                    //             fontSize: 11, color: selectedTextColor),
+                    //       )
+                    //     ],
+                    //   ),
+                    // )
                   ],
                 ),
               ),

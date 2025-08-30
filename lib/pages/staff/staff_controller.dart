@@ -8,7 +8,7 @@ import 'package:staff_view_ui/pages/staff/staff_service.dart';
 
 class StaffSelectController extends GetxController {
   final RxString searchText = ''.obs;
-  String? selectedStaff;
+  final RxString selectedStaff = '-'.obs; 
   final RxList<Staff> staff = <Staff>[].obs;
   final StaffService staffService = StaffService();
   final RxBool loading = false.obs;
@@ -45,11 +45,18 @@ class StaffSelectController extends GetxController {
   Future<void> getStaff() async {
     loading.value = true;
     staff.value = [];
-    var filter = [];
+    var filter = []; 
+    if (searchText.value.isNotEmpty) {
+      filter.add({
+        'field': 'search',
+        'operator': 'contains',
+        'value': searchText.value
+      });
+    }
     filter.add({
       'field': 'positionId',
       'operator': 'eq',
-      'value': LookupTypeEnum.position.value.toString()
+      'value': PositionEnum.housekeeping.value
     });
 
     var response = await staffService.getStaff(queryParameters: {

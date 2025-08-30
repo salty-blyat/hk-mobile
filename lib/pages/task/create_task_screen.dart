@@ -1,46 +1,128 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
+import 'package:staff_view_ui/pages/service_item/service_item_controller.dart';
+import 'package:staff_view_ui/pages/service_item/service_item_select.dart';
+import 'package:staff_view_ui/pages/service_type/service_type_select.dart';
+import 'package:staff_view_ui/pages/staff/staff_select.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
-import 'package:staff_view_ui/utils/widgets/input.dart'; 
+import 'package:staff_view_ui/utils/theme.dart';
+import 'package:staff_view_ui/utils/widgets/input.dart';
 
 class CreateTaskScreen extends StatelessWidget {
   CreateTaskScreen({super.key});
   final TaskController controller = Get.put(TaskController());
+  final ServiceItemController serviceItemController =
+      Get.put(ServiceItemController());  
+  final HousekeepingController hkController =
+      Get.find<HousekeepingController>();
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         _Header(),
-        // _buildContent(context),
-        // _Footer(controller: controller),
+        _buildContent(context),
+        _Footer(controller: controller),
       ],
     );
   }
 
   Widget _buildContent(BuildContext context) {
+    var selectedRooms = hkController.selected.toList()
+      ..sort((a, b) {
+        final aRoom = a.roomNumber ?? '';
+        final bRoom = b.roomNumber ?? '';
+        return aRoom.compareTo(bRoom);
+      });
+    // var trackQty = serviceItemController.selected.value.trackQty ?? false;
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Column(
-          children: [
-            ReactiveForm(
-              formGroup: controller.formGroup,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 16),
-                  MyFormField(
-                    controlName: 'coreUrl',
-                    label: 'Security URL'.tr,
-                  ), 
-                ],
-              ),
+        child: SingleChildScrollView(
+          child: ReactiveForm(
+            formGroup: controller.formGroup,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(width: 8),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Rooms".tr),
+                    const SizedBox(width: 12),
+                    Flexible(
+                      child: Wrap(children: [
+                        ...selectedRooms.map((r) => Badge(
+                              label: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 2, horizontal: 4),
+                                child: Text(r.roomNumber ?? ''),
+                              ),
+                              backgroundColor: AppTheme.primaryColor,
+                            )),
+                      ]),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ReactiveRadioListTile(
+                        visualDensity: VisualDensity.compact,
+                        contentPadding: const EdgeInsets.all(0),
+                        value: TaskFromEnum.internal.value,
+                        formControlName: 'taskFrom',
+                        title: Text("Internal".tr),
+                      ),
+                    ),
+                    Expanded(
+                      child: ReactiveRadioListTile(
+                        visualDensity: VisualDensity.compact,
+                        contentPadding: const EdgeInsets.all(0),
+                        value: TaskFromEnum.guest.value,
+                        formControlName: 'taskFrom',
+                        title: Text("Guest".tr),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 8),
+                StaffSelect(
+                  formControlName: 'staffId',
+                  formGroup: controller.formGroup,
+                ),
+                const SizedBox(height: 12),
+                ServiceTypeSelect(
+                  formControlName: 'serviceTypeId',
+                  label: "Service Type".tr,
+                ),
+                const SizedBox(height: 12),
+                ServiceItemSelect(
+                  serviceTypeId: controller.serviceTypeId.value,
+                  formControlName: 'serviceItemId',
+                  label: "Service Item".tr,
+                ),
+                const SizedBox(height: 12),
+                Obx(() {
+                  final trackQty =
+                      serviceItemController.selected.value.trackQty ?? false; 
+                  return trackQty
+                      ? MyFormField(
+                          controlName: 'quantity',
+                          label: 'Quantity'.tr,
+                        )
+                      : const SizedBox.shrink();
+                }),
+                MyFormField(
+                  controlName: 'note',
+                  label: 'Note'.tr,
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
