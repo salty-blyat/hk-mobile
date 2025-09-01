@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:json_annotation/json_annotation.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
 

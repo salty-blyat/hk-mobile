@@ -1,24 +1,7 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:reactive_forms/reactive_forms.dart';
-import 'package:skeletonizer/skeletonizer.dart';
-import 'package:staff_view_ui/helpers/image_picker_controller.dart';
+ 
 // import 'package:staff_view_ui/pages/attendance_terminal/attendance_terminal_select.dart';
 // import 'package:staff_view_ui/pages/exception/operation/exception_operation_controller.dart';
-// import 'package:staff_view_ui/pages/exception_type/exception_type_controller.dart';
-import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
-import 'package:staff_view_ui/pages/lookup/lookup_select.dart';
-import 'package:staff_view_ui/pages/staff/staff_select.dart';
-import 'package:staff_view_ui/utils/theme.dart';
-import 'package:staff_view_ui/utils/widgets/button.dart';
-import 'package:staff_view_ui/utils/widgets/date_picker.dart';
-import 'package:staff_view_ui/utils/widgets/date_range_picker.dart';
-import 'package:staff_view_ui/utils/widgets/date_time_picker.dart';
-import 'package:staff_view_ui/utils/widgets/file_picker.dart';
-
+// import 'package:staff_view_ui/pages/exception_type/exception_type_controller.dart'; 
 // class ExceptionOperationScreen extends StatelessWidget {
 //   // final ExceptionOperationController controller =
 //   //     Get.put(ExceptionOperationController());

@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:get/get.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/notification_service.dart';
 import 'package:staff_view_ui/helpers/storage.dart';

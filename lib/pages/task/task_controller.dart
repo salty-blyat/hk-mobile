@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
-import 'package:staff_view_ui/models/housekeeping_model.dart';
 import 'package:staff_view_ui/models/task_model.dart';
-import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
+import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
 import 'package:staff_view_ui/pages/task/task_service.dart';
+import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
 enum RequestStatus {
   pending,
@@ -41,6 +41,9 @@ extension TaskFromEnumExtension on TaskFromEnum {
 class TaskController extends GetxController {
   final RxString searchText = ''.obs;
   final RxList<TaskModel> list = <TaskModel>[].obs;
+  final HousekeepingController hkController =
+      Get.find<HousekeepingController>();
+
   final TaskService service = TaskService();
   final RxBool loading = false.obs;
   final RxBool isLoadingMore = false.obs;
@@ -61,7 +64,7 @@ class TaskController extends GetxController {
         FormControl<int>(value: 0, validators: [Validators.required]),
     'serviceItemId': FormControl<int>(
         value: 0, disabled: true, validators: [Validators.required]),
-    'quantity': FormControl<int>(value: 0, validators: [Validators.required]),
+    'quantity': FormControl<int>(value: 1, validators: [Validators.required]),
     'status': FormControl<int>(
         value: RequestStatus.pending.value, validators: [Validators.required]),
     'note': FormControl<String>(validators: []),
@@ -87,9 +90,8 @@ class TaskController extends GetxController {
       } else {
         formGroup.control('serviceItemId').markAsEnabled();
       }
-      formGroup.control('quantity').value = 0;
+      formGroup.control('quantity').value = 1;
       formGroup.control('serviceItemId').value = 0;
-      print('quan ${formGroup.control('quantity').value}');
     });
   }
 
@@ -118,29 +120,28 @@ class TaskController extends GetxController {
     }
   }
 
-  Future<void> post() async {
-    loading.value = true;
-    var filter = [];
+  Future<void> submit() async {
+    if (loading.isTrue) return;
+    Get.focusScope?.unfocus();
 
-    queryParameters.update((params) {
-      params?.pageIndex = (params.pageIndex ?? 0) + 1;
-    });
-    if (searchText.value.isNotEmpty) {
-      filter.add({
-        'field': 'search',
-        'operator': 'contains',
-        'value': searchText.value
-      });
+    try {
+      // Show loading dialog
+      Modal.loadingDialog();
+      var roomIds = hkController.selected.map((r) => r.roomId).toList();
+      print('roomIds $roomIds');
+      // await service.add(
+      //     TaskModel.fromJson({
+      //       ...formGroup.rawValue,
+      //       'roomIds': roomIds,
+      //     }),
+      //     TaskModel.fromJson);
+      formGroup.reset();
+      Get.back();
+      Get.back();
+
+      Modal.successDialog('Success'.tr, "Task created successfully.");
+    } catch (e) {
+      print(e);
     }
-    print(formGroup.value);
-    // var response = await service.search(date: selectedDate, queryParameters: {
-    //   'pageIndex': currentPage,
-    //   'pageSize': pageSize,
-    //   'filters': jsonEncode(filter)
-    // });
-    // if (response.isNotEmpty) {
-    //   list.value = response;
-    // }
-    loading.value = false;
   }
 }

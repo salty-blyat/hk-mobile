@@ -11,11 +11,11 @@ import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/input.dart';
 
-class CreateTaskScreen extends StatelessWidget {
-  CreateTaskScreen({super.key});
+class TaskOpScreen extends StatelessWidget {
+  TaskOpScreen({super.key});
   final TaskController controller = Get.put(TaskController());
   final ServiceItemController serviceItemController =
-      Get.put(ServiceItemController());  
+      Get.put(ServiceItemController());
   final HousekeepingController hkController =
       Get.find<HousekeepingController>();
   @override
@@ -36,7 +36,6 @@ class CreateTaskScreen extends StatelessWidget {
         final bRoom = b.roomNumber ?? '';
         return aRoom.compareTo(bRoom);
       });
-    // var trackQty = serviceItemController.selected.value.trackQty ?? false;
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -108,7 +107,7 @@ class CreateTaskScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 Obx(() {
                   final trackQty =
-                      serviceItemController.selected.value.trackQty ?? false; 
+                      serviceItemController.selected.value.trackQty ?? false;
                   return trackQty
                       ? MyFormField(
                           controlName: 'quantity',
@@ -119,6 +118,7 @@ class CreateTaskScreen extends StatelessWidget {
                 MyFormField(
                   controlName: 'note',
                   label: 'Note'.tr,
+                  maxLines: 3,
                 ),
               ],
             ),
@@ -191,7 +191,7 @@ class _Footer extends StatelessWidget {
             backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Colors.white,
             onPressed: () {
-              controller.post();
+              controller.submit();
             },
           ),
         ],

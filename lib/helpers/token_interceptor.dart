@@ -14,7 +14,6 @@ class DioClient {
   final AuthService authService = AuthService();
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
   final AuthController authController = Get.put(AuthController());
-  // final String baseUrl = '${AppSetting.setting['BASE_API_URL']}/mobile';
   final String baseUrl = '${AppSetting.setting['BASE_API_URL']}';
 
   DioClient() {
@@ -103,8 +102,7 @@ class DioClient {
       }
       // Perform the token refresh API request
       Response response = await dio.post(
-        // '${AppSetting.setting['AUTH_API_URL']}/auth/refresh/mobile', // Your refresh token endpoint
-        '${AppSetting.setting['AUTH_API_URL']}/auth/refresh', // Your refresh token endpoint
+        '${AppSetting.setting['AUTH_API_URL']}/auth/refresh/mobile', // Your refresh token endpoint
         data: {
           'refreshToken': refreshToken,
           'accessToken': token,

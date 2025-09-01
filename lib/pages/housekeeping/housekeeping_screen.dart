@@ -8,7 +8,7 @@ import 'package:staff_view_ui/models/housekeeping_model.dart';
 import 'package:staff_view_ui/models/lookup_model.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
-import 'package:staff_view_ui/pages/task/create_task_screen.dart';
+import 'package:staff_view_ui/pages/task/task_op_screen.dart';
 import 'package:staff_view_ui/route.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
@@ -72,8 +72,11 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
       // color: Colors.white,
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(color: Colors.grey.shade100, blurRadius: 4, spreadRadius: 1)
+      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
+        BoxShadow(
+            color: Color.fromARGB(255, 250, 250, 250),
+            blurRadius: 4,
+            spreadRadius: 1)
       ]),
       child: Row(
         children: [
@@ -143,7 +146,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                   maxCrossAxisExtent: 200.0,
                   mainAxisSpacing: 8.0,
                   crossAxisSpacing: 8.0,
-                  childAspectRatio: 3.0,
+                  childAspectRatio: 1.7,
                 ),
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
@@ -359,9 +362,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
         child: Obx(() => MyButton(
             disabled: controller.selected.isEmpty,
             label: '',
-            onPressed: () => Modal.showFormDialog(
-                  CreateTaskScreen(),
-                ),
+            onPressed: () => Modal.showFormDialog(TaskOpScreen(), height: 450),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -386,7 +387,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   @override
   Widget buildItem(Housekeeping item) {
     var selected = controller.selected.any((e) => e.roomId == item.roomId);
-    var selectedTextColor = selected ? Colors.white : Colors.black;
+    var selectedTextColor = selected ? Colors.black : Colors.black;
 
     return Container(
       decoration: BoxDecoration(
@@ -398,7 +399,10 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
             offset: const Offset(0, 2),
           ),
         ],
-        color: selected ? AppTheme.primaryColor.withOpacity(0.7) : Colors.white,
+        border: Border.all(
+            width: 1,
+            color: selected ? AppTheme.primaryColor : Colors.transparent),
+        color: selected ? Colors.white : Colors.white,
       ),
       child: InkWell(
           borderRadius: BorderRadius.circular(4),
@@ -409,72 +413,70 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
               controller.selected.add(item);
             }
           },
-          child: Stack(
-            children: [
-              Positioned(
-                top: 0,
-                right: 0,
-                child: Container(
-                  width: 14,
-                  height: 14,
-                  child:
-                      NetworkImg(src: item.houseKeepingStatusImage, height: 18),
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.roomNumber ?? '',
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: selectedTextColor),
                 ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(8),
-                child: Row(
+                Text(
+                  item.roomTypeName ?? '',
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 11, color: Colors.grey),
+                ),
+                Row(
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "${item.roomNumber ?? ''}, ${item.roomTypeName ?? ''}",
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontSize: 14, color: selectedTextColor),
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Row(
-                            children: [
-                              NetworkImg(src: item.statusImage, height: 14),
-                              const SizedBox(
-                                width: 2,
-                              ),
-                              Text(
-                                item.statusNameEn!,
-                                style: TextStyle(
-                                    fontSize: 11, color: selectedTextColor),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
+                    NetworkImg(src: item.houseKeepingStatusImage, height: 18),
+                    const SizedBox(
+                      width: 2,
                     ),
-                    // Transform.scale(
-                    //   scale: 0.9,
-                    //   child:
-                    //    Row(
-                    //     children: [
-                    //       NetworkImg(src: item.statusImage, height: 18),
-                    //       const SizedBox(
-                    //         width: 2,
-                    //       ),
-                    //       Text(
-                    //         item.statusNameEn!,
-                    //         style: TextStyle(
-                    //             fontSize: 11, color: selectedTextColor),
-                    //       )
-                    //     ],
-                    //   ),
-                    // )
+                    Text(
+                      item.houseKeepingStatusNameEn!,
+                      style: const TextStyle(fontSize: 11, color: Colors.grey),
+                    ),
+                    const SizedBox(width: 60),
+                    NetworkImg(src: item.statusImage, height: 14),
+                    const SizedBox(
+                      width: 2,
+                    ),
+                    Text(
+                      item.statusNameEn!,
+                      style: const TextStyle(fontSize: 11, color: Colors.grey),
+                    )
                   ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 14),
+                SizedBox(
+                  height: 24,
+                  width: double.infinity, // full width
+                  child: Material(
+                    elevation: 0.6,
+                    child: OutlinedButton(
+                      onPressed: () {},
+                      style: OutlinedButton.styleFrom(
+                        // side: BorderSide(width: 0.5),
+                        side: BorderSide.none, backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      child: Text(
+                        "View tasks".tr,
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 12),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           )),
     );
   }

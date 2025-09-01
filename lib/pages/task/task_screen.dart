@@ -6,9 +6,10 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:staff_view_ui/helpers/base_list_screen.dart';
 import 'package:staff_view_ui/models/task_model.dart';
+import 'package:staff_view_ui/pages/task/task_op_screen.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/utils/theme.dart';
-import 'package:staff_view_ui/utils/widgets/button.dart';
+import 'package:staff_view_ui/utils/widgets/dialog.dart';
 import 'package:staff_view_ui/utils/widgets/network_img.dart';
 
 class TaskScreen extends BaseList<TaskModel> {
@@ -80,8 +81,6 @@ class TaskScreen extends BaseList<TaskModel> {
                   return null;
                 }
               },
-              // separatorBuilder: (context, index) =>
-              //     Container(height: 1, color: Colors.grey.shade100),
               itemCount: items.length +
                   (isLoadingMore && isLastSection(section) ? 1 : 0),
             ),
@@ -157,7 +156,6 @@ class TaskScreen extends BaseList<TaskModel> {
                       ],
                     ),
 
-                    // REQUEST TIME
                     Row(
                       children: [
                         item.requestTime != null
@@ -186,22 +184,8 @@ class TaskScreen extends BaseList<TaskModel> {
                     ],
                   ),
                   const SizedBox(height: 30),
-                  // MyButton(
-                  //   child: Row(
-                  //     children: [
-                  //       Icon(Icons.person_add_alt_1, size: 11),
-                  //       SizedBox(width: 4),
-                  //       Text("Assign".tr, style: TextStyle(fontSize: 11)),
-                  //     ],
-                  //   ),
-                  //   label: '',
-                  //   onPressed: () {},
-                  //   width: 50,
-                  //   padding:
-                  //       const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                  // ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () => Modal.showFormDialog(TaskOpScreen()),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 4),
@@ -230,6 +214,12 @@ class TaskScreen extends BaseList<TaskModel> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildAssignForm() {
+    return Column(
+      children: [Text('hiiiii')],
     );
   }
 }

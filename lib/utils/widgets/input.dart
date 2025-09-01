@@ -37,6 +37,7 @@ class MyFormField<T> extends StatelessWidget {
     return SizedBox(
       height: 72,
       child: ReactiveTextField<T>(
+        // minLines: minLines,
         keyboardType: TextInputType.visiblePassword,
         textAlignVertical: TextAlignVertical.bottom,
         maxLines: maxLines,

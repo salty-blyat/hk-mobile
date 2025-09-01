@@ -1,12 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/models/service_item_model.dart';
-import 'package:staff_view_ui/models/service_type_model.dart';
 import 'package:staff_view_ui/pages/service_item/service_item_controller.dart';
-import 'package:staff_view_ui/pages/service_type/service_type_controller.dart';
 
 class ServiceItemSelect extends StatelessWidget {
   ServiceItemSelect(

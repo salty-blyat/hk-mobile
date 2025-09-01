@@ -188,10 +188,13 @@ class StaffSelectDialog extends StatelessWidget {
                   ],
                 ),
                 onTap: () {
+                  print(controller.staff);
                   controller.selectedStaff.value =
                       '${controller.staff[index].name}';
                   formGroup.control(formControlName).value =
                       controller.staff[index].id;
+                       
+                      print(formGroup.control('staffId').value);
                   Get.back(result: controller.staff[index]);
                 },
               );

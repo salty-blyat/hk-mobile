@@ -1,7 +1,6 @@
 import 'dart:convert';
 
-import 'package:get/get.dart';
-import 'package:reactive_forms/reactive_forms.dart';
+import 'package:get/get.dart'; 
 import 'package:staff_view_ui/helpers/base_service.dart';
 import 'package:staff_view_ui/models/housekeeping_model.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_service.dart';
@@ -29,26 +28,8 @@ class HousekeepingController extends GetxController {
   late final DateTime today;
   late String selectedDate; 
   final Rx<int> houseKeepingStatus = 0.obs;
-  final Rx<int> housekeepingView = HousekeepingView.room.value.obs;
-
-  final FormGroup formGroup = fb.group({
-    'roomIds': FormControl<List<int>>(
-      value: [],
-      validators: [Validators.required],
-    ),
-    'staffId': FormControl<int>(validators: [Validators.required]),
-    'hkActivityType':
-        FormControl<int>(value: 2, validators: [Validators.required]),
-    'houseKeepingStatus':
-        FormControl<String>(validators: [Validators.required]),
-    'note': FormControl<String>(validators: [Validators.required]),
-    // roomIds: [this.modal.roomIds, [required]],
-    // staffId: [null, this.isFixOOS ? [] : [required]],
-    // hkActivityType: [this.modal.HkActivityType, [required]],
-    // houseKeepingStatus: [this.modal.statusHouseKeeping, [required]],
-    // note: [null, this.isFixOOS ? [required] : []],
-  });
-
+  final Rx<int> housekeepingView = HousekeepingView.room.value.obs; 
+  
   int currentPage = 1;
   final int pageSize = 20;
   final queryParameters = QueryParam(
@@ -76,6 +57,7 @@ class HousekeepingController extends GetxController {
     queryParameters.update((params) {
       params?.pageIndex = (params.pageIndex ?? 0) + 1;
     });
+    
     if (searchText.value.isNotEmpty) {
       filter.add({
         'field': 'search',

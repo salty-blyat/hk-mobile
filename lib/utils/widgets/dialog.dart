@@ -125,19 +125,19 @@ class Modal {
     ));
   }
 
-  static showFormDialog(Widget child) {
+  static showFormDialog(Widget child ,{ double height = 370}) {
     return Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(
           borderRadius: AppTheme.borderRadius,
         ),
         child: SizedBox(
-          height: 370,
+          height: height,
           width: double.infinity,
           child: child,
         ),
       ),
-      // barrierDismissible: false, // TODO: uncomment this out later);
+      // barrierDismissible: false,
     ); 
   }
 
