@@ -28,6 +28,10 @@ class TaskModel extends BaseModel {
   int? serviceItemId;
   int? quantity;
   int? status;
+
+//mockup
+  int? taskFrom;
+  int? staffId;
   TaskModel({
     this.statusNameKh,
     this.statusNameEn,

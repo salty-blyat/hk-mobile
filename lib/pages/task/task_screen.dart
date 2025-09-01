@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:staff_view_ui/helpers/base_list_screen.dart';
 import 'package:staff_view_ui/models/task_model.dart';
+import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
 import 'package:staff_view_ui/pages/task/task_op_screen.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/utils/theme.dart';
@@ -21,7 +22,9 @@ class TaskScreen extends BaseList<TaskModel> {
   RxList<TaskModel> get items => controller.list;
 
   @override
-  String get title => 'Tasks';
+  String get title => controller.roomNumber?.value != null
+      ? controller.roomNumber!.value
+      : 'Tasks';
 
   @override
   bool get fabButton => false;
@@ -54,10 +57,9 @@ class TaskScreen extends BaseList<TaskModel> {
   @override
   Widget buildStickyList(List<TaskModel> items) {
     final groupedItems = groupItems(items);
-
     return Container(
       color: AppTheme.greyBg,
-      padding: const EdgeInsets.only(top: 12),
+      padding: const EdgeInsets.only(top: 12, bottom: 32),
       child: CustomScrollView(
         slivers: groupedItems.entries.map((entry) {
           final section = entry.key;
@@ -104,7 +106,7 @@ class TaskScreen extends BaseList<TaskModel> {
           print(requestTime);
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
           child: Row(
             children: [
               Expanded(
@@ -134,13 +136,13 @@ class TaskScreen extends BaseList<TaskModel> {
                       children: [
                         item.roomNo != null
                             ? const Icon(Icons.location_on_outlined,
-                                color: Colors.grey, size: 11)
+                                color: Colors.grey, size: 12)
                             : const SizedBox.shrink(),
                         const SizedBox(width: 4),
                         item.roomNo != null
-                            ? Text((item.roomNo ?? '') + ", " + "Floor 001",
+                            ? Text("${item.roomNo ?? ''}, Floor 001",
                                 style: const TextStyle(
-                                    fontSize: 11, color: Colors.grey))
+                                    fontSize: 12, color: Colors.grey))
                             : const SizedBox.shrink(),
                       ],
                     ),
@@ -148,11 +150,11 @@ class TaskScreen extends BaseList<TaskModel> {
                     Row(
                       children: [
                         const Icon(Icons.person_outline,
-                            color: Colors.grey, size: 11),
+                            color: Colors.grey, size: 12),
                         const SizedBox(width: 4),
                         Text(item.guestName ?? '',
                             style: const TextStyle(
-                                fontSize: 11, color: Colors.grey)),
+                                fontSize: 12, color: Colors.grey)),
                       ],
                     ),
 
@@ -160,13 +162,13 @@ class TaskScreen extends BaseList<TaskModel> {
                       children: [
                         item.requestTime != null
                             ? const Icon(Icons.access_time,
-                                color: Colors.grey, size: 11)
+                                color: Colors.grey, size: 12)
                             : const SizedBox.shrink(),
                         const SizedBox(width: 4),
                         item.requestTime != null
                             ? Text(requestTime!,
                                 style: const TextStyle(
-                                    fontSize: 11, color: Colors.grey))
+                                    fontSize: 12, color: Colors.grey))
                             : const SizedBox.shrink(),
                       ],
                     )
@@ -174,18 +176,22 @@ class TaskScreen extends BaseList<TaskModel> {
                 ),
               ),
               Column(
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
                       NetworkImg(height: 16, src: item.statusImage),
                       const SizedBox(width: 4),
                       Text(item.statusNameEn ?? '',
-                          style: const TextStyle(fontSize: 11)),
+                          style: const TextStyle(fontSize: 12)),
                     ],
                   ),
                   const SizedBox(height: 30),
                   ElevatedButton(
-                    onPressed: () => Modal.showFormDialog(TaskOpScreen()),
+                    onPressed: () {
+                      controller.formGroup.patchValue({'id': item.id}); 
+                      Modal.showFormDialog(TaskOpScreen());
+                    },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 4),
@@ -198,12 +204,12 @@ class TaskScreen extends BaseList<TaskModel> {
                     child: Row(
                       children: [
                         const Icon(Icons.person_add_alt_1,
-                            size: 11, color: Colors.white),
+                            size: 12, color: Colors.white),
                         const SizedBox(width: 4),
                         Text(
                           "Assign".tr,
                           style:
-                              const TextStyle(fontSize: 11), // shrink text too
+                              const TextStyle(fontSize: 12), // shrink text too
                         ),
                       ],
                     ),

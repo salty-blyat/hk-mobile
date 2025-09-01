@@ -6,7 +6,7 @@ import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
 import 'package:staff_view_ui/pages/service_item/service_item_controller.dart';
 import 'package:staff_view_ui/pages/service_item/service_item_select.dart';
 import 'package:staff_view_ui/pages/service_type/service_type_select.dart';
-import 'package:staff_view_ui/pages/staff/staff_select.dart';
+import 'package:staff_view_ui/pages/staff/staff_select.dart'; 
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/input.dart';
@@ -18,8 +18,17 @@ class TaskOpScreen extends StatelessWidget {
       Get.put(ServiceItemController());
   final HousekeepingController hkController =
       Get.find<HousekeepingController>();
+
   @override
   Widget build(BuildContext context) {
+    if (controller.formGroup.control('id').value != null &&
+        controller.formGroup.control('id').value != 0) {
+      print(
+          "formGroup.control('id').value ${controller.formGroup.control('id').value}");
+      // int taskId = controller.formGroup.control('id').value;
+      // controller.find(taskId);
+      // controller.formGroup.control('serviceItemId').value= 4;
+    }
     return Column(
       children: [
         _Header(),
@@ -90,8 +99,8 @@ class TaskOpScreen extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 StaffSelect(
+                  label: "Staff".tr,
                   formControlName: 'staffId',
-                  formGroup: controller.formGroup,
                 ),
                 const SizedBox(height: 12),
                 ServiceTypeSelect(

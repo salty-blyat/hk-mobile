@@ -22,7 +22,6 @@ class BaseList<T> extends StatelessWidget {
   List<Widget> actions() => [];
   Widget buildItem(T item) => const SizedBox.shrink();
   Widget buildBottomNavigationBar() => const SizedBox.shrink();
- 
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +29,7 @@ class BaseList<T> extends StatelessWidget {
       appBar: AppBar(
         centerTitle: isCenterTitle,
         title: Text(
-          title.tr, 
+          title.tr,
           style: context.textTheme.titleLarge!.copyWith(color: Colors.white),
         ),
         actions: actions(),
@@ -151,5 +150,4 @@ class BaseList<T> extends StatelessWidget {
       }).toList(),
     );
   }
-  
 }

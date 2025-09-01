@@ -28,7 +28,6 @@ class DioClient {
           options.headers['Tenant-Code'] = AppSetting.setting['TENANT_CODE'];
           options.headers['App-Code'] = AppSetting.setting['APP_CODE'];
           options.headers['Content-Type'] = 'application/json';
-          options.headers['App-Version'] = AppSetting.setting['APP_VERSION'];
         }
 
         return handler.next(options); // Continue with the request

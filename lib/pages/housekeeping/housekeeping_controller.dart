@@ -81,8 +81,7 @@ class HousekeepingController extends GetxController {
       list.value = response;
     }
     loading.value = false;
-  }
-
+  } 
   // Future<void> changeStatus() async {
   //   loading.value = true;
   //   var filter = [];

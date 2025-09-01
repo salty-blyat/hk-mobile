@@ -6,11 +6,11 @@ import 'package:staff_view_ui/models/user_info_model.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
 import 'package:staff_view_ui/pages/staff/staff_service.dart';
 
-class StaffSelectController extends GetxController {
+class StaffController extends GetxController {
   final RxString searchText = ''.obs;
   final RxString selectedStaff = '-'.obs; 
-  final RxList<Staff> staff = <Staff>[].obs;
-  final StaffService staffService = StaffService();
+  final RxList<Staff> list = <Staff>[].obs;
+  final StaffService service = StaffService();
   final RxBool loading = false.obs;
   final RxBool loadingMore = false.obs;
   final RxBool hasMore = true.obs;
@@ -42,9 +42,9 @@ class StaffSelectController extends GetxController {
   //   loading.value = false;
   // }
 
-  Future<void> getStaff() async {
+  Future<void> search() async {
     loading.value = true;
-    staff.value = [];
+    list.value = [];
     var filter = []; 
     if (searchText.value.isNotEmpty) {
       filter.add({
@@ -59,14 +59,14 @@ class StaffSelectController extends GetxController {
       'value': PositionEnum.housekeeping.value
     });
 
-    var response = await staffService.getStaff(queryParameters: {
+    var response = await service.search(queryParameters: {
       'pageIndex': currentPage,
       'pageSize': pageSize,
       'filters': jsonEncode(filter)
     });
 
     if (response.isNotEmpty) {
-      staff.addAll(response);
+      list.addAll(response);
       hasMore.value = response.length == pageSize;
     } else {
       hasMore.value = false;
@@ -80,14 +80,14 @@ class StaffSelectController extends GetxController {
     loadingMore.value = true;
     currentPage++;
     var filter = [];
-    var response = await staffService.getStaff(queryParameters: {
+    var response = await service.search(queryParameters: {
       'pageIndex': currentPage,
       'pageSize': pageSize,
       'filters': jsonEncode(filter)
     });
 
     if (response.isNotEmpty) {
-      staff.addAll(response);
+      list.addAll(response);
     } else {
       hasMore.value = false;
     }

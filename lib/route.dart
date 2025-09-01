@@ -21,7 +21,7 @@ class Routes {
     GetPage(name: RouteName.task, page: () => TaskScreen()),
 
     GetPage(name: RouteName.login, page: () => LoginScreen()),
-    GetPage(name: RouteName.profile, page: () => ProfileScreen()),
+    // GetPage(name: RouteName.profile, page: () => ProfileScreen()),
     GetPage(name: RouteName.absentException, page: () => const AbsentExceptionScreen()),
     GetPage(name: RouteName.privacyPolicy, page: () => PrivacyPolicyScreen()),
     GetPage(name: RouteName.changePassword, page: () => ChangePassword()),

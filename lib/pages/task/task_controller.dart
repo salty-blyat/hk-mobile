@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
@@ -43,13 +46,21 @@ class TaskController extends GetxController {
   final RxList<TaskModel> list = <TaskModel>[].obs;
   final HousekeepingController hkController =
       Get.find<HousekeepingController>();
-
+  RxInt? roomId;
+  RxString? roomNumber;
   final TaskService service = TaskService();
   final RxBool loading = false.obs;
+
   final RxBool isLoadingMore = false.obs;
   final RxBool canLoadMore = true.obs;
 
   final FormGroup formGroup = fb.group({
+    'id': FormControl<int?>(
+      value: null,
+    ),
+    'reservationId': FormControl<int>(
+      value: 0,
+    ),
     'taskFrom': FormControl<int>(
       value: TaskFromEnum.internal.value,
       validators: [Validators.required],
@@ -58,6 +69,8 @@ class TaskController extends GetxController {
         value: DateTime.now(), validators: [Validators.required]),
     'roomIds':
         FormControl<List<int>>(value: [], validators: [Validators.required]),
+    'guestId': FormControl<int>(value: 0),
+
     // 'requestNo': FormControl<>(value: null, validators: [Validators.required]),
     'staffId': FormControl<int>(value: null, validators: [Validators.required]),
     'serviceTypeId':
@@ -83,6 +96,10 @@ class TaskController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
+    if (Get.arguments != null && Get.arguments['roomId'] != null) {
+      roomId = RxInt(Get.arguments['roomId']);
+      roomNumber = RxString(Get.arguments['roomNumber']);
+    }
     await search();
     formGroup.control('serviceTypeId').valueChanges.listen((value) {
       if (value == 0) {
@@ -106,6 +123,14 @@ class TaskController extends GetxController {
         'value': searchText.value
       });
     }
+    if (roomId?.value != null) {
+      filter.add({'field': 'roomId', 'operator': 'eq', 'value': roomId?.value});
+    }
+
+    queryParameters.update((params) {
+      params!.filters = jsonEncode(filter);
+    });
+
     try {
       var response = await service.search(
           queryParameters.value, (item) => TaskModel.fromJson(item));
@@ -143,5 +168,31 @@ class TaskController extends GetxController {
     } catch (e) {
       print(e);
     }
+  }
+
+  // Future<void> find(int id) async {
+  //   // loading.value = true;
+  //   var response = await service.find(id);
+  //   if (response.isNotEmpty) {
+  //     fillForm(response.value);
+  //   }
+  //   // loading.value = false;
+  // }
+
+  void fillForm(TaskModel task) {
+    formGroup.patchValue({
+      'taskFrom': task.taskFrom, // must be int (TaskFromEnum.internal.value)
+      'requestTime': task.requestTime,
+      'roomIds': [task.roomId],
+      'staffId': task.staffId,
+      'serviceTypeId': task.serviceTypeId,
+      'serviceItemId': task.serviceItemId,
+      'quantity': task.quantity,
+      'status': task.status,
+      'note': task.note,
+
+      'reservationId': task.reservationId,
+      'guestId': task.guestId,
+    });
   }
 }

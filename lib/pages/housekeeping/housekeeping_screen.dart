@@ -43,6 +43,9 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
     _debounce?.cancel();
   }
 
+  Color bgColor = Colors.grey.withOpacity(0.2);
+  // Color bgColor = Colors.white;
+
   @override
   RxList<Housekeeping> get items => controller.list;
   @override
@@ -70,7 +73,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
       // color: Colors.white,
       decoration: const BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(
@@ -87,7 +90,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Material(
-                color: Colors.transparent, // keep background transparent
+                color: Colors.transparent,
                 child: InkWell(
                   onTap: () => onTap(),
                   borderRadius: BorderRadius.circular(4),
@@ -126,7 +129,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
     final groupedItems = groupItems(items);
 
     return Container(
-      color: Colors.white,
+      color: bgColor,
       child: CustomScrollView(
         slivers: groupedItems.entries.map((entry) {
           final section = "${entry.key} | ${entry.value.first.blockName!}";
@@ -138,15 +141,19 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
           var floorId = items.isNotEmpty ? items.first.floorId : 0;
 
           return SliverStickyHeader(
-            header: buildStickyHeader(section, items.length, floorId!),
+            header:
+                //  Container(padding: EdgeInsets.only(top:12),child:
+                //  ),
+                buildStickyHeader(section, items.length, floorId!),
             sliver: SliverPadding(
-              padding: const EdgeInsets.all(4),
+              padding:
+                  const EdgeInsets.only(top: 8, left: 4, right: 4, bottom: 16),
               sliver: SliverGrid(
                 gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 200.0,
                   mainAxisSpacing: 8.0,
                   crossAxisSpacing: 8.0,
-                  childAspectRatio: 1.7,
+                  childAspectRatio: 1.5,
                 ),
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
@@ -192,7 +199,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
         color: Colors.white,
         borderRadius: AppTheme.borderRadius,
       ),
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.only(top: 8),
       child: Align(
         alignment: Alignment.centerLeft,
         child: headerWidget(),
@@ -208,7 +215,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
         maxHeight: 36,
       ),
       padding: WidgetStateProperty.all(
-        const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        const EdgeInsets.symmetric(vertical: 0, horizontal: 8),
       ),
       textStyle: WidgetStateProperty.all(
         const TextStyle(
@@ -222,7 +229,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
       hintStyle: WidgetStateProperty.all(
         TextStyle(
             color: AppTheme.primaryColor.withOpacity(0.5),
-            fontSize: 12,
+            fontSize: 14,
             fontFamilyFallback: const ['Gilroy', 'Kantumruy']),
       ),
       leading: Icon(
@@ -327,7 +334,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
       },
       value: item.valueId,
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         width: 110,
         child: Row(children: [
           NetworkImg(
@@ -358,6 +365,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   @override
   Widget buildBottomNavigationBar() {
     return Container(
+        color: bgColor,
         padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
         child: Obx(() => MyButton(
             disabled: controller.selected.isEmpty,
@@ -379,7 +387,10 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   List<Widget> actions() {
     return [
       IconButton(
-          onPressed: () => Get.toNamed(RouteName.task),
+          onPressed: () {
+            Get.toNamed(RouteName.task);
+            controller.selected.clear();
+          },
           icon: const Icon(Icons.task_outlined)),
     ];
   }
@@ -392,15 +403,8 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
         border: Border.all(
-            width: 1,
+            width: 2,
             color: selected ? AppTheme.primaryColor : Colors.transparent),
         color: selected ? Colors.white : Colors.white,
       ),
@@ -426,11 +430,13 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                       fontWeight: FontWeight.w500,
                       color: selectedTextColor),
                 ),
+                const SizedBox(height: 4),
                 Text(
                   item.roomTypeName ?? '',
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 11, color: Colors.grey),
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
+                const SizedBox(height: 4),
                 Row(
                   children: [
                     NetworkImg(src: item.houseKeepingStatusImage, height: 18),
@@ -439,9 +445,9 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                     ),
                     Text(
                       item.houseKeepingStatusNameEn!,
-                      style: const TextStyle(fontSize: 11, color: Colors.grey),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
                     ),
-                    const SizedBox(width: 60),
+                    const SizedBox(width: 40),
                     NetworkImg(src: item.statusImage, height: 14),
                     const SizedBox(
                       width: 2,
@@ -454,15 +460,23 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                 ),
                 const SizedBox(height: 14),
                 SizedBox(
-                  height: 24,
-                  width: double.infinity, // full width
+                  height: 32,
+                  width: double.infinity,
                   child: Material(
-                    elevation: 0.6,
+                    elevation: 0.8,
                     child: OutlinedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.toNamed(RouteName.task, arguments: {
+                          'roomId': item.roomId,
+                          'roomNumber': item.roomNumber
+                        });
+                        controller.selected.clear();
+                      },
                       style: OutlinedButton.styleFrom(
-                        // side: BorderSide(width: 0.5),
-                        side: BorderSide.none, backgroundColor: Colors.white,
+                        side: selected
+                            ? const BorderSide(width: 1)
+                            : BorderSide.none,
+                        backgroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4),
                         ),
