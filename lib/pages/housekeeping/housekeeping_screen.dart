@@ -370,7 +370,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
         child: Obx(() => MyButton(
             disabled: controller.selected.isEmpty,
             label: '',
-            onPressed: () => Modal.showFormDialog(TaskOpScreen(), height: 450),
+            onPressed: () => Modal.showFormDialog(TaskOpScreen(), height: 500),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

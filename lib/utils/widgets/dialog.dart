@@ -137,7 +137,7 @@ class Modal {
           child: child,
         ),
       ),
-      // barrierDismissible: false,
+      barrierDismissible: false,
     ); 
   }
 

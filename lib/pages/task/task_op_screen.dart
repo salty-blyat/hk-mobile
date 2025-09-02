@@ -61,7 +61,7 @@ class TaskOpScreen extends StatelessWidget {
                     Text("Rooms".tr),
                     const SizedBox(width: 12),
                     Flexible(
-                      child: Wrap(children: [
+                      child: Wrap(spacing: 4,runSpacing: 4, children: [
                         ...selectedRooms.map((r) => Badge(
                               label: Container(
                                 padding: const EdgeInsets.symmetric(

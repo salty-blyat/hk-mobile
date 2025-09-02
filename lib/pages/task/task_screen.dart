@@ -55,11 +55,11 @@ class TaskScreen extends BaseList<TaskModel> {
   }
 
   @override
-  Widget buildStickyList(List<TaskModel> items) {
+  Widget buildStickyList(List<TaskModel> items) { 
     final groupedItems = groupItems(items);
     return Container(
       color: AppTheme.greyBg,
-      padding: const EdgeInsets.only(top: 12, bottom: 32),
+      padding: const EdgeInsets.only(top: 12, bottom: 0),
       child: CustomScrollView(
         slivers: groupedItems.entries.map((entry) {
           final section = entry.key;
@@ -67,13 +67,13 @@ class TaskScreen extends BaseList<TaskModel> {
           bool isLastSection(String section) {
             return section == groupedItems.entries.last.key;
           }
-
+    
           return SliverStickyHeader(
             header: const SizedBox.shrink(),
             sliver: SliverList.builder(
               itemBuilder: (context, index) {
                 if (index < items.length) {
-                  return buildItem(items[index]);
+                  return  buildItem(items[index]);
                 } else if (isLoadingMore && isLastSection(section)) {
                   return const Padding(
                     padding: EdgeInsets.all(16.0),
@@ -177,6 +177,7 @@ class TaskScreen extends BaseList<TaskModel> {
               ),
               Column(
                 // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Row(
                     children: [
