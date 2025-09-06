@@ -1,12 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
-import 'package:staff_view_ui/helpers/version_server.dart';
 import 'package:staff_view_ui/models/setting_model.dart';
-import 'package:staff_view_ui/pages/menu/menu_screen.dart';
 import 'package:staff_view_ui/pages/menu/menu_service.dart';
 import 'package:staff_view_ui/route.dart';
 
@@ -27,7 +24,7 @@ class MenusController extends GetxController {
       'route': RouteName.houseKeeping,
       'badge': 0,
       'isShow': true,
-    } 
+    }
   ].obs;
   var menuItems = [].obs;
 
@@ -113,30 +110,30 @@ class MenusController extends GetxController {
     menuItems.refresh();
   }
 
-  @override
-  void onReady() async {
-    var version = await AppVersion.getAppVersion();
+  // @override
+  // void onReady() async {
+  //   var version = await AppVersion.getAppVersion();
 
-    super.onReady();
-    if (Platform.isAndroid) {
-      androidVersion.listen((value) {
-        if (value != '...' &&
-            double.parse(value) > double.parse(version ?? '0')) {
-          Navigator.of(Get.context!).restorablePush(
-            MenuScreen.modalBuilder,
-          );
-        }
-      });
-    }
-    if (Platform.isIOS) {
-      iosVersion.listen((value) {
-        if (value != '...' &&
-            double.parse(value) > double.parse(version ?? '0')) {
-          Navigator.of(Get.context!).restorablePush(
-            MenuScreen.modalBuilder,
-          );
-        }
-      });
-    }
-  }
+  //   super.onReady();
+  //   if (Platform.isAndroid) {
+  //     androidVersion.listen((value) {
+  //       if (value != '...' &&
+  //           double.parse(value) > double.parse(version ?? '0')) {
+  //         Navigator.of(Get.context!).restorablePush(
+  //           MenuScreen.modalBuilder,
+  //         );
+  //       }
+  //     });
+  //   }
+  //   if (Platform.isIOS) {
+  //     iosVersion.listen((value) {
+  //       if (value != '...' &&
+  //           double.parse(value) > double.parse(version ?? '0')) {
+  //         Navigator.of(Get.context!).restorablePush(
+  //           MenuScreen.modalBuilder,
+  //         );
+  //       }
+  //     });
+  //   }
+  // }
 }

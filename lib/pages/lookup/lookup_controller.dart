@@ -43,6 +43,7 @@ extension PositionEnumExtension on PositionEnum {
 
   int get value => _values[this]!;
 }
+
 enum LookupTypeEnum {
   gender,
   nationality,
@@ -96,13 +97,19 @@ extension LookupTypeEnumExtension on LookupTypeEnum {
 class LookupController extends GetxController {
   final LookupService service = LookupService();
   final lookups = <LookupModel>[].obs;
+  final taskStatusList = <LookupModel>[].obs;
   final isLoading = false.obs;
 
   Future<void> fetchLookups(int lookupTypeId) async {
     isLoading.value = true;
     try {
       final fetchedLookups = await service.getLookup(lookupTypeId);
-      lookups.assignAll(fetchedLookups);
+      if (lookupTypeId == LookupTypeEnum.requestStatuses.value) {
+        taskStatusList.assignAll(fetchedLookups);
+      }
+      if (lookupTypeId == LookupTypeEnum.housekeepingStatus.value) {
+        lookups.assignAll(fetchedLookups);
+      }
     } catch (e) {
       isLoading.value = false;
     } finally {

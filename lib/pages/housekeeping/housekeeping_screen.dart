@@ -3,11 +3,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:staff_view_ui/auth/auth_controller.dart';
 import 'package:staff_view_ui/helpers/base_list_screen.dart';
 import 'package:staff_view_ui/models/housekeeping_model.dart';
 import 'package:staff_view_ui/models/lookup_model.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
+import 'package:staff_view_ui/pages/service_item/service_item_controller.dart';
+import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/pages/task/task_op_screen.dart';
 import 'package:staff_view_ui/route.dart';
 import 'package:staff_view_ui/utils/theme.dart';
@@ -23,10 +27,15 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
 
   Timer? _debounce;
 
+  // @override
+  // String get title => controller.auth.value?.fullName ?? 'Housekeeping';
+
   @override
-  String get title => 'Housekeeping';
+  bool get showDrawer => true;
+
   @override
   bool get fabButton => false;
+
   @override
   bool get isCenterTitle => false;
 
@@ -43,7 +52,27 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
     _debounce?.cancel();
   }
 
-  Color bgColor = Colors.grey.withOpacity(0.2);
+  @override
+  Widget titleWidget() {
+    final AuthController authController = Get.find<AuthController>();
+    return Obx(() {
+      var position = authController.role.value == RoleEnum.housekeeper.value
+          ? 'Housekeeper'
+          : 'Manager';
+
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(
+          controller.auth.value?.fullName ?? 'Housekeeping',
+          style: Get.textTheme.titleLarge!.copyWith(color: Colors.white),
+          overflow: TextOverflow.ellipsis,
+        ),
+        Text("Position: $position",
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal))
+      ]);
+    });
+  }
+
+  Color bgColor = const Color.fromARGB(255, 240, 240, 240);
   // Color bgColor = Colors.white;
 
   @override
@@ -153,7 +182,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                   maxCrossAxisExtent: 200.0,
                   mainAxisSpacing: 8.0,
                   crossAxisSpacing: 8.0,
-                  childAspectRatio: 1.5,
+                  childAspectRatio: 1.4,
                 ),
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
@@ -260,63 +289,85 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
       trailing: [
         Builder(
           builder: (context) {
-            return IconButton(
-              icon: const Icon(Icons.filter_list),
-              onPressed: () async {
-                final RenderBox button =
-                    context.findRenderObject() as RenderBox;
-                final RenderBox overlay =
-                    Overlay.of(context).context.findRenderObject() as RenderBox;
-
-                final RelativeRect position = RelativeRect.fromRect(
-                  Rect.fromPoints(
-                    button.localToGlobal(Offset.zero, ancestor: overlay),
-                    button.localToGlobal(button.size.bottomRight(Offset.zero),
-                        ancestor: overlay),
-                  ),
-                  Offset.zero & overlay.size,
-                );
-
-                final result = await showMenu(
-                  context: context,
-                  position: position,
-                  items: [
-                    PopupMenuItem(
-                      padding: EdgeInsets.zero,
-                      height: 35,
-                      value: 0,
-                      onTap: () {
-                        controller.houseKeepingStatus.value = 0;
-                        controller.search();
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 4, horizontal: 8),
-                        width: 110,
-                        child: const Row(children: [
-                          Icon(
-                            Icons.layers_outlined,
-                            size: 16,
-                            color: AppTheme.primaryColor,
+            return Stack(
+              children: [
+                Obx(() {
+                  return controller.houseKeepingStatus.value != 0
+                      ? Positioned(
+                          top: 8,
+                          right: 8,
+                          child: Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(99),
+                            ),
                           ),
-                          SizedBox(width: 4),
-                          Text(
-                            "All",
-                            style: const TextStyle(fontSize: 12),
-                          )
-                        ]),
-                      ),
-                    ),
-                    ...lookupController.lookups.map((LookupModel item) {
-                      return _buildPopoverItem(item);
-                    })
-                  ],
-                );
+                        )
+                      : const SizedBox.shrink();
+                }),
+                IconButton(
+                  icon: const Icon(Icons.filter_list),
+                  onPressed: () async {
+                    final RenderBox button =
+                        context.findRenderObject() as RenderBox;
+                    final RenderBox overlay = Overlay.of(context)
+                        .context
+                        .findRenderObject() as RenderBox;
 
-                if (result != null) {
-                  print("Selected: $result");
-                }
-              },
+                    final RelativeRect position = RelativeRect.fromRect(
+                      Rect.fromPoints(
+                        button.localToGlobal(Offset.zero, ancestor: overlay),
+                        button.localToGlobal(
+                            button.size.bottomRight(Offset.zero),
+                            ancestor: overlay),
+                      ),
+                      Offset.zero & overlay.size,
+                    );
+
+                    final result = await showMenu(
+                      context: context,
+                      position: position,
+                      items: [
+                        PopupMenuItem(
+                          padding: EdgeInsets.zero,
+                          height: 35,
+                          value: 0,
+                          onTap: () {
+                            controller.houseKeepingStatus.value = 0;
+                            controller.search();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 8),
+                            width: 110,
+                            child: const Row(children: [
+                              Icon(
+                                Icons.layers_outlined,
+                                size: 16,
+                                color: AppTheme.primaryColor,
+                              ),
+                              SizedBox(width: 4),
+                              Text(
+                                "All",
+                                style: const TextStyle(fontSize: 12),
+                              )
+                            ]),
+                          ),
+                        ),
+                        ...lookupController.lookups.map((LookupModel item) {
+                          return _buildPopoverItem(item);
+                        })
+                      ],
+                    );
+
+                    if (result != null) {
+                      print("Selected: $result");
+                    }
+                  },
+                ),
+              ],
             );
           },
         ),
@@ -364,31 +415,47 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
 
   @override
   Widget buildBottomNavigationBar() {
-    return Container(
-        color: bgColor,
-        padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-        child: Obx(() => MyButton(
+    final AuthController authController = Get.find<AuthController>();
+    final TaskController taskController = Get.put(TaskController());
+
+    return Obx(() {
+      if (authController.role.value == RoleEnum.manager.value) {
+        return Container(
+          color: bgColor,
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+          child: MyButton(
             disabled: controller.selected.isEmpty,
             label: '',
-            onPressed: () => Modal.showFormDialog(TaskOpScreen(), height: 500),
-            child: Row(
+            onPressed: () {
+              taskController.clearForm();
+              Modal.showFormDialog(TaskOpScreen(), height: 525);
+              print(taskController.formGroup.rawValue);
+              print(ServiceItemController().selected.value);
+            },
+            child: const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
-                  Icons.add_rounded,
-                  size: 14,
-                ),
-                Text("Task".tr)
+                Icon(Icons.add_rounded, size: 14),
+                SizedBox(width: 4),
+                Text("Task"),
               ],
-            ))));
+            ),
+          ),
+        );
+      } else {
+        return const SizedBox.shrink();
+      }
+    });
   }
 
   @override
-  List<Widget> actions() {
-    return [
+
+  List<Widget> actions() { 
+    return [ 
       IconButton(
           onPressed: () {
-            Get.toNamed(RouteName.task);
+            Get.toNamed(RouteName.task,
+                arguments: {'roomId': 0, 'title': "Tasks"});
             controller.selected.clear();
           },
           icon: const Icon(Icons.task_outlined)),
@@ -403,95 +470,137 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(
-            width: 2,
-            color: selected ? AppTheme.primaryColor : Colors.transparent),
+        boxShadow: [
+          BoxShadow(
+            color: selected
+                ? AppTheme.primaryColor.withOpacity(0.5)
+                : Colors.transparent,
+            blurRadius: 2,
+            spreadRadius: 0.04,
+            offset: const Offset(0, 1), // shadow position
+          ),
+        ],
         color: selected ? Colors.white : Colors.white,
       ),
-      child: InkWell(
-          borderRadius: BorderRadius.circular(4),
-          onTap: () {
-            if (selected) {
-              controller.selected.remove(item);
-            } else {
-              controller.selected.add(item);
-            }
-          },
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.roomNumber ?? '',
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: selectedTextColor),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  item.roomTypeName ?? '',
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    NetworkImg(src: item.houseKeepingStatusImage, height: 18),
-                    const SizedBox(
-                      width: 2,
-                    ),
-                    Text(
-                      item.houseKeepingStatusNameEn!,
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                    const SizedBox(width: 40),
-                    NetworkImg(src: item.statusImage, height: 14),
-                    const SizedBox(
-                      width: 2,
-                    ),
-                    Text(
-                      item.statusNameEn!,
-                      style: const TextStyle(fontSize: 11, color: Colors.grey),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 14),
-                SizedBox(
-                  height: 32,
-                  width: double.infinity,
-                  child: Material(
-                    elevation: 0.8,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        Get.toNamed(RouteName.task, arguments: {
-                          'roomId': item.roomId,
-                          'roomNumber': item.roomNumber
-                        });
-                        controller.selected.clear();
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: selected
-                            ? const BorderSide(width: 1)
-                            : BorderSide.none,
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+            splashColor: AppTheme.primaryColor.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(4),
+            onTap: () {
+              if (selected) {
+                controller.selected.remove(item);
+              } else {
+                controller.selected.add(item);
+              }
+            },
+            child: Container(
+              padding:
+                  const EdgeInsets.only(left: 8, right: 8, bottom: 8, top: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          item.roomNumber ?? '',
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: selectedTextColor),
                         ),
+                        Checkbox(
+                          value: selected,
+                          onChanged: (value) {
+                            if (selected) {
+                              controller.selected.remove(item);
+                            } else {
+                              controller.selected.add(item);
+                            }
+                          },
+                          visualDensity:
+                              const VisualDensity(horizontal: -4, vertical: -4),
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                          shape: const CircleBorder(),
+                        )
+                      ]),
+                  // const SizedBox(height: 4),
+                  Text(
+                    item.roomTypeName ?? '',
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      NetworkImg(src: item.houseKeepingStatusImage, height: 18),
+                      const SizedBox(
+                        width: 2,
                       ),
-                      child: Text(
-                        "View tasks".tr,
+                      Text(
+                        item.houseKeepingStatusNameEn!,
                         style:
-                            const TextStyle(color: Colors.black, fontSize: 12),
+                            const TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
+                      const SizedBox(width: 40),
+                      NetworkImg(src: item.statusImage, height: 14),
+                      const SizedBox(
+                        width: 2,
+                      ),
+                      Text(
+                        item.statusNameEn!,
+                        style:
+                            const TextStyle(fontSize: 11, color: Colors.grey),
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                  SizedBox(
+                    height: 32,
+                    width: double.infinity,
+                    child: Material(
+                      // elevation: 0.8,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          print("item.roomId :${item.roomId}");
+                          print("item.Roomnum :${item.roomNumber}");
+                          Get.toNamed(RouteName.task, arguments: {
+                            'roomId': item.roomId,
+                            'title': item.roomNumber
+                          });
+                          controller.selected.clear();
+                        },
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(
+                            width: 1,
+                            color: selected
+                                ? AppTheme.primaryColor.withOpacity(0.5)
+                                : const Color.fromARGB(255, 223, 223, 223),
+                          ),
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                        child: Obx(() {
+                          var pending = 1.obs;
+                          var completedTask = 4.obs;
+                          return Text(
+                            "${"View tasks".tr} (${pending}/${completedTask})",
+                            style: const TextStyle(
+                                color: Colors.black, fontSize: 12),
+                          );
+                        }),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          )),
+                ],
+              ),
+            )),
+      ),
     );
   }
 }

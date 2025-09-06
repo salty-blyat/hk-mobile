@@ -5,8 +5,7 @@ import 'package:get/get_utils/get_utils.dart';
 import 'package:get/route_manager.dart';
 import 'package:staff_view_ui/app_setting.dart';
 import 'package:staff_view_ui/auth/auth_controller.dart';
-import 'package:staff_view_ui/auth/auth_service.dart';
-import 'package:staff_view_ui/utils/widgets/dialog.dart';
+import 'package:staff_view_ui/auth/auth_service.dart'; 
 import 'package:staff_view_ui/const.dart';
 
 class DioClient {
@@ -72,7 +71,7 @@ class DioClient {
           }
         } else {
           if (Get.isDialogOpen == true) Get.back();
-          Modal.errorDialog('Unsuccessful', _getResponseMessage(e));
+          // Modal.errorDialog('Unsuccessful', _getResponseMessage(e));   TODO: uncomment later
         }
 
         // Pass the error to the next handler if not handled

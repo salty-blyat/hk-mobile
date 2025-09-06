@@ -1,4 +1,4 @@
-package bz.sgx.pavr.app
+package bz.sgx.hk.app
 
 import io.flutter.BuildConfig
 import io.flutter.embedding.android.FlutterActivity

@@ -6,7 +6,7 @@ import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
 import 'package:staff_view_ui/pages/service_item/service_item_controller.dart';
 import 'package:staff_view_ui/pages/service_item/service_item_select.dart';
 import 'package:staff_view_ui/pages/service_type/service_type_select.dart';
-import 'package:staff_view_ui/pages/staff/staff_select.dart'; 
+import 'package:staff_view_ui/pages/staff/staff_select.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/input.dart';
@@ -45,6 +45,9 @@ class TaskOpScreen extends StatelessWidget {
         final bRoom = b.roomNumber ?? '';
         return aRoom.compareTo(bRoom);
       });
+    print('task form group ${controller.formGroup.rawValue}');
+    print('TaskFromEnum.guest.value ${TaskFromEnum.guest.value}');
+
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -61,7 +64,7 @@ class TaskOpScreen extends StatelessWidget {
                     Text("Rooms".tr),
                     const SizedBox(width: 12),
                     Flexible(
-                      child: Wrap(spacing: 4,runSpacing: 4, children: [
+                      child: Wrap(spacing: 4, runSpacing: 4, children: [
                         ...selectedRooms.map((r) => Badge(
                               label: Container(
                                 padding: const EdgeInsets.symmetric(
@@ -109,7 +112,8 @@ class TaskOpScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 ServiceItemSelect(
-                  serviceTypeId: controller.serviceTypeId.value,
+                  serviceTypeId:
+                      controller.formGroup.control('serviceTypeId').value,
                   formControlName: 'serviceItemId',
                   label: "Service Item".tr,
                 ),
@@ -117,6 +121,7 @@ class TaskOpScreen extends StatelessWidget {
                 Obx(() {
                   final trackQty =
                       serviceItemController.selected.value.trackQty ?? false;
+
                   return trackQty
                       ? MyFormField(
                           controlName: 'quantity',
@@ -139,6 +144,9 @@ class TaskOpScreen extends StatelessWidget {
 }
 
 class _Header extends StatelessWidget {
+  final TaskController controller = Get.find<TaskController>();
+  final HousekeepingController housekeepingController =
+      Get.find<HousekeepingController>();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -168,7 +176,12 @@ class _Header extends StatelessWidget {
           ),
           IconButton(
             iconSize: 16,
-            onPressed: () => Get.back(),
+            onPressed: () {
+              Get.back();
+              controller.clearForm();
+              print('close button: ${controller.formGroup.rawValue}');
+              housekeepingController.selected.value = [];
+            },
             icon: const Icon(CupertinoIcons.clear, color: Colors.white),
           ),
         ],

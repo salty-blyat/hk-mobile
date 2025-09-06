@@ -15,7 +15,10 @@ class StaffSelect extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    controller.search();
+    // controller.search();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.search();  
+    });
     return Obx(
       () => ReactiveDropdownField<int>(
         menuMaxHeight: 300,

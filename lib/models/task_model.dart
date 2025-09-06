@@ -53,7 +53,7 @@ class TaskModel extends BaseModel {
     this.serviceTypeId,
     this.serviceItemId,
     this.quantity,
-    this.status,
+    this.status, 
   });
 
   factory TaskModel.fromJson(Map<String, dynamic> json) =>

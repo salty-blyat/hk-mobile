@@ -1,7 +1,10 @@
 import 'dart:convert';
 
-import 'package:get/get.dart'; 
+import 'package:get/get.dart';
+import 'package:staff_view_ui/auth/auth_service.dart';
+import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
+import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/models/housekeeping_model.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_service.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
@@ -26,10 +29,13 @@ class HousekeepingController extends GetxController {
   final RxBool canLoadMore = true.obs;
   final LookupController lookupController = Get.put(LookupController());
   late final DateTime today;
-  late String selectedDate; 
+  late String selectedDate;
   final Rx<int> houseKeepingStatus = 0.obs;
-  final Rx<int> housekeepingView = HousekeepingView.room.value.obs; 
-  
+  final Rx<int> housekeepingView = HousekeepingView.room.value.obs;
+
+  final AuthService authService = AuthService();
+  Rx<ClientInfo?> auth = Rxn<ClientInfo>();
+
   int currentPage = 1;
   final int pageSize = 20;
   final queryParameters = QueryParam(
@@ -48,6 +54,17 @@ class HousekeepingController extends GetxController {
         "${today.day.toString().padLeft(2, '0')}";
     await lookupController.fetchLookups(LookupTypeEnum.housekeepingStatus.value);
     await search();
+
+     try {
+      final authData = await authService
+          .readFromLocalStorage(Const.authorized['Authorized']!);
+      auth.value = authData != null && authData.isNotEmpty
+          ? ClientInfo.fromJson(jsonDecode(authData))
+          : ClientInfo();
+          print(auth.value?.fullName);
+    } catch (e) {
+      print('Error during initialization: $e');
+    }
   }
 
   Future<void> search() async {
@@ -57,7 +74,7 @@ class HousekeepingController extends GetxController {
     queryParameters.update((params) {
       params?.pageIndex = (params.pageIndex ?? 0) + 1;
     });
-    
+
     if (searchText.value.isNotEmpty) {
       filter.add({
         'field': 'search',
@@ -81,7 +98,7 @@ class HousekeepingController extends GetxController {
       list.value = response;
     }
     loading.value = false;
-  } 
+  }
   // Future<void> changeStatus() async {
   //   loading.value = true;
   //   var filter = [];

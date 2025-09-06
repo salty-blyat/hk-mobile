@@ -8,10 +8,10 @@ import 'package:staff_view_ui/pages/change_password/change_password.dart';
 import 'package:staff_view_ui/pages/edit_profile/edit_profile.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_screen.dart'; 
 import 'package:staff_view_ui/pages/menu/menu_screen.dart';
-import 'package:staff_view_ui/pages/notification/notification_screen.dart';
-import 'package:staff_view_ui/pages/profile/profile_screen.dart';
+import 'package:staff_view_ui/pages/notification/notification_screen.dart'; 
 import 'package:staff_view_ui/pages/absent_exception/absent_exception_screen.dart';
 import 'package:staff_view_ui/pages/privacy_policy/privacy_policy_screen.dart';
+import 'package:staff_view_ui/pages/request_log/request_log_screen.dart'; 
 import 'package:staff_view_ui/pages/task/task_screen.dart'; 
 
 class Routes {
@@ -19,9 +19,8 @@ class Routes {
     GetPage(name: RouteName.menu, page: () => MenuScreen()),
     GetPage(name: RouteName.houseKeeping, page: () => HousekeepingScreen()),
     GetPage(name: RouteName.task, page: () => TaskScreen()),
-
-    GetPage(name: RouteName.login, page: () => LoginScreen()),
-    // GetPage(name: RouteName.profile, page: () => ProfileScreen()),
+    GetPage(name: RouteName.requestLog, page: () => RequestLogScreen()),  
+    GetPage(name: RouteName.login, page: () => LoginScreen()), 
     GetPage(name: RouteName.absentException, page: () => const AbsentExceptionScreen()),
     GetPage(name: RouteName.privacyPolicy, page: () => PrivacyPolicyScreen()),
     GetPage(name: RouteName.changePassword, page: () => ChangePassword()),
@@ -31,6 +30,7 @@ class Routes {
     GetPage(name: RouteName.verifyOtp, page: () => VerifyOtpScreen()),
     GetPage(name: RouteName.verifyMfa, page: () => VerifyMfaScreen()),
     GetPage(name: RouteName.inputNewPassword, page: () => InputNewPasswordScreen()),
+ 
   ];
 }
 class RouteName {
@@ -48,5 +48,7 @@ class RouteName {
   static const String verifyMfa = '/verify-mfa';
   static const String inputNewPassword = '/input-new-password';
   static const String houseKeeping = '/house-keeping';
+  static const String requestLog = '/request-log'; 
+
 
 }

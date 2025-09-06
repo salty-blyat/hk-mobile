@@ -12,6 +12,17 @@ import 'package:staff_view_ui/route.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
 import 'package:staff_view_ui/utils/widgets/snack_bar.dart';
 
+enum RoleEnum { manager, housekeeper }
+
+extension RoleEnumExtension on RoleEnum {
+  static const Map<RoleEnum, int> _values = {
+    RoleEnum.manager: 1,
+    RoleEnum.housekeeper: 2,
+  };
+
+  int get value => _values[this]!;
+}
+
 class AuthController extends GetxController {
   final language = 'km'.obs;
   final _authService = AuthService();
@@ -26,6 +37,7 @@ class AuthController extends GetxController {
     'username': FormControl<String>(validators: [Validators.required]),
     'password': FormControl<String>(validators: [Validators.required]),
   });
+  final role = RoleEnum.manager.value.obs;
 
   @override
   void onInit() {

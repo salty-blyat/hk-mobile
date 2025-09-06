@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
+import 'package:staff_view_ui/utils/drawer.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/no_data.dart';
 
@@ -13,6 +14,9 @@ class BaseList<T> extends StatelessWidget {
   bool get isLoadingMore => false;
   bool get fabButton => true;
   bool get showHeader => true;
+  bool get showDrawer => false;
+  Color get backgroundColor => Colors.white;
+
   void onFabPressed() {}
   Future<void> onRefresh() async {}
   Future<void> onLoadMore() async {}
@@ -22,18 +26,21 @@ class BaseList<T> extends StatelessWidget {
   List<Widget> actions() => [];
   Widget buildItem(T item) => const SizedBox.shrink();
   Widget buildBottomNavigationBar() => const SizedBox.shrink();
+  Widget titleWidget() => Text(
+        title.tr,
+        style: Get.textTheme.titleLarge!.copyWith(color: Colors.white),
+      );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: isCenterTitle,
-        title: Text(
-          title.tr,
-          style: context.textTheme.titleLarge!.copyWith(color: Colors.white),
-        ),
+        title: titleWidget(),
         actions: actions(),
       ),
+      drawer: showDrawer ? DrawerWidget() : null,
+      backgroundColor: backgroundColor,
       floatingActionButton: fabButton
           ? FloatingActionButton(
               onPressed: onFabPressed,
@@ -43,7 +50,9 @@ class BaseList<T> extends StatelessWidget {
           : null,
       body: Column(
         children: [
-          showHeader ? buildHeaderWidget() : const SizedBox.shrink(),
+          showHeader
+              ? Container(color: AppTheme.greyBg, child: buildHeaderWidget())
+              : const SizedBox.shrink(),
           Expanded(
             child: Obx(
               () {
