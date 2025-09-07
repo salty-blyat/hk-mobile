@@ -19,6 +19,7 @@ import 'package:staff_view_ui/utils/widgets/button.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
 import 'package:staff_view_ui/utils/widgets/network_img.dart';
 
+
 class HousekeepingScreen extends BaseList<Housekeeping> {
   HousekeepingScreen({super.key});
 
@@ -62,11 +63,11 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
 
       return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
-          controller.auth.value?.fullName ?? 'Housekeeping',
+          controller.auth.value?.fullName ?? '-',
           style: Get.textTheme.titleLarge!.copyWith(color: Colors.white),
           overflow: TextOverflow.ellipsis,
         ),
-        Text("Position: $position",
+        Text("${'Position'.tr}: $position",
             style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal))
       ]);
     });
@@ -449,13 +450,13 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   }
 
   @override
-
-  List<Widget> actions() { 
-    return [ 
+  List<Widget> actions() {
+    return [
       IconButton(
           onPressed: () {
             Get.toNamed(RouteName.task,
                 arguments: {'roomId': 0, 'title': "Tasks"});
+
             controller.selected.clear();
           },
           icon: const Icon(Icons.task_outlined)),

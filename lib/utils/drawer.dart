@@ -90,7 +90,7 @@ class DrawerWidget extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                   overflow: TextOverflow.ellipsis,
                                 )),
-                          ),
+                          ), 
                           const SizedBox(height: 5),
                           Text(drawerController.auth.value?.phone ?? '',
                               style: const TextStyle(
@@ -151,21 +151,21 @@ class DrawerWidget extends StatelessWidget {
                   title: Text('Language'.tr),
                   onTap: () => Modal.showLanguageDialog(),
                 ),
-                ListTile(
-                  leading: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: AppTheme.borderRadius,
-                    ),
-                    child: const Icon(CupertinoIcons.checkmark_shield,
-                        color: Colors.black87),
-                  ),
-                  title: Text('Privacy Policy'.tr),
-                  onTap: () {
-                    Get.toNamed('/privacy-policy'); // Navigate to Profile
-                  },
-                ),
+                // ListTile(
+                //   leading: Container(
+                //     padding: const EdgeInsets.all(4),
+                //     decoration: BoxDecoration(
+                //       color: Colors.grey[300],
+                //       borderRadius: AppTheme.borderRadius,
+                //     ),
+                //     child: const Icon(CupertinoIcons.checkmark_shield,
+                //         color: Colors.black87),
+                //   ),
+                //   title: Text('Privacy Policy'.tr),
+                //   onTap: () {
+                //     Get.toNamed('/privacy-policy'); // Navigate to Profile
+                //   },
+                // ),
                 if (menuController.showLogout.value)
                   const Divider(color: Color.fromARGB(255, 210, 210, 210)),
                 if (menuController.showLogout.value)

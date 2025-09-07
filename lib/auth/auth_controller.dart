@@ -24,7 +24,7 @@ extension RoleEnumExtension on RoleEnum {
 }
 
 class AuthController extends GetxController {
-  final language = 'km'.obs;
+  final language = 'en'.obs;
   final _authService = AuthService();
   final _firebaseService = NotificationService();
   final passwordController = TextEditingController();

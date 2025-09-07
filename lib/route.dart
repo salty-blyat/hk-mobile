@@ -17,7 +17,7 @@ import 'package:staff_view_ui/pages/task/task_screen.dart';
 class Routes {
   static final List<GetPage> pages = [
     GetPage(name: RouteName.menu, page: () => MenuScreen()),
-    GetPage(name: RouteName.houseKeeping, page: () => HousekeepingScreen()),
+    GetPage(name: RouteName.houseKeeping, page: () => HousekeepingScreen(), transition: Transition.rightToLeft, transitionDuration: const Duration(milliseconds: 500)),
     GetPage(name: RouteName.task, page: () => TaskScreen()),
     GetPage(name: RouteName.requestLog, page: () => RequestLogScreen()),  
     GetPage(name: RouteName.login, page: () => LoginScreen()), 

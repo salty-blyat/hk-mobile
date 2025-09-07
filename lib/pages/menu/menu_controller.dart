@@ -51,22 +51,22 @@ class MenusController extends GetxController {
   }
 
   Future<void> getVersion() async {
-    androidLink.value = (await menuService
-                .getSettingPrivate(Const.SETTING_KEY()['AppAndroidUrl'] ?? ''))
-            .value ??
-        '';
-    iosLink.value = (await menuService
-                .getSettingPrivate(Const.SETTING_KEY()['AppIosUrl'] ?? ''))
-            .value ??
-        '';
-    iosVersion.value = (await menuService
-                .getSettingPrivate(Const.SETTING_KEY()['AppIosVersion'] ?? ''))
-            .value ??
-        '';
-    androidVersion.value = (await menuService.getSettingPrivate(
-                Const.SETTING_KEY()['AppAndroidVersion'] ?? ''))
-            .value ??
-        '';
+    // androidLink.value = (await menuService
+    //             .getSettingPrivate(Const.SETTING_KEY()['AppAndroidUrl'] ?? ''))
+    //         .value ??
+    //     '';
+    // iosLink.value = (await menuService
+    //             .getSettingPrivate(Const.SETTING_KEY()['AppIosUrl'] ?? ''))
+    //         .value ??
+    //     '';
+    // iosVersion.value = (await menuService
+    //             .getSettingPrivate(Const.SETTING_KEY()['AppIosVersion'] ?? ''))
+    //         .value ??
+    //     '';
+    // androidVersion.value = (await menuService.getSettingPrivate(
+    //             Const.SETTING_KEY()['AppAndroidVersion'] ?? ''))
+    //         .value ??
+    //     '';
   }
 
   Future<void> getSetting() async {

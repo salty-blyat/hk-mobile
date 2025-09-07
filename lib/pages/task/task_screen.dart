@@ -139,20 +139,29 @@ class TaskScreen extends BaseList<TaskModel> {
                   child: Column(
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(item.requestNo ?? '',
-                              style: const TextStyle(color: Colors.grey, fontSize: 11)),
+                              style: const TextStyle(
+                                  color: Colors.grey, fontSize: 11)),
+                          Row(children: [
+                            NetworkImg(height: 16, src: item.statusImage),
+                            const SizedBox(width: 4),
+                            Text(item.statusNameEn ?? '',
+                                style: const TextStyle(fontSize: 12)),
+                          ]),
                         ],
                       ),
                       const SizedBox(height: 4),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(item.serviceItemName ?? '',
                               style: const TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.bold)),
                         ],
                       ),
-                      const SizedBox(height: 14),  
+                      const SizedBox(height: 24),
                       if (item.note != null && item.note!.isNotEmpty)
                         Row(
                           children: [
@@ -165,7 +174,8 @@ class TaskScreen extends BaseList<TaskModel> {
                       Row(
                         children: [
                           item.roomNo != null
-                              ? const Icon(Icons.location_on_outlined, size: 12, color: Colors.grey)
+                              ? const Icon(Icons.location_on_outlined,
+                                  size: 12, color: Colors.grey)
                               : const SizedBox.shrink(),
                           const SizedBox(width: 4),
                           item.roomNo != null
@@ -190,140 +200,44 @@ class TaskScreen extends BaseList<TaskModel> {
 
                       Row(
                         children: [
-                          item.requestTime != null
-                              ? const Icon(Icons.access_time,
-                                  color: Colors.grey, size: 12)
-                              : const SizedBox.shrink(),
+                          const Icon(Icons.access_time,
+                              color: Colors.grey, size: 12),
                           const SizedBox(width: 4),
-                          item.requestTime != null
-                              ? Text(requestTime!,
-                                  style: const TextStyle(
-                                      fontSize: 12, color: Colors.grey))
-                              : const SizedBox.shrink(),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                Column( 
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Row(
-                        children: [
-                          NetworkImg(height: 16, src: item.statusImage),
-                          const SizedBox(width: 4),
-                          Text(item.statusNameEn ?? '',
-                              style: const TextStyle(fontSize: 12)),
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(requestTime!,
+                                    style: const TextStyle(
+                                        fontSize: 12, color: Colors.grey)),
+                                GestureDetector(
+                                    onTap: () => {print('asdfdasfdas')},
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        item.requestTime != null
+                                            ? const Icon(
+                                                Icons
+                                                    .cleaning_services_outlined,
+                                                color: AppTheme.primaryColor,
+                                                size: 12)
+                                            : const SizedBox.shrink(),
+                                        const SizedBox(width: 4),
+                                        const Text("Assign",
+                                            style: TextStyle(
+                                                decoration:
+                                                    TextDecoration.underline,
+                                                fontSize: 12,
+                                                color: AppTheme.primaryColor))
+                                      ],
+                                    )),
+                              ],
+                            ),
+                          )
                         ],
                       ),
-                   
-                    const SizedBox(height: 60), 
-
-                    item.status == RequestStatus.pending.value &&
-                            authController.role.value == RoleEnum.manager.value
-                        // && item.staffId == null
-                        ? GestureDetector(
-                            onTap: () {
-                              setRoom();
-                              controller.formGroup.patchValue({'id': item.id});
-                              Modal.showFormDialog(TaskOpScreen(), height: 525);
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(Icons.person_add_alt_1,
-                                    size: 12, color: Colors.blue),
-                                const SizedBox(width: 4),
-                                Text(
-                                  style: const TextStyle(
-                                      decoration: TextDecoration.underline,
-                                      color: Colors.blue),
-                                  "Assign".tr,
-                                )
-                              ],
-                            ))
-                        : const SizedBox.shrink(),
-
-                    // Assigned task
-                    item.status == RequestStatus.pending.value &&
-                            authController.role.value != RoleEnum.manager.value
-                        // && item.staffId == null
-                        ? _buildActionButton(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.play_arrow,
-                                  size: 14,
-                                  color: Color.fromARGB(255, 40, 95, 42),
-                                ),
-                                const SizedBox(width: 4),
-                                Text("Start".tr)
-                              ],
-                            ),
-                            outlined: true,
-                            color: const Color.fromARGB(255, 40, 95, 42),
-                            onPressed: () {
-                              // housekeepingController.selected
-                              setRoom();
-                              //  Housekeeping selected = housekeepingController.list.firstWhere((r) => r.roomId == item.roomId);
-                              //     housekeepingController.selected.assignAll([selected]);
-                              controller.formGroup.patchValue({'id': item.id});
-                              Modal.showFormDialog(TaskOpScreen(), height: 525);
-                            })
-                        : const SizedBox.shrink(),
-                    // task started
-                    item.status == RequestStatus.inProgress.value
-                        ? _buildActionButton(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.check_box_outlined,
-                                  size: 14,
-                                  color: Color.fromARGB(255, 58, 136, 61),
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  "Complete".tr,
-                                )
-                              ],
-                            ),
-                            outlined: true,
-                            color: const Color.fromARGB(255, 58, 136, 61),
-                            onPressed: () {
-                              setRoom();
-                              controller.formGroup.patchValue({'id': item.id});
-                              Modal.showFormDialog(TaskOpScreen(), height: 525);
-                            })
-                        : const SizedBox.shrink(),
-                    // task completed
-                    // item.status == RequestStatus.done.value  ||
-                    item.status == RequestStatus.cancel.value
-                        ? _buildActionButton(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.restart_alt_outlined,
-                                  size: 14,
-                                  color: Color.fromARGB(255, 236, 150, 21),
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  "Reopen".tr,
-                                )
-                              ],
-                            ),
-                            color: const Color.fromARGB(255, 236, 150, 21),
-                            outlined: true,
-                            onPressed: () {
-                              setRoom();
-                              controller.formGroup.patchValue({'id': item.id});
-                              Modal.showFormDialog(TaskOpScreen(), height: 525);
-                            })
-                        : const SizedBox.shrink()
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -384,8 +298,7 @@ class TaskScreen extends BaseList<TaskModel> {
               return Padding(
                 padding: const EdgeInsets.only(right: 8),
                 child: Obx(() {
-                  final isSelected =
-                      controller.taskStatus.value == 0; // assume 0 means all
+                  final isSelected = controller.taskStatus.value == 0;
                   return ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
@@ -396,15 +309,12 @@ class TaskScreen extends BaseList<TaskModel> {
                           ? Theme.of(context).colorScheme.primary
                           : Colors.white,
                       foregroundColor: isSelected ? Colors.white : Colors.black,
-                      // side: BorderSide(
-                      //   color: Theme.of(context).colorScheme.primary,
-                      // ),
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(24)),
                       ),
                     ),
                     onPressed: () {
-                      controller.taskStatus.value = 0; // reset filter
+                      controller.taskStatus.value = 0;
                       controller.search();
                     },
                     child: Text("${"All".tr} (${controller.list.length})"),
@@ -432,9 +342,6 @@ class TaskScreen extends BaseList<TaskModel> {
                         ? Theme.of(context).colorScheme.primary
                         : Colors.white,
                     foregroundColor: isSelected ? Colors.white : Colors.black,
-                    // side: BorderSide(
-                    //   color: Theme.of(context).colorScheme.primary,
-                    // ),
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(24)),
                     ),
@@ -458,6 +365,7 @@ class TaskScreen extends BaseList<TaskModel> {
       );
     });
   }
+  // Widget _buildTaskStatusBadge(Lookup)
 
   Widget _buildBottomSheet() {
     return Column(children: [Text("Bottom Sheet")]);
@@ -519,3 +427,4 @@ class TaskScreen extends BaseList<TaskModel> {
     );
   }
 }
+
