@@ -36,10 +36,6 @@ class HousekeepingController extends GetxController {
   final Rx<int> housekeepingView = HousekeepingView.room.value.obs;
   final StaffUserController staffUserController =
       Get.put(StaffUserController());
-  // final AuthService authService = AuthService();
-
-  // Rx<ClientInfo?> auth = Rxn<ClientInfo>();
-
   int currentPage = 1;
   final int pageSize = 20;
   final queryParameters = QueryParam(
@@ -61,13 +57,6 @@ class HousekeepingController extends GetxController {
     await lookupController
         .fetchLookups(LookupTypeEnum.housekeepingStatus.value);
     await search();
-
-    //  try {
-    //   final authData = await authService.readFromLocalStorage(Const.authorized['Authorized']!);
-    //   auth.value = authData != null && authData.isNotEmpty ? ClientInfo.fromJson(jsonDecode(authData)) : ClientInfo();
-    // } catch (e) {
-    //   print('Error during initialization: $e');
-    // }
   }
 
   Future<void> search() async {
@@ -93,7 +82,7 @@ class HousekeepingController extends GetxController {
           'value': houseKeepingStatus.value
         });
       }
-      var response = await service.search(date: selectedDate, queryParameters: {
+      var response = await service.search(queryParameters: {
         'pageIndex': currentPage,
         'pageSize': pageSize,
         'filters': jsonEncode(filter)
