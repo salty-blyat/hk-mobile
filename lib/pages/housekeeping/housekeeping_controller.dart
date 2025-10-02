@@ -9,6 +9,7 @@ import 'package:staff_view_ui/models/housekeeping_model.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_service.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
 import 'package:staff_view_ui/pages/staff_user/staff_user_controller.dart';
+import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
 enum HousekeepingView { room, block }
 
@@ -33,7 +34,8 @@ class HousekeepingController extends GetxController {
   late String selectedDate;
   final Rx<int> houseKeepingStatus = 0.obs;
   final Rx<int> housekeepingView = HousekeepingView.room.value.obs;
-final StaffUserController staffUserController = Get.put(StaffUserController());
+  final StaffUserController staffUserController =
+      Get.put(StaffUserController());
   // final AuthService authService = AuthService();
 
   // Rx<ClientInfo?> auth = Rxn<ClientInfo>();
@@ -45,61 +47,64 @@ final StaffUserController staffUserController = Get.put(StaffUserController());
     pageSize: 25,
     sorts: '',
     filters: '[]',
-  ).obs; 
+  ).obs;
 
   @override
   Future<void> onInit() async {
     super.onInit();
-    selected.clear(); 
+    selected.clear();
     await staffUserController.getUser();
-    print(staffUserController.staffUser.value);
-    await lookupController.fetchLookups(LookupTypeEnum.housekeepingStatus.value);
+    if (staffUserController.staffUser.value == null) {
+      Modal.errorDialog(
+          "Cannot find staff", "Sorry we cannot find staff link to this user");
+    }
+    await lookupController
+        .fetchLookups(LookupTypeEnum.housekeepingStatus.value);
     await search();
 
     //  try {
     //   final authData = await authService.readFromLocalStorage(Const.authorized['Authorized']!);
-    //   auth.value = authData != null && authData.isNotEmpty ? ClientInfo.fromJson(jsonDecode(authData)) : ClientInfo(); 
+    //   auth.value = authData != null && authData.isNotEmpty ? ClientInfo.fromJson(jsonDecode(authData)) : ClientInfo();
     // } catch (e) {
     //   print('Error during initialization: $e');
     // }
   }
- 
-   Future<void> search() async {
-    try { 
-    loading.value = true;
-    var filter = [];
 
-    queryParameters.update((params) {
-      params?.pageIndex = (params.pageIndex ?? 0) + 1;
-    });
+  Future<void> search() async {
+    try {
+      loading.value = true;
+      var filter = [];
 
-    if (searchText.value.isNotEmpty) {
-      filter.add({
-        'field': 'search',
-        'operator': 'contains',
-        'value': searchText.value
+      queryParameters.update((params) {
+        params?.pageIndex = (params.pageIndex ?? 0) + 1;
       });
-    }
-    if (houseKeepingStatus.value != 0) {
-      filter.add({
-        'field': 'houseKeepingStatus',
-        'operator': 'contains',
-        'value': houseKeepingStatus.value
+
+      if (searchText.value.isNotEmpty) {
+        filter.add({
+          'field': 'search',
+          'operator': 'contains',
+          'value': searchText.value
+        });
+      }
+      if (houseKeepingStatus.value != 0) {
+        filter.add({
+          'field': 'houseKeepingStatus',
+          'operator': 'contains',
+          'value': houseKeepingStatus.value
+        });
+      }
+      var response = await service.search(date: selectedDate, queryParameters: {
+        'pageIndex': currentPage,
+        'pageSize': pageSize,
+        'filters': jsonEncode(filter)
       });
-    }
-    var response = await service.search(date: selectedDate, queryParameters: {
-      'pageIndex': currentPage,
-      'pageSize': pageSize,
-      'filters': jsonEncode(filter)
-    });
-    if (response.isNotEmpty) {
-      list.value = response;
-    }
-    } catch (e){
+      if (response.isNotEmpty) {
+        list.value = response;
+      }
+    } catch (e) {
       loading.value = false;
     } finally {
-
-    loading.value = false;
+      loading.value = false;
     }
   }
 }

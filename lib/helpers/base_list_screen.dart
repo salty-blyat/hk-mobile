@@ -14,16 +14,17 @@ class BaseList<T> extends StatelessWidget {
   bool get isLoadingMore => false;
   bool get fabButton => true;
   bool get showHeader => true;
-  bool get showDrawer => false;
+  RxBool get showDrawer => false.obs;
   Color get backgroundColor => Colors.white;
 
   void onFabPressed() {}
   Future<void> onRefresh() async {}
   Future<void> onLoadMore() async {}
   bool get canLoadMore => true;
+  Widget leading() => const SizedBox.shrink();
   Map<String, List<T>> groupItems(List<T> items) => {};
   RxList<T> get items => RxList.empty();
-  List<Widget> actions() => []; 
+  List<Widget> actions() => [];
   Widget buildItem(T item) => const SizedBox.shrink();
   Widget buildBottomNavigationBar() => const SizedBox.shrink();
   Widget titleWidget() => Text(
@@ -35,11 +36,13 @@ class BaseList<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar( 
+        leading: showDrawer.value ? null : IconButton(icon: Icon(Icons.arrow_back), onPressed: ()=>Get.back()),
         centerTitle: isCenterTitle,
+        automaticallyImplyLeading: showDrawer.value,
         title: titleWidget(),
-        actions: actions(),
-      ),
-      drawer: showDrawer ? DrawerWidget() : null,
+        actions: actions(), 
+      ), 
+      drawer: showDrawer.value ? DrawerWidget() : null,
       backgroundColor: backgroundColor,
       floatingActionButton: fabButton
           ? FloatingActionButton(
@@ -61,11 +64,19 @@ class BaseList<T> extends StatelessWidget {
                 }
                 if (items.isEmpty) {
                   return RefreshIndicator(
-                    color: Theme.of(context).primaryColor,
-                    backgroundColor: Colors.white,
-                    onRefresh: onRefresh,
-                    // ignore: invalid_use_of_protected_member
-                    child: const NoData());
+                      color: Theme.of(context).primaryColor,
+                      backgroundColor: Colors.white,
+                      onRefresh: onRefresh,
+                      // ignore: invalid_use_of_protected_member
+                      child: ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: const [
+                          SizedBox(
+                            height: 300,
+                            child: Center(child: NoData()),
+                          ),
+                        ],
+                      ));
                 }
                 return NotificationListener<ScrollNotification>(
                   onNotification: (ScrollNotification notification) {

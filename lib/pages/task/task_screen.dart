@@ -15,26 +15,27 @@ import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
 import 'package:staff_view_ui/pages/staff_user/staff_user_controller.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/route.dart';
-import 'package:staff_view_ui/utils/theme.dart'; 
+import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/network_img.dart';
 
 class TaskScreen extends BaseList<TaskModel> {
   TaskScreen({super.key});
   final TaskController controller = Get.put(TaskController());
   final LookupController lookupController = Get.put(LookupController());
-  final StaffUserController staffUserController = Get.put(StaffUserController());
+  final StaffUserController staffUserController =
+      Get.put(StaffUserController());
   Rx<ClientInfo?> auth = Rxn<ClientInfo>();
   Timer? _debounce;
 
   @override
   RxList<TaskModel> get items => controller.list;
- 
+
   @override
-  bool get showDrawer => true;
+  RxBool get showDrawer => (staffUserController.staffUser.value?.positionId != PositionEnum.manager.value).obs;
 
   @override
   List<Widget> actions() => [];
- 
+
   @override
   bool get isCenterTitle => false;
 
@@ -67,27 +68,32 @@ class TaskScreen extends BaseList<TaskModel> {
 
   @override
   Widget titleWidget() {
-    final AuthController authController = Get.put(AuthController());
     return Obx(() {
-      var position = authController.position.value == PositionEnum.manager.value
-          ? 'Manager'
-          : 'Housekeeper'; 
-
       return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
-          controller.auth.value?.fullName ?? '-',
+          (staffUserController.staffUser.value != null
+                  ? staffUserController.staffUser.value?.staffName
+                  : controller.auth.value.fullName) ??
+              '-',
           style: Get.textTheme.titleLarge!.copyWith(color: Colors.white),
           overflow: TextOverflow.ellipsis,
         ),
         Row(
           children: [
-            Text("${'Position'.tr}: $position",
-                style: const TextStyle(
-                    fontSize: 12, fontWeight: FontWeight.normal)),
-            const SizedBox(
-              width: 8,
-            ),
-            if (Get.arguments != null && Get.arguments['title'] != null && Get.arguments['title'] != '')
+            staffUserController.staffUser.value != null
+                ? Text(
+                    "${'Position'.tr}: ${staffUserController.staffUser.value?.positionName}",
+                    style: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.normal))
+                : const SizedBox.shrink(),
+            staffUserController.staffUser.value != null
+                ? const SizedBox(
+                    width: 8,
+                  )
+                : const SizedBox.shrink(),
+            if (Get.arguments != null &&
+                Get.arguments['title'] != null &&
+                Get.arguments['title'] != '')
               Text("(${Get.arguments['title']})",
                   style: const TextStyle(
                       fontSize: 12, fontWeight: FontWeight.normal)),
@@ -143,12 +149,13 @@ class TaskScreen extends BaseList<TaskModel> {
   Widget buildItem(TaskModel item) {
     String? requestTime = item.requestTime != null
         ? DateFormat("dd-MM-yyyy hh:mm a").format(item.requestTime!)
-        : null; 
+        : null;
     final HousekeepingController housekeepingController =
         Get.find<HousekeepingController>();
 
     setRoom() {
-      Housekeeping selected = housekeepingController.list.firstWhere((r) => r.id == item.roomId);
+      Housekeeping selected =
+          housekeepingController.list.firstWhere((r) => r.id == item.roomId);
       housekeepingController.selected.assignAll([selected]);
     }
 
@@ -429,7 +436,6 @@ class TaskScreen extends BaseList<TaskModel> {
     });
   }
   // Widget _buildTaskStatusBadge(Lookup)
-
 
   @override
   Widget buildHeaderWidget() {

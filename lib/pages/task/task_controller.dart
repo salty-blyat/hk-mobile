@@ -56,12 +56,12 @@ class TaskController extends GetxController {
   final RxInt doneCount = 0.obs; 
   final RxString searchText = ''.obs;
   final RxList<TaskModel> list = <TaskModel>[].obs;
-  final RxList<TaskSummaryModel> summaryList = <TaskSummaryModel>[].obs; 
-  Rx<ClientInfo?> auth = Rxn<ClientInfo>(); 
+  final RxList<TaskSummaryModel> summaryList = <TaskSummaryModel>[].obs;
   RxInt? roomId; 
   final RxBool loading = false.obs; 
   final RxBool isLoadingMore = false.obs;
   final RxBool canLoadMore = true.obs;
+  final Rx<ClientInfo> auth = ClientInfo().obs;
 
   final HousekeepingController housekeepingController = Get.put(HousekeepingController()); 
   final ServiceItemController serviceItemController = Get.put(ServiceItemController());
@@ -129,12 +129,15 @@ class TaskController extends GetxController {
       } else {
         formGroup.control('quantity').updateValue(0);
       }
-    });
-    final authData =
-        await authService.readFromLocalStorage(Const.authorized['Authorized']!);
-    auth.value = authData != null && authData.isNotEmpty
-        ? ClientInfo.fromJson(jsonDecode(authData))
-        : ClientInfo();
+    }); 
+        //for falling back when the no staff is linked to the user.
+       try {
+      final authData = await authService.readFromLocalStorage(Const.authorized['Authorized']!);
+      auth.value = authData != null && authData.isNotEmpty ? ClientInfo.fromJson(jsonDecode(authData)) : ClientInfo();
+    } catch (e) {
+      print('Error during initialization: $e');
+    }
+
   }
 
   Future<void> search() async {
@@ -168,20 +171,17 @@ class TaskController extends GetxController {
       summaryList
           .assignAll(response.summaryByStatuses as Iterable<TaskSummaryModel>);
       list.assignAll(response.results as Iterable<TaskModel>);
-      pendingCount.value =
-          list.where((e) => e.status == RequestStatusEnum.pending.value).length;
-      inProgressCount.value =
-          list.where((e) => e.status == RequestStatusEnum.inProgress.value).length;
-      doneCount.value =
-          list.where((e) => e.status == RequestStatusEnum.done.value).length;
-      canLoadMore.value =
-          response.results.length == queryParameters.value.pageSize;
+      pendingCount.value = list.where((e) => e.status == RequestStatusEnum.pending.value).length;
+      inProgressCount.value = list.where((e) => e.status == RequestStatusEnum.inProgress.value).length;
+      doneCount.value = list.where((e) => e.status == RequestStatusEnum.done.value).length;
+      canLoadMore.value = response.results.length == queryParameters.value.pageSize;
     } catch (e) {
       canLoadMore.value = false;
       print("Error during search: $e");
     } finally {
       loading.value = false;
     }
+
   }
 
   Future<void> submit() async {

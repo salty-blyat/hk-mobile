@@ -24,12 +24,13 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
 
   final HousekeepingController controller = Get.put(HousekeepingController());
   final LookupController lookupController = Get.put(LookupController());
-
+    final StaffUserController staffUserController =
+        Get.put(StaffUserController());
   Timer? _debounce;
 
   @override
-  bool get showDrawer => true;
-
+  RxBool get showDrawer =>true.obs;
+ 
   @override
   bool get fabButton => false;
 
@@ -55,17 +56,30 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   RxList<Housekeeping> get items => controller.list;
 
   @override
-  Widget titleWidget() { 
-    final StaffUserController staffUserController = Get.put(StaffUserController());
-    return Obx(() { 
-       return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+  Widget titleWidget() {
+
+    return Obx(() {
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
-          staffUserController.staffUser.value.staffName ?? '-',
+          staffUserController.staffUser.value?.staffName ?? '-',
           style: Get.textTheme.titleLarge!.copyWith(color: Colors.white),
-          overflow: TextOverflow.ellipsis, 
+          overflow: TextOverflow.ellipsis,
         ),
-        Text("${'Position'.tr}: ${staffUserController.staffUser.value.positionName}",
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.normal))
+        Row(
+          children: [
+            staffUserController.staffUser.value != null
+                ? Text(
+                    "${'Position'.tr}: ${staffUserController.staffUser.value?.positionName}",
+                    style: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.normal))
+                : const SizedBox.shrink(),
+            staffUserController.staffUser.value != null
+                ? const SizedBox(
+                    width: 8,
+                  )
+                : const SizedBox.shrink(),
+          ],
+        )
       ]);
     });
   }
@@ -414,7 +428,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
 
   @override
   Widget buildBottomNavigationBar() {
-    final AuthController authController = Get.find<AuthController>();
+    final AuthController authController = Get.put(AuthController());
     final TaskController taskController = Get.put(TaskController());
 
     return Obx(() {
@@ -590,34 +604,34 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                     child: Material(
                         // elevation: 0.8,
                         child: OutlinedButton(
-                      onPressed: () {
-                        Get.toNamed(RouteName.task, arguments: {
-                          'roomId': item.id,
-                          'title': item.roomNumber
-                        });
-                        controller.selected.clear();
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(
-                          width: 1,
-                          color: selected
-                              ? AppTheme.primaryColor.withOpacity(0.5)
-                              : const Color.fromARGB(255, 223, 223, 223),
-                        ),
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                      child: Text(
-                                "${"View tasks".tr} (${item.pending ?? 0}/${item.total ?? 0})",
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500),
-                              )
+                            onPressed: () {
+                              Get.toNamed(RouteName.task, arguments: {
+                                'roomId': item.id,
+                                'title': item.roomNumber
+                              });
+                              controller.selected.clear();
+                            },
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(
+                                width: 1,
+                                color: selected
+                                    ? AppTheme.primaryColor.withOpacity(0.5)
+                                    : const Color.fromARGB(255, 223, 223, 223),
+                              ),
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ),
+                            child: Text(
+                              "${"View tasks".tr} (${item.pending ?? 0}/${item.total ?? 0})",
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500),
+                            )
                             // : const SizedBox.shrink();
-                     )),
+                            )),
                   ),
                 ],
               ),

@@ -78,8 +78,8 @@ class AuthController extends GetxController {
         if (info.changePasswordRequired == true) {
           Get.toNamed(RouteName.changePassword);
         } else { 
-          await staffUserController.getUser();
-          if(staffUserController.staffUser.value.positionId == PositionEnum.manager.value){
+          await staffUserController.getUser(); 
+          if(staffUserController.staffUser.value?.positionId == PositionEnum.manager.value){
             Get.offAllNamed(RouteName.houseKeeping);
           } else {
             Get.offAllNamed(RouteName.task);
