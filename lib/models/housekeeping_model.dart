@@ -5,60 +5,51 @@ part 'housekeeping_model.g.dart';
 @JsonSerializable()
 class Housekeeping {
   String? roomNumber;
-  String? roomTypeName;
   String? blockName;
-  String? floorName;
-  String? statusNameKh;
-  String? statusNameEn;
-  String? houseKeepingStatusNameKh;
-  String? houseKeepingStatusNameEn;
-  String? note;
-  String? startDate;
-  String? endDate;
-  String? hkStaffName;
-  String? activityDate;
-  int? status;
-  String? statusColor;
-  String? statusImage;
-  int? houseKeepingStatus;
-  String? houseKeepingStatusColor;
-  String? houseKeepingStatusImage;
-  int? roomId;
+  String? description;
   int? roomTypeId;
-  int? blockId;
   int? floorId;
-  int? staffId;
-  int? hkStaffId;
-  int? blockStaffId; 
+  List<int>? tagIds;
+  int? status;
+  int? houseKeepingStatus;
+  int? id;
+  String? floorName;
+  String? roomTypeName;
+  String? roomClassNameKh;
+  String? roomClassNameEn;
+  String? statusNameEn;
+  String? statusNameKh;
+  String? statusImage;
+  String? houseKeepingStatusNameEn;
+  String? houseKeepingStatusNameKh;
+  String? houseKeepingStatusImage;
+  List<String>? tagNames;
+  int? total;
+  int? pending;
+
   Housekeeping(
-      {
-this.roomNumber,
-this.roomTypeName,
-this.blockName,
-this.floorName,
-this.statusNameKh,
-this.statusNameEn,
-this.houseKeepingStatusNameKh,
-this.houseKeepingStatusNameEn,
-this.note,
-this.startDate,
-this.endDate,
-this.hkStaffName,
-this.activityDate,
-this.status,
-this.statusColor,
-this.statusImage,
-this.houseKeepingStatus,
-this.houseKeepingStatusColor,
-this.houseKeepingStatusImage,
-this.roomId,
-this.roomTypeId,
-this.blockId,
-this.floorId,
-this.staffId,
-this.hkStaffId,
-this.blockStaffId,
-     });
+      {this.roomNumber,
+      this.description,
+      this.blockName,
+      this.roomTypeId,
+      this.floorId,
+      this.tagIds,
+      this.status,
+      this.houseKeepingStatus,
+      this.id,
+      this.floorName,
+      this.roomTypeName,
+      this.roomClassNameKh,
+      this.roomClassNameEn,
+      this.statusNameEn,
+      this.statusNameKh,
+      this.statusImage,
+      this.houseKeepingStatusNameEn,
+      this.houseKeepingStatusNameKh,
+      this.houseKeepingStatusImage,
+      this.tagNames,
+      this.total,
+      this.pending});
 
   factory Housekeeping.fromJson(Map<String, dynamic> json) =>
       _$HousekeepingFromJson(json);

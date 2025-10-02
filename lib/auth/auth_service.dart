@@ -34,7 +34,7 @@ class AuthService {
         responseType: dio.ResponseType.json,
       ),
     );
-
+ 
     return response;
   }
 
@@ -139,8 +139,7 @@ class AuthService {
   }
 
   Future<void> saveToken(ClientInfo info) async {
-    await saveToLocalStorage(
-        Const.authorized['Authorized']!, jsonEncode(info.toJson()));
+    await saveToLocalStorage(Const.authorized['Authorized']!, jsonEncode(info.toJson()));
     await saveToLocalStorage('accessToken', info.token ?? '');
     await saveToLocalStorage('refreshToken', info.refreshToken ?? '');
   }

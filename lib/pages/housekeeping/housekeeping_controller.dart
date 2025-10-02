@@ -8,6 +8,7 @@ import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/models/housekeeping_model.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_service.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
+import 'package:staff_view_ui/pages/staff_user/staff_user_controller.dart';
 
 enum HousekeepingView { room, block }
 
@@ -32,9 +33,10 @@ class HousekeepingController extends GetxController {
   late String selectedDate;
   final Rx<int> houseKeepingStatus = 0.obs;
   final Rx<int> housekeepingView = HousekeepingView.room.value.obs;
+final StaffUserController staffUserController = Get.put(StaffUserController());
+  // final AuthService authService = AuthService();
 
-  final AuthService authService = AuthService();
-  Rx<ClientInfo?> auth = Rxn<ClientInfo>();
+  // Rx<ClientInfo?> auth = Rxn<ClientInfo>();
 
   int currentPage = 1;
   final int pageSize = 20;
@@ -43,31 +45,27 @@ class HousekeepingController extends GetxController {
     pageSize: 25,
     sorts: '',
     filters: '[]',
-  ).obs;
+  ).obs; 
 
   @override
   Future<void> onInit() async {
     super.onInit();
-    today = DateTime.now();
-    selectedDate = "${today.year.toString().padLeft(4, '0')}-"
-        "${today.month.toString().padLeft(2, '0')}-"
-        "${today.day.toString().padLeft(2, '0')}";
+    selected.clear(); 
+    await staffUserController.getUser();
+    print(staffUserController.staffUser.value);
     await lookupController.fetchLookups(LookupTypeEnum.housekeepingStatus.value);
     await search();
 
-     try {
-      final authData = await authService
-          .readFromLocalStorage(Const.authorized['Authorized']!);
-      auth.value = authData != null && authData.isNotEmpty
-          ? ClientInfo.fromJson(jsonDecode(authData))
-          : ClientInfo();
-          print(auth.value?.fullName);
-    } catch (e) {
-      print('Error during initialization: $e');
-    }
+    //  try {
+    //   final authData = await authService.readFromLocalStorage(Const.authorized['Authorized']!);
+    //   auth.value = authData != null && authData.isNotEmpty ? ClientInfo.fromJson(jsonDecode(authData)) : ClientInfo(); 
+    // } catch (e) {
+    //   print('Error during initialization: $e');
+    // }
   }
-
-  Future<void> search() async {
+ 
+   Future<void> search() async {
+    try { 
     loading.value = true;
     var filter = [];
 
@@ -97,38 +95,11 @@ class HousekeepingController extends GetxController {
     if (response.isNotEmpty) {
       list.value = response;
     }
-    loading.value = false;
-  }
-  // Future<void> changeStatus() async {
-  //   loading.value = true;
-  //   var filter = [];
+    } catch (e){
+      loading.value = false;
+    } finally {
 
-  //   queryParameters.update((params) {
-  //     params?.pageIndex = (params.pageIndex ?? 0) + 1;
-  //   });
-  //   if (searchText.value.isNotEmpty) {
-  //     filter.add({
-  //       'field': 'search',
-  //       'operator': 'contains',
-  //       'value': searchText.value
-  //     });
-  //   }
-  //   if (houseKeepingStatus.value != 0) {
-  //     filter.add({
-  //       'field': 'houseKeepingStatus',
-  //       'operator': 'contains',
-  //       'value': houseKeepingStatus.value
-  //     });
-  //   }
-  //   var response = await service.changeStatus(date: selectedDate, queryParameters: {
-  //     'pageIndex': currentPage,
-  //     'pageSize': pageSize,
-  //     'filters': jsonEncode(filter)
-  //   });
-  //   if (response.isNotEmpty) {
-  //     list.value = response;
-  //   }
-  //   search();
-  //   loading.value = false;
-  // }
+    loading.value = false;
+    }
+  }
 }

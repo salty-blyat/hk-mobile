@@ -5,19 +5,19 @@ import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/const.dart';
-import 'package:staff_view_ui/helpers/firebase_service.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
+import 'package:staff_view_ui/pages/staff_user/staff_user_controller.dart';
 import 'package:staff_view_ui/route.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
 import 'package:staff_view_ui/utils/widgets/snack_bar.dart';
 
-enum RoleEnum { manager, housekeeper }
+enum PositionEnum { manager, housekeeper }
 
-extension RoleEnumExtension on RoleEnum {
-  static const Map<RoleEnum, int> _values = {
-    RoleEnum.manager: 1,
-    RoleEnum.housekeeper: 2,
+extension PositionEnumExtension on PositionEnum {
+  static const Map<PositionEnum, int> _values = {
+    PositionEnum.manager: 1,
+    PositionEnum.housekeeper: 2,
   };
 
   int get value => _values[this]!;
@@ -26,10 +26,12 @@ extension RoleEnumExtension on RoleEnum {
 class AuthController extends GetxController {
   final language = 'en'.obs;
   final _authService = AuthService();
-  final _firebaseService = NotificationService();
+  // final _firebaseService = NotificationService();
+  final staffUserController = Get.put(StaffUserController());
   final passwordController = TextEditingController();
   final loading = false.obs;
   final formValid = false.obs;
+  final storage = Storage();
   final error = ''.obs;
   final formKey = GlobalKey<FormState>();
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
@@ -37,7 +39,7 @@ class AuthController extends GetxController {
     'username': FormControl<String>(validators: [Validators.required]),
     'password': FormControl<String>(validators: [Validators.required]),
   });
-  final role = RoleEnum.manager.value.obs;
+  final position = PositionEnum.manager.value.obs;
 
   @override
   void onInit() {
@@ -45,21 +47,19 @@ class AuthController extends GetxController {
     formGroup.valueChanges.listen((value) {
       formValid.value = formGroup.valid;
     });
+
     language.value = Storage().read('lang') ?? 'km';
   }
 
   // Login Form Group
-
   Rx<ClientInfo?> auth = Rxn<ClientInfo>();
 
   login() async {
     Get.focusScope?.unfocus();
     Modal.loadingDialog();
     try {
-      final response = await _authService.login(
-        formGroup.value,
-        false,
-      );
+      final response = await _authService.login( formGroup.value, false, );
+
       if (response.statusCode == 200) {
         if (Get.isDialogOpen == true) {
           Get.back();
@@ -73,12 +73,17 @@ class AuthController extends GetxController {
           });
           return;
         }
-        _firebaseService.handlePassToken();
+        // _firebaseService.handlePassToken();
         _authService.saveToken(info);
         if (info.changePasswordRequired == true) {
           Get.toNamed(RouteName.changePassword);
-        } else {
-          Get.offAllNamed(RouteName.houseKeeping);
+        } else { 
+          await staffUserController.getUser();
+          if(staffUserController.staffUser.value.positionId == PositionEnum.manager.value){
+            Get.offAllNamed(RouteName.houseKeeping);
+          } else {
+            Get.offAllNamed(RouteName.task);
+          }
         }
       } else {
         Get.back();
@@ -93,12 +98,12 @@ class AuthController extends GetxController {
 
   logout() async {
     try {
-      final res = await _firebaseService.handleRemoveToken();
-      if (res.statusCode == 200) {
-        handleLogout();
-      } else {
-        handleLogout();
-      }
+      // final res = await _firebaseService.handleRemoveToken();
+      // if (res.statusCode == 200) {
+      handleLogout();
+      // } else {
+      //   handleLogout();
+      // }
     } catch (e) {
       handleLogout();
     }

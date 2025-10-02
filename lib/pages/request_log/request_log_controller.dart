@@ -29,4 +29,10 @@ class RequestLogController extends GetxController {
       loading.value = false;
     }
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    print('request log');
+  }
 }

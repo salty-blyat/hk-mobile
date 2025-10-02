@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:staff_view_ui/auth/auth_controller.dart';
 import 'package:staff_view_ui/helpers/base_list_screen.dart';
 import 'package:staff_view_ui/models/housekeeping_model.dart';
@@ -11,6 +10,7 @@ import 'package:staff_view_ui/models/lookup_model.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
 import 'package:staff_view_ui/pages/service_item/service_item_controller.dart';
+import 'package:staff_view_ui/pages/staff_user/staff_user_controller.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/pages/task/task_op_screen.dart';
 import 'package:staff_view_ui/route.dart';
@@ -19,7 +19,6 @@ import 'package:staff_view_ui/utils/widgets/button.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
 import 'package:staff_view_ui/utils/widgets/network_img.dart';
 
-
 class HousekeepingScreen extends BaseList<Housekeeping> {
   HousekeepingScreen({super.key});
 
@@ -27,9 +26,6 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   final LookupController lookupController = Get.put(LookupController());
 
   Timer? _debounce;
-
-  // @override
-  // String get title => controller.auth.value?.fullName ?? 'Housekeeping';
 
   @override
   bool get showDrawer => true;
@@ -49,40 +45,35 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   @override
   bool get canLoadMore => controller.canLoadMore.value;
 
+  Color bgColor = const Color.fromARGB(255, 240, 240, 240);
+
   void dispose() {
     _debounce?.cancel();
   }
 
   @override
-  Widget titleWidget() {
-    final AuthController authController = Get.find<AuthController>();
-    return Obx(() {
-      var position = authController.role.value == RoleEnum.housekeeper.value
-          ? 'Housekeeper'
-          : 'Manager';
+  RxList<Housekeeping> get items => controller.list;
 
-      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+  @override
+  Widget titleWidget() { 
+    final StaffUserController staffUserController = Get.put(StaffUserController());
+    return Obx(() { 
+       return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
-          controller.auth.value?.fullName ?? '-',
+          staffUserController.staffUser.value.staffName ?? '-',
           style: Get.textTheme.titleLarge!.copyWith(color: Colors.white),
-          overflow: TextOverflow.ellipsis,
+          overflow: TextOverflow.ellipsis, 
         ),
-        Text("${'Position'.tr}: $position",
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal))
+        Text("${'Position'.tr}: ${staffUserController.staffUser.value.positionName}",
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.normal))
       ]);
     });
   }
 
-  Color bgColor = const Color.fromARGB(255, 240, 240, 240);
-  // Color bgColor = Colors.white;
-
-  @override
-  RxList<Housekeeping> get items => controller.list;
   @override
   Future<void> onRefresh() async {
     controller.queryParameters.value.pageIndex = 1;
-    controller.selected.clear();
-    controller.search();
+    await controller.search();
   }
 
   Widget buildStickyHeader(String section, int itemCount, int sectionId) {
@@ -90,8 +81,11 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
         controller.list.where((e) => e.floorId == sectionId).toList();
     List<Housekeeping> selected =
         controller.selected.where((e) => e.floorId == sectionId).toList();
-    Function? onTap() {
-      if (select.length == selected.length) {
+    void onTap() {
+      if (controller.searchText.value.isNotEmpty) {
+        return;
+      }
+      if (selected.length == itemCount) {
         controller.selected.removeWhere((e) => e.floorId == sectionId);
       } else {
         controller.selected.assignAll({
@@ -99,12 +93,10 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
           ...select,
         });
       }
-      return null;
     }
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
-      // color: Colors.white,
       decoration: const BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(
             color: Color.fromARGB(255, 250, 250, 250),
@@ -113,9 +105,16 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
       ]),
       child: Row(
         children: [
-          Checkbox(
-              value: selected.length == itemCount,
-              onChanged: (value) => onTap()),
+          Obx(() {
+            return controller.searchText.value.isEmpty
+                ? Checkbox(
+                    tristate: true,
+                    value: selected.isEmpty
+                        ? false
+                        : (selected.length == itemCount ? true : null),
+                    onChanged: (value) => onTap())
+                : const SizedBox.shrink();
+          }),
           Expanded(
             child: Align(
               alignment: Alignment.centerLeft,
@@ -162,19 +161,18 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
       color: bgColor,
       child: CustomScrollView(
         slivers: groupedItems.entries.map((entry) {
-          final section = "${entry.key} | ${entry.value.first.blockName!}";
+          final section = "${entry.key} | ${entry.value.first.blockName ?? ''}";
           final items = entry.value;
           bool isLastSection(String section) {
             return section == groupedItems.entries.last.key;
           }
 
-          var floorId = items.isNotEmpty ? items.first.floorId : 0;
+          var floorId = items.isNotEmpty && items.first.floorId != null
+              ? items.first.floorId
+              : 0;
 
           return SliverStickyHeader(
-            header:
-                //  Container(padding: EdgeInsets.only(top:12),child:
-                //  ),
-                buildStickyHeader(section, items.length, floorId!),
+            header: buildStickyHeader(section, items.length, floorId!),
             sliver: SliverPadding(
               padding:
                   const EdgeInsets.only(top: 8, left: 4, right: 4, bottom: 16),
@@ -183,7 +181,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                   maxCrossAxisExtent: 200.0,
                   mainAxisSpacing: 8.0,
                   crossAxisSpacing: 8.0,
-                  childAspectRatio: 1.4,
+                  childAspectRatio: 1.3,
                 ),
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
@@ -249,7 +247,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
       ),
       textStyle: WidgetStateProperty.all(
         const TextStyle(
-          color: AppTheme.primaryColor,
+          // color: Colors.black,
           fontFamilyFallback: ['Gilroy', 'Kantumruy'],
           fontSize: 18,
         ),
@@ -257,15 +255,15 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
       // hintText: 'Search'.tr,
       hintText: 'Search',
       hintStyle: WidgetStateProperty.all(
-        TextStyle(
-            color: AppTheme.primaryColor.withOpacity(0.5),
+        const TextStyle(
+            color: Colors.grey,
             fontSize: 14,
-            fontFamilyFallback: const ['Gilroy', 'Kantumruy']),
+            fontFamilyFallback: ['Gilroy', 'Kantumruy']),
       ),
       leading: Icon(
         Icons.search,
         size: 18,
-        color: AppTheme.primaryColor.withOpacity(0.5),
+        color: Colors.grey.withOpacity(0.5),
       ),
       backgroundColor: WidgetStateProperty.all(Colors.transparent),
       shadowColor: WidgetStateProperty.all(Colors.transparent),
@@ -280,11 +278,11 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
       ),
       onChanged: (value) {
         if (_debounce?.isActive ?? false) _debounce?.cancel();
-        _debounce = Timer(const Duration(milliseconds: 500), () {
+        _debounce = Timer(const Duration(milliseconds: 500), () async {
           controller.searchText.value = value;
           controller.list.clear();
           controller.currentPage = 1;
-          controller.search();
+          await controller.search();
         });
       },
       trailing: [
@@ -335,9 +333,9 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                           padding: EdgeInsets.zero,
                           height: 35,
                           value: 0,
-                          onTap: () {
+                          onTap: () async {
                             controller.houseKeepingStatus.value = 0;
-                            controller.search();
+                            await controller.search();
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -380,9 +378,9 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
     return PopupMenuItem(
       padding: EdgeInsets.zero,
       height: 35,
-      onTap: () {
+      onTap: () async {
         controller.houseKeepingStatus.value = item.valueId!;
-        controller.search();
+        await controller.search();
       },
       value: item.valueId,
       child: Container(
@@ -420,7 +418,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
     final TaskController taskController = Get.put(TaskController());
 
     return Obx(() {
-      if (authController.role.value == RoleEnum.manager.value) {
+      if (authController.position.value == PositionEnum.manager.value) {
         return Container(
           color: bgColor,
           padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
@@ -454,8 +452,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
     return [
       IconButton(
           onPressed: () {
-            Get.toNamed(RouteName.task,
-                arguments: {'roomId': 0, 'title': "Tasks"});
+            Get.toNamed(RouteName.task, arguments: {'roomId': 0, 'title': ""});
 
             controller.selected.clear();
           },
@@ -463,9 +460,37 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
     ];
   }
 
+  Widget _buildBadge(
+      {String? src, required String label, required Color color}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(99),
+          // border: Border.all(color: Colors.grey.shade50),
+          // color: color.withOpacity(0.3),
+          color: Colors.grey.shade50),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          NetworkImg(src: src, height: 14),
+          const SizedBox(
+            width: 4,
+          ),
+          Text(
+            label,
+            style: const TextStyle(
+                fontSize: 12,
+                // color: Colors.grey.shade700,
+                fontWeight: FontWeight.w500),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget buildItem(Housekeeping item) {
-    var selected = controller.selected.any((e) => e.roomId == item.roomId);
+    var selected = controller.selected.any((e) => e.id == item.id);
     var selectedTextColor = selected ? Colors.black : Colors.black;
 
     return Container(
@@ -535,68 +560,64 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                     style: const TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                   const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      NetworkImg(src: item.houseKeepingStatusImage, height: 18),
-                      const SizedBox(
-                        width: 2,
+                  SizedBox(
+                    width: 180,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          _buildBadge(
+                            src: item.houseKeepingStatusImage,
+                            color: Colors.red,
+                            label: item.houseKeepingStatusNameEn!,
+                          ),
+                          const SizedBox(width: 4),
+                          _buildBadge(
+                            src: item.statusImage,
+                            color: Colors.grey,
+                            label: item.statusNameEn!,
+                          ),
+                        ],
                       ),
-                      Text(
-                        item.houseKeepingStatusNameEn!,
-                        style:
-                            const TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
-                      const SizedBox(width: 40),
-                      NetworkImg(src: item.statusImage, height: 14),
-                      const SizedBox(
-                        width: 2,
-                      ),
-                      Text(
-                        item.statusNameEn!,
-                        style:
-                            const TextStyle(fontSize: 11, color: Colors.grey),
-                      )
-                    ],
+                    ),
                   ),
-                  const SizedBox(height: 14),
+
+                  const SizedBox(height: 24),
+
                   SizedBox(
                     height: 32,
                     width: double.infinity,
                     child: Material(
-                      // elevation: 0.8,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          print("item.roomId :${item.roomId}");
-                          print("item.Roomnum :${item.roomNumber}");
-                          Get.toNamed(RouteName.task, arguments: {
-                            'roomId': item.roomId,
-                            'title': item.roomNumber
-                          });
-                          controller.selected.clear();
-                        },
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(
-                            width: 1,
-                            color: selected
-                                ? AppTheme.primaryColor.withOpacity(0.5)
-                                : const Color.fromARGB(255, 223, 223, 223),
-                          ),
-                          backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
-                          ),
+                        // elevation: 0.8,
+                        child: OutlinedButton(
+                      onPressed: () {
+                        Get.toNamed(RouteName.task, arguments: {
+                          'roomId': item.id,
+                          'title': item.roomNumber
+                        });
+                        controller.selected.clear();
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(
+                          width: 1,
+                          color: selected
+                              ? AppTheme.primaryColor.withOpacity(0.5)
+                              : const Color.fromARGB(255, 223, 223, 223),
                         ),
-                        child: Obx(() {
-                          var pending = 1.obs;
-                          var completedTask = 4.obs;
-                          return Text(
-                            "${"View tasks".tr} (${pending}/${completedTask})",
-                            style: const TextStyle(
-                                color: Colors.black, fontSize: 12),
-                          );
-                        }),
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                       ),
-                    ),
+                      child: Text(
+                                "${"View tasks".tr} (${item.pending ?? 0}/${item.total ?? 0})",
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500),
+                              )
+                            // : const SizedBox.shrink();
+                     )),
                   ),
                 ],
               ),

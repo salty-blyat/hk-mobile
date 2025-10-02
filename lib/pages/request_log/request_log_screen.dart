@@ -1,15 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:staff_view_ui/models/attachment_model.dart';
 import 'package:staff_view_ui/models/log_model.dart';
 import 'package:staff_view_ui/pages/request_log/request_log_controller.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
 import 'package:staff_view_ui/utils/khmer_date_formater.dart';
 import 'package:staff_view_ui/utils/theme.dart';
+import 'package:staff_view_ui/utils/widgets/button.dart';
 import 'package:staff_view_ui/utils/widgets/network_img.dart';
 import 'package:staff_view_ui/utils/widgets/tag.dart';
 import 'package:timelines/timelines.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RequestLogScreen extends StatelessWidget {
   final RequestLogController controller = Get.put(RequestLogController());
@@ -22,7 +25,8 @@ class RequestLogScreen extends StatelessWidget {
       appBar: _buildAppBar(),
       body: Obx(() => controller.loading.value
           ? const Center(child: CircularProgressIndicator())
-          : _buildBody(context)),
+          : _buildBody()),
+      // ),
     );
   }
 
@@ -33,23 +37,111 @@ class RequestLogScreen extends StatelessWidget {
           : Text(
               controller.model.value.serviceItemName ?? '',
             )),
+      actions: actions(),
     );
   }
 
-  Widget _buildBody(BuildContext context) {
+  Widget _buildBody() {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          // _buildRequestDetailsCard(),
-          // const SizedBox(height: 16),
-          _buildTimeline(context),
+          _buildProfileCard(),
+          const SizedBox(height: 16),
+          _buildTaskDetailCard(),
+          // if (controller.model.value.attachments != null &&
+          //     controller.model.value.attachments!.isNotEmpty)
+          //   _buildRequestDetailsCard(),
+          const SizedBox(height: 16),
+          _actionButton(status: RequestStatusEnum.inProgress),
+          const SizedBox(height: 16),
+          _buildTimeline( ),
         ],
       ),
     );
   }
 
-  Widget _buildTimeline(BuildContext context) {
+  Widget _buildProfileCard() {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: AppTheme.borderRadius,
+        border: Border.all(color: Colors.grey.shade400),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildProfileAvatar(),
+          const SizedBox(width: 12),
+          Expanded(
+            child: _buildProfileDetails(),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProfileAvatar() {
+    return
+        // controller.model.value.photo != null
+        false
+            ? CircleAvatar(
+                child: ClipOval(
+                  child: Image.network(
+                    "  controller.model.value.photo ?? ''",
+                    fit: BoxFit.cover,
+                    height: 64,
+                    width: 64,
+                  ),
+                ),
+              )
+            : CircleAvatar(
+                backgroundColor: AppTheme.primaryColor.withOpacity(0.7),
+                child: Text(
+                  "controller.model.value.staffNameKh?.substring(0, 1) ?? ''",
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              );
+  }
+
+  Widget _buildTaskDetailCard() {
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: AppTheme.borderRadius,
+          border: Border.all(color: Colors.grey.shade400),
+        ),
+        child: Row(children: [
+          SizedBox(
+              width: 32,
+              child: NetworkImg(
+                  src: controller.model.value.statusImage, height: 32)),
+          const SizedBox(width: 12),
+          Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("roomnumber ?? '', floornumber"),
+                Text(
+                  "controller.model.value.serviceItemName, controller.model.value.serviceTypeName",
+                  style: const TextStyle(
+                    fontSize: 12,
+                  ),
+                  softWrap: true,
+                ),
+              ])
+        ]));
+  }
+
+  Widget _buildTimeline( ) {
     final logs = controller.model.value.requestLogs ?? [];
 
     if (logs.isEmpty) {
@@ -59,7 +151,7 @@ class RequestLogScreen extends StatelessWidget {
       child: Timeline.tileBuilder(
         theme: TimelineThemeData(
           nodePosition: 0,
-          color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+          // color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
         ),
         builder: TimelineTileBuilder(
           endConnectorBuilder: (_, index) => Connector.solidLine(),
@@ -74,14 +166,13 @@ class RequestLogScreen extends StatelessWidget {
                     children: [
                       Text(
                         logs[index].statusNameEn ?? '',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontSize: 16.0,
-                            ),
+                        
+                        style: Get.textTheme.bodyLarge?.copyWith(fontSize: 16)
                       ),
                       const SizedBox(width: 8),
                       Text(
                         convertToKhmerTimeAgo(logs[index].createdDate),
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        style: Get.textTheme.bodySmall?.copyWith(
                               fontSize: 16.0,
                               color: Colors.black54,
                             ),
@@ -103,10 +194,9 @@ class RequestLogScreen extends StatelessWidget {
                 child:
                     NetworkImg(height: 18, src: logs[index].statusImage ?? ''));
           },
-
           // connectorBuilder: (_, index, ___) => SolidLineConnector(
           //   color: logs[index].status == LeaveStatus.approved.value
-          //       ? Theme.of(context).colorScheme.primary
+          //       ? AppTheme.primaryColor
           //       : null,
           // ),
         ),
@@ -128,35 +218,10 @@ class RequestLogScreen extends StatelessWidget {
     );
   }
 
-  Widget _actionButton(Color color, IconData icon, String title,
-      Function() onPressed, bool isDisabled) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        disabledBackgroundColor: color.withOpacity(0.4),
-        disabledForegroundColor: Colors.white,
-        backgroundColor: color,
-        shape: RoundedRectangleBorder(
-          borderRadius: AppTheme.borderRadius,
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-      ),
-      onPressed: isDisabled ? null : onPressed,
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            color: Colors.white,
-            size: 16.0,
-          ),
-          const SizedBox(width: 4),
-          Text(title.tr),
-        ],
-      ),
-    );
-  }
+  List<Widget> actions() =>
+      [IconButton(onPressed: () {}, icon: Icon(Icons.person_add))];
 
   Widget _buildTimelineContent(Log log) {
-    print('log.toJson() ${log.toJson()}');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -177,7 +242,10 @@ class RequestLogScreen extends StatelessWidget {
         children: [
           SizedBox(width: 110, child: Text(title.tr)),
           Expanded(
-            child: Text(': $value'),
+            child: Text(': $value',
+                style: const TextStyle(
+                  fontSize: 12,
+                )),
           ),
         ],
       ),
@@ -193,7 +261,7 @@ class RequestLogScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "    controller.model.value.positionName ?? '',",
+              "controller.model.value.positionName ?? '',",
               style: const TextStyle(
                 fontSize: 12,
               ),
@@ -218,54 +286,83 @@ class RequestLogScreen extends StatelessWidget {
         children: [
           _buildRequestDetails(),
           const SizedBox(height: 8),
-          // if (controller..value?['attachments'] != null && 
-          //     controller..value?['attachments'].isNotEmpty)
-          //  ...controller..value?['attachments']
-          //       .asMap()
-          //       .entries
-          //       .map(
-          //         (entry) => GestureDetector(
-          //           key: Key(entry.key.toString()), // Key based on index
-          //           child: Column(
-          //             children: [
-          //               _buildInfo(
-          //                 CupertinoIcons.doc,
-          //                 '${'Attachment'.tr} ${entry.key + 1}',
-          //                 isLink: true,
-          //               ),
-          //               const SizedBox(height: 8),
-          //             ],
-          //           ),
-          //           onTap: () async {
-          //             final Uri uri = Uri.parse(entry.value['url'] ?? '');
+          ...controller.model.value.attachments!
+              .map(
+                (Attachment attachment) => GestureDetector(
+                  child: Column(
+                    children: [
+                      _buildInfo(
+                        CupertinoIcons.doc,
+                        '${'Attachment'.tr}:  ${attachment.name} ',
+                        isLink: true,
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                  ),
+                  onTap: () async {
+                    final Uri uri = Uri.parse(attachment.url);
 
-          //             if (await canLaunchUrl(uri)) {
-          //               await launchUrl(
-          //                 uri,
-          //                 mode: LaunchMode
-          //                     .externalApplication, // Use external browser
-          //               );
-          //             } else {
-          //               throw 'Could not launch $uri';
-          //             }
-          //           },
-          //         ),
-          //       )
-          //       .toList(),
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(
+                        uri,
+                        mode: LaunchMode
+                            .externalApplication, // Use external browser
+                      );
+                    } else {
+                      throw 'Could not launch $uri';
+                    }
+                  },
+                ),
+              )
+              .toList(),
         ],
       ),
     );
+  }
+
+  Widget _actionButton(
+      {required RequestStatusEnum status, bool isTaskUnassigned = false}) {
+    if (isTaskUnassigned) {
+      return ElevatedButton(
+        child: Row(
+          children: [const Icon(Icons.person_add_alt_1), Text("Assign".tr)],
+        ),
+        onPressed: () {},
+      );
+    }
+    switch (status) {
+      case RequestStatusEnum.pending:
+        return ElevatedButton(
+          child: Row(
+            children: [const Icon(Icons.check), Text("Start task".tr)],
+          ),
+          onPressed: () {},
+        );
+      case RequestStatusEnum.inProgress:
+        return ElevatedButton(
+          child: Row(
+            children: [const Icon(Icons.check), Text("Mark as complete".tr)],
+          ),
+          onPressed: () {},
+        );
+      case RequestStatusEnum.done:
+        return const SizedBox.shrink();
+      default:
+        return const SizedBox.shrink();
+    }
   }
 
   Widget _buildRequestDetails() {
     final requestStatus = controller.model.value.status ?? 0;
 
     switch (requestStatus) {
-      case RequestStatus.pending:
+      case RequestStatusEnum.pending:
         return _buildPendingInfo();
       // case RequestType.ot:
-      //   return _buildOtInfo();
+
+      //     _buildOtInfo();
       // case RequestType.exception:
+
       //   return _buildExceptionInfo();
       default:
         return const SizedBox.shrink();
@@ -469,36 +566,36 @@ class RequestLogScreen extends StatelessWidget {
   //   );
   // }
 
-  // Widget _buildInfo(IconData icon, String value, {bool isLink = false}) {
-  //   return Container(
-  //     alignment: Alignment.centerLeft,
-  //     child: RichText(
-  //       text: TextSpan(
-  //         style: const TextStyle(
-  //           color: Colors.black,
-  //           fontFamilyFallback: ['Gilroy', 'Kantumruy'],
-  //         ),
-  //         children: [
-  //           WidgetSpan(
-  //             child: Icon(
-  //               icon,
-  //               size: 16,
-  //             ),
-  //           ),
-  //           const WidgetSpan(
-  //             child: SizedBox(width: 4),
-  //           ),
-  //           TextSpan(
-  //             text: value,
-  //             style: isLink
-  //                 ? const TextStyle(
-  //                     color: AppTheme.primaryColor,
-  //                   )
-  //                 : null,
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
+  Widget _buildInfo(IconData icon, String value, {bool isLink = false}) {
+    return Container(
+      alignment: Alignment.centerLeft,
+      child: RichText(
+        text: TextSpan(
+          style: const TextStyle(
+            color: Colors.black,
+            fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+          ),
+          children: [
+            WidgetSpan(
+              child: Icon(
+                icon,
+                size: 16,
+              ),
+            ),
+            const WidgetSpan(
+              child: SizedBox(width: 4),
+            ),
+            TextSpan(
+              text: value,
+              style: isLink
+                  ? const TextStyle(
+                      color: AppTheme.primaryColor,
+                    )
+                  : null,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

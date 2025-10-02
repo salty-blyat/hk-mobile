@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
@@ -46,7 +47,7 @@ class TaskOpScreen extends StatelessWidget {
         return aRoom.compareTo(bRoom);
       });
     print('task form group ${controller.formGroup.rawValue}');
-    print('TaskFromEnum.guest.value ${TaskFromEnum.guest.value}');
+    print('RequestTypes.guest.value ${RequestTypes.guest.value}');
 
     return Expanded(
       child: Padding(
@@ -84,8 +85,8 @@ class TaskOpScreen extends StatelessWidget {
                       child: ReactiveRadioListTile(
                         visualDensity: VisualDensity.compact,
                         contentPadding: const EdgeInsets.all(0),
-                        value: TaskFromEnum.internal.value,
-                        formControlName: 'taskFrom',
+                        value: RequestTypes.internal.value,
+                        formControlName: 'requestType',
                         title: Text("Internal".tr),
                       ),
                     ),
@@ -93,19 +94,15 @@ class TaskOpScreen extends StatelessWidget {
                       child: ReactiveRadioListTile(
                         visualDensity: VisualDensity.compact,
                         contentPadding: const EdgeInsets.all(0),
-                        value: TaskFromEnum.guest.value,
-                        formControlName: 'taskFrom',
+                        value: RequestTypes.guest.value,
+                        formControlName: 'requestType',
                         title: Text("Guest".tr),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(width: 8),
-                StaffSelect(
-                  label: "Staff".tr,
-                  formControlName: 'staffId',
-                ),
-                const SizedBox(height: 12),
+               
                 ServiceTypeSelect(
                   formControlName: 'serviceTypeId',
                   label: "Service Type".tr,
@@ -126,9 +123,15 @@ class TaskOpScreen extends StatelessWidget {
                       ? MyFormField(
                           controlName: 'quantity',
                           label: 'Quantity'.tr,
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                         )
                       : const SizedBox.shrink();
                 }),
+                 StaffSelect(
+                  label: "Staff".tr,
+                  formControlName: 'staffId',
+                ),
+                const SizedBox(height: 12),
                 MyFormField(
                   controlName: 'note',
                   label: 'Note'.tr,

@@ -3,35 +3,40 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/auth/auth_controller.dart';
 import 'package:staff_view_ui/helpers/base_list_screen.dart';
+import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/models/housekeeping_model.dart';
 import 'package:staff_view_ui/models/task_model.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
-import 'package:staff_view_ui/pages/task/task_op_screen.dart';
+import 'package:staff_view_ui/pages/staff_user/staff_user_controller.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/route.dart';
-import 'package:staff_view_ui/utils/theme.dart';
-import 'package:staff_view_ui/utils/widgets/dialog.dart';
+import 'package:staff_view_ui/utils/theme.dart'; 
 import 'package:staff_view_ui/utils/widgets/network_img.dart';
 
 class TaskScreen extends BaseList<TaskModel> {
   TaskScreen({super.key});
   final TaskController controller = Get.put(TaskController());
   final LookupController lookupController = Get.put(LookupController());
+  final StaffUserController staffUserController = Get.put(StaffUserController());
+  Rx<ClientInfo?> auth = Rxn<ClientInfo>();
   Timer? _debounce;
 
   @override
   RxList<TaskModel> get items => controller.list;
+ 
+  @override
+  bool get showDrawer => true;
 
   @override
-  String get title => (Get.arguments != null && Get.arguments['title'] != null)
-      ? Get.arguments['title']
-      : "Tasks";
+  List<Widget> actions() => [];
+ 
+  @override
+  bool get isCenterTitle => false;
 
   @override
   bool get fabButton => false;
@@ -55,9 +60,41 @@ class TaskScreen extends BaseList<TaskModel> {
   @override
   Future<void> onRefresh() async {
     controller.queryParameters.value.pageIndex = 1;
-    controller.search();
-    lookupController.fetchLookups(LookupTypeEnum.requestStatuses.value);
+    await controller.search();
+    await lookupController.fetchLookups(LookupTypeEnum.requestStatuses.value);
     controller.formGroup.reset();
+  }
+
+  @override
+  Widget titleWidget() {
+    final AuthController authController = Get.put(AuthController());
+    return Obx(() {
+      var position = authController.position.value == PositionEnum.manager.value
+          ? 'Manager'
+          : 'Housekeeper'; 
+
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(
+          controller.auth.value?.fullName ?? '-',
+          style: Get.textTheme.titleLarge!.copyWith(color: Colors.white),
+          overflow: TextOverflow.ellipsis,
+        ),
+        Row(
+          children: [
+            Text("${'Position'.tr}: $position",
+                style: const TextStyle(
+                    fontSize: 12, fontWeight: FontWeight.normal)),
+            const SizedBox(
+              width: 8,
+            ),
+            if (Get.arguments != null && Get.arguments['title'] != null && Get.arguments['title'] != '')
+              Text("(${Get.arguments['title']})",
+                  style: const TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.normal)),
+          ],
+        )
+      ]);
+    });
   }
 
   @override
@@ -106,14 +143,12 @@ class TaskScreen extends BaseList<TaskModel> {
   Widget buildItem(TaskModel item) {
     String? requestTime = item.requestTime != null
         ? DateFormat("dd-MM-yyyy hh:mm a").format(item.requestTime!)
-        : null;
-    final AuthController authController = Get.find<AuthController>();
+        : null; 
     final HousekeepingController housekeepingController =
         Get.find<HousekeepingController>();
 
     setRoom() {
-      Housekeeping selected = housekeepingController.list
-          .firstWhere((r) => r.roomId == item.roomId);
+      Housekeeping selected = housekeepingController.list.firstWhere((r) => r.id == item.roomId);
       housekeepingController.selected.assignAll([selected]);
     }
 
@@ -127,7 +162,6 @@ class TaskScreen extends BaseList<TaskModel> {
           splashColor: AppTheme.primaryColor.withOpacity(0.2),
           borderRadius: BorderRadius.circular(4),
           onTap: () {
-            print('item with id: ${item.id}');
             Get.toNamed(RouteName.requestLog, arguments: {'id': item.id});
           },
           child: Padding(
@@ -170,7 +204,6 @@ class TaskScreen extends BaseList<TaskModel> {
                                     fontSize: 11, color: Colors.grey)),
                           ],
                         ),
-
                       Row(
                         children: [
                           item.roomNo != null
@@ -186,18 +219,16 @@ class TaskScreen extends BaseList<TaskModel> {
                               : const SizedBox.shrink(),
                         ],
                       ),
-                      // TODO: GUEST NAME ( change to house staff name later, now use guest as placeholder )
                       Row(
                         children: [
                           const Icon(Icons.person_outline,
                               color: Colors.grey, size: 12),
                           const SizedBox(width: 4),
-                          Text(item.guestName ?? '',
+                          Text(item.staffName ?? 'Unassigned',
                               style: const TextStyle(
                                   fontSize: 12, color: Colors.grey)),
                         ],
                       ),
-
                       Row(
                         children: [
                           const Icon(Icons.access_time,
@@ -210,27 +241,7 @@ class TaskScreen extends BaseList<TaskModel> {
                                 Text(requestTime!,
                                     style: const TextStyle(
                                         fontSize: 12, color: Colors.grey)),
-                                GestureDetector(
-                                    onTap: () => {print('asdfdasfdas')},
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        item.requestTime != null
-                                            ? const Icon(
-                                                Icons
-                                                    .cleaning_services_outlined,
-                                                color: AppTheme.primaryColor,
-                                                size: 12)
-                                            : const SizedBox.shrink(),
-                                        const SizedBox(width: 4),
-                                        const Text("Assign",
-                                            style: TextStyle(
-                                                decoration:
-                                                    TextDecoration.underline,
-                                                fontSize: 12,
-                                                color: AppTheme.primaryColor))
-                                      ],
-                                    )),
+                                _buildButton(item)
                               ],
                             ),
                           )
@@ -247,6 +258,59 @@ class TaskScreen extends BaseList<TaskModel> {
     );
   }
 
+  Widget _buildButton(TaskModel task) {
+    if (task.status == RequestStatusEnum.done.value ||
+        task.status == RequestStatusEnum.cancel.value) {
+      return const SizedBox.shrink();
+    }
+
+    if (task.status == RequestStatusEnum.inProgress.value) {
+      return ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+            minimumSize: const Size(0, 28),
+            visualDensity: VisualDensity.compact,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          ),
+          onPressed: () {
+            print('asdf');
+          },
+          child: Row(
+            children: [
+              const Icon(
+                Icons.play_arrow_rounded,
+                size: 12,
+                color: Colors.white,
+              ),
+              const SizedBox(width: 4),
+              Text("Start".tr,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.white,
+                  ))
+            ],
+          ));
+    }
+
+    return GestureDetector(
+        onTap: () => {print('asdfdasfdas')},
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            const Icon(Icons.person_add,
+                color: AppTheme.primaryColor, size: 12),
+            const SizedBox(width: 4),
+            Text("Assign".tr,
+                style: const TextStyle(
+                    decoration: TextDecoration.underline,
+                    fontSize: 12,
+                    color: AppTheme.primaryColor))
+          ],
+        ));
+  }
+
   @override
   Widget headerWidget() {
     return Column(
@@ -256,7 +320,6 @@ class TaskScreen extends BaseList<TaskModel> {
   }
 
   Widget _buildFilterButtons() {
-    // final LookupController lookupController = Get.put(LookupController());
     return Obx(() {
       if (lookupController.isLoading.value) {
         return Skeletonizer(
@@ -313,11 +376,11 @@ class TaskScreen extends BaseList<TaskModel> {
                         borderRadius: BorderRadius.all(Radius.circular(24)),
                       ),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       controller.taskStatus.value = 0;
-                      controller.search();
+                      await controller.search();
                     },
-                    child: Text("${"All".tr} (${controller.list.length})"),
+                    child: Text("All".tr),
                   );
                 }),
               );
@@ -346,15 +409,15 @@ class TaskScreen extends BaseList<TaskModel> {
                       borderRadius: BorderRadius.all(Radius.circular(24)),
                     ),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     controller.taskStatus.value = lookupItem.valueId!;
-                    controller.search();
+                    await controller.search();
                   },
                   child: Row(
                     children: [
                       NetworkImg(height: 18, src: lookupItem.image),
-                      SizedBox(width: 4),
-                      Text("${lookupItem.nameEn ?? ''} (${count})"),
+                      const SizedBox(width: 4),
+                      Text(lookupItem.nameEn ?? ''),
                     ],
                   ),
                 );
@@ -367,64 +430,86 @@ class TaskScreen extends BaseList<TaskModel> {
   }
   // Widget _buildTaskStatusBadge(Lookup)
 
-  Widget _buildBottomSheet() {
-    return Column(children: [Text("Bottom Sheet")]);
-  }
-
-  Widget _buildActionButton(
-      {required Widget child,
-      required VoidCallback onPressed,
-      required Color color,
-      bool outlined = false}) {
-    final ButtonStyle style = outlined
-        ? OutlinedButton.styleFrom(
-            foregroundColor: color,
-            side: BorderSide(color: color, width: 1.2),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          )
-        : ElevatedButton.styleFrom(
-            backgroundColor: color,
-            foregroundColor: Colors.white,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          );
-
-    return SizedBox(
-      height: 32,
-      width: 100,
-      child: outlined
-          ? OutlinedButton(
-              onPressed: onPressed,
-              style: style,
-              child: child,
-            )
-          : ElevatedButton(
-              onPressed: onPressed,
-              style: style,
-              child: child,
-            ),
-    );
-  }
 
   @override
   Widget buildHeaderWidget() {
-    return Container(
-      width: double.infinity,
-      // height: 35,
-      decoration: BoxDecoration(
-        borderRadius: AppTheme.borderRadius,
-      ),
-      padding: const EdgeInsets.only(left: 8, top: 8),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: headerWidget(),
-      ),
+    // RxInt countStatus(int status) =>
+    //     controller.list.where((e) => e.status == status).length.obs;
+    // RxInt pendingCount = countStatus(RequestStatus.pending.value);
+    // RxInt inProgressCount =countStatus(RequestStatus.inProgress.value);
+    // RxInt doneCount = countStatus(RequestStatus.done.value);
+    RxString taskSummary = controller.summaryList
+        .map((e) => "${e.value} ${e.name}")
+        .join(" • ")
+        .obs;
+    RxInt totalTask =
+        controller.summaryList.fold<RxInt>(0.obs, (p, t) => p + (t.value ?? 0));
+
+    return Column(
+      children: [
+        Container(
+          width: double.infinity,
+          decoration: const BoxDecoration(color: AppTheme.primaryColor),
+          child: Container(
+              margin: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(width: 0.5, color: Colors.grey.shade50),
+                color: const Color(0xff177b80),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Task Overview'.tr,
+                          style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.grey.shade50,
+                              fontWeight: FontWeight.w500)),
+                      Obx(() => Text(
+                            taskSummary.value,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white),
+                          ))
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Obx(() => Text(
+                            totalTask.value.toString(),
+                            style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white),
+                          )),
+                      Text('Total Tasks',
+                          style: TextStyle(
+                              fontSize: 9,
+                              color: Colors.grey.shade50,
+                              fontWeight: FontWeight.w500)),
+                    ],
+                  )
+                ],
+              )),
+        ),
+        Container(
+          width: double.infinity,
+          // height: 35,
+          decoration: BoxDecoration(
+            borderRadius: AppTheme.borderRadius,
+          ),
+          padding: const EdgeInsets.only(left: 8, top: 8),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: headerWidget(),
+          ),
+        )
+      ],
     );
   }
 }
-

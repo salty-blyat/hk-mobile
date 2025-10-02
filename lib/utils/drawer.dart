@@ -9,7 +9,6 @@ import 'package:staff_view_ui/helpers/version_server.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/pages/app-info/app_info_controller.dart';
-import 'package:staff_view_ui/pages/menu/menu_controller.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
@@ -17,7 +16,6 @@ class DrawerWidget extends StatelessWidget {
   DrawerWidget({super.key});
   final DrawerController drawerController = Get.put(DrawerController());
   final AuthController authController = Get.put(AuthController());
-  final MenusController menuController = Get.put(MenusController());
 
   @override
   Widget build(BuildContext context) {
@@ -151,24 +149,7 @@ class DrawerWidget extends StatelessWidget {
                   title: Text('Language'.tr),
                   onTap: () => Modal.showLanguageDialog(),
                 ),
-                // ListTile(
-                //   leading: Container(
-                //     padding: const EdgeInsets.all(4),
-                //     decoration: BoxDecoration(
-                //       color: Colors.grey[300],
-                //       borderRadius: AppTheme.borderRadius,
-                //     ),
-                //     child: const Icon(CupertinoIcons.checkmark_shield,
-                //         color: Colors.black87),
-                //   ),
-                //   title: Text('Privacy Policy'.tr),
-                //   onTap: () {
-                //     Get.toNamed('/privacy-policy'); // Navigate to Profile
-                //   },
-                // ),
-                if (menuController.showLogout.value)
                   const Divider(color: Color.fromARGB(255, 210, 210, 210)),
-                if (menuController.showLogout.value)
                   ListTile(
                     leading: Container(
                       padding: const EdgeInsets.all(4),

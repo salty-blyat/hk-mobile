@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
@@ -13,6 +14,8 @@ class MyFormField<T> extends StatelessWidget {
   final bool enableSuggestions;
   final bool Function(AbstractControl<dynamic> control)? showErrors;
   final void Function(FormControl<T>)? onChanged;
+  final List<TextInputFormatter>? inputFormatters; 
+  final TextInputType? keyboardType;
 
   const MyFormField(
       {super.key,
@@ -21,11 +24,13 @@ class MyFormField<T> extends StatelessWidget {
       this.disabled = false,
       this.validator,
       this.controller,
+      this.inputFormatters,
       this.maxLines = 1,
       this.controlName,
       this.enableSuggestions = false,
       this.showErrors,
       this.onChanged,
+      this.keyboardType = TextInputType.visiblePassword, 
       obs});
 
   @override
@@ -36,9 +41,10 @@ class MyFormField<T> extends StatelessWidget {
   Widget _buildFormField(BuildContext context, RxBool isDisabled) {
     return SizedBox(
       height: 72,
-      child: ReactiveTextField<T>(
+      child: ReactiveTextField<T>( 
+        inputFormatters: inputFormatters,
         // minLines: minLines,
-        keyboardType: TextInputType.visiblePassword,
+        keyboardType:   keyboardType,
         textAlignVertical: TextAlignVertical.bottom,
         maxLines: maxLines,
         controller: controller,

@@ -8,8 +8,9 @@ plugins {
 android {
     namespace = "bz.sgx.hk.app"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
-    compileSdk 34
+    // ndkVersion = flutter.ndkVersion
+     ndkVersion = "25.1.8937393"
+      compileSdk 34 
 
     compileOptions {
         coreLibraryDesugaringEnabled true

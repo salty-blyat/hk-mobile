@@ -42,6 +42,7 @@ class ServiceTypeSelect extends StatelessWidget {
           serviceItemController.list.value = [];
           serviceItemController.selected.value = ServiceItem();
           serviceItemController.serviceTypeId.value = data.value as int;
+          // taskController.formGroup.control(formControlName).updateValue(data.value);
           serviceItemController.search();
           // if (taskController.formGroup.control('serviceItemId').value != 0) {
           //   taskController.formGroup.control('serviceItemId').enabled;

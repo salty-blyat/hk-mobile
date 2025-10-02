@@ -14,19 +14,22 @@ class Style {
     }
     return Color(int.parse(hexColor.replaceFirst('#', '0xFF')));
   }
- 
+
   static Color getLookupColor(String? hexColor) {
     if (hexColor == null) {
       return const Color.fromARGB(255, 8, 8, 8);
     }
 
+    if (hexColor.length == 6) {
+      hexColor = "FF$hexColor"; // add alpha if not provided
+    }
+
     final base = Color(int.parse(hexColor.replaceFirst('#', '0xFF')));
     final hsl = HSLColor.fromColor(base);
 
-    return hsl.withLightness((hsl.lightness + 0.35).clamp(0.0, 9.0)).toColor();
+    return hsl.withLightness((hsl.lightness + 0.35).clamp(0.0, 1.0)).toColor();
   }
 
-   
   // static Color getHousekeepingColor(String? hexColor) {
   //   if (hexColor == null) {
   //     return const Color.fromARGB(255, 8, 8, 8);
@@ -37,6 +40,4 @@ class Style {
 
   //   return hsl.withLightness((hsl.lightness + 0.35).clamp(0.0, 9.0)).toColor();
   // }
-
-  
 }

@@ -12,7 +12,8 @@ class DioClient {
   final Dio dio = Dio();
   final AuthService authService = AuthService();
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
-  final AuthController authController = Get.put(AuthController());
+  // final AuthController authController = Get.put(AuthController());
+  AuthController get authController => Get.find<AuthController>();
   final String baseUrl = '${AppSetting.setting['BASE_API_URL']}';
 
   DioClient() {

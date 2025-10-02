@@ -30,20 +30,6 @@ extension HkActivityTypeEnumExtension on HkActivityTypeEnum {
   int get value => _values[this]!;
 }
 
-enum PositionEnum {
-  housekeeping,
-  frontDesk,
-}
-
-extension PositionEnumExtension on PositionEnum {
-  static const Map<PositionEnum, int> _values = {
-    PositionEnum.housekeeping: 342,
-    PositionEnum.frontDesk: 358,
-  };
-
-  int get value => _values[this]!;
-}
-
 enum LookupTypeEnum {
   gender,
   nationality,

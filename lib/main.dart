@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -7,10 +10,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:staff_view_ui/auth/auth_controller.dart';
+import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/firebase_service.dart';
 import 'package:staff_view_ui/helpers/notification_service.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
+import 'package:staff_view_ui/models/staff_user_model.dart';
+import 'package:staff_view_ui/pages/staff_user/staff_user_service.dart';
 import 'package:staff_view_ui/route.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/translation.dart';
@@ -27,17 +34,28 @@ Future<void> main() async {
   final Translate translationService = Translate();
   await translationService.loadTranslations();
   NotificationService.initialize();
-  var initialRoute = '/login';
-  // Lock orientation to portrait only
+  var initialRoute = RouteName.login;
+
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
-    // DeviceOrientation.portraitDown, // optional (allow upside-down portrait)
   ]);
+  Get.lazyPut<AuthService>(() => AuthService());
 
   try {
     var storage = const FlutterSecureStorage();
+    var localStorage = Storage();
+    StaffUserModel staffUser =  jsonDecode(localStorage.read(StorageKeys.staffUser) ?? '')  as StaffUserModel;
     final token = await storage.read(key: 'accessToken');
-    initialRoute = token != null ? RouteName.houseKeeping : RouteName.login;
+
+    if (token != null) {
+      if (staffUser.positionId == PositionEnum.manager.value) {
+        initialRoute = RouteName.houseKeeping;
+      } else {
+        initialRoute = RouteName.task;
+      }
+    } else {
+      initialRoute = RouteName.login;
+    }
   } catch (e) {
     if (kDebugMode) {
       print('Error reading token: $e');

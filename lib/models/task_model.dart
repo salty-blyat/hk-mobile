@@ -6,6 +6,16 @@ part 'task_model.g.dart';
 
 @JsonSerializable()
 class TaskModel extends BaseModel {
+  String? requestNo;
+  DateTime? requestTime;
+  int? requestType;
+  int? guestId;
+  int? roomId;
+  int? reservationId;
+  int? serviceTypeId;
+  int? serviceItemId;
+  int? quantity;
+  int? status;
   String? statusNameKh;
   String? statusNameEn;
   String? statusImage;
@@ -17,22 +27,20 @@ class TaskModel extends BaseModel {
   String? serviceItemName;
   String? serviceItemImage;
   List<Attachment>? attachments;
-  String? lastModifiedDate;
+  DateTime? lastModifiedDate;
   String? lastModifiedBy;
-  String? requestNo;
-  DateTime? requestTime;
-  int? guestId;
-  int? roomId;
-  int? reservationId;
-  int? serviceTypeId;
-  int? serviceItemId;
-  int? quantity;
-  int? status;
-
-//mockup
-  int? taskFrom;
-  int? staffId;
+ 
   TaskModel({
+    this.requestNo,
+    this.requestTime,
+    this.requestType,
+    this.guestId,
+    this.roomId,
+    this.reservationId,
+    this.serviceTypeId,
+    this.serviceItemId,
+    this.quantity,
+    this.status,
     this.statusNameKh,
     this.statusNameEn,
     this.statusImage,
@@ -43,17 +51,9 @@ class TaskModel extends BaseModel {
     this.staffName,
     this.serviceItemName,
     this.serviceItemImage,
+    this.attachments,
     this.lastModifiedDate,
     this.lastModifiedBy,
-    this.requestNo,
-    this.requestTime,
-    this.guestId,
-    this.roomId,
-    this.reservationId,
-    this.serviceTypeId,
-    this.serviceItemId,
-    this.quantity,
-    this.status, 
   });
 
   factory TaskModel.fromJson(Map<String, dynamic> json) =>

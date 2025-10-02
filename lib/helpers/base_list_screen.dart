@@ -7,7 +7,7 @@ import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/no_data.dart';
 
 class BaseList<T> extends StatelessWidget {
-  BaseList({super.key});
+  const BaseList({super.key});
   String get title => '';
   bool get isCenterTitle => true;
   bool get isLoading => false;
@@ -23,7 +23,7 @@ class BaseList<T> extends StatelessWidget {
   bool get canLoadMore => true;
   Map<String, List<T>> groupItems(List<T> items) => {};
   RxList<T> get items => RxList.empty();
-  List<Widget> actions() => [];
+  List<Widget> actions() => []; 
   Widget buildItem(T item) => const SizedBox.shrink();
   Widget buildBottomNavigationBar() => const SizedBox.shrink();
   Widget titleWidget() => Text(
@@ -34,7 +34,7 @@ class BaseList<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar( 
         centerTitle: isCenterTitle,
         title: titleWidget(),
         actions: actions(),
@@ -60,7 +60,12 @@ class BaseList<T> extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (items.isEmpty) {
-                  return const NoData();
+                  return RefreshIndicator(
+                    color: Theme.of(context).primaryColor,
+                    backgroundColor: Colors.white,
+                    onRefresh: onRefresh,
+                    // ignore: invalid_use_of_protected_member
+                    child: const NoData());
                 }
                 return NotificationListener<ScrollNotification>(
                   onNotification: (ScrollNotification notification) {

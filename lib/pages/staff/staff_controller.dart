@@ -2,13 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:staff_view_ui/auth/auth_controller.dart';
 import 'package:staff_view_ui/models/user_info_model.dart';
-import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
 import 'package:staff_view_ui/pages/staff/staff_service.dart';
 
 class StaffController extends GetxController {
   final RxString searchText = ''.obs;
-  final RxString selectedStaff = '-'.obs; 
+  final RxString selectedStaff = '-'.obs;
   final RxList<Staff> list = <Staff>[].obs;
   final StaffService service = StaffService();
   final RxBool loading = false.obs;
@@ -24,28 +24,10 @@ class StaffController extends GetxController {
     super.dispose();
   }
 
-  // Future<void> getStaffById(int id) async {
-  //   loading.value = true;
-  //   var filter = [
-  //     {'field': 'id', 'operator': 'eq', 'value': id}
-  //   ];
-
-  //   var response = await staffService.getStaff(queryParameters: {
-  //     'pageIndex': currentPage,
-  //     'pageSize': pageSize,
-  //     'filters': jsonEncode(filter)
-  //   });
-  //   if (response.isNotEmpty) {
-  //     selectedStaff.value =
-  //         '${response.first.tittleName} ${response.first.name} ${response.first.latinName}';
-  //   }
-  //   loading.value = false;
-  // }
-
   Future<void> search() async {
     loading.value = true;
     list.value = [];
-    var filter = []; 
+    var filter = [];
     if (searchText.value.isNotEmpty) {
       filter.add({
         'field': 'search',
@@ -56,7 +38,7 @@ class StaffController extends GetxController {
     filter.add({
       'field': 'positionId',
       'operator': 'eq',
-      'value': PositionEnum.housekeeping.value
+      'value': PositionEnum.housekeeper.value
     });
 
     var response = await service.search(queryParameters: {

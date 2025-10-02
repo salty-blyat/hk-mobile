@@ -7,6 +7,18 @@ part of 'task_model.dart';
 // **************************************************************************
 
 TaskModel _$TaskModelFromJson(Map<String, dynamic> json) => TaskModel(
+      requestNo: json['requestNo'] as String?,
+      requestTime: json['requestTime'] == null
+          ? null
+          : DateTime.parse(json['requestTime'] as String),
+      requestType: (json['requestType'] as num?)?.toInt(),
+      guestId: (json['guestId'] as num?)?.toInt(),
+      roomId: (json['roomId'] as num?)?.toInt(),
+      reservationId: (json['reservationId'] as num?)?.toInt(),
+      serviceTypeId: (json['serviceTypeId'] as num?)?.toInt(),
+      serviceItemId: (json['serviceItemId'] as num?)?.toInt(),
+      quantity: (json['quantity'] as num?)?.toInt(),
+      status: (json['status'] as num?)?.toInt(),
       statusNameKh: json['statusNameKh'] as String?,
       statusNameEn: json['statusNameEn'] as String?,
       statusImage: json['statusImage'] as String?,
@@ -17,31 +29,30 @@ TaskModel _$TaskModelFromJson(Map<String, dynamic> json) => TaskModel(
       staffName: json['staffName'] as String?,
       serviceItemName: json['serviceItemName'] as String?,
       serviceItemImage: json['serviceItemImage'] as String?,
-      lastModifiedDate: json['lastModifiedDate'] as String?,
-      lastModifiedBy: json['lastModifiedBy'] as String?,
-      requestNo: json['requestNo'] as String?,
-      requestTime: json['requestTime'] == null
+      attachments: (json['attachments'] as List<dynamic>?)
+          ?.map((e) => Attachment.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      lastModifiedDate: json['lastModifiedDate'] == null
           ? null
-          : DateTime.parse(json['requestTime'] as String),
-      guestId: (json['guestId'] as num?)?.toInt(),
-      roomId: (json['roomId'] as num?)?.toInt(),
-      reservationId: (json['reservationId'] as num?)?.toInt(),
-      serviceTypeId: (json['serviceTypeId'] as num?)?.toInt(),
-      serviceItemId: (json['serviceItemId'] as num?)?.toInt(),
-      quantity: (json['quantity'] as num?)?.toInt(),
-      status: (json['status'] as num?)?.toInt(),
+          : DateTime.parse(json['lastModifiedDate'] as String),
+      lastModifiedBy: json['lastModifiedBy'] as String?,
     )
       ..id = (json['id'] as num?)?.toInt()
-      ..note = json['note'] as String?
-      ..attachments = (json['attachments'] as List<dynamic>?)
-          ?.map((e) => Attachment.fromJson(e as Map<String, dynamic>))
-          .toList()
-      ..taskFrom = (json['taskFrom'] as num?)?.toInt()
-      ..staffId = (json['staffId'] as num?)?.toInt();
+      ..note = json['note'] as String?;
 
 Map<String, dynamic> _$TaskModelToJson(TaskModel instance) => <String, dynamic>{
       'id': instance.id,
       'note': instance.note,
+      'requestNo': instance.requestNo,
+      'requestTime': instance.requestTime?.toIso8601String(),
+      'requestType': instance.requestType,
+      'guestId': instance.guestId,
+      'roomId': instance.roomId,
+      'reservationId': instance.reservationId,
+      'serviceTypeId': instance.serviceTypeId,
+      'serviceItemId': instance.serviceItemId,
+      'quantity': instance.quantity,
+      'status': instance.status,
       'statusNameKh': instance.statusNameKh,
       'statusNameEn': instance.statusNameEn,
       'statusImage': instance.statusImage,
@@ -53,17 +64,6 @@ Map<String, dynamic> _$TaskModelToJson(TaskModel instance) => <String, dynamic>{
       'serviceItemName': instance.serviceItemName,
       'serviceItemImage': instance.serviceItemImage,
       'attachments': instance.attachments,
-      'lastModifiedDate': instance.lastModifiedDate,
+      'lastModifiedDate': instance.lastModifiedDate?.toIso8601String(),
       'lastModifiedBy': instance.lastModifiedBy,
-      'requestNo': instance.requestNo,
-      'requestTime': instance.requestTime?.toIso8601String(),
-      'guestId': instance.guestId,
-      'roomId': instance.roomId,
-      'reservationId': instance.reservationId,
-      'serviceTypeId': instance.serviceTypeId,
-      'serviceItemId': instance.serviceItemId,
-      'quantity': instance.quantity,
-      'status': instance.status,
-      'taskFrom': instance.taskFrom,
-      'staffId': instance.staffId,
     };

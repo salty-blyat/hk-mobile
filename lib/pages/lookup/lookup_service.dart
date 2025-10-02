@@ -6,7 +6,7 @@ import 'package:staff_view_ui/models/lookup_model.dart';
 class LookupService {
   final dio = DioClient();
   Future<List<LookupModel>> getLookup(int lookupTypeId) async {
-    final response = await dio.get('/lookupitem', queryParameters: {
+    final response = await dio.get('lookupitem', queryParameters: {
       'pageSize': 50,
       'pageIndex': 1,
       'sorts': '',
