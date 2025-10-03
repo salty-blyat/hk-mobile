@@ -24,13 +24,13 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
 
   final HousekeepingController controller = Get.put(HousekeepingController());
   final LookupController lookupController = Get.put(LookupController());
-    final StaffUserController staffUserController =
-        Get.put(StaffUserController());
+  final StaffUserController staffUserController =
+      Get.put(StaffUserController());
   Timer? _debounce;
 
   @override
-  RxBool get showDrawer =>true.obs;
- 
+  RxBool get showDrawer => true.obs;
+
   @override
   bool get fabButton => false;
 
@@ -57,7 +57,6 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
 
   @override
   Widget titleWidget() {
-
     return Obx(() {
       return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
@@ -463,11 +462,12 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
 
   @override
   List<Widget> actions() {
+    final TaskController taskController = Get.put(TaskController());
     return [
       IconButton(
           onPressed: () {
+            taskController.roomId.value = 0;
             Get.toNamed(RouteName.task, arguments: {'roomId': 0, 'title': ""});
-
             controller.selected.clear();
           },
           icon: const Icon(Icons.task_outlined)),
@@ -506,6 +506,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   Widget buildItem(Housekeeping item) {
     var selected = controller.selected.any((e) => e.id == item.id);
     var selectedTextColor = selected ? Colors.black : Colors.black;
+    final TaskController taskController = Get.put(TaskController());
 
     return Container(
       decoration: BoxDecoration(
@@ -601,14 +602,17 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                   SizedBox(
                     height: 32,
                     width: double.infinity,
-                    child: Material(
+                    child: item.total! > 0 ? Material(
                         // elevation: 0.8,
                         child: OutlinedButton(
-                            onPressed: () {
+                            onPressed: () async {
+                              taskController.roomId.value = item.id ?? 0;
                               Get.toNamed(RouteName.task, arguments: {
                                 'roomId': item.id,
                                 'title': item.roomNumber
                               });
+                              await taskController.search();
+
                               controller.selected.clear();
                             },
                             style: OutlinedButton.styleFrom(
@@ -629,9 +633,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                                   color: Colors.black,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500),
-                            )
-                            // : const SizedBox.shrink();
-                            )),
+                            ))) : const SizedBox.shrink(),
                   ),
                 ],
               ),

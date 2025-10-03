@@ -28,13 +28,12 @@ class RequestLogScreen extends StatelessWidget {
 
   AppBar _buildAppBar() {
     return AppBar(
-      // title: Obx(() => controller.loading.value
-      //     ? const Text('-')
-      //     : Text(
-      //         controller.model.value.serviceItemName ?? '',
-      //       )),
-      title: Text("Task".tr)
-    );
+        // title: Obx(() => controller.loading.value
+        //     ? const Text('-')
+        //     : Text(
+        //         controller.model.value.serviceItemName ?? '',
+        //       )),
+        title: Text("Task".tr));
   }
 
   Widget _buildBody() {
@@ -51,7 +50,9 @@ class RequestLogScreen extends StatelessWidget {
               ? _buildProfileCard()
               : const SizedBox.shrink(),
           const SizedBox(height: 16),
-          _actionButton(status: controller.model.value.status ?? 0),
+          _actionButton(
+              status: controller.model.value.status ?? 0,
+              isTaskUnassigned: controller.model.value.staffId == 0),
           const SizedBox(height: 16),
           _buildTimeline(),
         ],
@@ -234,59 +235,15 @@ class RequestLogScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRequestDetailsCard() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: AppTheme.borderRadius,
-        border: Border.all(color: Colors.grey.shade400),
-      ),
-      child: Column(
-        children: [
-          ...controller.model.value.attachments!.map(
-            (Attachment attachment) => GestureDetector(
-              child: Column(
-                children: [
-                  _buildInfo(
-                    CupertinoIcons.doc,
-                    '${'Attachment'.tr}:  ${attachment.name} ',
-                    isLink: true,
-                  ),
-                  const SizedBox(height: 8),
-                ],
-              ),
-              onTap: () async {
-                final Uri uri = Uri.parse(attachment.url);
-
-                if (await canLaunchUrl(uri)) {
-                  await launchUrl(
-                    uri,
-                    mode:
-                        LaunchMode.externalApplication, // Use external browser
-                  );
-                } else {
-                  throw 'Could not launch $uri';
-                }
-              },
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
   Widget _actionButton({required int status, bool isTaskUnassigned = false}) {
-    if (isTaskUnassigned) {
+    if (isTaskUnassigned && status == RequestStatusEnum.pending.value) {
       return ElevatedButton(
         child: Row(
           children: [const Icon(Icons.person_add_alt_1), Text("Assign".tr)],
         ),
         onPressed: () {},
       );
-    }
-    if (status == RequestStatusEnum.pending.value) {
+    } else if (!isTaskUnassigned && status == RequestStatusEnum.pending.value) {
       return ElevatedButton(
         child: Row(
           children: [const Icon(Icons.check), Text("Start task".tr)],

@@ -22,8 +22,7 @@ class TaskScreen extends BaseList<TaskModel> {
   TaskScreen({super.key});
   final TaskController controller = Get.put(TaskController());
   final LookupController lookupController = Get.put(LookupController());
-  final StaffUserController staffUserController =
-      Get.put(StaffUserController());
+  final StaffUserController staffUserController = Get.put(StaffUserController());
   Rx<ClientInfo?> auth = Rxn<ClientInfo>();
   Timer? _debounce;
 
@@ -36,7 +35,17 @@ class TaskScreen extends BaseList<TaskModel> {
       .obs;
 
   @override
-  List<Widget> actions() => [];
+  List<Widget> actions() => [
+        if (Get.arguments != null &&
+            Get.arguments['title'] != null &&
+            Get.arguments['title'] != '')
+          Container(
+              margin: const EdgeInsets.only(right: 12),
+              child: Text(
+                "${Get.arguments['title']}",
+                style: Get.textTheme.titleLarge!.copyWith(color: Colors.white),
+              )),
+      ];
 
   @override
   bool get isCenterTitle => false;
@@ -93,12 +102,6 @@ class TaskScreen extends BaseList<TaskModel> {
                     width: 8,
                   )
                 : const SizedBox.shrink(),
-            if (Get.arguments != null &&
-                Get.arguments['title'] != null &&
-                Get.arguments['title'] != '')
-              Text("(${Get.arguments['title']})",
-                  style: const TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.normal)),
           ],
         )
       ]);
@@ -152,14 +155,14 @@ class TaskScreen extends BaseList<TaskModel> {
     String? requestTime = item.requestTime != null
         ? DateFormat("dd-MM-yyyy hh:mm a").format(item.requestTime!)
         : null;
-    final HousekeepingController housekeepingController =
-        Get.find<HousekeepingController>();
+    // final HousekeepingController housekeepingController =
+    //     Get.find<HousekeepingController>();
 
-    setRoom() {
-      Housekeeping selected =
-          housekeepingController.list.firstWhere((r) => r.id == item.roomId);
-      housekeepingController.selected.assignAll([selected]);
-    }
+    // setRoom() {
+    //   Housekeeping selected =
+    //       housekeepingController.list.firstWhere((r) => r.id == item.roomId);
+    //   housekeepingController.selected.assignAll([selected]);
+    // }
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
@@ -231,7 +234,7 @@ class TaskScreen extends BaseList<TaskModel> {
                               : const SizedBox.shrink(),
                         ],
                       ),
-                       item.staffId != 0
+                      item.staffId != 0
                           ? Row(
                               children: [
                                 const Icon(Icons.person_outline,

@@ -53,7 +53,7 @@ extension RequestTypesExtension on RequestTypes {
 class TaskController extends GetxController {
   final RxInt pendingCount = 0.obs;
   final RxInt inProgressCount = 0.obs;
-  final RxInt doneCount = 0.obs; 
+  final RxInt doneCount = 0.obs;
   final RxString searchText = ''.obs;
   final RxList<TaskModel> list = <TaskModel>[].obs;
   final RxList<TaskSummaryModel> summaryList = <TaskSummaryModel>[].obs;
@@ -62,32 +62,52 @@ class TaskController extends GetxController {
           "${e.value} ${Get.locale?.languageCode == "en" ? e.nameEn : e.name}")
       .join(" • ")
       .obs;
-  RxInt? roomId; 
-  final RxBool loading = false.obs; 
+  RxInt roomId = 0.obs;
+  final RxBool loading = false.obs;
   final RxBool isLoadingMore = false.obs;
   final RxBool canLoadMore = true.obs;
   final Rx<ClientInfo> auth = ClientInfo().obs;
 
-  final HousekeepingController housekeepingController = Get.put(HousekeepingController()); 
-  final ServiceItemController serviceItemController = Get.put(ServiceItemController());
+  final HousekeepingController housekeepingController =
+      Get.put(HousekeepingController());
+  final ServiceItemController serviceItemController =
+      Get.put(ServiceItemController());
   final HousekeepingController hkController = Get.put(HousekeepingController());
 
   final AuthService authService = AuthService();
-  final TaskService service = TaskService(); 
+  final TaskService service = TaskService();
 
   final formGroup = FormGroup({
     'id': FormControl<int>(value: 0, validators: []),
     'roomIds': FormControl<List<int>>(value: [], validators: []),
-    'staffId': FormControl<int>(value: null, validators: [Validators.delegate(CommonValidators.required)]),
-    'requestNo': FormControl<String>(value: null, validators: [Validators.delegate(CommonValidators.required)]),
-    'requestTime': FormControl<DateTime>(value: DateTime.now(), validators: [Validators.delegate(CommonValidators.required)]),
-    'requestType': FormControl<int>(value: RequestTypes.internal.value, validators: [Validators.delegate(CommonValidators.required)],),
+    'staffId': FormControl<int>(
+        value: null,
+        validators: [Validators.delegate(CommonValidators.required)]),
+    'requestNo': FormControl<String>(
+        value: null,
+        validators: [Validators.delegate(CommonValidators.required)]),
+    'requestTime': FormControl<DateTime>(
+        value: DateTime.now(),
+        validators: [Validators.delegate(CommonValidators.required)]),
+    'requestType': FormControl<int>(
+      value: RequestTypes.internal.value,
+      validators: [Validators.delegate(CommonValidators.required)],
+    ),
     'guestId': FormControl<int>(value: 0),
     'reservationId': FormControl<int>(value: 0),
-    'serviceTypeId': FormControl<int>(value: 0, validators: [Validators.delegate(CommonValidators.required)]),
-    'serviceItemId': FormControl<int>(value: 0, disabled: true, validators: [Validators.delegate(CommonValidators.required)]),
-    'quantity': FormControl<int>(value: 1, validators: [Validators.delegate(CommonValidators.required), Validators.number(allowNegatives: false)]),
-    'status': FormControl<int>(value: RequestStatusEnum.pending.value, validators: [Validators.delegate(CommonValidators.required)]),
+    'serviceTypeId': FormControl<int>(
+        value: 0, validators: [Validators.delegate(CommonValidators.required)]),
+    'serviceItemId': FormControl<int>(
+        value: 0,
+        disabled: true,
+        validators: [Validators.delegate(CommonValidators.required)]),
+    'quantity': FormControl<int>(value: 1, validators: [
+      Validators.delegate(CommonValidators.required),
+      Validators.number(allowNegatives: false)
+    ]),
+    'status': FormControl<int>(
+        value: RequestStatusEnum.pending.value,
+        validators: [Validators.delegate(CommonValidators.required)]),
     'note': FormControl<String>()
   });
 
@@ -104,11 +124,11 @@ class TaskController extends GetxController {
   ).obs;
 
   @override
-  Future<void> onInit() async {
+  Future<void> onInit() async { 
     super.onInit();
     try {
       if (Get.arguments['roomId'] != 0) {
-        roomId = RxInt(Get.arguments['roomId']);
+        roomId.value = Get.arguments['roomId'];
         print('in controller roomId $roomId');
       }
     } catch (e) {
@@ -134,15 +154,17 @@ class TaskController extends GetxController {
       } else {
         formGroup.control('quantity').updateValue(0);
       }
-    }); 
-        //for falling back when the no staff is linked to the user.
-       try {
-      final authData = await authService.readFromLocalStorage(Const.authorized['Authorized']!);
-      auth.value = authData != null && authData.isNotEmpty ? ClientInfo.fromJson(jsonDecode(authData)) : ClientInfo();
+    });
+    //for falling back when the no staff is linked to the user.
+    try {
+      final authData = await authService
+          .readFromLocalStorage(Const.authorized['Authorized']!);
+      auth.value = authData != null && authData.isNotEmpty
+          ? ClientInfo.fromJson(jsonDecode(authData))
+          : ClientInfo();
     } catch (e) {
       print('Error during initialization: $e');
     }
-
   }
 
   Future<void> search() async {
@@ -162,8 +184,8 @@ class TaskController extends GetxController {
           {'field': 'status', 'operator': 'eq', 'value': taskStatus.value});
     }
 
-    if (roomId?.value != 0 && roomId != null) {
-      filter.add({'field': 'roomId', 'operator': 'eq', 'value': roomId!.value});
+    if (roomId.value != 0) {
+      filter.add({'field': 'roomId', 'operator': 'eq', 'value': roomId.value});
     }
 
     queryParameters.update((params) {
@@ -176,21 +198,18 @@ class TaskController extends GetxController {
       summaryList
           .assignAll(response.summaryByStatuses as Iterable<TaskSummaryModel>);
       list.assignAll(response.results as Iterable<TaskModel>);
-      pendingCount.value = list.where((e) => e.status == RequestStatusEnum.pending.value).length;
-      inProgressCount.value = list.where((e) => e.status == RequestStatusEnum.inProgress.value).length;
-      doneCount.value = list.where((e) => e.status == RequestStatusEnum.done.value).length;
-      canLoadMore.value = response.results.length == queryParameters.value.pageSize;
+      canLoadMore.value =
+          response.results.length == queryParameters.value.pageSize;
     } catch (e) {
       canLoadMore.value = false;
       print("Error during search: $e");
     } finally {
       loading.value = false;
     }
-
   }
 
   Future<void> submit() async {
-    if (loading.isTrue) return;  
+    if (loading.isTrue) return;
     try {
       loading.value = true;
       // Modal.loadingDialog();
@@ -213,7 +232,7 @@ class TaskController extends GetxController {
       Get.back();
       var tempdata = {...formGroup.rawValue, 'roomIds': roomIds};
       Modal.successDialog('Success'.tr, "Submitted data: $tempdata");
-      clearOrFillForm(); 
+      clearOrFillForm();
       loading.value = false;
     } catch (e) {
       print(e);
