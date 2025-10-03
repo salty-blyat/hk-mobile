@@ -31,7 +31,9 @@ class TaskScreen extends BaseList<TaskModel> {
   RxList<TaskModel> get items => controller.list;
 
   @override
-  RxBool get showDrawer => (staffUserController.staffUser.value?.positionId != PositionEnum.manager.value).obs;
+  RxBool get showDrawer => (staffUserController.staffUser.value?.positionId !=
+          PositionEnum.manager.value)
+      .obs;
 
   @override
   List<Widget> actions() => [];
@@ -62,7 +64,7 @@ class TaskScreen extends BaseList<TaskModel> {
   Future<void> onRefresh() async {
     controller.queryParameters.value.pageIndex = 1;
     await controller.search();
-    await lookupController.fetchLookups(LookupTypeEnum.requestStatuses.value);
+    // await lookupController.fetchLookups(LookupTypeEnum.requestStatuses.value);
     controller.formGroup.reset();
   }
 
@@ -188,7 +190,10 @@ class TaskScreen extends BaseList<TaskModel> {
                           Row(children: [
                             NetworkImg(height: 16, src: item.statusImage),
                             const SizedBox(width: 4),
-                            Text(item.statusNameEn ?? '',
+                            Text(
+                                Get.locale?.languageCode == 'en'
+                                    ? item.statusNameEn ?? ''
+                                    : item.statusNameKh ?? '',
                                 style: const TextStyle(fontSize: 12)),
                           ]),
                         ],
@@ -202,7 +207,6 @@ class TaskScreen extends BaseList<TaskModel> {
                                   fontSize: 14, fontWeight: FontWeight.bold)),
                         ],
                       ),
-                      const SizedBox(height: 24),
                       if (item.note != null && item.note!.isNotEmpty)
                         Row(
                           children: [
@@ -211,6 +215,7 @@ class TaskScreen extends BaseList<TaskModel> {
                                     fontSize: 11, color: Colors.grey)),
                           ],
                         ),
+                      const SizedBox(height: 24),
                       Row(
                         children: [
                           item.roomNo != null
@@ -226,16 +231,19 @@ class TaskScreen extends BaseList<TaskModel> {
                               : const SizedBox.shrink(),
                         ],
                       ),
-                      Row(
-                        children: [
-                          const Icon(Icons.person_outline,
-                              color: Colors.grey, size: 12),
-                          const SizedBox(width: 4),
-                          Text(item.staffName ?? 'Unassigned',
-                              style: const TextStyle(
-                                  fontSize: 12, color: Colors.grey)),
-                        ],
-                      ),
+                      // item.staffId != 0 ?
+                      false
+                          ? Row(
+                              children: [
+                                const Icon(Icons.person_outline,
+                                    color: Colors.grey, size: 12),
+                                const SizedBox(width: 4),
+                                Text(item.staffName ?? 'Unassigned',
+                                    style: const TextStyle(
+                                        fontSize: 12, color: Colors.grey)),
+                              ],
+                            )
+                          : const SizedBox.shrink(),
                       Row(
                         children: [
                           const Icon(Icons.access_time,
@@ -357,8 +365,7 @@ class TaskScreen extends BaseList<TaskModel> {
       if (lookupController.taskStatusList.isEmpty) {
         return const SizedBox.shrink();
       }
-
-      return Container(
+      return SizedBox(
         height: 32,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
@@ -399,9 +406,6 @@ class TaskScreen extends BaseList<TaskModel> {
               child: Obx(() {
                 final isSelected =
                     controller.taskStatus.value == lookupItem.valueId;
-                final count = controller.list
-                    .where((req) => req.status == lookupItem.valueId)
-                    .length;
                 return ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
@@ -424,7 +428,9 @@ class TaskScreen extends BaseList<TaskModel> {
                     children: [
                       NetworkImg(height: 18, src: lookupItem.image),
                       const SizedBox(width: 4),
-                      Text(lookupItem.nameEn ?? ''),
+                      Text(Get.locale?.languageCode == 'en'
+                          ? lookupItem.nameEn ?? ''
+                          : lookupItem.name ?? ''),
                     ],
                   ),
                 );
@@ -439,18 +445,6 @@ class TaskScreen extends BaseList<TaskModel> {
 
   @override
   Widget buildHeaderWidget() {
-    // RxInt countStatus(int status) =>
-    //     controller.list.where((e) => e.status == status).length.obs;
-    // RxInt pendingCount = countStatus(RequestStatus.pending.value);
-    // RxInt inProgressCount =countStatus(RequestStatus.inProgress.value);
-    // RxInt doneCount = countStatus(RequestStatus.done.value);
-    RxString taskSummary = controller.summaryList
-        .map((e) => "${e.value} ${e.name}")
-        .join(" • ")
-        .obs;
-    RxInt totalTask =
-        controller.summaryList.fold<RxInt>(0.obs, (p, t) => p + (t.value ?? 0));
-
     return Column(
       children: [
         Container(
@@ -464,41 +458,20 @@ class TaskScreen extends BaseList<TaskModel> {
                 border: Border.all(width: 0.5, color: Colors.grey.shade50),
                 color: const Color(0xff177b80),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Task Overview'.tr,
-                          style: TextStyle(
-                              fontSize: 11,
-                              color: Colors.grey.shade50,
-                              fontWeight: FontWeight.w500)),
-                      Obx(() => Text(
-                            taskSummary.value,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white),
-                          ))
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Obx(() => Text(
-                            totalTask.value.toString(),
-                            style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white),
-                          )),
-                      Text('Total Tasks',
-                          style: TextStyle(
-                              fontSize: 9,
-                              color: Colors.grey.shade50,
-                              fontWeight: FontWeight.w500)),
-                    ],
+                  Text('Task Overview'.tr,
+                      style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.grey.shade50,
+                          fontWeight: FontWeight.w500)),
+                  Obx(
+                    () => Text(
+                      controller.taskSummary.value,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w600, color: Colors.white),
+                    ),
                   )
                 ],
               )),

@@ -57,6 +57,11 @@ class TaskController extends GetxController {
   final RxString searchText = ''.obs;
   final RxList<TaskModel> list = <TaskModel>[].obs;
   final RxList<TaskSummaryModel> summaryList = <TaskSummaryModel>[].obs;
+  RxString get taskSummary => summaryList
+      .map((e) =>
+          "${e.value} ${Get.locale?.languageCode == "en" ? e.nameEn : e.name}")
+      .join(" • ")
+      .obs;
   RxInt? roomId; 
   final RxBool loading = false.obs; 
   final RxBool isLoadingMore = false.obs;

@@ -8,6 +8,7 @@ part 'task_summary_model.g.dart';
 class TaskSummaryModel {
   int? id;
   String? name;
+  String? nameEn;
   int? value;
 
   TaskSummaryModel({

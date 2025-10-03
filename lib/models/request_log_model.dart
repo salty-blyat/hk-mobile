@@ -6,14 +6,10 @@ import 'package:staff_view_ui/models/log_model.dart';
 part 'request_log_model.g.dart';
 
 @JsonSerializable()
-class RequestLog extends BaseModel {
-  String? serviceItemName;
-  String? statusNameKh;
-  String? statusNameEn;
-  String? statusImage;
-  List<Attachment>? attachments;
+class RequestLogModel extends BaseModel {
   String? requestNo;
-  String? requestTime;
+  DateTime? requestTime;
+  int? requestType;
   int? guestId;
   int? roomId;
   int? reservationId;
@@ -21,28 +17,44 @@ class RequestLog extends BaseModel {
   int? serviceItemId;
   int? quantity;
   int? status;
+  int? staffId;
+  String? staffName;
+  String? positionName;
+  String? serviceItemName;
+  String? statusNameKh;
+  String? statusNameEn;
+  String? statusImage;
+  List<Attachment>? attachments;
+  String? roomNumber;
+  String? serviceItemImage;
+  String? floorName;
   List<Log>? requestLogs;
-  RequestLog({
-    
-this.serviceItemName,
-this.statusNameKh,
-this.statusNameEn,
-this.statusImage,
-this.attachments,
-this.requestNo,
-this.requestTime,
-this.guestId,
-this.roomId,
-this.reservationId,
-this.serviceTypeId,
-this.serviceItemId,
-this.quantity,
-this.status,
-this.requestLogs,
-
+  RequestLogModel({
+    this.requestNo,
+    this.requestTime,
+    this.requestType,
+    this.guestId,
+    this.roomId,
+    this.reservationId,
+    this.serviceTypeId,
+    this.serviceItemId,
+    this.quantity,
+    this.status,
+    this.staffName,
+    this.positionName,
+    this.serviceItemName,
+    this.statusNameKh,
+    this.statusNameEn,
+    this.statusImage,
+    this.attachments,
+    this.staffId,
+    this.roomNumber,
+    this.serviceItemImage,
+    this.floorName,
+    this.requestLogs,
   });
 
-  factory RequestLog.fromJson(Map<String, dynamic> json) =>
-      _$RequestLogFromJson(json);
-  Map<String, dynamic> toJson() => _$RequestLogToJson(this);
+  factory RequestLogModel.fromJson(Map<String, dynamic> json) =>
+      _$RequestLogModelFromJson(json);
+  Map<String, dynamic> toJson() => _$RequestLogModelToJson(this);
 }
