@@ -28,11 +28,12 @@ class RequestLogScreen extends StatelessWidget {
 
   AppBar _buildAppBar() {
     return AppBar(
-      title: Obx(() => controller.loading.value
-          ? const Text('-')
-          : Text(
-              controller.model.value.serviceItemName ?? '',
-            )),
+      // title: Obx(() => controller.loading.value
+      //     ? const Text('-')
+      //     : Text(
+      //         controller.model.value.serviceItemName ?? '',
+      //       )),
+      title: Text("Task".tr)
     );
   }
 
@@ -104,7 +105,8 @@ class RequestLogScreen extends StatelessWidget {
                           fontSize: 14, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(width: 8),
-                    controller.model.value.quantity != null && controller.model.value.quantity! > 0
+                    controller.model.value.quantity != null &&
+                            controller.model.value.quantity! > 0
                         ? Text(
                             "( x${controller.model.value.quantity.toString()} )")
                         : const SizedBox.shrink()
@@ -243,35 +245,33 @@ class RequestLogScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          ...controller.model.value.attachments!
-              .map(
-                (Attachment attachment) => GestureDetector(
-                  child: Column(
-                    children: [
-                      _buildInfo(
-                        CupertinoIcons.doc,
-                        '${'Attachment'.tr}:  ${attachment.name} ',
-                        isLink: true,
-                      ),
-                      const SizedBox(height: 8),
-                    ],
+          ...controller.model.value.attachments!.map(
+            (Attachment attachment) => GestureDetector(
+              child: Column(
+                children: [
+                  _buildInfo(
+                    CupertinoIcons.doc,
+                    '${'Attachment'.tr}:  ${attachment.name} ',
+                    isLink: true,
                   ),
-                  onTap: () async {
-                    final Uri uri = Uri.parse(attachment.url);
+                  const SizedBox(height: 8),
+                ],
+              ),
+              onTap: () async {
+                final Uri uri = Uri.parse(attachment.url);
 
-                    if (await canLaunchUrl(uri)) {
-                      await launchUrl(
-                        uri,
-                        mode: LaunchMode
-                            .externalApplication, // Use external browser
-                      );
-                    } else {
-                      throw 'Could not launch $uri';
-                    }
-                  },
-                ),
-              )
-              .toList(),
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(
+                    uri,
+                    mode:
+                        LaunchMode.externalApplication, // Use external browser
+                  );
+                } else {
+                  throw 'Could not launch $uri';
+                }
+              },
+            ),
+          )
         ],
       ),
     );

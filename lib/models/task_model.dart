@@ -23,6 +23,7 @@ class TaskModel extends BaseModel {
   String? guestName;
   String? roomNo;
   String? roomTypeName;
+  int? staffId;
   String? staffName;
   String? serviceItemName;
   String? serviceItemImage;
@@ -48,6 +49,7 @@ class TaskModel extends BaseModel {
     this.guestName,
     this.roomNo,
     this.roomTypeName,
+    this.staffId,
     this.staffName,
     this.serviceItemName,
     this.serviceItemImage,

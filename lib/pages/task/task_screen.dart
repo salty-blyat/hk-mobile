@@ -231,14 +231,13 @@ class TaskScreen extends BaseList<TaskModel> {
                               : const SizedBox.shrink(),
                         ],
                       ),
-                      // item.staffId != 0 ?
-                      false
+                       item.staffId != 0
                           ? Row(
                               children: [
                                 const Icon(Icons.person_outline,
                                     color: Colors.grey, size: 12),
                                 const SizedBox(width: 4),
-                                Text(item.staffName ?? 'Unassigned',
+                                Text(item.staffName ?? 'Unassigned'.tr,
                                     style: const TextStyle(
                                         fontSize: 12, color: Colors.grey)),
                               ],

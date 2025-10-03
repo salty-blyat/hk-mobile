@@ -76,11 +76,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var box = Storage();
-    var lang = 'km';
+    var lang = 'en';
     try {
-      lang = box.read(Const.authorized['Lang'] ?? 'km')!;
+      lang = box.read(Const.authorized['Lang'] ?? 'en')!;
     } catch (e) {
-      lang = 'km';
+      lang = 'en';
     }
     var pickLang = const Locale("km", "KH");
     if (lang == 'km') {
