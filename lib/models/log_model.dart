@@ -4,7 +4,7 @@ import 'package:staff_view_ui/helpers/base_service.dart';
 part 'log_model.g.dart';
 
 @JsonSerializable()
-class Log extends BaseModel {
+class LogModel extends BaseModel {
 
 
 int? requestId;                                 
@@ -17,7 +17,7 @@ String? statusImage;
 String ? createdBy;                                 
 DateTime? createdDate;                               
  
-  Log({
+  LogModel({
 this.requestId,
 this.staffId,
 this.staffName,
@@ -29,7 +29,7 @@ this.createdBy,
 this.createdDate,
   });
 
-  factory Log.fromJson(Map<String, dynamic> json) =>
-      _$LogFromJson(json);
-  Map<String, dynamic> toJson() => _$LogToJson(this);
+  factory LogModel.fromJson(Map<String, dynamic> json) =>
+      _$LogModelFromJson(json);
+  Map<String, dynamic> toJson() => _$LogModelToJson(this);
 }

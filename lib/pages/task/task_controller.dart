@@ -4,7 +4,9 @@ import 'package:get/get.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
+import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
+import 'package:staff_view_ui/models/staff_user_model.dart';
 import 'package:staff_view_ui/models/task_model.dart';
 import 'package:staff_view_ui/models/task_summary_model.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
@@ -47,11 +49,12 @@ class TaskController extends GetxController {
   final RxString searchText = ''.obs;
   final RxList<TaskModel> list = <TaskModel>[].obs;
   final RxList<TaskSummaryModel> summaryList = <TaskSummaryModel>[].obs;
-  RxString get taskSummary => summaryList
-      .map((e) =>
-          "${e.value} ${Get.locale?.languageCode == "en" ? e.nameEn : e.name}")
-      .join(" • ")
-      .obs;
+  final Rx<StaffUserModel> staffUser = StaffUserModel().obs;
+  // RxString get taskSummary => summaryList
+  //     .map((e) =>
+  //         "${e.value} ${Get.locale?.languageCode == "en" ? e.nameEn : e.name}")
+  //     .join(" • ")
+  //     .obs;
   RxInt roomId = 0.obs;
   final RxBool loading = false.obs;
   final RxBool isLoadingMore = false.obs;
@@ -61,6 +64,7 @@ class TaskController extends GetxController {
       Get.put(ServiceItemController());
   final AuthService authService = AuthService();
   final TaskService service = TaskService();
+  final storage = Storage();
 
   final Rx<int> taskStatus = 0.obs;
   final LookupController lookupController = Get.put(LookupController());
@@ -92,6 +96,10 @@ class TaskController extends GetxController {
     try {
       final authData = await authService
           .readFromLocalStorage(Const.authorized['Authorized']!);
+      final staffUserStorage = storage.read(StorageKeys.staffUser);
+      staffUser.value= staffUserStorage != null
+          ? StaffUserModel.fromJson(jsonDecode(staffUserStorage))
+          : StaffUserModel();
       auth.value = authData != null && authData.isNotEmpty
           ? ClientInfo.fromJson(jsonDecode(authData))
           : ClientInfo();
@@ -125,8 +133,7 @@ class TaskController extends GetxController {
       params!.filters = jsonEncode(filter);
     });
     try {
-      var response = await service.searchTaskSummary(
-          queryParameters.value, (item) => SearchTaskResult.fromJson(item));
+      var response = await service.searchTaskSummary(queryParameters.value, (item) => SearchTaskResult.fromJson(item));
 
       summaryList
           .assignAll(response.summaryByStatuses as Iterable<TaskSummaryModel>);

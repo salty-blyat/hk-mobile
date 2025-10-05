@@ -8,9 +8,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:staff_view_ui/auth/auth_controller.dart';
 import 'package:staff_view_ui/helpers/base_list_screen.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
-import 'package:staff_view_ui/models/housekeeping_model.dart';
 import 'package:staff_view_ui/models/task_model.dart';
-import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
 import 'package:staff_view_ui/pages/staff_user/staff_user_controller.dart';
 import 'package:staff_view_ui/pages/task/operation/task_op_controller.dart';
@@ -23,7 +21,8 @@ class TaskScreen extends BaseList<TaskModel> {
   TaskScreen({super.key});
   final TaskController controller = Get.put(TaskController());
   final LookupController lookupController = Get.put(LookupController());
-  final StaffUserController staffUserController = Get.put(StaffUserController());
+  final StaffUserController staffUserController =
+      Get.put(StaffUserController());
   final TaskOPController taskOpController = Get.put(TaskOPController());
   Rx<ClientInfo?> auth = Rxn<ClientInfo>();
   Timer? _debounce;
@@ -32,7 +31,8 @@ class TaskScreen extends BaseList<TaskModel> {
   RxList<TaskModel> get items => controller.list;
 
   @override
-  RxBool get showDrawer => (staffUserController.staffUser.value?.positionId != PositionEnum.manager.value)
+  RxBool get showDrawer => (staffUserController.staffUser.value?.positionId !=
+          PositionEnum.manager.value)
       .obs;
 
   @override
@@ -76,7 +76,6 @@ class TaskScreen extends BaseList<TaskModel> {
     await controller.search();
     // await lookupController.fetchLookups(LookupTypeEnum.requestStatuses.value);
     taskOpController.formGroup.reset();
-
   }
 
   @override
@@ -156,7 +155,7 @@ class TaskScreen extends BaseList<TaskModel> {
   Widget buildItem(TaskModel item) {
     String? requestTime = item.requestTime != null
         ? DateFormat("dd-MM-yyyy hh:mm a").format(item.requestTime!)
-        : null; 
+        : null;
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
@@ -252,7 +251,7 @@ class TaskScreen extends BaseList<TaskModel> {
                                 Text(requestTime!,
                                     style: const TextStyle(
                                         fontSize: 12, color: Colors.grey)),
-                                _buildButton(item)
+                                _buildButton(status: item.status ?? 0, isTaskUnassigned: item.staffId == 0,staffId: item.staffId??0)
                               ],
                             ),
                           )
@@ -269,13 +268,27 @@ class TaskScreen extends BaseList<TaskModel> {
     );
   }
 
-  Widget _buildButton(TaskModel task) {
-    if (task.status == RequestStatusEnum.done.value ||
-        task.status == RequestStatusEnum.cancel.value) {
-      return const SizedBox.shrink();
-    }
-
-    if (task.status == RequestStatusEnum.inProgress.value) {
+  Widget _buildButton({required int status, bool isTaskUnassigned = false, required int staffId}) {
+    if (isTaskUnassigned && status == RequestStatusEnum.pending.value) {
+      return GestureDetector(
+          onTap: () {
+            print('assign');
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const Icon(Icons.person_add,
+                  color: AppTheme.primaryColor, size: 12),
+              const SizedBox(width: 4),
+              Text("Assign".tr,
+                  style: const TextStyle(
+                      decoration: TextDecoration.underline,
+                      fontSize: 12,
+                      color: AppTheme.primaryColor))
+            ],
+          ));
+ 
+    } else if (!isTaskUnassigned && status == RequestStatusEnum.pending.value && controller.staffUser.value.staffId == staffId ) {
       return ElevatedButton(
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
@@ -303,23 +316,39 @@ class TaskScreen extends BaseList<TaskModel> {
                   ))
             ],
           ));
-    }
-
-    return GestureDetector(
-        onTap: () => {print('asdfdasfdas')},
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            const Icon(Icons.person_add,
-                color: AppTheme.primaryColor, size: 12),
-            const SizedBox(width: 4),
-            Text("Assign".tr,
-                style: const TextStyle(
-                    decoration: TextDecoration.underline,
+    } else if (status == RequestStatusEnum.inProgress.value && controller.staffUser.value.staffId == staffId) {
+      return ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+            minimumSize: const Size(0, 28),
+            visualDensity: VisualDensity.compact,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          ),
+          onPressed: () {
+            print('asdf');
+          },
+          child: Row(
+            children: [
+              const Icon(
+                Icons.check,
+                size: 12,
+                color: Colors.white,
+              ),
+              const SizedBox(width: 4),
+              Text("Mark done".tr,
+                  style: const TextStyle(
                     fontSize: 12,
-                    color: AppTheme.primaryColor))
-          ],
-        ));
+                    color: Colors.white,
+                  ))
+            ],
+          ));
+    } else if (status == RequestStatusEnum.done.value) {
+      return const SizedBox.shrink();
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 
   @override
@@ -462,13 +491,18 @@ class TaskScreen extends BaseList<TaskModel> {
                           fontSize: 11,
                           color: Colors.grey.shade50,
                           fontWeight: FontWeight.w500)),
-                  Obx(
-                    () => Text(
-                      controller.taskSummary.value,
+                  Obx(() {
+                    RxString taskSummary = controller.summaryList
+                        .map((e) =>
+                            "${e.value} ${Get.locale?.languageCode == "en" ? e.nameEn : e.name}")
+                        .join(" • ")
+                        .obs;
+                    return Text(
+                      taskSummary.value,
                       style: const TextStyle(
                           fontWeight: FontWeight.w600, color: Colors.white),
-                    ),
-                  )
+                    );
+                  })
                 ],
               )),
         ),

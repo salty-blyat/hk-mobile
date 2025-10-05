@@ -143,6 +143,34 @@ class TaskOpScreen extends StatelessWidget {
                   label: 'Note'.tr,
                   maxLines: 3,
                 ),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(color: Colors.grey.shade200),
+                    ),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ReactiveFormConsumer(
+                          builder: (context, formGroup, child) {
+                        return _actionButton(
+                          context,
+                          disabled: !formGroup.valid,
+                          label: 'Save'.tr,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          foregroundColor: Colors.white,
+                          onPressed: () async {
+                            await controller.submit();
+                          },
+                        );
+                      })
+                    ],
+                  ),
+                )
               ],
             ),
           ),
@@ -150,82 +178,6 @@ class TaskOpScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-class _Header extends StatelessWidget {
-  final TaskController controller = Get.find<TaskController>();
-  final HousekeepingController housekeepingController =
-      Get.find<HousekeepingController>();
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(4),
-          topRight: Radius.circular(4),
-        ),
-        color: Theme.of(context).colorScheme.primary,
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          IconButton(
-            iconSize: 16,
-            onPressed: () {},
-            icon: const Icon(CupertinoIcons.clear, color: Colors.transparent),
-          ),
-          Center(
-            child: Text(
-              'Task'.tr,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Colors.white,
-                  ),
-            ),
-          ),
-          IconButton(
-            iconSize: 16,
-            onPressed: () {},
-            icon: const Icon(CupertinoIcons.clear, color: Colors.white),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Footer extends StatelessWidget {
-  final TaskOPController controller;
-
-  const _Footer({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(color: Colors.grey.shade200),
-        ),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _actionButton(
-            context,
-            // disabled: !controller.formGroup.valid,
-            label: 'Save'.tr,
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            foregroundColor: Colors.white,
-            onPressed: () async {
-              await controller.submit();
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _actionButton(
     BuildContext context, {
     required String label,
@@ -263,4 +215,41 @@ class _Footer extends StatelessWidget {
       ),
     ));
   }
+}
+
+class _Footer extends StatelessWidget {
+  final TaskOPController controller;
+
+  const _Footer({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(color: Colors.grey.shade200),
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // ReactiveFormConsumer(builder: (context, formGroup, child) {
+          //   return _actionButton(
+          //     context,
+          //     disabled: !formGroup.valid,
+          //     label: 'Save'.tr,
+          //     backgroundColor: Theme.of(context).colorScheme.primary,
+          //     foregroundColor: Colors.white,
+          //     onPressed: () async {
+          //       await controller.submit();
+          //     },
+          //   );
+          // })
+        ],
+      ),
+    );
+  }
+
+  
 }

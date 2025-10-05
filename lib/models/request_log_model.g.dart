@@ -34,7 +34,7 @@ RequestLogModel _$RequestLogModelFromJson(Map<String, dynamic> json) =>
       serviceItemImage: json['serviceItemImage'] as String?,
       floorName: json['floorName'] as String?,
       requestLogs: (json['requestLogs'] as List<dynamic>?)
-          ?.map((e) => Log.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => LogModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     )
       ..id = (json['id'] as num?)?.toInt()

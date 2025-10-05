@@ -52,7 +52,8 @@ class RequestLogScreen extends StatelessWidget {
           const SizedBox(height: 16),
           _actionButton(
               status: controller.model.value.status ?? 0,
-              isTaskUnassigned: controller.model.value.staffId == 0),
+              isTaskUnassigned: controller.model.value.staffId == 0,
+              staffId: controller.model.value.staffId ?? 0),
           const SizedBox(height: 16),
           _buildTimeline(),
         ],
@@ -177,7 +178,7 @@ class RequestLogScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTimelineContent(Log log) {
+  Widget _buildTimelineContent(LogModel log) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -235,7 +236,10 @@ class RequestLogScreen extends StatelessWidget {
     );
   }
 
-  Widget _actionButton({required int status, bool isTaskUnassigned = false}) {
+  Widget _actionButton(
+      {required int status,
+      bool isTaskUnassigned = false,
+      required int staffId}) {
     if (isTaskUnassigned && status == RequestStatusEnum.pending.value) {
       return ElevatedButton(
         child: Row(
@@ -263,37 +267,4 @@ class RequestLogScreen extends StatelessWidget {
       return const SizedBox.shrink();
     }
   }
-}
-
-Widget _buildInfo(IconData icon, String value, {bool isLink = false}) {
-  return Container(
-    alignment: Alignment.centerLeft,
-    child: RichText(
-      text: TextSpan(
-        style: const TextStyle(
-          color: Colors.black,
-          fontFamilyFallback: ['Gilroy', 'Kantumruy'],
-        ),
-        children: [
-          WidgetSpan(
-            child: Icon(
-              icon,
-              size: 16,
-            ),
-          ),
-          const WidgetSpan(
-            child: SizedBox(width: 4),
-          ),
-          TextSpan(
-            text: value,
-            style: isLink
-                ? const TextStyle(
-                    color: AppTheme.primaryColor,
-                  )
-                : null,
-          ),
-        ],
-      ),
-    ),
-  );
 }

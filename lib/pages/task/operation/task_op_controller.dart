@@ -25,17 +25,16 @@ class TaskOPController extends GetxController {
     'roomIds': FormControl<List<int?>>(
         value: [],
         validators: [Validators.delegate(CommonValidators.required)]),
-    'staffId': FormControl<int>(
-        value: null,
-        validators: [Validators.delegate(CommonValidators.required)]),
+    'staffId': FormControl<int>(value: null),
     'requestTime': FormControl<DateTime>(value: DateTime.now()),
     'requestType': FormControl<int>(
         value: RequestTypes.internal.value,
         validators: [Validators.delegate(CommonValidators.required)]),
     'guestId': FormControl<int>(value: 0),
     'reservationId': FormControl<int>(value: 0),
-    'serviceTypeId': FormControl<int>(value: 0, validators: []),
-    'serviceItemId': FormControl<int>(value: 0, disabled: true, validators: []),
+    'serviceTypeId': FormControl<int>(value: 0, validators: [Validators.delegate(CommonValidators.required)]),
+    'serviceItemId': FormControl<int>(value: 0, disabled: true,
+        validators: [Validators.delegate(CommonValidators.required)]),
     'quantity': FormControl<int>(value: 0, validators: [
       Validators.delegate(CommonValidators.required),
       Validators.number(allowNegatives: false)
@@ -76,13 +75,15 @@ class TaskOPController extends GetxController {
       Modal.loadingDialog();
       List<int?> roomIds = hkController.selected.map((r) => r.id).toList();
       final rawValue = Map<String, dynamic>.from(formGroup.value);
-      rawValue['requestTime'] =
-          (rawValue['requestTime'] as DateTime?)?.toIso8601String();
+      rawValue['requestTime'] = (rawValue['requestTime'] as DateTime?)?.toIso8601String();
       rawValue['roomIds'] = roomIds;
+      rawValue['staffId'] = formGroup.control('staffId').value ?? 0;
+ 
       TaskOPMultiModel model = TaskOPMultiModel.fromJson(rawValue);
-      
+      print(rawValue);
       var res = await service.add(model, TaskResModel.fromJson);
       await taskController.search();
+      await hkController.search();
       clearForm();
       Get.back();
       Get.back();

@@ -24,7 +24,7 @@ class TaskResModel extends BaseModel {
   String? statusNameEn;
   String? statusImage;
   List<Attachment>? attachments;
-  List<Log>? requestLogs;
+  List<LogModel>? requestLogs;
 
   TaskResModel(
       {this.requestNo,

@@ -6,7 +6,7 @@ part of 'log_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Log _$LogFromJson(Map<String, dynamic> json) => Log(
+LogModel _$LogModelFromJson(Map<String, dynamic> json) => LogModel(
       requestId: (json['requestId'] as num?)?.toInt(),
       staffId: (json['staffId'] as num?)?.toInt(),
       staffName: json['staffName'] as String?,
@@ -22,7 +22,7 @@ Log _$LogFromJson(Map<String, dynamic> json) => Log(
       ..id = (json['id'] as num?)?.toInt()
       ..note = json['note'] as String?;
 
-Map<String, dynamic> _$LogToJson(Log instance) => <String, dynamic>{
+Map<String, dynamic> _$LogModelToJson(LogModel instance) => <String, dynamic>{
       'id': instance.id,
       'note': instance.note,
       'requestId': instance.requestId,

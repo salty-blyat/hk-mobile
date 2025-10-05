@@ -433,8 +433,6 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   @override
   Widget buildBottomNavigationBar() {
     final AuthController authController = Get.put(AuthController());
-    final TaskOPController taskOpController = Get.put(TaskOPController());
-
     return Obx(() {
       if (authController.position.value == PositionEnum.manager.value) {
         return Container(
@@ -630,13 +628,16 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                                 borderRadius: BorderRadius.circular(4),
                               ),
                             ),
-                            child: Text(
-                              "${"View tasks".tr} ${item.total! > 0 ? "(${item.pending ?? 0}/${item.total ?? 0})" : ''}",
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500),
-                            ))),
+                            child: Obx(() {
+                              RxInt total = (item.total ?? 0).obs;
+                              RxInt pending = (item.pending ?? 0).obs; 
+                              return Text(
+                                  "${"View tasks".tr} ${total > 0 ? "($pending/$total)" : ''}",
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500));
+                            }))),
                   ),
                 ],
               ),

@@ -28,7 +28,7 @@ class RequestLogModel extends BaseModel {
   String? roomNumber;
   String? serviceItemImage;
   String? floorName;
-  List<Log>? requestLogs;
+  List<LogModel>? requestLogs;
   RequestLogModel({
     this.requestNo,
     this.requestTime,

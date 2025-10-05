@@ -43,7 +43,10 @@ Future<void> main() async {
   try {
     var storage = const FlutterSecureStorage();
     var localStorage = Storage();
-    StaffUserModel staffUser =  jsonDecode(localStorage.read(StorageKeys.staffUser) ?? '')  as StaffUserModel;
+    final staffUserStorage = localStorage.read(StorageKeys.staffUser);
+    StaffUserModel staffUser =   staffUserStorage != null
+        ? StaffUserModel.fromJson(jsonDecode(staffUserStorage))
+        : StaffUserModel();
     final token = await storage.read(key: 'accessToken');
 
     if (token != null) {
@@ -63,6 +66,10 @@ Future<void> main() async {
 
   runApp(MyApp(
       translationService: translationService, initialRoute: initialRoute));
+}
+
+extension on StaffUserModel {
+  set value(StaffUserModel value) {}
 }
 
 class MyApp extends StatelessWidget {

@@ -29,7 +29,7 @@ TaskResModel _$TaskResModelFromJson(Map<String, dynamic> json) => TaskResModel(
           ?.map((e) => Attachment.fromJson(e as Map<String, dynamic>))
           .toList(),
       requestLogs: (json['requestLogs'] as List<dynamic>?)
-          ?.map((e) => Log.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => LogModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     )
       ..id = (json['id'] as num?)?.toInt()
