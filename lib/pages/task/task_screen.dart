@@ -13,6 +13,7 @@ import 'package:staff_view_ui/models/task_model.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
 import 'package:staff_view_ui/pages/staff_user/staff_user_controller.dart';
+import 'package:staff_view_ui/pages/task/operation/task_op_controller.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/route.dart';
 import 'package:staff_view_ui/utils/theme.dart';
@@ -23,6 +24,7 @@ class TaskScreen extends BaseList<TaskModel> {
   final TaskController controller = Get.put(TaskController());
   final LookupController lookupController = Get.put(LookupController());
   final StaffUserController staffUserController = Get.put(StaffUserController());
+  final TaskOPController taskOpController = Get.put(TaskOPController());
   Rx<ClientInfo?> auth = Rxn<ClientInfo>();
   Timer? _debounce;
 
@@ -30,8 +32,7 @@ class TaskScreen extends BaseList<TaskModel> {
   RxList<TaskModel> get items => controller.list;
 
   @override
-  RxBool get showDrawer => (staffUserController.staffUser.value?.positionId !=
-          PositionEnum.manager.value)
+  RxBool get showDrawer => (staffUserController.staffUser.value?.positionId != PositionEnum.manager.value)
       .obs;
 
   @override
@@ -74,7 +75,8 @@ class TaskScreen extends BaseList<TaskModel> {
     controller.queryParameters.value.pageIndex = 1;
     await controller.search();
     // await lookupController.fetchLookups(LookupTypeEnum.requestStatuses.value);
-    controller.formGroup.reset();
+    taskOpController.formGroup.reset();
+
   }
 
   @override
@@ -154,15 +156,7 @@ class TaskScreen extends BaseList<TaskModel> {
   Widget buildItem(TaskModel item) {
     String? requestTime = item.requestTime != null
         ? DateFormat("dd-MM-yyyy hh:mm a").format(item.requestTime!)
-        : null;
-    // final HousekeepingController housekeepingController =
-    //     Get.find<HousekeepingController>();
-
-    // setRoom() {
-    //   Housekeeping selected =
-    //       housekeepingController.list.firstWhere((r) => r.id == item.roomId);
-    //   housekeepingController.selected.assignAll([selected]);
-    // }
+        : null; 
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),

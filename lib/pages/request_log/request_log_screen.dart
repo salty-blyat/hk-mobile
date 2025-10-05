@@ -134,7 +134,7 @@ class RequestLogScreen extends StatelessWidget {
       child: Timeline.tileBuilder(
         theme: TimelineThemeData(
           nodePosition: 0,
-          // color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+          color: AppTheme.primaryColor,
         ),
         builder: TimelineTileBuilder(
           endConnectorBuilder: (_, index) => Connector.solidLine(),

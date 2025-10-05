@@ -1,22 +1,15 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
-import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
-import 'package:staff_view_ui/helpers/common_validators.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
-import 'package:staff_view_ui/models/service_item_model.dart';
 import 'package:staff_view_ui/models/task_model.dart';
-import 'package:staff_view_ui/models/task_op_multi_model.dart';
 import 'package:staff_view_ui/models/task_summary_model.dart';
-import 'package:staff_view_ui/models/task_with_summary_model.dart';
-import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
 import 'package:staff_view_ui/pages/service_item/service_item_controller.dart';
 import 'package:staff_view_ui/pages/task/task_service.dart';
-import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
 enum RequestStatusEnum {
   pending,
@@ -51,9 +44,6 @@ extension RequestTypesExtension on RequestTypes {
 }
 
 class TaskController extends GetxController {
-  final RxInt pendingCount = 0.obs;
-  final RxInt inProgressCount = 0.obs;
-  final RxInt doneCount = 0.obs;
   final RxString searchText = ''.obs;
   final RxList<TaskModel> list = <TaskModel>[].obs;
   final RxList<TaskSummaryModel> summaryList = <TaskSummaryModel>[].obs;
@@ -67,49 +57,10 @@ class TaskController extends GetxController {
   final RxBool isLoadingMore = false.obs;
   final RxBool canLoadMore = true.obs;
   final Rx<ClientInfo> auth = ClientInfo().obs;
-
-  final HousekeepingController housekeepingController =
-      Get.put(HousekeepingController());
   final ServiceItemController serviceItemController =
       Get.put(ServiceItemController());
-  final HousekeepingController hkController = Get.put(HousekeepingController());
-
   final AuthService authService = AuthService();
   final TaskService service = TaskService();
-
-  final formGroup = FormGroup({
-    'id': FormControl<int>(value: 0, validators: []),
-    'roomIds': FormControl<List<int>>(value: [], validators: []),
-    'staffId': FormControl<int>(
-        value: null,
-        validators: [Validators.delegate(CommonValidators.required)]),
-    'requestNo': FormControl<String>(
-        value: null,
-        validators: [Validators.delegate(CommonValidators.required)]),
-    'requestTime': FormControl<DateTime>(
-        value: DateTime.now(),
-        validators: [Validators.delegate(CommonValidators.required)]),
-    'requestType': FormControl<int>(
-      value: RequestTypes.internal.value,
-      validators: [Validators.delegate(CommonValidators.required)],
-    ),
-    'guestId': FormControl<int>(value: 0),
-    'reservationId': FormControl<int>(value: 0),
-    'serviceTypeId': FormControl<int>(
-        value: 0, validators: [Validators.delegate(CommonValidators.required)]),
-    'serviceItemId': FormControl<int>(
-        value: 0,
-        disabled: true,
-        validators: [Validators.delegate(CommonValidators.required)]),
-    'quantity': FormControl<int>(value: 1, validators: [
-      Validators.delegate(CommonValidators.required),
-      Validators.number(allowNegatives: false)
-    ]),
-    'status': FormControl<int>(
-        value: RequestStatusEnum.pending.value,
-        validators: [Validators.delegate(CommonValidators.required)]),
-    'note': FormControl<String>()
-  });
 
   final Rx<int> taskStatus = 0.obs;
   final LookupController lookupController = Get.put(LookupController());
@@ -124,7 +75,7 @@ class TaskController extends GetxController {
   ).obs;
 
   @override
-  Future<void> onInit() async { 
+  Future<void> onInit() async {
     super.onInit();
     try {
       if (Get.arguments['roomId'] != 0) {
@@ -136,25 +87,7 @@ class TaskController extends GetxController {
     }
     await search();
     await lookupController.fetchLookups(LookupTypeEnum.requestStatuses.value);
-    formGroup.control('serviceTypeId').valueChanges.listen((value) {
-      if (value != null && value != 0) {
-        formGroup.control('serviceItemId').markAsEnabled();
-      } else {
-        formGroup.control('serviceItemId').markAsDisabled();
-      }
-      if (serviceItemController.selected.value.trackQty == true) {
-        formGroup.control('quantity').updateValue(1);
-      } else {
-        formGroup.control('quantity').updateValue(0);
-      }
-    });
-    formGroup.control('serviceItemId').valueChanges.listen((value) {
-      if (serviceItemController.selected.value.trackQty == true) {
-        formGroup.control('quantity').updateValue(1);
-      } else {
-        formGroup.control('quantity').updateValue(0);
-      }
-    });
+
     //for falling back when the no staff is linked to the user.
     try {
       final authData = await authService
@@ -208,87 +141,8 @@ class TaskController extends GetxController {
     }
   }
 
-  Future<void> submit() async {
-    if (loading.isTrue) return;
-    try {
-      loading.value = true;
-      // Modal.loadingDialog();
-      var roomIds = hkController.selected.map((r) => r.id).toList();
-      print({
-        ...formGroup.rawValue,
-        'roomIds': roomIds,
-      });
-
-      print(formGroup.rawValue);
-      await service.add(
-          TaskOPMultiModel.fromJson({
-            ...formGroup.rawValue,
-            'roomIds': roomIds,
-          }),
-          TaskModel.fromJson);
-      await search();
-
-      Get.back();
-      Get.back();
-      var tempdata = {...formGroup.rawValue, 'roomIds': roomIds};
-      Modal.successDialog('Success'.tr, "Submitted data: $tempdata");
-      clearOrFillForm();
-      loading.value = false;
-    } catch (e) {
-      print(e);
-      Get.back();
-      Get.back();
-      loading.value = false;
-    } finally {
-      loading.value = false;
-    }
-  }
-
   Future<void> find(int id) async {
     var response = await service.find(id);
     print(response);
-  }
-
-  void clearOrFillForm({TaskModel? task}) {
-    if (task == null) {
-      try {
-        formGroup.reset(value: {
-          'id': null,
-          'reservationId': 0,
-          'requestType': RequestTypes.internal.value,
-          'requestTime': DateTime.now(),
-          'roomIds': <int>[],
-          'guestId': 0,
-          'staffId': 0,
-          'serviceTypeId': 0,
-          'serviceItemId': 0,
-          'quantity': 1,
-          'status': RequestStatusEnum.pending.value,
-          'note': '',
-        });
-      } catch (e) {
-        print(e);
-      }
-    } else {
-      formGroup.patchValue({
-        'requestType': task.requestType,
-        'requestTime': task.requestTime,
-        'roomIds': [task.roomId],
-        // 'staffId': task.staffId,
-        'serviceTypeId': task.serviceTypeId,
-        'serviceItemId': task.serviceItemId,
-        'quantity': task.quantity,
-        'status': task.status,
-        'note': task.note,
-        'reservationId': task.reservationId,
-        'guestId': task.guestId,
-      });
-    }
-  }
-
-  void clearForm() {
-    serviceItemController.list.value = [];
-    serviceItemController.selected.value = ServiceItem();
-    clearOrFillForm();
   }
 }

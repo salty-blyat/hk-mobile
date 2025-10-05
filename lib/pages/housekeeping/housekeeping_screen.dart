@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/auth/auth_controller.dart';
@@ -9,14 +10,12 @@ import 'package:staff_view_ui/models/housekeeping_model.dart';
 import 'package:staff_view_ui/models/lookup_model.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
-import 'package:staff_view_ui/pages/service_item/service_item_controller.dart';
 import 'package:staff_view_ui/pages/staff_user/staff_user_controller.dart';
+import 'package:staff_view_ui/pages/task/operation/task_op_controller.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
-import 'package:staff_view_ui/pages/task/task_op_screen.dart';
 import 'package:staff_view_ui/route.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
-import 'package:staff_view_ui/utils/widgets/dialog.dart';
 import 'package:staff_view_ui/utils/widgets/network_img.dart';
 
 class HousekeepingScreen extends BaseList<Housekeeping> {
@@ -101,10 +100,15 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
       if (selected.length == itemCount) {
         controller.selected.removeWhere((e) => e.floorId == sectionId);
       } else {
-        controller.selected.assignAll({
-          ...controller.selected,
-          ...select,
-        });
+        final merged = [...controller.selected, ...select];
+        final unique = merged
+            .fold<Map<int, Housekeeping>>({}, (map, item) {
+              map[item.id!] = item;
+              return map;
+            })
+            .values
+            .toList();
+        controller.selected.assignAll(unique);
       }
     }
 
@@ -136,9 +140,11 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                 child: InkWell(
                   onTap: () => onTap(),
                   borderRadius: BorderRadius.circular(4),
-                  child: Padding(
+                  child: Container(
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     child: Text(
                       section.tr,
                       style: const TextStyle(fontSize: 14),
@@ -153,7 +159,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
               Container(
                 padding: const EdgeInsets.only(right: 12.0),
                 child: Text(
-                  "Selected ${selected.length} of $itemCount",
+                  "${'Selected'.tr} ${selected.length} / $itemCount",
                   style: const TextStyle(
                     fontSize: 14,
                   ),
@@ -252,12 +258,11 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   Widget headerWidget() {
     return SearchBar(
       constraints: const BoxConstraints(
-        minHeight: 36,
-        maxHeight: 36,
+        minHeight: 42,
+        maxHeight: 42,
       ),
       padding: WidgetStateProperty.all(
-        const EdgeInsets.symmetric(vertical: 0, horizontal: 8),
-      ),
+          const EdgeInsets.symmetric(vertical: 0, horizontal: 12)),
       textStyle: WidgetStateProperty.all(
         const TextStyle(
           // color: Colors.black,
@@ -363,7 +368,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                               SizedBox(width: 4),
                               Text(
                                 "All",
-                                style: const TextStyle(fontSize: 12),
+                                style: TextStyle(fontSize: 12),
                               )
                             ]),
                           ),
@@ -428,7 +433,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   @override
   Widget buildBottomNavigationBar() {
     final AuthController authController = Get.put(AuthController());
-    final TaskController taskController = Get.put(TaskController());
+    final TaskOPController taskOpController = Get.put(TaskOPController());
 
     return Obx(() {
       if (authController.position.value == PositionEnum.manager.value) {
@@ -439,10 +444,9 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
             disabled: controller.selected.isEmpty,
             label: '',
             onPressed: () {
-              taskController.clearForm();
-              Modal.showFormDialog(TaskOpScreen(), height: 525);
-              print(taskController.formGroup.rawValue);
-              print(ServiceItemController().selected.value);
+              // taskOpController.clearForm();
+              Get.toNamed(RouteName.taskOp);
+              // Modal.showFormDialog(, height: 525);
             },
             child: const Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -530,7 +534,8 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
             borderRadius: BorderRadius.circular(4),
             onTap: () {
               if (selected) {
-                controller.selected.remove(item);
+                controller.selected.value =
+                    controller.selected.where((x) => x.id != item.id).toList();
               } else {
                 controller.selected.add(item);
               }
@@ -596,13 +601,11 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 24),
-
                   SizedBox(
                     height: 32,
                     width: double.infinity,
-                    child: item.total! > 0 ? Material(
+                    child: Material(
                         // elevation: 0.8,
                         child: OutlinedButton(
                             onPressed: () async {
@@ -628,12 +631,12 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                               ),
                             ),
                             child: Text(
-                              "${"View tasks".tr} (${item.pending ?? 0}/${item.total ?? 0})",
+                              "${"View tasks".tr} ${item.total! > 0 ? "(${item.pending ?? 0}/${item.total ?? 0})" : ''}",
                               style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500),
-                            ))) : const SizedBox.shrink(),
+                            ))),
                   ),
                 ],
               ),

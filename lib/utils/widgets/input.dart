@@ -15,7 +15,7 @@ class MyFormField<T> extends StatelessWidget {
   final bool Function(AbstractControl<dynamic> control)? showErrors;
   final void Function(FormControl<T>)? onChanged;
   final List<TextInputFormatter>? inputFormatters; 
-  final TextInputType? keyboardType;
+  final TextInputType? keyboardType; 
 
   const MyFormField(
       {super.key,
@@ -44,7 +44,7 @@ class MyFormField<T> extends StatelessWidget {
       child: ReactiveTextField<T>( 
         inputFormatters: inputFormatters,
         // minLines: minLines,
-        keyboardType:   keyboardType,
+        keyboardType: keyboardType,
         textAlignVertical: TextAlignVertical.bottom,
         maxLines: maxLines,
         controller: controller,

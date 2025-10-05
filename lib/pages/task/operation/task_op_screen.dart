@@ -8,15 +8,17 @@ import 'package:staff_view_ui/pages/service_item/service_item_controller.dart';
 import 'package:staff_view_ui/pages/service_item/service_item_select.dart';
 import 'package:staff_view_ui/pages/service_type/service_type_select.dart';
 import 'package:staff_view_ui/pages/staff/staff_select.dart';
+import 'package:staff_view_ui/pages/task/operation/task_op_controller.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/input.dart';
 
 class TaskOpScreen extends StatelessWidget {
   TaskOpScreen({super.key});
-  final TaskController controller = Get.put(TaskController());
+  final TaskOPController controller = Get.put(TaskOPController());
   final ServiceItemController serviceItemController =
       Get.put(ServiceItemController());
+
   final HousekeepingController hkController =
       Get.find<HousekeepingController>();
 
@@ -30,13 +32,24 @@ class TaskOpScreen extends StatelessWidget {
       // controller.find(taskId);
       // controller.formGroup.control('serviceItemId').value= 4;
     }
-    return Column(
-      children: [
-        _Header(),
-        _buildContent(context),
-        _Footer(controller: controller),
-      ],
-    );
+    return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+              onPressed: () {
+                Get.back();
+                controller.clearForm();
+                hkController.selected.value = [];
+              },
+              icon: const Icon(Icons.arrow_back_rounded)),
+          title: Text("Task".tr),
+        ),
+        body: Column(
+          children: [
+            // _Header(),
+            _buildContent(context),
+            _Footer(controller: controller),
+          ],
+        ));
   }
 
   Widget _buildContent(BuildContext context) {
@@ -46,9 +59,6 @@ class TaskOpScreen extends StatelessWidget {
         final bRoom = b.roomNumber ?? '';
         return aRoom.compareTo(bRoom);
       });
-    print('task form group ${controller.formGroup.rawValue}');
-    print('RequestTypes.guest.value ${RequestTypes.guest.value}');
-
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -102,7 +112,6 @@ class TaskOpScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(width: 8),
-               
                 ServiceTypeSelect(
                   formControlName: 'serviceTypeId',
                   label: "Service Type".tr,
@@ -121,13 +130,10 @@ class TaskOpScreen extends StatelessWidget {
 
                   return trackQty
                       ? MyFormField(
-                          controlName: 'quantity',
-                          label: 'Quantity'.tr,
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                        )
+                          controlName: 'quantity', label: 'Quantity'.tr)
                       : const SizedBox.shrink();
                 }),
-                 StaffSelect(
+                StaffSelect(
                   label: "Staff".tr,
                   formControlName: 'staffId',
                 ),
@@ -179,12 +185,7 @@ class _Header extends StatelessWidget {
           ),
           IconButton(
             iconSize: 16,
-            onPressed: () {
-              Get.back();
-              controller.clearForm();
-              print('close button: ${controller.formGroup.rawValue}');
-              housekeepingController.selected.value = [];
-            },
+            onPressed: () {},
             icon: const Icon(CupertinoIcons.clear, color: Colors.white),
           ),
         ],
@@ -194,7 +195,7 @@ class _Header extends StatelessWidget {
 }
 
 class _Footer extends StatelessWidget {
-  final TaskController controller;
+  final TaskOPController controller;
 
   const _Footer({required this.controller});
 
@@ -212,11 +213,12 @@ class _Footer extends StatelessWidget {
         children: [
           _actionButton(
             context,
+            // disabled: !controller.formGroup.valid,
             label: 'Save'.tr,
             backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Colors.white,
-            onPressed: () {
-              controller.submit();
+            onPressed: () async {
+              await controller.submit();
             },
           ),
         ],

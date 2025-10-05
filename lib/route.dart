@@ -9,13 +9,15 @@ import 'package:staff_view_ui/pages/edit_profile/edit_profile.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_screen.dart'; 
 import 'package:staff_view_ui/pages/notification/notification_screen.dart'; 
 import 'package:staff_view_ui/pages/privacy_policy/privacy_policy_screen.dart';
-import 'package:staff_view_ui/pages/request_log/request_log_screen.dart'; 
+import 'package:staff_view_ui/pages/request_log/request_log_screen.dart';
+import 'package:staff_view_ui/pages/task/operation/task_op_screen.dart'; 
 import 'package:staff_view_ui/pages/task/task_screen.dart'; 
 
 class Routes {
   static final List<GetPage> pages = [
     GetPage(name: RouteName.houseKeeping, page: () => HousekeepingScreen()),
     GetPage(name: RouteName.task, page: () => TaskScreen()),
+    GetPage(name: RouteName.taskOp, page: () => TaskOpScreen()),
     GetPage(name: RouteName.requestLog, page: () => RequestLogScreen()),  
     GetPage(name: RouteName.login, page: () => LoginScreen()), 
     GetPage(name: RouteName.privacyPolicy, page: () => PrivacyPolicyScreen()),
@@ -34,6 +36,7 @@ class RouteName {
   static const String profile = '/profile';
   static const String login = '/login';
   static const String task = '/task';
+  static const String taskOp = '/task-op';  
   static const String absentException = '/absent_exception';
   static const String privacyPolicy = '/privacy-policy';
   static const String changePassword = '/change-password';
@@ -44,7 +47,7 @@ class RouteName {
   static const String verifyMfa = '/verify-mfa';
   static const String inputNewPassword = '/input-new-password';
   static const String houseKeeping = '/house-keeping';
-  static const String requestLog = '/request-log'; 
+  static const String requestLog = '/request-log';  
 
 
 }

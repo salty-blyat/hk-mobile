@@ -61,9 +61,7 @@ class AuthController extends GetxController {
       final response = await _authService.login( formGroup.value, false, );
 
       if (response.statusCode == 200) {
-        if (Get.isDialogOpen == true) {
-          Get.back();
-        }
+        
         error.value = '';
         ClientInfo info = ClientInfo.fromJson(response.data);
         if (info.mfaRequired == true) {
@@ -84,6 +82,9 @@ class AuthController extends GetxController {
           } else {
             Get.offAllNamed(RouteName.task);
           }
+        }
+        if (Get.isDialogOpen == true) {
+          Get.back();
         }
       } else {
         Get.back();

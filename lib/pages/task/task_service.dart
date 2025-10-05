@@ -3,6 +3,7 @@ import 'package:staff_view_ui/helpers/base_service.dart';
 import 'package:staff_view_ui/helpers/token_interceptor.dart';
 import 'package:staff_view_ui/models/task_model.dart';
 import 'package:staff_view_ui/models/task_op_multi_model.dart';
+import 'package:staff_view_ui/models/task_res_model.dart';
 import 'package:staff_view_ui/models/task_summary_model.dart';
 import 'package:staff_view_ui/models/task_with_summary_model.dart';
 
@@ -30,11 +31,11 @@ class SearchTaskResult {
   }
 }
 
+class TaskService {
+  final dio = DioClient();
 
-class TaskService  {
- final dio = DioClient(); 
-
-  Future<SearchTaskResult> searchTaskSummary(QueryParam query, SearchTaskResult Function(Map<String, dynamic>) fromJsonT) async {
+  Future<SearchTaskResult> searchTaskSummary(QueryParam query,
+      SearchTaskResult Function(Map<String, dynamic>) fromJsonT) async {
     try {
       final response = await dio.get(
         'request/mobile/task?pageIndex=${query.pageIndex}&pageSize=${query.pageSize}&sorts=${query.sorts}&filters=${query.filters}',
@@ -49,6 +50,7 @@ class TaskService  {
       throw Exception('Failed to search.');
     }
   }
+
   Future<dynamic> find(int id) async {
     final response = await dio.get(
       '$id',
@@ -59,18 +61,17 @@ class TaskService  {
     }
     throw Exception('Failed to find.');
   }
-  Future<TaskModel> add(
-      TaskOPMultiModel model, TaskModel Function(Map<String, dynamic>) fromJsonT) async {
-    final response = await dio.post(
-     "request/mobile/multi" ,
-      data: model.toJson(),
-    );
 
-    if (response!.statusCode == 200) {
-      return fromJsonT(response.data);
+  Future<List<TaskResModel>> add(TaskOPMultiModel model,
+      TaskResModel Function(Map<String, dynamic>) fromJsonT) async {
+    final response =
+        await dio.post("request/mobile/multi", data: model.toJson());
+
+    if (response?.statusCode == 200) {
+      return (response?.data as List).map((d) => fromJsonT(d)).toList();
+    } else {
+      throw Exception('Failed with status: ${response?.statusCode}');
     }
-    throw Exception('Failed to add task');
+    // throw Exception('Failed to add task');
   }
-
-
 }
