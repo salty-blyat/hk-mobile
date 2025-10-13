@@ -17,7 +17,9 @@ class ServiceItemSelect extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    controller.search();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await controller.search();
+    });
     return Obx(
       () => ReactiveDropdownField<int>(
         menuMaxHeight: 300,

@@ -1,6 +1,7 @@
 import 'package:staff_view_ui/app_setting.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
 import 'package:staff_view_ui/helpers/token_interceptor.dart';
+import 'package:staff_view_ui/models/assign_staff_model.dart';
 import 'package:staff_view_ui/models/task_model.dart';
 import 'package:staff_view_ui/models/task_op_multi_model.dart';
 import 'package:staff_view_ui/models/task_res_model.dart';
@@ -51,17 +52,6 @@ class TaskService {
     }
   }
 
-  Future<dynamic> find(int id) async {
-    final response = await dio.get(
-      '$id',
-    );
-
-    if (response!.statusCode == 200) {
-      return response.data;
-    }
-    throw Exception('Failed to find.');
-  }
-
   Future<List<TaskResModel>> add(TaskOPMultiModel model,
       TaskResModel Function(Map<String, dynamic>) fromJsonT) async {
     final response =
@@ -69,9 +59,22 @@ class TaskService {
 
     if (response?.statusCode == 200) {
       return (response?.data as List).map((d) => fromJsonT(d)).toList();
-    } else {
-      throw Exception('Failed with status: ${response?.statusCode}');
     }
-    // throw Exception('Failed to add task');
+    throw Exception('Failed with status: ${response?.statusCode}');
+  }
+
+  Future<TaskResModel> find(int id) async {
+    final response = await dio.get('request/$id/mobile');
+    if (response?.statusCode == 200) {
+      return TaskResModel.fromJson(response?.data);
+    }
+    throw Exception("Fail with status: ${response?.statusCode}");
+  }
+  Future<TaskResModel> assignStaff(AssignStaffModel model) async {
+    final response = await dio.post('request/mobile/assign-staff', data: model.toJson());
+    if (response?.statusCode == 200) {
+      return TaskResModel.fromJson(response?.data);
+    }
+    throw Exception("Fail with status: ${response?.statusCode}");
   }
 }

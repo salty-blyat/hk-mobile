@@ -13,6 +13,7 @@ TaskResModel _$TaskResModelFromJson(Map<String, dynamic> json) => TaskResModel(
           : DateTime.parse(json['requestTime'] as String),
       requestType: (json['requestType'] as num?)?.toInt(),
       guestId: (json['guestId'] as num?)?.toInt(),
+      roomNumber: json['roomNumber'] as String?,
       roomId: (json['roomId'] as num?)?.toInt(),
       reservationId: (json['reservationId'] as num?)?.toInt(),
       serviceTypeId: (json['serviceTypeId'] as num?)?.toInt(),
@@ -33,7 +34,8 @@ TaskResModel _$TaskResModelFromJson(Map<String, dynamic> json) => TaskResModel(
           .toList(),
     )
       ..id = (json['id'] as num?)?.toInt()
-      ..note = json['note'] as String?;
+      ..note = json['note'] as String?
+      ..trackQty = json['trackQty'] as bool?;
 
 Map<String, dynamic> _$TaskResModelToJson(TaskResModel instance) =>
     <String, dynamic>{
@@ -41,6 +43,8 @@ Map<String, dynamic> _$TaskResModelToJson(TaskResModel instance) =>
       'note': instance.note,
       'requestNo': instance.requestNo,
       'requestTime': instance.requestTime?.toIso8601String(),
+      'roomNumber': instance.roomNumber,
+      'trackQty': instance.trackQty,
       'requestType': instance.requestType,
       'guestId': instance.guestId,
       'roomId': instance.roomId,

@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:reactive_forms/reactive_forms.dart'; 
+import 'package:reactive_forms/reactive_forms.dart';
+import 'package:staff_view_ui/models/staff_user_model.dart';
+import 'package:staff_view_ui/models/user_info_model.dart';
 import 'package:staff_view_ui/pages/staff/staff_controller.dart';
 
 class StaffSelect extends StatelessWidget {
-  StaffSelect(
-      {super.key,
-      this.label = '',
-      this.formControlName = '',
-       });
+  StaffSelect({
+    super.key,
+    this.label = '',
+    this.formControlName = '',
+  });
   final StaffController controller = Get.put(StaffController());
   final String label;
-  final String formControlName; 
+  final String formControlName;
 
   @override
   Widget build(BuildContext context) {
     // controller.search();
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.search();  
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await controller.search();
+      controller.list.insert(0, Staff(id: 0,name: '-'));
     });
     return Obx(
       () => ReactiveDropdownField<int>(
@@ -39,9 +42,9 @@ class StaffSelect extends StatelessWidget {
                   ),
                 ))
             .toList(),
-        onChanged: (value) { },
+        onChanged: (value) {},
         decoration: InputDecoration(labelText: label),
       ),
     );
   }
-}
+} 

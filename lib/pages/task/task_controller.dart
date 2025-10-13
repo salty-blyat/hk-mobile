@@ -50,11 +50,6 @@ class TaskController extends GetxController {
   final RxList<TaskModel> list = <TaskModel>[].obs;
   final RxList<TaskSummaryModel> summaryList = <TaskSummaryModel>[].obs;
   final Rx<StaffUserModel> staffUser = StaffUserModel().obs;
-  // RxString get taskSummary => summaryList
-  //     .map((e) =>
-  //         "${e.value} ${Get.locale?.languageCode == "en" ? e.nameEn : e.name}")
-  //     .join(" • ")
-  //     .obs;
   RxInt roomId = 0.obs;
   final RxBool loading = false.obs;
   final RxBool isLoadingMore = false.obs;
@@ -97,7 +92,7 @@ class TaskController extends GetxController {
       final authData = await authService
           .readFromLocalStorage(Const.authorized['Authorized']!);
       final staffUserStorage = storage.read(StorageKeys.staffUser);
-      staffUser.value= staffUserStorage != null
+      staffUser.value = staffUserStorage != null
           ? StaffUserModel.fromJson(jsonDecode(staffUserStorage))
           : StaffUserModel();
       auth.value = authData != null && authData.isNotEmpty
@@ -111,7 +106,6 @@ class TaskController extends GetxController {
   Future<void> search() async {
     loading.value = true;
     var filter = [];
-
     if (searchText.value.isNotEmpty) {
       filter.add({
         'field': 'search',
@@ -119,21 +113,19 @@ class TaskController extends GetxController {
         'value': searchText.value
       });
     }
-
     if (taskStatus.value != 0) {
       filter.add(
           {'field': 'status', 'operator': 'eq', 'value': taskStatus.value});
     }
-
     if (roomId.value != 0) {
       filter.add({'field': 'roomId', 'operator': 'eq', 'value': roomId.value});
     }
-
     queryParameters.update((params) {
       params!.filters = jsonEncode(filter);
     });
     try {
-      var response = await service.searchTaskSummary(queryParameters.value, (item) => SearchTaskResult.fromJson(item));
+      var response = await service.searchTaskSummary(
+          queryParameters.value, (item) => SearchTaskResult.fromJson(item));
 
       summaryList
           .assignAll(response.summaryByStatuses as Iterable<TaskSummaryModel>);
@@ -142,14 +134,15 @@ class TaskController extends GetxController {
           response.results.length == queryParameters.value.pageSize;
     } catch (e) {
       canLoadMore.value = false;
+      loading.value = false;
       print("Error during search: $e");
     } finally {
       loading.value = false;
     }
   }
 
-  Future<void> find(int id) async {
-    var response = await service.find(id);
-    print(response);
-  }
+  // Future<void> find(int id) async {
+  //   var response = await service.find(id);
+  //   print(response);
+  // }
 }

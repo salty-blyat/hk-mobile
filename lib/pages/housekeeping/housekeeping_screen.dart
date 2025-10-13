@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/auth/auth_controller.dart';
@@ -11,7 +10,6 @@ import 'package:staff_view_ui/models/lookup_model.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
 import 'package:staff_view_ui/pages/staff_user/staff_user_controller.dart';
-import 'package:staff_view_ui/pages/task/operation/task_op_controller.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/route.dart';
 import 'package:staff_view_ui/utils/theme.dart';
@@ -441,10 +439,8 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
           child: MyButton(
             disabled: controller.selected.isEmpty,
             label: '',
-            onPressed: () {
-              // taskOpController.clearForm();
-              Get.toNamed(RouteName.taskOp);
-              // Modal.showFormDialog(, height: 525);
+            onPressed: () { 
+              Get.toNamed(RouteName.taskOp, arguments: {'id': 0}); 
             },
             child: const Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -630,7 +626,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                             ),
                             child: Obx(() {
                               RxInt total = (item.total ?? 0).obs;
-                              RxInt pending = (item.pending ?? 0).obs; 
+                              RxInt pending = (item.pending ?? 0).obs;
                               return Text(
                                   "${"View tasks".tr} ${total > 0 ? "($pending/$total)" : ''}",
                                   style: const TextStyle(

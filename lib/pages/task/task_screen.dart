@@ -23,7 +23,7 @@ class TaskScreen extends BaseList<TaskModel> {
   final LookupController lookupController = Get.put(LookupController());
   final StaffUserController staffUserController =
       Get.put(StaffUserController());
-  final TaskOPController taskOpController = Get.put(TaskOPController());
+  // final TaskOPController taskOpController = Get.put(TaskOPController());
   Rx<ClientInfo?> auth = Rxn<ClientInfo>();
   Timer? _debounce;
 
@@ -75,7 +75,7 @@ class TaskScreen extends BaseList<TaskModel> {
     controller.queryParameters.value.pageIndex = 1;
     await controller.search();
     // await lookupController.fetchLookups(LookupTypeEnum.requestStatuses.value);
-    taskOpController.formGroup.reset();
+    // taskOpController.formGroup.reset();
   }
 
   @override
@@ -251,7 +251,7 @@ class TaskScreen extends BaseList<TaskModel> {
                                 Text(requestTime!,
                                     style: const TextStyle(
                                         fontSize: 12, color: Colors.grey)),
-                                _buildButton(status: item.status ?? 0, isTaskUnassigned: item.staffId == 0,staffId: item.staffId??0)
+                                _buildButton(status: item.status ?? 0, isTaskUnassigned: item.staffId == 0,staffId: item.staffId??0, taskId: item.id as int)
                               ],
                             ),
                           )
@@ -268,11 +268,11 @@ class TaskScreen extends BaseList<TaskModel> {
     );
   }
 
-  Widget _buildButton({required int status, bool isTaskUnassigned = false, required int staffId}) {
+  Widget _buildButton({required int status, bool isTaskUnassigned = false, required int staffId, required int taskId}) {
     if (isTaskUnassigned && status == RequestStatusEnum.pending.value) {
       return GestureDetector(
-          onTap: () {
-            print('assign');
+          onTap: () { 
+            Get.toNamed(RouteName.taskOp, arguments: {"id": taskId});
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,

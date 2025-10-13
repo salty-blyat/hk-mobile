@@ -9,6 +9,8 @@ part 'task_res_model.g.dart';
 class TaskResModel extends BaseModel {
   String? requestNo;
   DateTime? requestTime;
+  String? roomNumber;
+  bool? trackQty;
   int? requestType;
   int? guestId;
   int? roomId;
@@ -31,6 +33,7 @@ class TaskResModel extends BaseModel {
       this.requestTime,
       this.requestType,
       this.guestId,
+      this.roomNumber,
       this.roomId,
       this.reservationId,
       this.serviceTypeId,

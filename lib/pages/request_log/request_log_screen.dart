@@ -5,6 +5,7 @@ import 'package:staff_view_ui/models/attachment_model.dart';
 import 'package:staff_view_ui/models/log_model.dart';
 import 'package:staff_view_ui/pages/request_log/request_log_controller.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
+import 'package:staff_view_ui/route.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
 import 'package:staff_view_ui/utils/khmer_date_formater.dart';
 import 'package:staff_view_ui/utils/theme.dart';
@@ -18,45 +19,50 @@ class RequestLogScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
-      body: Obx(() => controller.loading.value
-          ? const Center(child: CircularProgressIndicator())
-          : _buildBody()),
-      // ),
-    );
+        appBar: _buildAppBar(),
+        body:
+            Obx(
+            () =>
+            // controller.loading.value
+            //     ? const Center(child: CircularProgressIndicator())
+            //     :
+            _buildBody()
+        ),
+        // ),
+        );
   }
 
   AppBar _buildAppBar() {
-    return AppBar(
-        // title: Obx(() => controller.loading.value
-        //     ? const Text('-')
-        //     : Text(
-        //         controller.model.value.serviceItemName ?? '',
-        //       )),
-        title: Text("Task".tr));
+    return AppBar(title: Text("Task".tr));
   }
 
   Widget _buildBody() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildTaskDetailCard(),
-          controller.model.value.staffId != 0
-              ? const SizedBox(height: 16)
-              : const SizedBox.shrink(),
-          controller.model.value.staffId != 0
-              ? _buildProfileCard()
-              : const SizedBox.shrink(),
-          const SizedBox(height: 16),
-          _actionButton(
-              status: controller.model.value.status ?? 0,
-              isTaskUnassigned: controller.model.value.staffId == 0,
-              staffId: controller.model.value.staffId ?? 0),
-          const SizedBox(height: 16),
-          _buildTimeline(),
-        ],
+    return RefreshIndicator(
+      onRefresh: () async {
+        await controller.onInit();
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildTaskDetailCard(),
+            controller.model.value.staffId != 0
+                ? const SizedBox(height: 16)
+                : const SizedBox.shrink(),
+            controller.model.value.staffId != 0
+                ? _buildProfileCard()
+                : const SizedBox.shrink(),
+            const SizedBox(height: 16),
+            _actionButton(
+                status: controller.model.value.status ?? 0,
+                isTaskUnassigned: controller.model.value.staffId == 0,
+                staffId: controller.model.value.staffId ?? 0,
+                taskId: controller.model.value.id ?? 0),
+            const SizedBox(height: 16),
+            _buildTimeline(),
+          ],
+        ),
       ),
     );
   }
@@ -239,13 +245,16 @@ class RequestLogScreen extends StatelessWidget {
   Widget _actionButton(
       {required int status,
       bool isTaskUnassigned = false,
-      required int staffId}) {
+      required int staffId,
+      required int taskId}) {
     if (isTaskUnassigned && status == RequestStatusEnum.pending.value) {
       return ElevatedButton(
         child: Row(
           children: [const Icon(Icons.person_add_alt_1), Text("Assign".tr)],
         ),
-        onPressed: () {},
+        onPressed: () {
+          Get.toNamed(RouteName.taskOp, arguments: {'id': taskId});
+        },
       );
     } else if (!isTaskUnassigned && status == RequestStatusEnum.pending.value) {
       return ElevatedButton(

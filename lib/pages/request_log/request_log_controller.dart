@@ -9,7 +9,7 @@ class RequestLogController extends GetxController {
   final RequestLogService service = RequestLogService();
 
   @override
-  onInit() async {
+ Future<void> onInit() async {
     super.onInit();
     if (Get.arguments['id'] != 0) {
       await find(Get.arguments['id'] as int);
