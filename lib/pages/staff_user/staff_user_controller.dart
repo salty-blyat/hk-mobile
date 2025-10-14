@@ -17,6 +17,8 @@ class StaffUserController extends GetxController {
       var res = await service.getStaffUser();
       staffUser.value = res;
       storage.write(StorageKeys.staffUser, jsonEncode(staffUser.value));
+      storage.read(StorageKeys.staffUser);
+      
       loading.value = false;
     } catch (e) {
       loading.value = false;

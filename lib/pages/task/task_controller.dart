@@ -53,7 +53,7 @@ class TaskController extends GetxController {
   final RxString searchText = ''.obs;
   final RxList<TaskModel> list = <TaskModel>[].obs;
   final RxList<TaskSummaryModel> summaryList = <TaskSummaryModel>[].obs;
-  final Rx<StaffUserModel> staffUser = StaffUserModel().obs;
+  final Rx<StaffUserModel>? staffUser = StaffUserModel().obs;
   RxInt roomId = 0.obs;
   final RxBool loading = false.obs;
   final RxBool isLoadingMore = false.obs;
@@ -94,13 +94,12 @@ class TaskController extends GetxController {
     }
     await search();
     await lookupController.fetchLookups(LookupTypeEnum.requestStatuses.value);
-
+ 
     //for falling back when the no staff is linked to the user.
     try {
-      final authData = await authService
-          .readFromLocalStorage(Const.authorized['Authorized']!);
+      final authData = await authService.readFromLocalStorage(Const.authorized['Authorized']!);
       final staffUserStorage = storage.read(StorageKeys.staffUser);
-      staffUser.value = staffUserStorage != null
+      staffUser?.value = staffUserStorage != null
           ? StaffUserModel.fromJson(jsonDecode(staffUserStorage))
           : StaffUserModel();
       auth.value = authData != null && authData.isNotEmpty

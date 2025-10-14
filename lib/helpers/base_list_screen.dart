@@ -36,7 +36,7 @@ class BaseList<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar( 
-        leading: showDrawer.value ? null : IconButton(icon: Icon(Icons.arrow_back), onPressed: ()=>Get.back()),
+        leading: showDrawer.value ? null : leading(),
         centerTitle: isCenterTitle,
         automaticallyImplyLeading: showDrawer.value,
         title: titleWidget(),

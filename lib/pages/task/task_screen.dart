@@ -12,7 +12,6 @@ import 'package:staff_view_ui/models/task_model.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
 import 'package:staff_view_ui/pages/staff_user/staff_user_controller.dart';
 import 'package:staff_view_ui/pages/task/operation/change_status_screen.dart';
-import 'package:staff_view_ui/pages/task/operation/task_op_controller.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/route.dart';
 import 'package:staff_view_ui/utils/theme.dart';
@@ -24,17 +23,23 @@ class TaskScreen extends BaseList<TaskModel> {
   final LookupController lookupController = Get.put(LookupController());
   final StaffUserController staffUserController =
       Get.put(StaffUserController());
-  // final TaskOPController taskOpController = Get.put(TaskOPController());
   Rx<ClientInfo?> auth = Rxn<ClientInfo>();
   Timer? _debounce;
 
   @override
-  RxList<TaskModel> get items => controller.list;
+  Widget leading() {
+    return IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () => Get.toNamed(RouteName.houseKeeping));
+  }
 
   @override
-  RxBool get showDrawer => (staffUserController.staffUser.value?.positionId !=
-          PositionEnum.manager.value)
-      .obs;
+  RxList<TaskModel> get items => controller.list;
+
+  // @override
+  // RxBool get showDrawer => (staffUserController.staffUser.value?.positionId !=
+  //         PositionEnum.manager.value)
+  //     .obs;
 
   @override
   List<Widget> actions() => [
@@ -84,8 +89,8 @@ class TaskScreen extends BaseList<TaskModel> {
     return Obx(() {
       return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
-          (staffUserController.staffUser.value != null
-                  ? staffUserController.staffUser.value?.staffName
+          (controller.staffUser?.value != null
+                  ? controller.staffUser?.value.staffName
                   : controller.auth.value.fullName) ??
               '-',
           style: Get.textTheme.titleLarge!.copyWith(color: Colors.white),
@@ -93,13 +98,13 @@ class TaskScreen extends BaseList<TaskModel> {
         ),
         Row(
           children: [
-            staffUserController.staffUser.value != null
+            controller.staffUser?.value != null
                 ? Text(
-                    "${'Position'.tr}: ${staffUserController.staffUser.value?.positionName}",
+                    "${'Position'.tr}: ${controller.staffUser?.value.positionName}",
                     style: const TextStyle(
                         fontSize: 12, fontWeight: FontWeight.normal))
                 : const SizedBox.shrink(),
-            staffUserController.staffUser.value != null
+            controller.staffUser?.value != null
                 ? const SizedBox(
                     width: 8,
                   )
@@ -298,7 +303,7 @@ class TaskScreen extends BaseList<TaskModel> {
           ));
     } else if (!isTaskUnassigned &&
         status == RequestStatusEnum.pending.value &&
-        controller.staffUser.value.staffId == staffId) {
+        controller.staffUser?.value.staffId == staffId) {
       return ElevatedButton(
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
@@ -344,7 +349,7 @@ class TaskScreen extends BaseList<TaskModel> {
             ],
           ));
     } else if (status == RequestStatusEnum.inProgress.value &&
-        controller.staffUser.value.staffId == staffId) {
+        controller.staffUser?.value.staffId == staffId) {
       return ElevatedButton(
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
