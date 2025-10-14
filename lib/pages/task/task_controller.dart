@@ -1,17 +1,21 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
+import 'package:staff_view_ui/models/change_status_model.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/models/staff_user_model.dart';
 import 'package:staff_view_ui/models/task_model.dart';
 import 'package:staff_view_ui/models/task_summary_model.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
+import 'package:staff_view_ui/pages/request_log/request_log_service.dart';
 import 'package:staff_view_ui/pages/service_item/service_item_controller.dart';
 import 'package:staff_view_ui/pages/task/task_service.dart';
+import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
 enum RequestStatusEnum {
   pending,
@@ -60,6 +64,11 @@ class TaskController extends GetxController {
   final AuthService authService = AuthService();
   final TaskService service = TaskService();
   final storage = Storage();
+  final RequestLogService requestLogService = RequestLogService();
+
+  // changeing status of the task
+  final statusForm = FormGroup(
+      {'id': FormControl<int>(value: 0), 'note': FormControl<String>()});
 
   final Rx<int> taskStatus = 0.obs;
   final LookupController lookupController = Get.put(LookupController());
@@ -79,7 +88,6 @@ class TaskController extends GetxController {
     try {
       if (Get.arguments['roomId'] != 0) {
         roomId.value = Get.arguments['roomId'];
-        print('in controller roomId $roomId');
       }
     } catch (e) {
       print(e);
@@ -141,8 +149,21 @@ class TaskController extends GetxController {
     }
   }
 
-  // Future<void> find(int id) async {
-  //   var response = await service.find(id);
-  //   print(response);
-  // }
+  Future<void> updateTaskStatus(int id, int taskStatus) async {
+    loading.value = true;
+    try {
+      Modal.loadingDialog();
+      ChangeStatusModel model = ChangeStatusModel.fromJson(statusForm.rawValue);
+      final res = await service.updateTaskStatus(id, model, taskStatus);
+      Get.back();
+      Get.back();
+
+      Modal.successDialog("Success", "Task Started");
+    } catch (e) {
+      loading.value = false;
+      print("cant start task because of $e");
+    } finally {
+      loading.value = false;
+    }
+  }
 }

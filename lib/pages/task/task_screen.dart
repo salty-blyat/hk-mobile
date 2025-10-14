@@ -11,6 +11,7 @@ import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/models/task_model.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
 import 'package:staff_view_ui/pages/staff_user/staff_user_controller.dart';
+import 'package:staff_view_ui/pages/task/operation/change_status_screen.dart';
 import 'package:staff_view_ui/pages/task/operation/task_op_controller.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/route.dart';
@@ -251,7 +252,11 @@ class TaskScreen extends BaseList<TaskModel> {
                                 Text(requestTime!,
                                     style: const TextStyle(
                                         fontSize: 12, color: Colors.grey)),
-                                _buildButton(status: item.status ?? 0, isTaskUnassigned: item.staffId == 0,staffId: item.staffId??0, taskId: item.id as int)
+                                _buildButton(
+                                    status: item.status ?? 0,
+                                    isTaskUnassigned: item.staffId == 0,
+                                    staffId: item.staffId ?? 0,
+                                    taskId: item.id as int)
                               ],
                             ),
                           )
@@ -268,10 +273,14 @@ class TaskScreen extends BaseList<TaskModel> {
     );
   }
 
-  Widget _buildButton({required int status, bool isTaskUnassigned = false, required int staffId, required int taskId}) {
+  Widget _buildButton(
+      {required int status,
+      bool isTaskUnassigned = false,
+      required int staffId,
+      required int taskId}) {
     if (isTaskUnassigned && status == RequestStatusEnum.pending.value) {
       return GestureDetector(
-          onTap: () { 
+          onTap: () {
             Get.toNamed(RouteName.taskOp, arguments: {"id": taskId});
           },
           child: Row(
@@ -287,8 +296,9 @@ class TaskScreen extends BaseList<TaskModel> {
                       color: AppTheme.primaryColor))
             ],
           ));
- 
-    } else if (!isTaskUnassigned && status == RequestStatusEnum.pending.value && controller.staffUser.value.staffId == staffId ) {
+    } else if (!isTaskUnassigned &&
+        status == RequestStatusEnum.pending.value &&
+        controller.staffUser.value.staffId == staffId) {
       return ElevatedButton(
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
@@ -299,7 +309,24 @@ class TaskScreen extends BaseList<TaskModel> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
           ),
           onPressed: () {
-            print('asdf');
+            Get.dialog(Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: AppTheme.borderRadius,
+              ),
+              child: SizedBox(
+                height: 370,
+                width: double.infinity,
+                child: ChangeStatusScreen(
+                  title: "Start Task",
+                  id: taskId,
+                  submit: () async {
+                    await controller.updateTaskStatus(
+                        taskId, RequestStatusEnum.pending.value);
+                    await controller.search();
+                  },
+                ),
+              ),
+            ));
           },
           child: Row(
             children: [
@@ -316,7 +343,8 @@ class TaskScreen extends BaseList<TaskModel> {
                   ))
             ],
           ));
-    } else if (status == RequestStatusEnum.inProgress.value && controller.staffUser.value.staffId == staffId) {
+    } else if (status == RequestStatusEnum.inProgress.value &&
+        controller.staffUser.value.staffId == staffId) {
       return ElevatedButton(
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
@@ -327,7 +355,24 @@ class TaskScreen extends BaseList<TaskModel> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
           ),
           onPressed: () {
-            print('asdf');
+            Get.dialog(Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: AppTheme.borderRadius,
+              ),
+              child: SizedBox(
+                height: 230,
+                width: double.infinity,
+                child: ChangeStatusScreen(
+                  title: "Mark done",
+                  id: taskId,
+                  submit: () async {
+                    await controller.updateTaskStatus(
+                        taskId, RequestStatusEnum.inProgress.value);
+                    await controller.search();
+                  },
+                ),
+              ),
+            ));
           },
           child: Row(
             children: [

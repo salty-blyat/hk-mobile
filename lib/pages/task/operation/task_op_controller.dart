@@ -11,6 +11,7 @@ import 'package:staff_view_ui/models/task_model.dart';
 import 'package:staff_view_ui/models/task_op_multi_model.dart';
 import 'package:staff_view_ui/models/task_res_model.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
+import 'package:staff_view_ui/pages/request_log/request_log_controller.dart';
 import 'package:staff_view_ui/pages/service_item/service_item_controller.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/pages/task/task_service.dart';
@@ -20,6 +21,8 @@ import 'package:staff_view_ui/utils/widgets/dialog.dart';
 class TaskOPController extends GetxController {
   final ServiceItemController serviceItemController =
       Get.put(ServiceItemController());
+  final RequestLogController requestLogController =
+      Get.put(RequestLogController());
   final HousekeepingController hkController = Get.put(HousekeepingController());
   final TaskController taskController = Get.put(TaskController());
   final RxBool loading = false.obs;
@@ -114,9 +117,10 @@ class TaskOPController extends GetxController {
           'note': rawValue['note']
         });
         var res = await service.assignStaff(model);
+        await requestLogController.find(res.id ?? 0);
       } else {
         TaskOPMultiModel model = TaskOPMultiModel.fromJson(rawValue);
-        var res = await service.add(model, TaskResModel.fromJson);
+        await service.add(model, TaskResModel.fromJson);
       }
       await taskController.search();
       await hkController.search();

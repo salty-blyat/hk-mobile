@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:staff_view_ui/models/attachment_model.dart';
 import 'package:staff_view_ui/models/log_model.dart';
 import 'package:staff_view_ui/pages/request_log/request_log_controller.dart';
+import 'package:staff_view_ui/pages/task/operation/change_status_screen.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/route.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
@@ -15,21 +16,16 @@ import 'package:url_launcher/url_launcher.dart';
 
 class RequestLogScreen extends StatelessWidget {
   final RequestLogController controller = Get.put(RequestLogController());
+  final TaskController taskController = Get.put(TaskController());
   RequestLogScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: _buildAppBar(),
-        body:
-            Obx(
-            () =>
-            // controller.loading.value
-            //     ? const Center(child: CircularProgressIndicator())
-            //     :
-            _buildBody()
-        ),
-        // ),
-        );
+      appBar: _buildAppBar(),
+      body: Obx(() => controller.loading.value
+          ? const Center(child: CircularProgressIndicator())
+          : _buildBody()),
+    );
   }
 
   AppBar _buildAppBar() {
@@ -261,14 +257,52 @@ class RequestLogScreen extends StatelessWidget {
         child: Row(
           children: [const Icon(Icons.check), Text("Start task".tr)],
         ),
-        onPressed: () {},
+        onPressed: () {
+          Get.dialog(Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: AppTheme.borderRadius,
+            ),
+            child: SizedBox(
+              height: 230,
+              width: double.infinity,
+              child: ChangeStatusScreen(
+                title: "Start Task",
+                id: taskId,
+                submit: () async {
+                  await taskController.updateTaskStatus(
+                      taskId, RequestStatusEnum.pending.value);
+                  await controller.find(taskId);
+                },
+              ),
+            ),
+          ));
+        },
       );
     } else if (status == RequestStatusEnum.inProgress.value) {
       return ElevatedButton(
         child: Row(
           children: [const Icon(Icons.check), Text("Mark as complete".tr)],
         ),
-        onPressed: () {},
+        onPressed: () {
+          Get.dialog(Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: AppTheme.borderRadius,
+            ),
+            child: SizedBox(
+              height: 230,
+              width: double.infinity,
+              child: ChangeStatusScreen(
+                title: "Mark done",
+                id: taskId,
+                submit: () async {
+                  await taskController.updateTaskStatus(
+                      taskId, RequestStatusEnum.inProgress.value);
+                  await controller.find(taskId);
+                },
+              ),
+            ),
+          ));
+        },
       );
     } else if (status == RequestStatusEnum.done.value) {
       return const SizedBox.shrink();

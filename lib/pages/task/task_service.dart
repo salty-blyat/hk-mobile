@@ -1,12 +1,15 @@
+import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:staff_view_ui/app_setting.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
 import 'package:staff_view_ui/helpers/token_interceptor.dart';
 import 'package:staff_view_ui/models/assign_staff_model.dart';
+import 'package:staff_view_ui/models/change_status_model.dart';
 import 'package:staff_view_ui/models/task_model.dart';
 import 'package:staff_view_ui/models/task_op_multi_model.dart';
 import 'package:staff_view_ui/models/task_res_model.dart';
 import 'package:staff_view_ui/models/task_summary_model.dart';
 import 'package:staff_view_ui/models/task_with_summary_model.dart';
+import 'package:staff_view_ui/pages/task/task_controller.dart';
 
 class SearchTaskResult {
   List<TaskSummaryModel> summaryByStatuses;
@@ -72,6 +75,22 @@ class TaskService {
   }
   Future<TaskResModel> assignStaff(AssignStaffModel model) async {
     final response = await dio.post('request/mobile/assign-staff', data: model.toJson());
+    if (response?.statusCode == 200) {
+      return TaskResModel.fromJson(response?.data);
+    }
+    throw Exception("Fail with status: ${response?.statusCode}");
+  }
+  Future<TaskResModel> updateTaskStatus(int id, ChangeStatusModel model, int status) async {
+    final endpoint = status == RequestStatusEnum.pending.value ? "start" : "complete";
+    final response = await dio.put('request/$endpoint/$id/mobile',data: model.toJson());
+    if (response.statusCode == 200) {
+      return TaskResModel.fromJson(response.data);
+    }
+    throw Exception("Fail with status: ${response.statusCode}");
+  }
+  
+  Future<TaskResModel> doneTask(int id) async {
+    final response = await dio.put('complete/start/$id/mobile');
     if (response?.statusCode == 200) {
       return TaskResModel.fromJson(response?.data);
     }
