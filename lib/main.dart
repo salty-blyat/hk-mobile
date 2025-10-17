@@ -16,7 +16,7 @@ import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/firebase_service.dart';
 import 'package:staff_view_ui/helpers/notification_service.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
-import 'package:staff_view_ui/models/staff_user_model.dart'; 
+import 'package:staff_view_ui/models/staff_user_model.dart';
 import 'package:staff_view_ui/route.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/translation.dart';
@@ -38,13 +38,14 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  Get.lazyPut<AuthService>(() => AuthService());
+  Get.put<AuthService>( AuthService());
 
+  // Get.put(AuthController(), permanent: true);
   try {
     var storage = const FlutterSecureStorage();
     var localStorage = Storage();
     final staffUserStorage = localStorage.read(StorageKeys.staffUser);
-    StaffUserModel staffUser =   staffUserStorage != null
+    StaffUserModel staffUser = staffUserStorage != null
         ? StaffUserModel.fromJson(jsonDecode(staffUserStorage))
         : StaffUserModel();
     final token = await storage.read(key: 'accessToken');
@@ -66,11 +67,7 @@ Future<void> main() async {
 
   runApp(MyApp(
       translationService: translationService, initialRoute: initialRoute));
-}
-
-extension on StaffUserModel {
-  set value(StaffUserModel value) {}
-}
+} 
 
 class MyApp extends StatelessWidget {
   final Translate translationService;
@@ -85,7 +82,7 @@ class MyApp extends StatelessWidget {
     var box = Storage();
     var lang = 'en';
     try {
-      lang = box.read(Const.authorized['Lang'] ?? 'en')!;
+      lang = box.read(Const.authorized['Lang'] ?? 'en') ?? 'en';
     } catch (e) {
       lang = 'en';
     }

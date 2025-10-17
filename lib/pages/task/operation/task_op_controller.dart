@@ -1,13 +1,10 @@
-import 'dart:convert';
-
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/helpers/common_validators.dart';
-import 'package:staff_view_ui/models/app_model.dart';
+import 'package:staff_view_ui/helpers/image_picker_controller.dart';
 import 'package:staff_view_ui/models/assign_staff_model.dart';
 import 'package:staff_view_ui/models/housekeeping_model.dart';
 import 'package:staff_view_ui/models/service_item_model.dart';
-import 'package:staff_view_ui/models/task_model.dart';
 import 'package:staff_view_ui/models/task_op_multi_model.dart';
 import 'package:staff_view_ui/models/task_res_model.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
@@ -15,7 +12,6 @@ import 'package:staff_view_ui/pages/request_log/request_log_controller.dart';
 import 'package:staff_view_ui/pages/service_item/service_item_controller.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/pages/task/task_service.dart';
-import 'package:staff_view_ui/route.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
 class TaskOPController extends GetxController {
@@ -26,6 +22,7 @@ class TaskOPController extends GetxController {
   final HousekeepingController hkController = Get.put(HousekeepingController());
   final TaskController taskController = Get.put(TaskController());
   final RxBool loading = false.obs;
+  final filePickerController = Get.put(FilePickerController());
 
   final TaskService service = TaskService();
 
@@ -53,6 +50,9 @@ class TaskOPController extends GetxController {
     ]),
     'status': FormControl<int>(
         value: RequestStatusEnum.pending.value, validators: []),
+    'attachments': FormControl<List<dynamic>>(
+      value: [],
+    ),
     'note': FormControl<String>()
   });
 
@@ -180,15 +180,24 @@ class TaskOPController extends GetxController {
         'quantity': task.quantity,
         'status': task.status,
         'staffId': 0,
-        'note': task.note,
+        'note': task.note,  
         'reservationId': task.reservationId,
         'guestId': task.guestId,
+       
+      });
+      task.attachments?.forEach((attachment) {
+        filePickerController.attachments.add(attachment);
+        formGroup.control('attachments').value.add({
+          'name': attachment.name,
+          'url': attachment.url,
+          'uid': attachment.uid,
+        });
       });
       serviceItemController.selected.value =
           ServiceItem(trackQty: task.trackQty);
       hkController.selected
           .assignAll([Housekeeping(roomNumber: task.roomNumber)]);
-
+      print(task);
       print(formGroup.rawValue);
     }
   }

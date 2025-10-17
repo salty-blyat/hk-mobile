@@ -9,7 +9,6 @@ import 'package:staff_view_ui/models/housekeeping_model.dart';
 import 'package:staff_view_ui/models/lookup_model.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
-import 'package:staff_view_ui/pages/staff_user/staff_user_controller.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/route.dart';
 import 'package:staff_view_ui/utils/theme.dart';
@@ -18,11 +17,8 @@ import 'package:staff_view_ui/utils/widgets/network_img.dart';
 
 class HousekeepingScreen extends BaseList<Housekeeping> {
   HousekeepingScreen({super.key});
-
   final HousekeepingController controller = Get.put(HousekeepingController());
   final LookupController lookupController = Get.put(LookupController());
-  final StaffUserController staffUserController =
-      Get.put(StaffUserController());
   Timer? _debounce;
 
   @override
@@ -54,30 +50,29 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
 
   @override
   Widget titleWidget() {
-    return Obx(() {
-      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(
-          staffUserController.staffUser.value?.staffName ?? '-',
-          style: Get.textTheme.titleLarge!.copyWith(color: Colors.white),
-          overflow: TextOverflow.ellipsis,
-        ),
-        Row(
-          children: [
-            staffUserController.staffUser.value != null
-                ? Text(
-                    "${'Position'.tr}: ${staffUserController.staffUser.value?.positionName}",
-                    style: const TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.normal))
-                : const SizedBox.shrink(),
-            staffUserController.staffUser.value != null
-                ? const SizedBox(
-                    width: 8,
-                  )
-                : const SizedBox.shrink(),
-          ],
-        )
-      ]);
-    });
+    return Obx(
+        () => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                controller.staffUser.value?.staffName ?? '-',
+                style: Get.textTheme.titleLarge!.copyWith(color: Colors.white),
+                overflow: TextOverflow.ellipsis,
+              ),
+              Row(
+                children: [
+                  controller.staffUser.value?.positionName != null
+                      ? Text(
+                          "${'Position'.tr}: ${controller.staffUser.value?.positionName}",
+                          style: const TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.normal))
+                      : const SizedBox.shrink(),
+                  controller.staffUser.value != null
+                      ? const SizedBox(
+                          width: 8,
+                        )
+                      : const SizedBox.shrink(),
+                ],
+              )
+            ]));
   }
 
   @override
@@ -430,17 +425,17 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
 
   @override
   Widget buildBottomNavigationBar() {
-    final AuthController authController = Get.put(AuthController());
     return Obx(() {
-      if (authController.position.value == PositionEnum.manager.value) {
+      if (controller.staffUser.value?.positionId ==
+          PositionEnum.manager.value) {
         return Container(
           color: bgColor,
           padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
           child: MyButton(
             disabled: controller.selected.isEmpty,
             label: '',
-            onPressed: () { 
-              Get.toNamed(RouteName.taskOp, arguments: {'id': 0}); 
+            onPressed: () {
+              Get.toNamed(RouteName.taskOp, arguments: {'id': 0});
             },
             child: const Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -463,9 +458,10 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
     final TaskController taskController = Get.put(TaskController());
     return [
       IconButton(
-          onPressed: () {
+          onPressed: () async {
             taskController.roomId.value = 0;
             Get.toNamed(RouteName.task, arguments: {'roomId': 0, 'title': ""});
+            await taskController.search();
             controller.selected.clear();
           },
           icon: const Icon(Icons.task_outlined)),

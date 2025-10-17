@@ -7,23 +7,15 @@ import 'package:staff_view_ui/pages/staff_user/staff_user_service.dart';
 
 class StaffUserController extends GetxController {
   Rx<StaffUserModel?> staffUser = Rx<StaffUserModel?>(null); 
-  RxBool loading = false.obs;
   final storage = Storage();
   final StaffUserService service = StaffUserService();
 
   Future<void> getUser() async {
     try {
-      loading.value = true;
       var res = await service.getStaffUser();
       staffUser.value = res;
-      storage.write(StorageKeys.staffUser, jsonEncode(staffUser.value));
-      storage.read(StorageKeys.staffUser);
-      
-      loading.value = false;
-    } catch (e) {
-      loading.value = false;
+      storage.write(StorageKeys.staffUser, jsonEncode(staffUser.value));  
     } finally {
-      loading.value = false;
     }
   }
 }

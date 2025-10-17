@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -7,7 +9,9 @@ import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
+import 'package:staff_view_ui/models/staff_user_model.dart';
 import 'package:staff_view_ui/pages/staff_user/staff_user_controller.dart';
+import 'package:staff_view_ui/pages/staff_user/staff_user_service.dart';
 import 'package:staff_view_ui/route.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
 import 'package:staff_view_ui/utils/widgets/snack_bar.dart';
@@ -27,7 +31,8 @@ class AuthController extends GetxController {
   final language = 'en'.obs;
   final _authService = AuthService();
   // final _firebaseService = NotificationService();
-  final staffUserController = Get.put(StaffUserController());
+  // final staffUserController = Get.put(StaffUserController());
+  final staffUserService = StaffUserService();
   final passwordController = TextEditingController();
   final loading = false.obs;
   final formValid = false.obs;
@@ -58,10 +63,12 @@ class AuthController extends GetxController {
     Get.focusScope?.unfocus();
     Modal.loadingDialog();
     try {
-      final response = await _authService.login( formGroup.value, false, );
+      final response = await _authService.login(
+        formGroup.value,
+        false,
+      );
 
       if (response.statusCode == 200) {
-        
         error.value = '';
         ClientInfo info = ClientInfo.fromJson(response.data);
         if (info.mfaRequired == true) {
@@ -75,9 +82,13 @@ class AuthController extends GetxController {
         _authService.saveToken(info);
         if (info.changePasswordRequired == true) {
           Get.toNamed(RouteName.changePassword);
-        } else { 
-          await staffUserController.getUser(); 
-          if(staffUserController.staffUser.value?.positionId == PositionEnum.manager.value){
+        } else {
+          // await staffUserController.getUser();
+          StaffUserModel staffUser = await staffUserService.getStaffUser(); 
+
+          storage.write(StorageKeys.staffUser, jsonEncode(staffUser));
+          if (staffUser.positionId ==
+              PositionEnum.manager.value) {
             Get.offAllNamed(RouteName.houseKeeping);
           } else {
             Get.offAllNamed(RouteName.task);

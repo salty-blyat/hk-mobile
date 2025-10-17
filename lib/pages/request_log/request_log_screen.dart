@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/models/attachment_model.dart';
 import 'package:staff_view_ui/models/log_model.dart';
 import 'package:staff_view_ui/pages/request_log/request_log_controller.dart';
@@ -32,7 +33,7 @@ class RequestLogScreen extends StatelessWidget {
     return AppBar(title: Text("Task".tr));
   }
 
-  Widget _buildBody() {
+  Widget _buildBody() { 
     return RefreshIndicator(
       onRefresh: () async {
         await controller.onInit();
@@ -40,8 +41,11 @@ class RequestLogScreen extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
+            Text('${'Task from'.tr}: ${Const.getRequestType(controller.model.value.requestType ?? 0)}',style: const TextStyle(fontSize: 16),),
+            const SizedBox(height: 12),
             _buildTaskDetailCard(),
             controller.model.value.staffId != 0
                 ? const SizedBox(height: 16)
@@ -49,7 +53,46 @@ class RequestLogScreen extends StatelessWidget {
             controller.model.value.staffId != 0
                 ? _buildProfileCard()
                 : const SizedBox.shrink(),
-            const SizedBox(height: 16),
+            controller.model.value.status != RequestStatusEnum.done.value
+                ? const SizedBox(height: 16)
+                : const SizedBox.shrink(),
+            Column(
+              children: [
+                if (controller.model.value.attachments != null &&
+                    controller.model.value.attachments!.isNotEmpty)
+                  ...controller.model.value.attachments!.asMap().entries.map(
+                        (entry) => GestureDetector(
+                          key: Key(entry.key.toString()),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildAttachment(CupertinoIcons.doc,
+                                  '${'Attachment'.tr} ${entry.key + 1}',
+                                  isLink: true),
+                              const SizedBox(height: 8),
+                            ],
+                          ),
+                          onTap: () async {
+                            final Uri uri = Uri.parse(entry.value.url);
+
+                            if (await canLaunchUrl(uri)) {
+                              await launchUrl(
+                                uri,
+                                mode: LaunchMode.externalApplication,
+                              );
+                            } else {
+                              throw 'Could not launch $uri';
+                            }
+                          },
+                        ),
+                      )
+                else
+                  const SizedBox.shrink(),
+                if (controller.model.value.attachments != null &&
+                    controller.model.value.attachments!.isNotEmpty)
+                  const SizedBox(height: 16)
+              ],
+            ),
             _actionButton(
                 status: controller.model.value.status ?? 0,
                 isTaskUnassigned: controller.model.value.staffId == 0,
@@ -106,13 +149,13 @@ class RequestLogScreen extends StatelessWidget {
                     Text(
                       controller.model.value.serviceItemName ?? '',
                       style: const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.w600),
+                          fontSize: 14),
                     ),
                     const SizedBox(width: 8),
                     controller.model.value.quantity != null &&
                             controller.model.value.quantity! > 0
                         ? Text(
-                            "( x${controller.model.value.quantity.toString()} )")
+                            "x${controller.model.value.quantity.toString()}")
                         : const SizedBox.shrink()
                   ],
                 ),
@@ -125,6 +168,39 @@ class RequestLogScreen extends StatelessWidget {
                 ),
               ])
         ]));
+  }
+
+  Widget _buildAttachment(IconData icon, String value, {bool isLink = false}) {
+    return Container(
+      alignment: Alignment.centerLeft,
+      child: RichText(
+        text: TextSpan(
+          style: const TextStyle(
+            color: Colors.black,
+            fontFamilyFallback: ['Gilroy', 'Kantumruy'],
+          ),
+          children: [
+            WidgetSpan(
+              child: Icon(
+                icon,
+                size: 16,
+              ),
+            ),
+            const WidgetSpan(
+              child: SizedBox(width: 4),
+            ),
+            TextSpan(
+              text: value,
+              style: isLink
+                  ? const TextStyle(
+                      color: AppTheme.primaryColor,
+                    )
+                  : null,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildTimeline() {

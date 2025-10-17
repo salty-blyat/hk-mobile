@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -12,6 +10,7 @@ import 'package:staff_view_ui/pages/staff/staff_select.dart';
 import 'package:staff_view_ui/pages/task/operation/task_op_controller.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/utils/theme.dart';
+import 'package:staff_view_ui/utils/widgets/file_picker.dart';
 import 'package:staff_view_ui/utils/widgets/input.dart';
 
 class TaskOpScreen extends StatelessWidget {
@@ -57,7 +56,7 @@ class TaskOpScreen extends StatelessWidget {
                   final aRoom = a.roomNumber ?? '';
                   final bRoom = b.roomNumber ?? '';
                   return aRoom.compareTo(bRoom);
-                }); 
+                });
               return Skeletonizer(
                 enabled: controller.loading.isTrue,
                 child: Column(
@@ -139,6 +138,8 @@ class TaskOpScreen extends StatelessWidget {
                       label: 'Note'.tr,
                       maxLines: 3,
                     ),
+                    const SizedBox(height: 12),
+                    FilePickerWidget(formGroup: controller.formGroup),
                     Container(
                       decoration: BoxDecoration(
                         border: Border(

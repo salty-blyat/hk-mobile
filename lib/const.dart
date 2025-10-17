@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:intl/intl.dart'; 
+import 'package:staff_view_ui/pages/task/task_controller.dart';
 
 class Const {
   static const String version = '1.9';
@@ -11,6 +13,25 @@ class Const {
 
   static String percentageFormat(double value) {
     return NumberFormat('###').format(value * 100);
+  }
+
+  static String getRequestType(int requestType) {
+    return requestType == RequestTypes.internal.value ? "Guest".tr : "Internal".tr;
+  }
+
+  static bool isImage(String url) {
+    final lowerUrl = url.toLowerCase();
+    final imageExtensions = [
+      '.jpg',
+      '.jpeg',
+      '.png',
+      '.gif',
+      '.bmp',
+      '.webp',
+      '.svg'
+    ];
+
+    return imageExtensions.any((extension) => lowerUrl.endsWith(extension));
   }
 
   static const Map<String, String> authorized = {

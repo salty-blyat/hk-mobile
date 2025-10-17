@@ -140,9 +140,7 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
                               return;
                             }
                             final attachment = await filePickerController
-                                .pickImageFromGallery((value) => setState(() {
-                                      widget.loading = value;
-                                    }));
+                                .pickImageFromGallery(  );
                             if (attachment != null) {
                               widget.formGroup?.control('profile').value =
                                   attachment.url;

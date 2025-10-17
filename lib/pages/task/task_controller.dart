@@ -14,6 +14,7 @@ import 'package:staff_view_ui/models/task_summary_model.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
 import 'package:staff_view_ui/pages/request_log/request_log_service.dart';
 import 'package:staff_view_ui/pages/service_item/service_item_controller.dart';
+import 'package:staff_view_ui/pages/staff_user/staff_user_controller.dart';
 import 'package:staff_view_ui/pages/task/task_service.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
@@ -53,7 +54,6 @@ class TaskController extends GetxController {
   final RxString searchText = ''.obs;
   final RxList<TaskModel> list = <TaskModel>[].obs;
   final RxList<TaskSummaryModel> summaryList = <TaskSummaryModel>[].obs;
-  final Rx<StaffUserModel>? staffUser = StaffUserModel().obs;
   RxInt roomId = 0.obs;
   final RxBool loading = false.obs;
   final RxBool isLoadingMore = false.obs;
@@ -61,12 +61,16 @@ class TaskController extends GetxController {
   final Rx<ClientInfo> auth = ClientInfo().obs;
   final ServiceItemController serviceItemController =
       Get.put(ServiceItemController());
+  final Rx<StaffUserModel?> staffUser = StaffUserModel().obs;
+
   final AuthService authService = AuthService();
   final TaskService service = TaskService();
   final storage = Storage();
   final RequestLogService requestLogService = RequestLogService();
+  final StaffUserController staffUserController =
+      Get.put(StaffUserController());
 
-  // changeing status of the task
+  // changing status of the task
   final statusForm = FormGroup(
       {'id': FormControl<int>(value: 0), 'note': FormControl<String>()});
 
@@ -86,27 +90,37 @@ class TaskController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     try {
-      if (Get.arguments['roomId'] != 0) {
+      if (Get.arguments != null && Get.arguments['roomId'] != 0) {
         roomId.value = Get.arguments['roomId'];
-      }
+      } 
     } catch (e) {
       print(e);
     }
     await search();
     await lookupController.fetchLookups(LookupTypeEnum.requestStatuses.value);
- 
+
     //for falling back when the no staff is linked to the user.
-    try {
-      final authData = await authService.readFromLocalStorage(Const.authorized['Authorized']!);
-      final staffUserStorage = storage.read(StorageKeys.staffUser);
-      staffUser?.value = staffUserStorage != null
-          ? StaffUserModel.fromJson(jsonDecode(staffUserStorage))
-          : StaffUserModel();
-      auth.value = authData != null && authData.isNotEmpty
-          ? ClientInfo.fromJson(jsonDecode(authData))
-          : ClientInfo();
-    } catch (e) {
-      print('Error during initialization: $e');
+    // try {
+    //   final authData = await authService
+    //       .readFromLocalStorage(Const.authorized['Authorized']!);
+    //   final staffUserStorage = storage.read(StorageKeys.staffUser);
+    //   staffUser.value = staffUserStorage != null
+    //       ? StaffUserModel.fromJson(jsonDecode(staffUserStorage))
+    //       : StaffUserModel();
+    //   auth.value = authData != null && authData.isNotEmpty
+    //       ? ClientInfo.fromJson(jsonDecode(authData))
+    //       : ClientInfo();
+    // } catch (e) {
+    //   print('Error during initialization: $e');
+    // }
+    // await staffUserController.getUser();
+    final rawData = storage.read(StorageKeys.staffUser);
+    if (rawData != null) {
+      staffUser.value = StaffUserModel.fromJson(jsonDecode(rawData));
+    } else {
+      staffUser.value = StaffUserModel();
+      Modal.errorDialog(
+          "Cannot find staff", "Sorry we cannot find staff link to this user");
     }
   }
 
@@ -157,7 +171,7 @@ class TaskController extends GetxController {
       Get.back();
       Get.back();
 
-      Modal.successDialog("Success", "Task Started");
+      Modal.successDialog("Success", '');
     } catch (e) {
       loading.value = false;
       print("cant start task because of $e");

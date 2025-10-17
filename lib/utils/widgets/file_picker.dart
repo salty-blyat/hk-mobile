@@ -150,7 +150,7 @@ class FilePickerWidget extends StatelessWidget {
                       ),
                       onTap: () async {
                         final attachment = await filePickerController
-                            .pickImageFromGallery((b) {});
+                            .pickImageFromGallery( );
                         if (attachment != null) {
                           formGroup.control(controlName).value.add(
                             {
@@ -209,7 +209,7 @@ class FilePickerWidget extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(CupertinoIcons.cloud_upload),
+                  const Icon(CupertinoIcons.cloud_upload),
                   Text('Attachment'.tr),
                 ],
               ),

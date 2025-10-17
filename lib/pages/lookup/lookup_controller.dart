@@ -87,7 +87,7 @@ class LookupController extends GetxController {
   final isLoading = false.obs;
 
   Future<void> fetchLookups(int lookupTypeId) async {
-    isLoading.value = true;
+    // isLoading.value = true;
     try {
       final fetchedLookups = await service.getLookup(lookupTypeId);
       if (lookupTypeId == LookupTypeEnum.requestStatuses.value) {

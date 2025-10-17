@@ -16,7 +16,9 @@ class LookupSelect extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    controller.fetchLookups(lookupTypeId);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchLookups(lookupTypeId);
+    });
     return Obx(
       () => ReactiveDropdownField<int>(
         menuMaxHeight: 300,

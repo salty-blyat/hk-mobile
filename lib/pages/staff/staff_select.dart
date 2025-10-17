@@ -20,7 +20,7 @@ class StaffSelect extends StatelessWidget {
     // controller.search();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await controller.search();
-      controller.list.insert(0, Staff(id: 0,name: '-'));
+      controller.list.insert(0, Staff(id: 0, name: '-'));
     });
     return Obx(
       () => ReactiveDropdownField<int>(

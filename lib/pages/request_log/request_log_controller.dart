@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:staff_view_ui/models/request_log_model.dart';
-import 'package:staff_view_ui/pages/request_log/request_log_service.dart';
-import 'package:staff_view_ui/pages/task/task_service.dart';
+import 'package:staff_view_ui/pages/request_log/request_log_service.dart'; 
 
 class RequestLogController extends GetxController {
   final Rx<RequestLogModel> model = RequestLogModel().obs;

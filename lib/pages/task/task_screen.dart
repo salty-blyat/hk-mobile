@@ -10,7 +10,6 @@ import 'package:staff_view_ui/helpers/base_list_screen.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/models/task_model.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
-import 'package:staff_view_ui/pages/staff_user/staff_user_controller.dart';
 import 'package:staff_view_ui/pages/task/operation/change_status_screen.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/route.dart';
@@ -21,8 +20,6 @@ class TaskScreen extends BaseList<TaskModel> {
   TaskScreen({super.key});
   final TaskController controller = Get.put(TaskController());
   final LookupController lookupController = Get.put(LookupController());
-  final StaffUserController staffUserController =
-      Get.put(StaffUserController());
   Rx<ClientInfo?> auth = Rxn<ClientInfo>();
   Timer? _debounce;
 
@@ -35,11 +32,6 @@ class TaskScreen extends BaseList<TaskModel> {
 
   @override
   RxList<TaskModel> get items => controller.list;
-
-  // @override
-  // RxBool get showDrawer => (staffUserController.staffUser.value?.positionId !=
-  //         PositionEnum.manager.value)
-  //     .obs;
 
   @override
   List<Widget> actions() => [
@@ -89,22 +81,19 @@ class TaskScreen extends BaseList<TaskModel> {
     return Obx(() {
       return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
-          (controller.staffUser?.value != null
-                  ? controller.staffUser?.value.staffName
-                  : controller.auth.value.fullName) ??
-              '-',
+          controller.staffUser.value?.staffName ?? '-',
           style: Get.textTheme.titleLarge!.copyWith(color: Colors.white),
           overflow: TextOverflow.ellipsis,
         ),
         Row(
           children: [
-            controller.staffUser?.value != null
+            controller.staffUser.value != null
                 ? Text(
-                    "${'Position'.tr}: ${controller.staffUser?.value.positionName}",
+                    "${'Position'.tr}: ${controller.staffUser.value?.positionName}",
                     style: const TextStyle(
                         fontSize: 12, fontWeight: FontWeight.normal))
                 : const SizedBox.shrink(),
-            controller.staffUser?.value != null
+            controller.staffUser.value != null
                 ? const SizedBox(
                     width: 8,
                   )
@@ -124,7 +113,7 @@ class TaskScreen extends BaseList<TaskModel> {
   Widget buildStickyList(List<TaskModel> items) {
     final groupedItems = groupItems(items);
     return Container(
-      padding: const EdgeInsets.only(top: 12, bottom: 0),
+      padding: const EdgeInsets.only(top: 8, bottom: 0),
       child: CustomScrollView(
         slivers: groupedItems.entries.map((entry) {
           final section = entry.key;
@@ -162,9 +151,8 @@ class TaskScreen extends BaseList<TaskModel> {
     String? requestTime = item.requestTime != null
         ? DateFormat("dd-MM-yyyy hh:mm a").format(item.requestTime!)
         : null;
-
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
       decoration: BoxDecoration(
           borderRadius: AppTheme.borderRadius, color: Colors.white),
       child: Material(
@@ -175,103 +163,119 @@ class TaskScreen extends BaseList<TaskModel> {
           onTap: () {
             Get.toNamed(RouteName.requestLog, arguments: {'id': item.id});
           },
-          child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Stack(
+            children: [
+              Positioned(
+                  right: 8,
+                  bottom: 8,
+                  child: Obx(() => _buildButton(
+                      status: item.status ?? 0,
+                      isTaskUnassigned: item.staffId == 0,
+                      positionId: controller.staffUser.value?.positionId ?? 0,
+                      staffId: item.staffId ?? 0,
+                      taskId: item.id as int))),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
                         children: [
-                          Text(item.requestNo ?? '',
-                              style: const TextStyle(
-                                  color: Colors.grey, fontSize: 11)),
-                          Row(children: [
-                            NetworkImg(height: 16, src: item.statusImage),
-                            const SizedBox(width: 4),
-                            Text(
-                                Get.locale?.languageCode == 'en'
-                                    ? item.statusNameEn ?? ''
-                                    : item.statusNameKh ?? '',
-                                style: const TextStyle(fontSize: 12)),
-                          ]),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(item.serviceItemName ?? '',
-                              style: const TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                      if (item.note != null && item.note!.isNotEmpty)
-                        Row(
-                          children: [
-                            Text(item.note!,
-                                style: const TextStyle(
-                                    fontSize: 11, color: Colors.grey)),
-                          ],
-                        ),
-                      const SizedBox(height: 24),
-                      Row(
-                        children: [
-                          item.roomNo != null
-                              ? const Icon(Icons.location_on_outlined,
-                                  size: 12, color: Colors.grey)
-                              : const SizedBox.shrink(),
-                          const SizedBox(width: 4),
-                          item.roomNo != null
-                              ? Text("${item.roomNo ?? ''}, Floor 001",
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(item.requestNo ?? '',
                                   style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold))
-                              : const SizedBox.shrink(),
-                        ],
-                      ),
-                      item.staffId != 0
-                          ? Row(
-                              children: [
-                                const Icon(Icons.person_outline,
-                                    color: Colors.grey, size: 12),
+                                      color: Colors.grey, fontSize: 11)),
+                              Row(children: [
+                                NetworkImg(height: 16, src: item.statusImage),
                                 const SizedBox(width: 4),
-                                Text(item.staffName ?? 'Unassigned'.tr,
-                                    style: const TextStyle(
-                                        fontSize: 12, color: Colors.grey)),
-                              ],
-                            )
-                          : const SizedBox.shrink(),
-                      Row(
-                        children: [
-                          const Icon(Icons.access_time,
-                              color: Colors.grey, size: 12),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                Text(
+                                    Get.locale?.languageCode == 'en'
+                                        ? item.statusNameEn ?? ''
+                                        : item.statusNameKh ?? '',
+                                    style: const TextStyle(fontSize: 12)),
+                              ]),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Row( 
+                            children: [
+                              Text(item.serviceItemName ?? '',
+                                  style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold)),
+                                      const SizedBox(width: 8 ),
+                              item.quantity != null &&
+                                      item.quantity! > 0
+                                  ? Text(
+                                      "x${item.quantity.toString()}",
+                                      style: const TextStyle(
+                                          fontSize: 14 ))
+                                  : const SizedBox.shrink()
+                            ],
+                          ),
+                          if (item.note != null && item.note!.isNotEmpty)
+                            Row(
                               children: [
-                                Text(requestTime!,
+                                Text(item.note!,
                                     style: const TextStyle(
-                                        fontSize: 12, color: Colors.grey)),
-                                _buildButton(
-                                    status: item.status ?? 0,
-                                    isTaskUnassigned: item.staffId == 0,
-                                    staffId: item.staffId ?? 0,
-                                    taskId: item.id as int)
+                                        fontSize: 11, color: Colors.grey)),
                               ],
                             ),
-                          )
+                          const SizedBox(height: 24),
+                          Row(
+                            children: [
+                              item.roomNo != null
+                                  ? const Icon(Icons.location_on_outlined,
+                                      size: 12, color: Colors.grey)
+                                  : const SizedBox.shrink(),
+                              const SizedBox(width: 4),
+                              item.roomNo != null
+                                  ? Text("${item.roomNo ?? ''}, Floor 001",
+                                      style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold))
+                                  : const SizedBox.shrink(),
+                            ],
+                          ),
+                          item.staffId != 0
+                              ? Row(
+                                  children: [
+                                    const Icon(Icons.person_outline,
+                                        color: Colors.grey, size: 12),
+                                    const SizedBox(width: 4),
+                                    Text(item.staffName ?? 'Unassigned'.tr,
+                                        style: const TextStyle(fontSize: 12)),
+                                  ],
+                                )
+                              : const SizedBox.shrink(),
+                          Row(
+                            children: [
+                              const Icon(Icons.access_time,
+                                  color: Colors.grey, size: 12),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(requestTime!,
+                                        style: const TextStyle(
+                                            fontSize: 12, color: Colors.grey)),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -281,119 +285,136 @@ class TaskScreen extends BaseList<TaskModel> {
   Widget _buildButton(
       {required int status,
       bool isTaskUnassigned = false,
+      required int positionId,
       required int staffId,
       required int taskId}) {
-    if (isTaskUnassigned && status == RequestStatusEnum.pending.value) {
-      return GestureDetector(
-          onTap: () {
+    if (isTaskUnassigned &&
+        status == RequestStatusEnum.pending.value &&
+        positionId == PositionEnum.manager.value) {
+      return TextButton(
+          style: ButtonStyle(
+            shape: WidgetStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            minimumSize: WidgetStateProperty.all(const Size(72, 32)),
+            padding: WidgetStateProperty.all(
+                const EdgeInsets.symmetric(horizontal: 0, vertical: 0)),
+          ),
+          onPressed: () {
             Get.toNamed(RouteName.taskOp, arguments: {"id": taskId});
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               const Icon(Icons.person_add,
-                  color: AppTheme.primaryColor, size: 12),
+                  color: AppTheme.primaryColor, size: 14),
               const SizedBox(width: 4),
               Text("Assign".tr,
                   style: const TextStyle(
                       decoration: TextDecoration.underline,
-                      fontSize: 12,
+                      fontSize: 14,
                       color: AppTheme.primaryColor))
             ],
           ));
     } else if (!isTaskUnassigned &&
         status == RequestStatusEnum.pending.value &&
-        controller.staffUser?.value.staffId == staffId) {
-      return ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-            minimumSize: const Size(0, 28),
-            visualDensity: VisualDensity.compact,
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-          ),
-          onPressed: () {
-            Get.dialog(Dialog(
+        controller.staffUser.value?.staffId == staffId) {
+      return Container(
+        margin: const EdgeInsets.only(bottom: 4),
+        child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+              visualDensity: VisualDensity.compact,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               shape: RoundedRectangleBorder(
-                borderRadius: AppTheme.borderRadius,
-              ),
-              child: SizedBox(
-                height: 370,
-                width: double.infinity,
-                child: ChangeStatusScreen(
-                  title: "Start Task",
-                  id: taskId,
-                  submit: () async {
-                    await controller.updateTaskStatus(
-                        taskId, RequestStatusEnum.pending.value);
-                    await controller.search();
-                  },
+                  borderRadius: BorderRadius.circular(4)),
+            ),
+            onPressed: () {
+              Get.dialog(Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: AppTheme.borderRadius,
                 ),
-              ),
-            ));
-          },
-          child: Row(
-            children: [
-              const Icon(
-                Icons.play_arrow_rounded,
-                size: 12,
-                color: Colors.white,
-              ),
-              const SizedBox(width: 4),
-              Text("Start".tr,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.white,
-                  ))
-            ],
-          ));
+                child: SizedBox(
+                  height: 230,
+                  width: double.infinity,
+                  child: ChangeStatusScreen(
+                    title: "Start Task",
+                    id: taskId,
+                    submit: () async {
+                      await controller.updateTaskStatus(
+                          taskId, RequestStatusEnum.pending.value);
+                      await controller.search();
+                    },
+                  ),
+                ),
+              ));
+            },
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.play_arrow_rounded,
+                  size: 14,
+                  color: Colors.white,
+                ),
+                const SizedBox(width: 4),
+                Text("Start".tr,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                    ))
+              ],
+            )),
+      );
     } else if (status == RequestStatusEnum.inProgress.value &&
-        controller.staffUser?.value.staffId == staffId) {
-      return ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-            minimumSize: const Size(0, 28),
-            visualDensity: VisualDensity.compact,
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-          ),
-          onPressed: () {
-            Get.dialog(Dialog(
+        controller.staffUser.value?.staffId == staffId) {
+      return Container(
+        margin: const EdgeInsets.only(bottom: 4),
+        child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+              visualDensity: VisualDensity.compact,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               shape: RoundedRectangleBorder(
-                borderRadius: AppTheme.borderRadius,
-              ),
-              child: SizedBox(
-                height: 230,
-                width: double.infinity,
-                child: ChangeStatusScreen(
-                  title: "Mark done",
-                  id: taskId,
-                  submit: () async {
-                    await controller.updateTaskStatus(
-                        taskId, RequestStatusEnum.inProgress.value);
-                    await controller.search();
-                  },
+                  borderRadius: BorderRadius.circular(4)),
+            ),
+            onPressed: () {
+              Get.dialog(Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: AppTheme.borderRadius,
                 ),
-              ),
-            ));
-          },
-          child: Row(
-            children: [
-              const Icon(
-                Icons.check,
-                size: 12,
-                color: Colors.white,
-              ),
-              const SizedBox(width: 4),
-              Text("Mark done".tr,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.white,
-                  ))
-            ],
-          ));
+                child: SizedBox(
+                  height: 230,
+                  width: double.infinity,
+                  child: ChangeStatusScreen(
+                    title: "Mark done",
+                    id: taskId,
+                    submit: () async {
+                      await controller.updateTaskStatus(
+                          taskId, RequestStatusEnum.inProgress.value);
+                      await controller.search();
+                    },
+                  ),
+                ),
+              ));
+            },
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.check,
+                  size: 14,
+                  color: Colors.white,
+                ),
+                const SizedBox(width: 4),
+                Text("Mark done".tr,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                    ))
+              ],
+            )),
+      );
     } else if (status == RequestStatusEnum.done.value) {
       return const SizedBox.shrink();
     } else {
@@ -516,7 +537,6 @@ class TaskScreen extends BaseList<TaskModel> {
       );
     });
   }
-  // Widget _buildTaskStatusBadge(Lookup)
 
   @override
   Widget buildHeaderWidget() {
@@ -533,27 +553,32 @@ class TaskScreen extends BaseList<TaskModel> {
                 border: Border.all(width: 0.5, color: Colors.grey.shade50),
                 color: const Color(0xff177b80),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Task Overview'.tr,
-                      style: TextStyle(
-                          fontSize: 11,
-                          color: Colors.grey.shade50,
-                          fontWeight: FontWeight.w500)),
-                  Obx(() {
-                    RxString taskSummary = controller.summaryList
-                        .map((e) =>
-                            "${e.value} ${Get.locale?.languageCode == "en" ? e.nameEn : e.name}")
-                        .join(" • ")
-                        .obs;
-                    return Text(
-                      taskSummary.value,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w600, color: Colors.white),
-                    );
-                  })
-                ],
+              child: Obx(
+                () => Skeletonizer(
+                  enabled: controller.loading.value,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Task Overview'.tr,
+                          style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.grey.shade50,
+                              fontWeight: FontWeight.w500)),
+                      Obx(() {
+                        RxString taskSummary = controller.summaryList
+                            .map((e) =>
+                                "${e.value} ${Get.locale?.languageCode == "en" ? e.nameEn : e.name}")
+                            .join(" • ")
+                            .obs;
+                        return Text(
+                          taskSummary.value,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w600, color: Colors.white),
+                        );
+                      })
+                    ],
+                  ),
+                ),
               )),
         ),
         Container(
