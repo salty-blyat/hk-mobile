@@ -33,7 +33,7 @@ class RequestLogScreen extends StatelessWidget {
     return AppBar(title: Text("Task".tr));
   }
 
-  Widget _buildBody() { 
+  Widget _buildBody() {
     return RefreshIndicator(
       onRefresh: () async {
         await controller.onInit();
@@ -44,7 +44,10 @@ class RequestLogScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('${'Task from'.tr}: ${Const.getRequestType(controller.model.value.requestType ?? 0)}',style: const TextStyle(fontSize: 16),),
+            Text(
+              '${'Task from'.tr} ${Const.getRequestType(controller.model.value.requestType ?? 0)}',
+              style: const TextStyle(fontSize: 18),
+            ),
             const SizedBox(height: 12),
             _buildTaskDetailCard(),
             controller.model.value.staffId != 0
@@ -56,6 +59,7 @@ class RequestLogScreen extends StatelessWidget {
             controller.model.value.status != RequestStatusEnum.done.value
                 ? const SizedBox(height: 16)
                 : const SizedBox.shrink(),
+            const SizedBox(height: 16),
             Column(
               children: [
                 if (controller.model.value.attachments != null &&
@@ -88,9 +92,9 @@ class RequestLogScreen extends StatelessWidget {
                       )
                 else
                   const SizedBox.shrink(),
-                if (controller.model.value.attachments != null &&
-                    controller.model.value.attachments!.isNotEmpty)
-                  const SizedBox(height: 16)
+                // if (controller.model.value.attachments != null &&
+                //     controller.model.value.attachments!.isNotEmpty)
+                //   const SizedBox(height: 16)
               ],
             ),
             _actionButton(
@@ -127,47 +131,64 @@ class RequestLogScreen extends StatelessWidget {
   }
 
   Widget _buildTaskDetailCard() {
-    return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: AppTheme.borderRadius,
-          border: Border.all(color: Colors.grey.shade400),
-        ),
-        child: Row(children: [
-          SizedBox(
-              width: 42,
-              child: NetworkImg(
-                  src: controller.model.value.serviceItemImage, height: 42)),
-          const SizedBox(width: 12),
-          Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+    return Stack(
+      children: [
+        Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: AppTheme.borderRadius,
+              border: Border.all(color: Colors.grey.shade400),
+            ),
+            child: Row(children: [
+              SizedBox(
+                  width: 42,
+                  child: NetworkImg(
+                      src: controller.model.value.serviceItemImage,
+                      height: 42)),
+              const SizedBox(width: 12),
+              Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      controller.model.value.serviceItemName ?? '',
-                      style: const TextStyle(
-                          fontSize: 14),
+                    Row(
+                      children: [
+                        Text(
+                          controller.model.value.serviceItemName ?? '',
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                        const SizedBox(width: 8),
+                        controller.model.value.quantity != null &&
+                                controller.model.value.quantity! > 0
+                            ? Text(
+                                "x${controller.model.value.quantity.toString()}")
+                            : const SizedBox.shrink()
+                      ],
                     ),
-                    const SizedBox(width: 8),
-                    controller.model.value.quantity != null &&
-                            controller.model.value.quantity! > 0
-                        ? Text(
-                            "x${controller.model.value.quantity.toString()}")
-                        : const SizedBox.shrink()
-                  ],
-                ),
-                Text(
-                  "${controller.model.value.roomNumber ?? ''}, ${controller.model.value.floorName ?? ''}",
-                  style: const TextStyle(
-                    fontSize: 12,
-                  ),
-                  softWrap: true,
-                ),
-              ])
-        ]));
+                    Text(
+                      "${controller.model.value.roomNumber ?? ''}, ${controller.model.value.floorName ?? ''}",
+                      style: const TextStyle(
+                        fontSize: 12,
+                      ),
+                      softWrap: true,
+                    ),
+                  ])
+            ])),
+        Positioned(
+          right: 12,
+          top: 8,
+          child: Row(
+            children: [
+              NetworkImg(height: 14, src: controller.model.value.statusImage),
+              const SizedBox(width: 4),
+              Text(Get.locale?.languageCode == 'en'
+                  ? controller.model.value.statusNameEn ?? ''
+                  : controller.model.value.statusNameKh ?? '', style: TextStyle(fontSize: 12),),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildAttachment(IconData icon, String value, {bool isLink = false}) {
@@ -328,7 +349,9 @@ class RequestLogScreen extends StatelessWidget {
           Get.toNamed(RouteName.taskOp, arguments: {'id': taskId});
         },
       );
-    } else if (!isTaskUnassigned && status == RequestStatusEnum.pending.value) {
+    } else if (!isTaskUnassigned &&
+        status == RequestStatusEnum.pending.value &&
+        taskController.staffUser.value?.staffId == staffId) {
       return ElevatedButton(
         child: Row(
           children: [const Icon(Icons.check), Text("Start task".tr)],
@@ -348,13 +371,15 @@ class RequestLogScreen extends StatelessWidget {
                   await taskController.updateTaskStatus(
                       taskId, RequestStatusEnum.pending.value);
                   await controller.find(taskId);
+                  await taskController.search();
                 },
               ),
             ),
           ));
         },
       );
-    } else if (status == RequestStatusEnum.inProgress.value) {
+    } else if (status == RequestStatusEnum.inProgress.value &&
+        taskController.staffUser.value?.staffId == staffId) {
       return ElevatedButton(
         child: Row(
           children: [const Icon(Icons.check), Text("Mark as complete".tr)],

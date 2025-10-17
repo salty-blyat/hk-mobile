@@ -200,19 +200,16 @@ class TaskScreen extends BaseList<TaskModel> {
                             ],
                           ),
                           const SizedBox(height: 4),
-                          Row( 
+                          Row(
                             children: [
                               Text(item.serviceItemName ?? '',
                                   style: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold)),
-                                      const SizedBox(width: 8 ),
-                              item.quantity != null &&
-                                      item.quantity! > 0
-                                  ? Text(
-                                      "x${item.quantity.toString()}",
-                                      style: const TextStyle(
-                                          fontSize: 14 ))
+                              const SizedBox(width: 8),
+                              item.quantity != null && item.quantity! > 0
+                                  ? Text("x${item.quantity.toString()}",
+                                      style: const TextStyle(fontSize: 14))
                                   : const SizedBox.shrink()
                             ],
                           ),
@@ -565,11 +562,18 @@ class TaskScreen extends BaseList<TaskModel> {
                               color: Colors.grey.shade50,
                               fontWeight: FontWeight.w500)),
                       Obx(() {
-                        RxString taskSummary = controller.summaryList
-                            .map((e) =>
-                                "${e.value} ${Get.locale?.languageCode == "en" ? e.nameEn : e.name}")
-                            .join(" • ")
+                        final values = controller.summaryList
+                            .map((e) => e.value ?? 0)
+                            .toList();
+
+                        RxString taskSummary = (values.every((v) => v == 0)
+                                ? "0"
+                                : controller.summaryList
+                                    .map((e) =>
+                                        "${e.value} ${Get.locale?.languageCode == "en" ? e.nameEn : e.name}")
+                                    .join(" • "))
                             .obs;
+
                         return Text(
                           taskSummary.value,
                           style: const TextStyle(
