@@ -39,6 +39,11 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   @override
   bool get canLoadMore => controller.canLoadMore.value;
 
+  @override
+  Future<void> onLoadMore() async {
+    await controller.onLoadMore();
+  }
+  
   Color bgColor = const Color.fromARGB(255, 240, 240, 240);
 
   void dispose() {

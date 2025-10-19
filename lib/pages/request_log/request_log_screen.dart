@@ -35,8 +35,8 @@ class RequestLogScreen extends StatelessWidget {
 
   Widget _buildBody() {
     return RefreshIndicator(
-      onRefresh: () async {
-        await controller.onInit();
+      onRefresh: () {
+          controller.onInit();
       },
       child: Padding(
         padding: const EdgeInsets.all(16),

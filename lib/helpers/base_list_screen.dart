@@ -79,13 +79,13 @@ class BaseList<T> extends StatelessWidget {
                       ));
                 }
                 return NotificationListener<ScrollNotification>(
-                  onNotification: (ScrollNotification notification) {
+                  onNotification: (ScrollNotification notification)   {
                     if (notification is ScrollEndNotification &&
                         notification.metrics.pixels >=
                             notification.metrics.maxScrollExtent &&
                         canLoadMore &&
-                        !isLoading) {
-                      onLoadMore();
+                        !isLoading)   {
+                        onLoadMore();
                     }
                     return false;
                   },

@@ -87,8 +87,8 @@ class TaskController extends GetxController {
   ).obs;
 
   @override
-  Future<void> onInit() async {
-    super.onInit();
+  void onInit() {
+    
     try {
       if (Get.arguments != null && Get.arguments['roomId'] != 0) {
         roomId.value = Get.arguments['roomId'];
@@ -96,8 +96,8 @@ class TaskController extends GetxController {
     } catch (e) {
       print(e);
     }
-    await search();
-    await lookupController.fetchLookups(LookupTypeEnum.requestStatuses.value);
+      search();
+      lookupController.fetchLookups(LookupTypeEnum.requestStatuses.value);
 
     //for falling back when the no staff is linked to the user.
     // try {
@@ -122,6 +122,7 @@ class TaskController extends GetxController {
       Modal.errorDialog(
           "Cannot find staff", "Sorry we cannot find staff link to this user");
     }
+    super.onInit();
   }
 
   Future<void> search() async {
