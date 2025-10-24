@@ -41,7 +41,6 @@ class TaskOPController extends GetxController {
     'serviceTypeId': FormControl<int>(value: null, validators: [Validators.delegate(CommonValidators.required)]),
     'serviceItemId': FormControl<int>(
         value: null,
-        disabled: true,
         validators: [Validators.delegate(CommonValidators.required)]),
     'quantity': FormControl<int>(value: 0, validators: [
       Validators.delegate(CommonValidators.required),
@@ -81,11 +80,13 @@ class TaskOPController extends GetxController {
       } else {
         formGroup.control('serviceItemId').markAsDisabled();
       }
+      formGroup.control('serviceItemId').updateValue(null);
       if (serviceItemController.selected.value.trackQty == true) {
         formGroup.control('quantity').updateValue(1);
       } else {
         formGroup.control('quantity').updateValue(0);
       }
+       
     });
     formGroup.control('serviceItemId').valueChanges.listen((value) {
       if (serviceItemController.selected.value.trackQty == null) return;
@@ -98,10 +99,7 @@ class TaskOPController extends GetxController {
     super.onInit();
   }
 
-  Future<void> submit() async {
-    print('raw value ${formGroup.rawValue}');
-    print('formGroup.valid ${formGroup.valid}');
-    return;
+  Future<void> submit() async { 
     if (loading.isTrue) return;
     try {
       loading.value = true;

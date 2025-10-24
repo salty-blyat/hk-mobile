@@ -2,13 +2,16 @@ import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
+import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/helpers/token_interceptor.dart';
+import 'package:staff_view_ui/models/staff_user_model.dart';
 import 'package:staff_view_ui/pages/notification/notification_service.dart';
 import 'package:staff_view_ui/route.dart';
 
 class FirebaseService {
   static final fbService = FirebaseMessaging.instance;
   static final dioClient = DioClient();
+  static final storage = Storage();
   static final notificationService = NotificationService();
 
   Future<void> handlerNotification(RemoteMessage msg) async {
@@ -51,9 +54,11 @@ class FirebaseService {
   }
 
   handleRemoveToken() async {
+    StaffUserModel staffUser = StaffUserModel.fromJson(
+        jsonDecode(storage.read(StorageKeys.staffUser) ?? ''));
     try {
       await dioClient.delete(
-          'staffuserdevice/0', {'deviceId': await fbService.getToken()});
+          'staffuserdevice/${staffUser.staffId}/public', {'deviceId': await fbService.getToken()});
     } catch (e) {
       print(e);
     }
