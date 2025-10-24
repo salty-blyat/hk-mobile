@@ -7,10 +7,10 @@ import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/const.dart';
+import 'package:staff_view_ui/helpers/firebase_service.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/models/staff_user_model.dart';
-import 'package:staff_view_ui/pages/staff_user/staff_user_controller.dart';
 import 'package:staff_view_ui/pages/staff_user/staff_user_service.dart';
 import 'package:staff_view_ui/route.dart';
 import 'package:staff_view_ui/utils/widgets/dialog.dart';
@@ -30,8 +30,7 @@ extension PositionEnumExtension on PositionEnum {
 class AuthController extends GetxController {
   final language = 'en'.obs;
   final _authService = AuthService();
-  // final _firebaseService = NotificationService();
-  // final staffUserController = Get.put(StaffUserController());
+  final _firebaseService = FirebaseService();
   final staffUserService = StaffUserService();
   final passwordController = TextEditingController();
   final loading = false.obs;
@@ -78,17 +77,14 @@ class AuthController extends GetxController {
           });
           return;
         }
-        // _firebaseService.handlePassToken();
+        _firebaseService.handlePassToken();
         _authService.saveToken(info);
         if (info.changePasswordRequired == true) {
           Get.toNamed(RouteName.changePassword);
         } else {
-          // await staffUserController.getUser();
-          StaffUserModel staffUser = await staffUserService.getStaffUser(); 
-
+          StaffUserModel staffUser = await staffUserService.getStaffUser();
           storage.write(StorageKeys.staffUser, jsonEncode(staffUser));
-          if (staffUser.positionId ==
-              PositionEnum.manager.value) {
+          if (staffUser.positionId == PositionEnum.manager.value) {
             Get.offAllNamed(RouteName.houseKeeping);
           } else {
             Get.offAllNamed(RouteName.task);
@@ -110,12 +106,8 @@ class AuthController extends GetxController {
 
   logout() async {
     try {
-      // final res = await _firebaseService.handleRemoveToken();
-      // if (res.statusCode == 200) {
+      await _firebaseService.handleRemoveToken();
       handleLogout();
-      // } else {
-      //   handleLogout();
-      // }
     } catch (e) {
       handleLogout();
     }
@@ -128,7 +120,7 @@ class AuthController extends GetxController {
         _authService.deleteFromLocalStorage(Const.authorized['Authorized']!);
         secureStorage.delete(key: Const.authorized['AccessToken']!);
         secureStorage.delete(key: Const.authorized['RefreshToken']!);
-        Get.offAllNamed('/login');
+        Get.offAllNamed(RouteName.login);
       } else {
         handleLogoutError();
       }
@@ -141,6 +133,6 @@ class AuthController extends GetxController {
     _authService.deleteFromLocalStorage(Const.authorized['Authorized']!);
     secureStorage.delete(key: Const.authorized['AccessToken']!);
     secureStorage.delete(key: Const.authorized['RefreshToken']!);
-    Get.offAllNamed('/login');
+    Get.offAllNamed(RouteName.login);
   }
 }

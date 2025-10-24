@@ -34,17 +34,33 @@ class TaskScreen extends BaseList<TaskModel> {
   RxList<TaskModel> get items => controller.list;
 
   @override
-  List<Widget> actions() => [
-        if (Get.arguments != null &&
-            Get.arguments['title'] != null &&
-            Get.arguments['title'] != '')
-          Container(
-              margin: const EdgeInsets.only(right: 12),
-              child: Text(
-                "${Get.arguments['title']}",
-                style: Get.textTheme.titleLarge!.copyWith(color: Colors.white),
-              )),
+  List<Widget> actions() {
+    if (Get.arguments != null &&
+        Get.arguments['title'] != null &&
+        Get.arguments['title'] != '') {
+      return [
+        Container(
+          margin: const EdgeInsets.only(right: 12),
+          child: Text(
+            Get.arguments['title'],
+            style: Get.textTheme.titleLarge!.copyWith(color: Colors.white),
+          ),
+        ),
       ];
+    } else if (controller.staffUser.value?.positionId !=
+        PositionEnum.manager.value) {
+      return [
+        IconButton(
+          onPressed: () {
+            Get.toNamed(RouteName.notification);
+          },
+          icon: const Icon(Icons.notifications),
+        ),
+      ];
+    } else {
+      return [const SizedBox.shrink()];
+    }
+  }
 
   @override
   bool get isCenterTitle => false;
@@ -230,7 +246,8 @@ class TaskScreen extends BaseList<TaskModel> {
                                   : const SizedBox.shrink(),
                               const SizedBox(width: 4),
                               item.roomNo != null
-                                  ? Text("${item.roomNo ?? ''}, Floor 001",
+                                  ? Text(
+                                      "${item.roomNo ?? ''}, ${item.floorName ?? ''}",
                                       style: const TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.bold))

@@ -87,8 +87,7 @@ class TaskController extends GetxController {
   ).obs;
 
   @override
-  void onInit() {
-    
+  void onInit() { 
     try {
       if (Get.arguments != null && Get.arguments['roomId'] != 0) {
         roomId.value = Get.arguments['roomId'];

@@ -5,15 +5,16 @@ import 'package:get/get_utils/get_utils.dart';
 import 'package:get/route_manager.dart';
 import 'package:staff_view_ui/app_setting.dart';
 import 'package:staff_view_ui/auth/auth_controller.dart';
-import 'package:staff_view_ui/auth/auth_service.dart'; 
+import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/const.dart';
+import 'package:staff_view_ui/helpers/firebase_service.dart';
+import 'package:staff_view_ui/route.dart';
 
 class DioClient {
   final Dio dio = Dio();
   final AuthService authService = AuthService();
-  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
-  // final AuthController authController = Get.put(AuthController()); 
-  AuthController get authController => Get.find<AuthController>();
+  final FlutterSecureStorage secureStorage = const FlutterSecureStorage(); 
+  final _firebaseService = FirebaseService(); 
   final String baseUrl = '${AppSetting.setting['BASE_API_URL']}';
 
   DioClient() {
@@ -67,8 +68,11 @@ class DioClient {
               return handler.reject(e); //
             }
           } else {
-            // Navigate to login page if token refresh fails
-            authController.handleLogoutError();
+              await secureStorage.delete(key: Const.authorized['Authorized']!);
+              await secureStorage.delete(key: Const.authorized['AccessToken']!);
+              await _firebaseService.handleRemoveToken();
+              await secureStorage.delete(key: Const.authorized['RefreshToken']!);
+              Get.offAllNamed(RouteName.login); 
           }
         } else {
           if (Get.isDialogOpen == true) Get.back();

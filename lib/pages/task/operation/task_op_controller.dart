@@ -31,17 +31,16 @@ class TaskOPController extends GetxController {
     'roomIds': FormControl<List<int?>>(
         value: [],
         validators: [Validators.delegate(CommonValidators.required)]),
-    'staffId': FormControl<int>(value: null),
+    'staffId': FormControl<int>(value: 0),
     'requestTime': FormControl<DateTime>(value: DateTime.now()),
     'requestType': FormControl<int>(
         value: RequestTypes.internal.value,
         validators: [Validators.delegate(CommonValidators.required)]),
     'guestId': FormControl<int>(value: 0),
     'reservationId': FormControl<int>(value: 0),
-    'serviceTypeId': FormControl<int>(
-        value: 0, validators: [Validators.delegate(CommonValidators.required)]),
+    'serviceTypeId': FormControl<int>(value: null, validators: [Validators.delegate(CommonValidators.required)]),
     'serviceItemId': FormControl<int>(
-        value: 0,
+        value: null,
         disabled: true,
         validators: [Validators.delegate(CommonValidators.required)]),
     'quantity': FormControl<int>(value: 0, validators: [
@@ -100,6 +99,9 @@ class TaskOPController extends GetxController {
   }
 
   Future<void> submit() async {
+    print('raw value ${formGroup.rawValue}');
+    print('formGroup.valid ${formGroup.valid}');
+    return;
     if (loading.isTrue) return;
     try {
       loading.value = true;
@@ -120,8 +122,10 @@ class TaskOPController extends GetxController {
         await requestLogController.find(res.id ?? 0);
       } else {
         TaskOPMultiModel model = TaskOPMultiModel.fromJson(rawValue);
+        print(model.toJson());
         await service.add(model, TaskResModel.fromJson);
       }
+      
       await taskController.search();
       await hkController.search();
       clearForm();
@@ -180,10 +184,9 @@ class TaskOPController extends GetxController {
         'quantity': task.quantity,
         'status': task.status,
         'staffId': 0,
-        'note': task.note,  
+        'note': task.note,
         'reservationId': task.reservationId,
         'guestId': task.guestId,
-       
       });
       task.attachments?.forEach((attachment) {
         filePickerController.attachments.add(attachment);

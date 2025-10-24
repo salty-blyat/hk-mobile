@@ -1,64 +1,50 @@
 import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:staff_view_ui/const.dart';
-import 'package:staff_view_ui/helpers/notification_service.dart';
-import 'package:staff_view_ui/helpers/storage.dart';
+import 'package:get/get.dart';
 import 'package:staff_view_ui/helpers/token_interceptor.dart';
-// import 'package:staff_view_ui/pages/request/view/request_view_screen.dart';
+import 'package:staff_view_ui/pages/notification/notification_service.dart';
+import 'package:staff_view_ui/route.dart';
 
-class NotificationService {
-  static final FirebaseMessaging _firebaseMessaging =
-      FirebaseMessaging.instance;
-  static final FlutterLocalNotificationsPlugin fln =
-      FlutterLocalNotificationsPlugin();
+class FirebaseService {
+  static final fbService = FirebaseMessaging.instance;
   static final dioClient = DioClient();
-  final storage = Storage();
-  static Future<void> initialize() async {
-    NotificationSettings settings = await _firebaseMessaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {}
+  static final notificationService = NotificationService();
 
-    // Handle foreground messages
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      await showNotification(
-          message.notification?.title ?? '',
-          message.notification?.body ?? '',
-          jsonDecode(message.data['Data'])['requestId'].toString());
-    });
-
-    // Handle background messages
-    // FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      _messageClickHandler(message);
-    });
+  Future<void> handlerNotification(RemoteMessage msg) async {
+    print('title ${msg.notification?.title}');
+    print('body ${msg.notification?.body}');
   }
 
-  // static Future<void> _backgroundMessageHandler(RemoteMessage message) async {
-  //   await showNotification(
-  //       message.notification?.title ?? '',
-  //       message.notification?.body ?? '',
-  //       jsonDecode(message.data['Data'])['requestId'].toString());
-  // }
-
-  static showNotification(String title, String body, String payload) {
-    ShowNotificationService.showInstantNotification(title, body, payload);
-  }
-
-  static Future<void> _messageClickHandler(RemoteMessage message) async {
-    // int? requestId = jsonDecode(message.data['Data'])['requestId'];
-    // Get.to(() => RequestViewScreen(),
-    //     arguments: {'id': requestId, 'reqType': 0});
+  static Future<void> initFCM() async {
+    await fbService.requestPermission();
+    var token = await fbService.getToken();
+    print(token);
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    //   print('onMessage ${jsonEncode(message.data['requestId'])}');
+    // });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
+      print("onMessageOpenedApp: ${jsonEncode(message.data)}");
+      int requestId = int.parse(message.data['requestId']);
+      if (int.parse(message.data['requestId']) != 0) {
+        await notificationService.markRead(requestId);
+        Get.toNamed(RouteName.requestLog, arguments: {'id': requestId});
+      } else {
+        Get.toNamed(RouteName.notification);
+      }
+    });
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if (message != null) {
+        print(
+            "App opened from terminated notification: ${jsonEncode(message.data)}");
+      }
+    });
   }
 
   handlePassToken() async {
     try {
-      await dioClient.post('user-info/firebase',
-          data: {'token': await _firebaseMessaging.getToken()});
+      await dioClient.post('staffuserdevice',
+          data: {'deviceId': await fbService.getToken()});
     } catch (e) {
       print(e);
     }
@@ -66,10 +52,8 @@ class NotificationService {
 
   handleRemoveToken() async {
     try {
-      return await dioClient.delete('user-info/firebase', {
-        'token': await _firebaseMessaging.getToken(),
-        'id': storage.read(Const.staffId),
-      });
+      await dioClient.delete(
+          'staffuserdevice/0', {'deviceId': await fbService.getToken()});
     } catch (e) {
       print(e);
     }

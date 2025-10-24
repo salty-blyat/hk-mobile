@@ -7,7 +7,7 @@ import 'package:staff_view_ui/helpers/firebase_service.dart';
 
 class VerifyMfaController extends GetxController {
   final _authService = AuthService();
-  final _firebaseService = NotificationService();
+  final _firebaseService = FirebaseService();
   final loading = false.obs;
   final error = ''.obs;
   final mfaToken = ''.obs;

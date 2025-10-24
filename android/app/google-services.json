@@ -1,70 +1,13 @@
 {
   "project_info": {
-    "project_number": "531484540732",
-    "project_id": "pavr-mobile",
-    "storage_bucket": "pavr-mobile.firebasestorage.app"
+    "project_number": "665062351225",
+    "project_id": "hkmobile-7ce69",
+    "storage_bucket": "hkmobile-7ce69.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:531484540732:android:72e81c46db2be63946e839",
-        "android_client_info": {
-          "package_name": "bz.oone.mmehr"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDIT-Dgw8clZZTj9-GPaUbfn_c47Aq_8pQ"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:531484540732:android:c74bf8cffec5af7546e839",
-        "android_client_info": {
-          "package_name": "bz.oone.oonehrms"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDIT-Dgw8clZZTj9-GPaUbfn_c47Aq_8pQ"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:531484540732:android:bea80df8389459a046e839",
-        "android_client_info": {
-          "package_name": "bz.sgx.hr.app"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDIT-Dgw8clZZTj9-GPaUbfn_c47Aq_8pQ"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:531484540732:android:1a0350063b1ed72346e839",
+        "mobilesdk_app_id": "1:665062351225:android:cbfc704e8c8fde2832cfa8",
         "android_client_info": {
           "package_name": "bz.sgx.hk.app"
         }
@@ -72,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDIT-Dgw8clZZTj9-GPaUbfn_c47Aq_8pQ"
+          "current_key": "AIzaSyAFyg5RhVwG72wg_sxkY9rg1J5f57NpbtU"
         }
       ],
       "services": {

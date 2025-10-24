@@ -11,6 +11,7 @@ class TaskModel extends BaseModel {
   int? requestType;
   int? guestId;
   int? roomId;
+  String? floorName;
   int? reservationId;
   int? serviceTypeId;
   int? serviceItemId;
@@ -37,6 +38,8 @@ class TaskModel extends BaseModel {
     this.requestType,
     this.guestId,
     this.roomId,
+this.floorName,
+
     this.reservationId,
     this.serviceTypeId,
     this.serviceItemId,

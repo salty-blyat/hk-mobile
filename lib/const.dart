@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
-import 'package:intl/intl.dart'; 
+import 'package:intl/intl.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 
 class Const {
@@ -11,12 +11,32 @@ class Const {
     return NumberFormat('###.##').format(value);
   }
 
+  static String getPrettyDate(DateTime? d) {
+    if(d == null)return '';
+    Duration diff = DateTime.now().difference(d);
+    if (diff.inDays > 365)
+      return "${(diff.inDays / 365).floor()} ${(diff.inDays / 365).floor() == 1 ? "year" : "years"} ago";
+    if (diff.inDays > 30)
+      return "${(diff.inDays / 30).floor()} ${(diff.inDays / 30).floor() == 1 ? "month" : "months"} ago";
+    if (diff.inDays > 7)
+      return "${(diff.inDays / 7).floor()} ${(diff.inDays / 7).floor() == 1 ? "week" : "weeks"} ago";
+    if (diff.inDays > 0)
+      return "${diff.inDays} ${diff.inDays == 1 ? "day" : "days"} ago";
+    if (diff.inHours > 0)
+      return "${diff.inHours} ${diff.inHours == 1 ? "hour" : "hours"} ago";
+    if (diff.inMinutes > 0)
+      return "${diff.inMinutes} ${diff.inMinutes == 1 ? "minute" : "minutes"} ago";
+    return "just now";
+  }
+
   static String percentageFormat(double value) {
     return NumberFormat('###').format(value * 100);
   }
 
   static String getRequestType(int requestType) {
-    return requestType == RequestTypes.internal.value ? "Guest".tr : "Internal".tr;
+    return requestType == RequestTypes.internal.value
+        ? "Guest".tr
+        : "Internal".tr;
   }
 
   static bool isImage(String url) {

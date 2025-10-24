@@ -1,17 +1,17 @@
 import 'package:get/get.dart';
 import 'package:staff_view_ui/models/request_log_model.dart';
-import 'package:staff_view_ui/pages/request_log/request_log_service.dart'; 
+import 'package:staff_view_ui/pages/request_log/request_log_service.dart';
 
 class RequestLogController extends GetxController {
   final Rx<RequestLogModel> model = RequestLogModel().obs;
   final loading = false.obs;
   final RequestLogService service = RequestLogService();
 
-  @override
- void onInit() async {
+   @override
+  void onInit() {
     super.onInit();
     if (Get.arguments['id'] != 0) {
-     find(Get.arguments['id'] as int);
+      find(Get.arguments['id'] as int);
     }
   }
 

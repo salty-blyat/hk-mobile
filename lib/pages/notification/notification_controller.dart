@@ -1,102 +1,76 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'dart:convert';
+
+import 'package:get/state_manager.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
+import 'package:staff_view_ui/helpers/firebase_service.dart';
 import 'package:staff_view_ui/models/notification_model.dart';
 import 'package:staff_view_ui/pages/notification/notification_service.dart';
 
 class NotificationController extends GetxController {
-  final scrollController = ScrollController();
-  final loading = false.obs;
-  final isLoadingMore = false.obs;
+  RxBool loading = false.obs;
+
+  RxList<NotificationModel> list = <NotificationModel>[].obs;
   final service = NotificationService();
-  final formValid = false.obs;
-  final lists = <NotificationModel>[].obs;
-  final year = DateTime.now().year.obs;
-  final canLoadMore = false.obs;
+
+  int currentPage = 1;
+  final int pageSize = 20;
+  final RxBool hasMore = true.obs;
   final queryParameters = QueryParam(
     pageIndex: 1,
     pageSize: 25,
-    sorts: 'createdDate-',
+    sorts: '',
     filters: '[]',
   ).obs;
+
   @override
   void onInit() {
     search();
     super.onInit();
   }
 
-  Future<void> onLoadMore() async {
-    if (!canLoadMore.value) return;
-
-    isLoadingMore.value = true;
-    queryParameters.update((params) {
-      params?.pageIndex = (params.pageIndex ?? 0) + 1;
-    });
-
-    try {
-      final response = await service.search(
-          queryParameters.value, NotificationModel.fromJson);
-      lists.addAll(response.results as Iterable<NotificationModel>);
-      canLoadMore.value =
-          response.results.length == queryParameters.value.pageSize;
-    } catch (e) {
-      canLoadMore.value = false;
-      print("Error during onLoadMore: $e");
-    } finally {
-      isLoadingMore.value = false;
-    }
-  }
-
   Future<void> search() async {
     loading.value = true;
-
-    // queryParameters.update((params) {
-    //   final rangeDate = '${year.value}-01-01~${year.value}-12-31';
-    //   params?.filters = jsonEncode([
-    //     {'field': 'createdDate', 'operator': 'contains', 'value': rangeDate},
-    //   ]);
-    // });
-
+    list.value = [];
+    var filter = [];
+    String? firebaseToken = await FirebaseService.fbService.getToken();
+    if (firebaseToken != null) {
+      filter
+          .add({'field': 'deviceId', 'operator': 'eq', 'value': firebaseToken});
+    }
     try {
-      final response = await service.search(
-          queryParameters.value, NotificationModel.fromJson);
-      lists.assignAll(response.results as Iterable<NotificationModel>);
-      canLoadMore.value =
-          response.results.length == queryParameters.value.pageSize;
+      var response = await service.search(queryParameters: {
+        'pageIndex': currentPage,
+        'pageSize': pageSize,
+        'filters': jsonEncode(filter)
+      });
+
+      if (response.isNotEmpty) {
+        list.addAll(response);
+        print(list);
+        hasMore.value = response.length == pageSize;
+      } else {
+        hasMore.value = false;
+      }
+      loading.value = false;
     } catch (e) {
-      canLoadMore.value = false;
+      print(e);
+      loading.value = false;
     } finally {
       loading.value = false;
     }
   }
 
-  viewNotification(NotificationModel item) async {
+  Future<void> markRead(int id) async {
     try {
-      if (item.isView != true) {
-        var model = {
-          'id': item.id,
-          'isView': true,
-          'createdDate': item.createdDate!.toIso8601String(),
-          'message': item.message,
-          'title': item.title,
-          'requestId': item.requestId,
-          'staffId': item.staffId,
-          'viewDate': DateTime.now().toIso8601String(),
-        };
-        queryParameters.update((params) {
-          params?.pageIndex = 1;
-        });
-        await service.edit(
-            NotificationModel.fromJson(model), NotificationModel.fromJson);
-      }
-      Get.toNamed('/request-view', arguments: {
-        'id': item.requestId,
-        'reqType': 0,
-      });
+      await service.markRead(id);
+      await search();
     } catch (e) {
-      print("Error during viewNotification: $e");
-    } finally {
-      search();
+      print(e);
     }
+  }
+
+  Future<void> markAllRead() async {
+    await service.markAllRead();
+    await search();
   }
 }

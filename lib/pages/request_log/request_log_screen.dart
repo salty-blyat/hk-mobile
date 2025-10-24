@@ -20,7 +20,7 @@ class RequestLogScreen extends StatelessWidget {
   final TaskController taskController = Get.put(TaskController());
   RequestLogScreen({super.key});
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
     return Scaffold(
       appBar: _buildAppBar(),
       body: Obx(() => controller.loading.value
@@ -35,8 +35,10 @@ class RequestLogScreen extends StatelessWidget {
 
   Widget _buildBody() {
     return RefreshIndicator(
-      onRefresh: () {
-          controller.onInit();
+      onRefresh: () async {
+        if (Get.arguments['id'] != 0) {
+         await controller.find(Get.arguments['id'] as int);
+        }
       },
       child: Padding(
         padding: const EdgeInsets.all(16),

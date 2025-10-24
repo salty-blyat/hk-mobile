@@ -9,7 +9,7 @@ class StaffUserService {
   final dioClient = DioClient(); 
 
   Future<StaffUserModel> getStaffUser() async {
-    final res = await dioClient.get('/staffuser/mobile/info');
+    final res = await dioClient.get('staffuser/mobile/info');
 
     if (res!.statusCode == 200) {
       return StaffUserModel.fromJson(res.data );

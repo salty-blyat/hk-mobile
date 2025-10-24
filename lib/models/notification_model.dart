@@ -3,23 +3,42 @@ import 'package:staff_view_ui/helpers/base_service.dart';
 part 'notification_model.g.dart';
 
 @JsonSerializable()
-class NotificationModel extends BaseModel {
-  final int? requestId;
-  final int? staffId;
-  final String? title;
-  final String? message;
-  final bool? isView;
-  final DateTime? viewDate;
-  final DateTime? createdDate;
+class NotificationModel {
+  int? id;
+  int? requestId;
+  String? title;
+  String? message;
+  bool? isView;
+  DateTime? viewDate;
+  int? staffId;
+  bool? isSentSuccessfully;
+  String? staffName;
+  String? serviceItem;
+  String? serviceItemType;
+  int? requestType;
+  int? quantity;
+  String? roomNumber;
+  String? floorName;
+  DateTime? createdDate;
 
-  NotificationModel(
-      {this.requestId,
-      this.staffId,
-      this.title,
-      this.message,
-      this.isView,
-      this.viewDate,
-      this.createdDate});
+  NotificationModel({
+    this.id,
+    this.requestId,
+    this.title,
+    this.message,
+    this.isView,
+    this.viewDate,
+    this.staffId,
+    this.isSentSuccessfully,
+    this.staffName,
+    this.serviceItem,
+    this.serviceItemType,
+    this.requestType,
+    this.quantity,
+    this.roomNumber,
+    this.floorName,
+    this.createdDate,
+  });
 
   factory NotificationModel.fromJson(Map<String, dynamic> json) =>
       _$NotificationModelFromJson(json);

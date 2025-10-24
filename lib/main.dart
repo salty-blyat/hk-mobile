@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +13,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:staff_view_ui/auth/auth_controller.dart';
 import 'package:staff_view_ui/auth/auth_service.dart';
 import 'package:staff_view_ui/const.dart';
-import 'package:staff_view_ui/helpers/firebase_service.dart';
-import 'package:staff_view_ui/helpers/notification_service.dart';
+import 'package:staff_view_ui/helpers/firebase_service.dart'; 
 import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/models/staff_user_model.dart';
 import 'package:staff_view_ui/route.dart';
@@ -24,15 +23,20 @@ import 'package:staff_view_ui/app_setting.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print("Handling background message: ${message.data['requestId']}");
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
   await AppSetting().initSetting();
   await Firebase.initializeApp();
-  await ShowNotificationService.initialize();
+  await FirebaseService.initFCM();
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   final Translate translationService = Translate();
   await translationService.loadTranslations();
-  NotificationService.initialize();
   var initialRoute = RouteName.login;
 
   await SystemChrome.setPreferredOrientations([
