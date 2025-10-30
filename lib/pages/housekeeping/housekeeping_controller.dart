@@ -41,7 +41,6 @@ class HousekeepingController extends GetxController {
   @override
   void onInit() {
     selected.clear();
-    // await staffUserController.getUser();
     final rawData = storage.read(StorageKeys.staffUser);
     if (rawData != null) {
       staffUser.value = StaffUserModel.fromJson(jsonDecode(rawData));
@@ -80,10 +79,8 @@ class HousekeepingController extends GetxController {
         'pageSize': pageSize,
         'filters': jsonEncode(filter)
       });
-      if (response.isNotEmpty) {
-        // list.value = response;
-        list.assignAll(response);
-      }
+
+      list.assignAll(response);
     } catch (e) {
       loading.value = false;
     } finally {

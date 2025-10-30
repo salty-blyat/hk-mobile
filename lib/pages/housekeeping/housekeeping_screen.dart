@@ -14,11 +14,11 @@ import 'package:staff_view_ui/route.dart';
 import 'package:staff_view_ui/utils/drawer.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
-import 'package:staff_view_ui/utils/widgets/network_img.dart'; 
+import 'package:staff_view_ui/utils/widgets/network_img.dart';
 
 class HousekeepingScreen extends BaseList<Housekeeping> {
   HousekeepingScreen({super.key});
-  final HousekeepingController controller = Get.put(HousekeepingController()); 
+  final HousekeepingController controller = Get.put(HousekeepingController());
   final DrawerGetController drawerController = Get.put(DrawerGetController());
   final LookupController lookupController = Get.put(LookupController());
   Timer? _debounce;
@@ -35,7 +35,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   @override
   bool get isLoading => controller.loading.value;
 
-  @override 
+  @override
   bool get isLoadingMore => controller.isLoadingMore.value;
 
   @override
@@ -94,7 +94,10 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
     List<Housekeeping> selected =
         controller.selected.where((e) => e.floorId == sectionId).toList();
     void onTap() {
-      if (controller.searchText.value.isNotEmpty) {
+      if (controller.searchText.value.isNotEmpty ||
+          !(controller.searchText.value.isEmpty &&
+              controller.staffUser.value?.positionId ==
+                  PositionEnum.manager.value)) {
         return;
       }
       if (selected.length == itemCount) {
@@ -123,7 +126,9 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
       child: Row(
         children: [
           Obx(() {
-            return controller.searchText.value.isEmpty
+            return controller.searchText.value.isEmpty &&
+                    controller.staffUser.value?.positionId ==
+                        PositionEnum.manager.value
                 ? Checkbox(
                     tristate: true,
                     value: selected.isEmpty
@@ -154,19 +159,21 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
               ),
             ),
           ),
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.only(right: 12.0),
-                child: Text(
-                  "${'Selected'.tr} ${selected.length} / $itemCount",
-                  style: const TextStyle(
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          controller.staffUser.value?.positionId == PositionEnum.manager.value
+              ? Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(right: 12.0),
+                      child: Text(
+                        "${'Selected'.tr} ${selected.length} / $itemCount",
+                        style: const TextStyle(
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : const SizedBox.shrink()
         ],
       ),
     );
@@ -193,29 +200,28 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
           return SliverStickyHeader(
             header: buildStickyHeader(section, items.length, floorId!),
             sliver: SliverPadding(
-              padding:
-                  const EdgeInsets.only(top: 8, left: 4, right: 4, bottom: 16),
-              sliver: SliverGrid(
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 200.0,
-                  mainAxisSpacing: 8.0,
-                  crossAxisSpacing: 8.0,
-                  childAspectRatio: 1.3,
-                ),
+              padding: const EdgeInsets.only(
+                  top: 8, left: 12, right: 12, bottom: 16),
+              sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    if (index < items.length) {
-                      return buildItem(items[index]);
-                    } else if (isLoadingMore && isLastSection(section)) {
-                      // Add a loading indicator as the last item only for the last section
-                      return const Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Center(child: CircularProgressIndicator()),
+                    if (index == 0) {
+                      return Wrap(
+                        spacing: 8.0,
+                        runSpacing: 8.0,
+                        children: [
+                          for (var item in items) buildItem(item),
+                          if (isLoadingMore && isLastSection(section))
+                            const Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Center(child: CircularProgressIndicator()),
+                            ),
+                        ],
                       );
-                    } else {
-                      return null;
                     }
+                    return null;
                   },
+                  childCount: 2,
                 ),
               ),
             ),
@@ -241,12 +247,10 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   Widget buildHeaderWidget() {
     return Container(
       width: double.infinity,
-      // height: 35,
       decoration: BoxDecoration(
-        color: Colors.white,
         borderRadius: AppTheme.borderRadius,
       ),
-      padding: const EdgeInsets.only(top: 8),
+      margin: const EdgeInsets.only(top: 8, bottom: 8, left: 12, right: 12),
       child: Align(
         alignment: Alignment.centerLeft,
         child: headerWidget(),
@@ -283,7 +287,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
         size: 18,
         color: Colors.grey.withOpacity(0.5),
       ),
-      backgroundColor: WidgetStateProperty.all(Colors.transparent),
+      // backgroundColor: WidgetStateProperty.all(Colors.transparent),
       shadowColor: WidgetStateProperty.all(Colors.transparent),
       shape: WidgetStateProperty.all(
         RoundedRectangleBorder(
@@ -480,10 +484,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(99),
-          // border: Border.all(color: Colors.grey.shade50),
-          // color: color.withOpacity(0.3),
-          color: Colors.grey.shade50),
+          borderRadius: BorderRadius.circular(99), color: Colors.grey.shade50),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -506,10 +507,13 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   @override
   Widget buildItem(Housekeeping item) {
     var selected = controller.selected.any((e) => e.id == item.id);
-    var selectedTextColor = selected ? Colors.black : Colors.black;
+    var selectedTextColor = Colors.black;
     final TaskController taskController = Get.put(TaskController());
-
+    final columns = Get.width > 600 ? 3 : 2;
+    const totalHorizontalPadding = 12 * 2;
+    final totalGutter = 8 * (columns - 1);
     return Container(
+      width: (Get.width - totalHorizontalPadding - totalGutter) / columns,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4),
         boxShadow: [
@@ -522,7 +526,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
             offset: const Offset(0, 1), // shadow position
           ),
         ],
-        color: selected ? Colors.white : Colors.white,
+        color: Colors.white,
       ),
       child: Material(
         color: Colors.transparent,
@@ -530,6 +534,11 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
             splashColor: AppTheme.primaryColor.withOpacity(0.2),
             borderRadius: BorderRadius.circular(4),
             onTap: () {
+              if (!(controller.searchText.value.isEmpty &&
+                  controller.staffUser.value?.positionId ==
+                      PositionEnum.manager.value)) {
+                return;
+              }
               if (selected) {
                 controller.selected.value =
                     controller.selected.where((x) => x.id != item.id).toList();
@@ -541,6 +550,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
               padding:
                   const EdgeInsets.only(left: 8, right: 8, bottom: 8, top: 12),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
@@ -554,23 +564,26 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                               fontWeight: FontWeight.w600,
                               color: selectedTextColor),
                         ),
-                        Checkbox(
-                          value: selected,
-                          onChanged: (value) {
-                            if (selected) {
-                              controller.selected.remove(item);
-                            } else {
-                              controller.selected.add(item);
-                            }
-                          },
-                          visualDensity:
-                              const VisualDensity(horizontal: -4, vertical: -4),
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                          shape: const CircleBorder(),
-                        )
+                        controller.searchText.value.isEmpty &&
+                                controller.staffUser.value?.positionId ==
+                                    PositionEnum.manager.value
+                            ? Checkbox(
+                                value: selected,
+                                onChanged: (value) {
+                                  if (selected) {
+                                    controller.selected.remove(item);
+                                  } else {
+                                    controller.selected.add(item);
+                                  }
+                                },
+                                visualDensity: const VisualDensity(
+                                    horizontal: -4, vertical: -4),
+                                materialTapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap,
+                                shape: const CircleBorder(),
+                              )
+                            : const SizedBox.shrink()
                       ]),
-                  // const SizedBox(height: 4),
                   Text(
                     item.roomTypeName ?? '',
                     overflow: TextOverflow.ellipsis,

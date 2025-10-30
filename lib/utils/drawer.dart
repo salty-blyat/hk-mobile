@@ -177,10 +177,11 @@ class DrawerWidget extends StatelessWidget {
               }
             },
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.symmetric(vertical:16),
               child: FutureBuilder(
                 future: AppVersion.getAppVersion(),
                 builder: (context, snapshot) {
+                  print(snapshot);
                   return Text(
                       '${'Version'.tr} ${snapshot.data ?? '...'} (${Const.date})',
                       style: const TextStyle(fontSize: 12));

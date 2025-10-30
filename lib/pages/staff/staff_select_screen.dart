@@ -20,7 +20,9 @@ class StaffSelectScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     controller.getStaff(); 
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar(leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Get.back(result: controller.selectedStaff.value) ),
         title: Container(
           height: 40,
           decoration: BoxDecoration(

@@ -99,38 +99,33 @@ class MyApp extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         return Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: 450,
-            ),
-            child: GetMaterialApp(
-              debugShowCheckedModeBanner: false,
-              navigatorKey: navigatorKey,
-              initialRoute: initialRoute,
-              supportedLocales: const [
-                Locale("en", "US"), // English (United States)
-                Locale("km", "KH"), // Khmer (Cambodia)
-              ],
-              localizationsDelegates: const [
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              locale: pickLang, // Default locale set to Khmer
-              translations: translationService, // Custom translation class
-              fallbackLocale: const Locale("en", "US"), // Fallback to English
-              theme: AppTheme.lightTheme, // Custom app theme
-              getPages: Routes.pages,
-              builder: (context, child) {
-                return MediaQuery(
-                  data: MediaQuery.of(context).copyWith(
-                    textScaler:
-                        const TextScaler.linear(1.0), // Fix text scale factor
-                  ),
-                  child: child!,
-                );
-              },
-            ),
+          child: GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            navigatorKey: navigatorKey,
+            initialRoute: initialRoute,
+            supportedLocales: const [
+              Locale("en", "US"), // English (United States)
+              Locale("km", "KH"), // Khmer (Cambodia)
+            ],
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            locale: pickLang, // Default locale set to Khmer
+            translations: translationService, // Custom translation class
+            fallbackLocale: const Locale("en", "US"), // Fallback to English
+            theme: AppTheme.lightTheme, // Custom app theme
+            getPages: Routes.pages,
+            builder: (context, child) {
+              return MediaQuery(
+                data: MediaQuery.of(context).copyWith(
+                  textScaler:
+                      const TextScaler.linear(1.0), // Fix text scale factor
+                ),
+                child: child!,
+              );
+            },
           ),
         );
       },

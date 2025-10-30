@@ -11,7 +11,7 @@ class AppTheme {
   static const Color defaultColor = Color(0xFF5F5F5F);
   static const Color secondaryColorRgb = Color(0xFF0163AA);
   static final Color greyBg = Colors.grey.shade200;
-  static BorderRadiusGeometry borderRadius = BorderRadius.circular(4);
+  static BorderRadiusGeometry borderRadius = BorderRadius.circular(8);
   static const TextStyle style = TextStyle(
     fontSize: 12.0,
     fontFamilyFallback: ['Gilroy', 'Kantumruy'],

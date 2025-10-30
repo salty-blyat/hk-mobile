@@ -72,10 +72,11 @@ class TaskScreen extends BaseList<TaskModel> {
           return IconButton(
             onPressed: () async {
               final result = await Get.toNamed(RouteName.staffSelect);
+              print('result $result');
               controller.selectedStaff.value = result ?? Staff();
               await controller.search();
             },
-            icon: const Icon(Icons.person),
+            icon: const Icon(Icons.person_search_outlined) 
           );
         } else if (!isShowNotification && isStaffSelected) {
           return TextButton(
@@ -86,7 +87,8 @@ class TaskScreen extends BaseList<TaskModel> {
             },
             child: Row(
               children: [
-                const Icon(Icons.search),
+                const Icon(Icons.person_search_outlined, color: Colors.white,size: 14,),
+                const SizedBox  (width: 2,),
                 Text(
                   controller.selectedStaff.value.name ?? "-",
                   style: const TextStyle(color: Colors.white),
@@ -136,7 +138,7 @@ class TaskScreen extends BaseList<TaskModel> {
     return Obx(() {
       return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
-             drawerController.auth.value?.fullName ?? '-',
+          drawerController.auth.value?.fullName ?? '-',
           style: Get.textTheme.titleLarge!.copyWith(color: Colors.white),
           overflow: TextOverflow.ellipsis,
         ),
@@ -254,7 +256,6 @@ class TaskScreen extends BaseList<TaskModel> {
                               ]),
                             ],
                           ),
-                          const SizedBox(height: 4),
                           Row(
                             children: [
                               Text(item.serviceItemName ?? '',
@@ -268,20 +269,11 @@ class TaskScreen extends BaseList<TaskModel> {
                                   : const SizedBox.shrink()
                             ],
                           ),
-                          if (item.note != null && item.note!.isNotEmpty)
-                            Row(
-                              children: [
-                                Text(item.note!,
-                                    style: const TextStyle(
-                                        fontSize: 11, color: Colors.grey)),
-                              ],
-                            ),
-                          const SizedBox(height: 24),
                           Row(
                             children: [
                               item.roomNo != null
                                   ? const Icon(Icons.location_on_outlined,
-                                      size: 12, color: Colors.grey)
+                                      size: 12, weight: 600)
                                   : const SizedBox.shrink(),
                               const SizedBox(width: 4),
                               item.roomNo != null
@@ -322,6 +314,17 @@ class TaskScreen extends BaseList<TaskModel> {
                               )
                             ],
                           ),
+                          if (item.note != null && item.note!.isNotEmpty)
+                            Row(
+                              children: [
+                                const Icon(Icons.edit_note_outlined,
+                                    color: Colors.grey, size: 12),
+                                const SizedBox(width: 4),
+                                Text(item.note!,
+                                    style: const TextStyle(
+                                        fontSize: 11, color: Colors.grey)),
+                              ],
+                            ),
                         ],
                       ),
                     ),
@@ -539,10 +542,12 @@ class TaskScreen extends BaseList<TaskModel> {
                         borderRadius: BorderRadius.all(Radius.circular(24)),
                       ),
                     ),
-                    onPressed: () async {
-                      controller.taskStatus.value = 0;
-                      await controller.search();
-                    },
+                    onPressed: controller.loading.value == false
+                        ? () async {
+                            controller.taskStatus.value = 0;
+                            await controller.search();
+                          }
+                        : null,
                     child: Text("All".tr),
                   );
                 }),
@@ -569,10 +574,12 @@ class TaskScreen extends BaseList<TaskModel> {
                       borderRadius: BorderRadius.all(Radius.circular(24)),
                     ),
                   ),
-                  onPressed: () async {
-                    controller.taskStatus.value = lookupItem.valueId!;
-                    await controller.search();
-                  },
+                  onPressed: controller.loading.value == false
+                      ? () async {
+                          controller.taskStatus.value = lookupItem.valueId!;
+                          await controller.search();
+                        }
+                      : null,
                   child: Row(
                     children: [
                       NetworkImg(height: 18, src: lookupItem.image),
