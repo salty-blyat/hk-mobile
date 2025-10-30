@@ -125,7 +125,7 @@ class Modal {
     ));
   }
 
-  static showFormDialog(Widget child ,{ double height = 370}) {
+  static showFormDialog(Widget child, {double height = 370}) {
     return Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(
@@ -138,7 +138,7 @@ class Modal {
         ),
       ),
       barrierDismissible: false,
-    ); 
+    );
   }
 
   static showLanguageDialog() {
@@ -179,13 +179,12 @@ class Modal {
                 ],
               ),
               const SizedBox(height: 10),
-              // Scrollable ListView
               Expanded(
                 child: ListView.separated(
                   separatorBuilder: (context, index) =>
                       const SizedBox(height: 10),
                   padding: const EdgeInsets.all(16),
-                  itemCount: Const.languages.length, // Handle null safely
+                  itemCount: Const.languages.length,
                   itemBuilder: (context, index) {
                     final language = Const.languages[index];
                     final isSelected =
@@ -207,23 +206,20 @@ class Modal {
                           color: isSelected
                               ? AppTheme.primaryColor
                               : Colors.transparent),
-                      title: Text(
-                          language['label'] ?? 'Unknown'), // Handle null safely
+                      title: Text(language['label'] ?? 'Unknown'),
                       leading: Image.asset(
-                        language['image'] ??
-                            'assets/default.png', // Fallback image
+                        language['image'] ?? 'assets/default.png',
                         width: 32,
                         height: 32,
                         fit: BoxFit.cover,
                       ),
-                      onTap: () async {
-                        // Handle language selection
+                      onTap: () {
+                        Get.back();
                         if (language['key'] != null) {
                           var box = Storage();
                           box.write(
                               Const.authorized['Lang']!, language['code']);
                           Get.updateLocale(language['key']);
-                          Get.back();
                         }
                       },
                     );

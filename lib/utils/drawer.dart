@@ -14,7 +14,7 @@ import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
 class DrawerWidget extends StatelessWidget {
   DrawerWidget({super.key});
-  final DrawerController drawerController = Get.put(DrawerController());
+  final DrawerGetController drawerController = Get.put(DrawerGetController());
   final AuthController authController = Get.put(AuthController());
 
   @override
@@ -194,7 +194,7 @@ class DrawerWidget extends StatelessWidget {
   }
 }
 
-class DrawerController extends GetxController {
+class DrawerGetController extends GetxController {
   final AuthService authService = AuthService();
   Rx<ClientInfo?> auth = Rxn<ClientInfo>();
   @override

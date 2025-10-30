@@ -11,13 +11,15 @@ import 'package:staff_view_ui/pages/housekeeping/housekeeping_controller.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/route.dart';
+import 'package:staff_view_ui/utils/drawer.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
-import 'package:staff_view_ui/utils/widgets/network_img.dart';
+import 'package:staff_view_ui/utils/widgets/network_img.dart'; 
 
 class HousekeepingScreen extends BaseList<Housekeeping> {
   HousekeepingScreen({super.key});
-  final HousekeepingController controller = Get.put(HousekeepingController());
+  final HousekeepingController controller = Get.put(HousekeepingController()); 
+  final DrawerGetController drawerController = Get.put(DrawerGetController());
   final LookupController lookupController = Get.put(LookupController());
   Timer? _debounce;
 
@@ -33,7 +35,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   @override
   bool get isLoading => controller.loading.value;
 
-  @override
+  @override 
   bool get isLoadingMore => controller.isLoadingMore.value;
 
   @override
@@ -58,7 +60,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
     return Obx(
         () => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(
-                controller.staffUser.value?.staffName ?? '-',
+                drawerController.auth.value?.fullName ?? '-',
                 style: Get.textTheme.titleLarge!.copyWith(color: Colors.white),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -462,7 +464,6 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   List<Widget> actions() {
     final TaskController taskController = Get.put(TaskController());
     return [
-
       IconButton(
           onPressed: () async {
             taskController.roomId.value = 0;

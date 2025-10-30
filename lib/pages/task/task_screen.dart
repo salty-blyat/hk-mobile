@@ -15,12 +15,14 @@ import 'package:staff_view_ui/pages/staff/staff_select_controller.dart';
 import 'package:staff_view_ui/pages/task/operation/change_status_screen.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/route.dart';
+import 'package:staff_view_ui/utils/drawer.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/network_img.dart';
 
 class TaskScreen extends BaseList<TaskModel> {
   TaskScreen({super.key});
   final TaskController controller = Get.put(TaskController());
+  final DrawerGetController drawerController = Get.put(DrawerGetController());
   final LookupController lookupController = Get.put(LookupController());
   final StaffSelectController staffSelectController =
       Get.put(StaffSelectController());
@@ -134,7 +136,7 @@ class TaskScreen extends BaseList<TaskModel> {
     return Obx(() {
       return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
-          controller.staffUser.value?.staffName ?? '-',
+             drawerController.auth.value?.fullName ?? '-',
           style: Get.textTheme.titleLarge!.copyWith(color: Colors.white),
           overflow: TextOverflow.ellipsis,
         ),
