@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
-import 'package:staff_view_ui/models/staff_user_model.dart';
 import 'package:staff_view_ui/models/user_info_model.dart';
 import 'package:staff_view_ui/pages/staff/staff_controller.dart';
 
@@ -16,8 +15,7 @@ class StaffSelect extends StatelessWidget {
   final String formControlName;
 
   @override
-  Widget build(BuildContext context) {
-    // controller.search();
+  Widget build(BuildContext context) { 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await controller.search();
       controller.list.insert(0, Staff(id: 0, name: '-'));

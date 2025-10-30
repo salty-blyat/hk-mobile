@@ -9,7 +9,9 @@ import 'package:staff_view_ui/auth/auth_controller.dart';
 import 'package:staff_view_ui/helpers/base_list_screen.dart';
 import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/models/task_model.dart';
+import 'package:staff_view_ui/models/user_info_model.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
+import 'package:staff_view_ui/pages/staff/staff_select_controller.dart';
 import 'package:staff_view_ui/pages/task/operation/change_status_screen.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/route.dart';
@@ -20,6 +22,8 @@ class TaskScreen extends BaseList<TaskModel> {
   TaskScreen({super.key});
   final TaskController controller = Get.put(TaskController());
   final LookupController lookupController = Get.put(LookupController());
+  final StaffSelectController staffSelectController =
+      Get.put(StaffSelectController());
   Rx<ClientInfo?> auth = Rxn<ClientInfo>();
   Timer? _debounce;
 
@@ -35,31 +39,64 @@ class TaskScreen extends BaseList<TaskModel> {
 
   @override
   List<Widget> actions() {
-    if (Get.arguments != null &&
-        Get.arguments['title'] != null &&
-        Get.arguments['title'] != '') {
-      return [
-        Container(
-          margin: const EdgeInsets.only(right: 12),
-          child: Text(
-            Get.arguments['title'],
-            style: Get.textTheme.titleLarge!.copyWith(color: Colors.white),
-          ),
-        ),
-      ];
-    } else if (controller.staffUser.value?.positionId !=
-        PositionEnum.manager.value) {
-      return [
-        IconButton(
-          onPressed: () {
-            Get.toNamed(RouteName.notification);
-          },
-          icon: const Icon(Icons.notifications),
-        ),
-      ];
-    } else {
-      return [const SizedBox.shrink()];
-    }
+    return [
+      Obx(() {
+        bool isSearchRoom = Get.arguments != null &&
+            Get.arguments['title'] != null &&
+            Get.arguments['title'] != '';
+
+        bool isShowNotification = controller.staffUser.value?.positionId !=
+            PositionEnum.manager.value;
+
+        bool isStaffSelected = controller.selectedStaff.value.id != 0 &&
+            controller.selectedStaff.value.id != null;
+
+        if (isSearchRoom) {
+          return Container(
+            margin: const EdgeInsets.only(right: 12),
+            child: Text(
+              Get.arguments['title'],
+              style: Get.textTheme.titleLarge!.copyWith(color: Colors.white),
+            ),
+          );
+        } else if (isShowNotification) {
+          return IconButton(
+            onPressed: () {
+              Get.toNamed(RouteName.notification);
+            },
+            icon: const Icon(Icons.notifications),
+          );
+        } else if (!isShowNotification && !isStaffSelected) {
+          return IconButton(
+            onPressed: () async {
+              final result = await Get.toNamed(RouteName.staffSelect);
+              controller.selectedStaff.value = result ?? Staff();
+              await controller.search();
+            },
+            icon: const Icon(Icons.person),
+          );
+        } else if (!isShowNotification && isStaffSelected) {
+          return TextButton(
+            onPressed: () async {
+              final result = await Get.toNamed(RouteName.staffSelect);
+              controller.selectedStaff.value = result ?? Staff();
+              await controller.search();
+            },
+            child: Row(
+              children: [
+                const Icon(Icons.search),
+                Text(
+                  controller.selectedStaff.value.name ?? "-",
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
+      }),
+    ];
   }
 
   @override

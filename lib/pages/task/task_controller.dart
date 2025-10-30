@@ -11,6 +11,7 @@ import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/models/staff_user_model.dart';
 import 'package:staff_view_ui/models/task_model.dart';
 import 'package:staff_view_ui/models/task_summary_model.dart';
+import 'package:staff_view_ui/models/user_info_model.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
 import 'package:staff_view_ui/pages/request_log/request_log_service.dart';
 import 'package:staff_view_ui/pages/service_item/service_item_controller.dart';
@@ -51,10 +52,8 @@ extension RequestTypesExtension on RequestTypes {
 }
 
 class TaskController extends GetxController {
-  final RxString searchText = ''.obs;
   final RxList<TaskModel> list = <TaskModel>[].obs;
   final RxList<TaskSummaryModel> summaryList = <TaskSummaryModel>[].obs;
-  RxInt roomId = 0.obs;
   final RxBool loading = false.obs;
   final RxBool isLoadingMore = false.obs;
   final RxBool canLoadMore = true.obs;
@@ -67,12 +66,14 @@ class TaskController extends GetxController {
   final TaskService service = TaskService();
   final storage = Storage();
   final RequestLogService requestLogService = RequestLogService();
-  final StaffUserController staffUserController =
-      Get.put(StaffUserController());
+  final StaffUserController staffUserController = Get.put(StaffUserController());
 
+  Rx<Staff> selectedStaff = Staff(id:0).obs; // for searching
+  final RxString searchText = ''.obs;
+  RxInt roomId = 0.obs;
   // changing status of the task
   final statusForm = FormGroup(
-      {'id': FormControl<int>(value: 0), 'note': FormControl<String>()});
+      {'id': FormControl<int>(value: 0), 'note': FormControl<String>()}); 
 
   final Rx<int> taskStatus = 0.obs;
   final LookupController lookupController = Get.put(LookupController());
@@ -138,12 +139,17 @@ class TaskController extends GetxController {
       filter.add(
           {'field': 'status', 'operator': 'eq', 'value': taskStatus.value});
     }
+    if (selectedStaff.value.id != 0) {
+      filter.add(
+          {'field': 'staffId', 'operator': 'eq', 'value': selectedStaff.value.id});
+    }
     if (roomId.value != 0) {
       filter.add({'field': 'roomId', 'operator': 'eq', 'value': roomId.value});
     }
     queryParameters.update((params) {
       params!.filters = jsonEncode(filter);
     });
+    print(filter);
     try {
       var response = await service.searchTaskSummary(
           queryParameters.value, (item) => SearchTaskResult.fromJson(item));

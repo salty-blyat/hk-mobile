@@ -8,37 +8,41 @@ import 'package:staff_view_ui/auth/verify_otp/verify_otp_screen.dart';
 import 'package:staff_view_ui/pages/change_password/change_password.dart';
 import 'package:staff_view_ui/pages/edit_profile/edit_profile.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_screen.dart';
-import 'package:staff_view_ui/pages/notification/notification_screen.dart'; 
+import 'package:staff_view_ui/pages/notification/notification_screen.dart';
 import 'package:staff_view_ui/pages/privacy_policy/privacy_policy_screen.dart';
-import 'package:staff_view_ui/pages/request_log/request_log_screen.dart';
-import 'package:staff_view_ui/pages/task/operation/task_op_screen.dart'; 
-import 'package:staff_view_ui/pages/task/task_screen.dart'; 
+import 'package:staff_view_ui/pages/request_log/request_log_screen.dart'; 
+import 'package:staff_view_ui/pages/staff/staff_select_screen.dart';
+import 'package:staff_view_ui/pages/task/operation/task_op_screen.dart';
+import 'package:staff_view_ui/pages/task/task_screen.dart';
 
 class Routes {
   static final List<GetPage> pages = [
     GetPage(name: RouteName.houseKeeping, page: () => HousekeepingScreen()),
     GetPage(name: RouteName.task, page: () => TaskScreen()),
+    GetPage(name: RouteName.staffSelect, page: () => StaffSelectScreen()),
     GetPage(name: RouteName.notification, page: () => NotificationScreen()),
     GetPage(name: RouteName.taskOp, page: () => TaskOpScreen()),
-    GetPage(name: RouteName.requestLog, page: () => RequestLogScreen()),  
-    GetPage(name: RouteName.login, page: () => LoginScreen()), 
+    GetPage(name: RouteName.requestLog, page: () => RequestLogScreen()),
+    GetPage(name: RouteName.login, page: () => LoginScreen()),
     GetPage(name: RouteName.privacyPolicy, page: () => PrivacyPolicyScreen()),
     GetPage(name: RouteName.changePassword, page: () => ChangePassword()),
     GetPage(name: RouteName.editUser, page: () => EditUser()),
     GetPage(name: RouteName.forgetPassword, page: () => ForgotPasswordScreen()),
     GetPage(name: RouteName.verifyOtp, page: () => VerifyOtpScreen()),
     GetPage(name: RouteName.verifyMfa, page: () => VerifyMfaScreen()),
-    GetPage(name: RouteName.inputNewPassword, page: () => InputNewPasswordScreen()),
- 
+    GetPage(
+        name: RouteName.inputNewPassword, page: () => InputNewPasswordScreen()),
   ];
 }
+
 class RouteName {
   static const String menu = '/menu';
   static const String profile = '/profile';
+  static const String staffSelect = '/staff-select';
   static const String login = '/login';
   static const String notification = '/notification';
   static const String task = '/task';
-  static const String taskOp = '/task-op';  
+  static const String taskOp = '/task-op';
   static const String absentException = '/absent_exception';
   static const String privacyPolicy = '/privacy-policy';
   static const String changePassword = '/change-password';
@@ -48,7 +52,5 @@ class RouteName {
   static const String verifyMfa = '/verify-mfa';
   static const String inputNewPassword = '/input-new-password';
   static const String houseKeeping = '/house-keeping';
-  static const String requestLog = '/request-log';  
-
-
+  static const String requestLog = '/request-log';
 }
