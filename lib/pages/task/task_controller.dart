@@ -66,14 +66,15 @@ class TaskController extends GetxController {
   final TaskService service = TaskService();
   final storage = Storage();
   final RequestLogService requestLogService = RequestLogService();
-  final StaffUserController staffUserController = Get.put(StaffUserController());
+  final StaffUserController staffUserController =
+      Get.put(StaffUserController());
 
-  Rx<Staff> selectedStaff = Staff(id:0).obs; // for searching
+  Rx<Staff> selectedStaff = Staff(id: 0).obs; // for searching
   final RxString searchText = ''.obs;
   RxInt roomId = 0.obs;
   // changing status of the task
   final statusForm = FormGroup(
-      {'id': FormControl<int>(value: 0), 'note': FormControl<String>()}); 
+      {'id': FormControl<int>(value: 0), 'note': FormControl<String>()});
 
   final Rx<int> taskStatus = 0.obs;
   final LookupController lookupController = Get.put(LookupController());
@@ -88,16 +89,16 @@ class TaskController extends GetxController {
   ).obs;
 
   @override
-  void onInit() { 
+  void onInit() {
     try {
       if (Get.arguments != null && Get.arguments['roomId'] != 0) {
         roomId.value = Get.arguments['roomId'];
-      } 
+      }
     } catch (e) {
       print(e);
     }
-      search();
-      lookupController.fetchLookups(LookupTypeEnum.requestStatuses.value);
+    search();
+    lookupController.fetchLookups(LookupTypeEnum.requestStatuses.value);
 
     //for falling back when the no staff is linked to the user.
     // try {
@@ -135,21 +136,23 @@ class TaskController extends GetxController {
         'value': searchText.value
       });
     }
+    if (roomId.value != 0) {
+      filter.add({'field': 'roomId', 'operator': 'eq', 'value': roomId.value});
+    }
     if (taskStatus.value != 0) {
       filter.add(
           {'field': 'status', 'operator': 'eq', 'value': taskStatus.value});
     }
-    if (selectedStaff.value.id != 0) {
-      filter.add(
-          {'field': 'staffId', 'operator': 'eq', 'value': selectedStaff.value.id});
-    }
-    if (roomId.value != 0) {
-      filter.add({'field': 'roomId', 'operator': 'eq', 'value': roomId.value});
+    if (selectedStaff.value.id != 0 && roomId.value == 0) {
+      filter.add({
+        'field': 'staffId',
+        'operator': 'eq',
+        'value': selectedStaff.value.id
+      });
     }
     queryParameters.update((params) {
       params!.filters = jsonEncode(filter);
     });
-    print(filter);
     try {
       var response = await service.searchTaskSummary(
           queryParameters.value, (item) => SearchTaskResult.fromJson(item));

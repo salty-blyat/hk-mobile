@@ -1,18 +1,26 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
+import 'package:staff_view_ui/helpers/storage.dart';
 import 'package:staff_view_ui/models/request_log_model.dart';
+import 'package:staff_view_ui/models/staff_user_model.dart';
 import 'package:staff_view_ui/pages/request_log/request_log_service.dart';
 
 class RequestLogController extends GetxController {
   final Rx<RequestLogModel> model = RequestLogModel().obs;
   final loading = false.obs;
   final RequestLogService service = RequestLogService();
-
-   @override
+  final storage = Storage();
+     StaffUserModel  staffUser = StaffUserModel() ;
+  @override
   void onInit() {
     super.onInit();
+
     if (Get.arguments['id'] != 0) {
       find(Get.arguments['id'] as int);
     }
+    staffUser = StaffUserModel.fromJson(
+        jsonDecode(storage.read(StorageKeys.staffUser) ?? ''));
   }
 
   Future<void> find(int id) async {

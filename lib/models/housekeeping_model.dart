@@ -25,7 +25,7 @@ class Housekeeping {
   String? houseKeepingStatusImage;
   List<String>? tagNames;
   int? total;
-  int? pending;
+  int? done;
 
   Housekeeping(
       {this.roomNumber,
@@ -49,7 +49,7 @@ class Housekeeping {
       this.houseKeepingStatusImage,
       this.tagNames,
       this.total,
-      this.pending});
+      this.done});
 
   factory Housekeeping.fromJson(Map<String, dynamic> json) =>
       _$HousekeepingFromJson(json);

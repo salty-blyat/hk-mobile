@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:staff_view_ui/const.dart';
-import 'package:staff_view_ui/models/attachment_model.dart';
 import 'package:staff_view_ui/models/log_model.dart';
 import 'package:staff_view_ui/pages/request_log/request_log_controller.dart';
 import 'package:staff_view_ui/pages/task/operation/change_status_screen.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/route.dart';
+import 'package:staff_view_ui/utils/drawer.dart';
 import 'package:staff_view_ui/utils/get_date_name.dart';
 import 'package:staff_view_ui/utils/khmer_date_formater.dart';
 import 'package:staff_view_ui/utils/theme.dart';
@@ -20,12 +20,10 @@ class RequestLogScreen extends StatelessWidget {
   final TaskController taskController = Get.put(TaskController());
   RequestLogScreen({super.key});
   @override
-  Widget build(BuildContext context) { 
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: Obx(() => controller.loading.value
-          ? const Center(child: CircularProgressIndicator())
-          : _buildBody()),
+      body:  _buildBody() 
     );
   }
 
@@ -37,7 +35,7 @@ class RequestLogScreen extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: () async {
         if (Get.arguments['id'] != 0) {
-         await controller.find(Get.arguments['id'] as int);
+          await controller.find(Get.arguments['id'] as int);
         }
       },
       child: Padding(
@@ -52,16 +50,15 @@ class RequestLogScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             _buildTaskDetailCard(),
-            controller.model.value.staffId != 0
-                ? const SizedBox(height: 16)
-                : const SizedBox.shrink(),
+            const SizedBox(height: 12),
             controller.model.value.staffId != 0
                 ? _buildProfileCard()
                 : const SizedBox.shrink(),
-            controller.model.value.status != RequestStatusEnum.done.value
-                ? const SizedBox(height: 16)
+            controller.model.value.staffId != 0 &&
+                    controller.model.value.staffId ==
+                        controller.staffUser.staffId
+                ? const SizedBox(height: 12)
                 : const SizedBox.shrink(),
-            const SizedBox(height: 16),
             Column(
               children: [
                 if (controller.model.value.attachments != null &&
@@ -94,17 +91,18 @@ class RequestLogScreen extends StatelessWidget {
                       )
                 else
                   const SizedBox.shrink(),
-                // if (controller.model.value.attachments != null &&
-                //     controller.model.value.attachments!.isNotEmpty)
-                //   const SizedBox(height: 16)
               ],
             ),
+            (controller.model.value.attachments != null &&
+                    controller.model.value.attachments!.isNotEmpty)
+                ? const SizedBox(height: 12)
+                : const SizedBox.shrink(),
             _actionButton(
                 status: controller.model.value.status ?? 0,
                 isTaskUnassigned: controller.model.value.staffId == 0,
                 staffId: controller.model.value.staffId ?? 0,
                 taskId: controller.model.value.id ?? 0),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             _buildTimeline(),
           ],
         ),
@@ -183,9 +181,12 @@ class RequestLogScreen extends StatelessWidget {
             children: [
               NetworkImg(height: 14, src: controller.model.value.statusImage),
               const SizedBox(width: 4),
-              Text(Get.locale?.languageCode == 'en'
-                  ? controller.model.value.statusNameEn ?? ''
-                  : controller.model.value.statusNameKh ?? '', style: TextStyle(fontSize: 12),),
+              Text(
+                Get.locale?.languageCode == 'en'
+                    ? controller.model.value.statusNameEn ?? ''
+                    : controller.model.value.statusNameKh ?? '',
+                style: const TextStyle(fontSize: 12),
+              ),
             ],
           ),
         ),

@@ -129,12 +129,15 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
             return controller.searchText.value.isEmpty &&
                     controller.staffUser.value?.positionId ==
                         PositionEnum.manager.value
-                ? Checkbox(
-                    tristate: true,
-                    value: selected.isEmpty
-                        ? false
-                        : (selected.length == itemCount ? true : null),
-                    onChanged: (value) => onTap())
+                ? Container(
+                    margin: const EdgeInsets.only(left: 12),
+                    child: Checkbox(
+                        tristate: true,
+                        value: selected.isEmpty
+                            ? false
+                            : (selected.length == itemCount ? true : null),
+                        onChanged: (value) => onTap()),
+                  )
                 : const SizedBox.shrink();
           }),
           Expanded(
@@ -146,10 +149,17 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                   onTap: () => onTap(),
                   borderRadius: BorderRadius.circular(4),
                   child: Container(
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    margin: controller.staffUser.value?.positionId ==
+                            PositionEnum.manager.value && controller.searchText.isEmpty
+                        ? const EdgeInsets.symmetric(vertical: 4)
+                        : const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                    padding:  controller.staffUser.value?.positionId ==
+                                PositionEnum.manager.value &&
+                            controller.searchText.isEmpty
+                        ? const EdgeInsets.symmetric(vertical: 4)
+                        : const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
                     child: Text(
                       section.tr,
                       style: const TextStyle(fontSize: 14),
@@ -369,11 +379,8 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                                 size: 16,
                                 color: AppTheme.primaryColor,
                               ),
-                              SizedBox(width: 4),
-                              Text(
-                                "All",
-                                style: TextStyle(fontSize: 12),
-                              )
+                              SizedBox(width: 8),
+                              Text("All", style: TextStyle(fontSize: 14))
                             ]),
                           ),
                         ),
@@ -414,13 +421,13 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
             height: 16,
           ),
           const SizedBox(
-            width: 4,
+            width: 8,
           ),
           Expanded(
             child: Text(item.nameEn ?? "",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 12)),
+                style: const TextStyle(fontSize: 14)),
           ),
           const SizedBox(
             width: 4,
@@ -642,9 +649,9 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                             ),
                             child: Obx(() {
                               RxInt total = (item.total ?? 0).obs;
-                              RxInt pending = (item.pending ?? 0).obs;
+                              RxInt done = (item.done ?? 0).obs;
                               return Text(
-                                  "${"View tasks".tr} ${total > 0 ? "($pending/$total)" : ''}",
+                                  "${"View tasks".tr} ${total > 0 ? "($done/$total)" : ''}",
                                   style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 12,

@@ -18,7 +18,8 @@ class StaffSelectScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    controller.getStaff(); 
+    controller.searchText.value = '';
+    controller.getStaff();  
     return Scaffold(
       appBar: AppBar(leading: IconButton(
             icon: const Icon(Icons.arrow_back),

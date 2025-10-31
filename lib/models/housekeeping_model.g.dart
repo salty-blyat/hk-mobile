@@ -32,7 +32,7 @@ Housekeeping _$HousekeepingFromJson(Map<String, dynamic> json) => Housekeeping(
           ?.map((e) => e as String)
           .toList(),
       total: (json['total'] as num?)?.toInt(),
-      pending: (json['pending'] as num?)?.toInt(),
+      done: (json['done'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$HousekeepingToJson(Housekeeping instance) =>
@@ -58,5 +58,5 @@ Map<String, dynamic> _$HousekeepingToJson(Housekeeping instance) =>
       'houseKeepingStatusImage': instance.houseKeepingStatusImage,
       'tagNames': instance.tagNames,
       'total': instance.total,
-      'pending': instance.pending,
+      'done': instance.done,
     };
