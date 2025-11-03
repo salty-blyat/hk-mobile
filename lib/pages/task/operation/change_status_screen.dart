@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart'; 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:reactive_forms/reactive_forms.dart'; 
+import 'package:reactive_forms/reactive_forms.dart';
 import 'package:staff_view_ui/pages/task/task_controller.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
@@ -11,11 +11,13 @@ class ChangeStatusScreen extends StatelessWidget {
   final int id;
   final String title;
   final VoidCallback submit;
-  ChangeStatusScreen({super.key, required this.id, required this.title, required this.submit});
+  ChangeStatusScreen(
+      {super.key, required this.id, required this.title, required this.submit});
   TaskController controller = Get.put(TaskController());
 
   @override
   Widget build(BuildContext context) {
+    controller.statusForm.control("note").value = null;
     return Column(children: [
       _header(title: title),
       _buildContent(context),
@@ -92,9 +94,7 @@ class ChangeStatusScreen extends StatelessWidget {
         ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: MyButton(
-          label: 'Save',
-          onPressed: submit),
+      child: MyButton(label: 'Save', onPressed: submit),
     );
   }
 }

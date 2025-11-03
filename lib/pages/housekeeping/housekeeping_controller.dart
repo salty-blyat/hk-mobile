@@ -1,17 +1,13 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
-import 'package:staff_view_ui/auth/auth_service.dart';
-import 'package:staff_view_ui/const.dart';
 import 'package:staff_view_ui/helpers/base_service.dart';
 import 'package:staff_view_ui/helpers/storage.dart';
-import 'package:staff_view_ui/models/client_info_model.dart';
 import 'package:staff_view_ui/models/housekeeping_model.dart';
 import 'package:staff_view_ui/models/staff_user_model.dart';
 import 'package:staff_view_ui/pages/housekeeping/housekeeping_service.dart';
 import 'package:staff_view_ui/pages/lookup/lookup_controller.dart';
 import 'package:staff_view_ui/pages/staff_user/staff_user_controller.dart';
-import 'package:staff_view_ui/utils/widgets/dialog.dart';
 
 class HousekeepingController extends GetxController {
   final RxString searchText = ''.obs;
@@ -29,8 +25,6 @@ class HousekeepingController extends GetxController {
   final storage = Storage();
   final StaffUserController staffUserController =
       Get.put(StaffUserController());
-  int currentPage = 1;
-  final int pageSize = 20;
   final queryParameters = QueryParam(
     pageIndex: 1,
     pageSize: 25,
@@ -55,9 +49,13 @@ class HousekeepingController extends GetxController {
   Future<void> search() async {
     try {
       loading.value = true;
+
       queryParameters.update((params) {
-        params?.pageIndex = (params.pageIndex ?? 0) + 1;
+      params?.pageIndex =   1;
       });
+
+      // print('params?.pageIndex ${queryParameters.value.pageIndex}');
+
       var filter = [];
 
       if (searchText.value.isNotEmpty) {
@@ -74,14 +72,13 @@ class HousekeepingController extends GetxController {
           'value': houseKeepingStatus.value
         });
       }
-      var response = await service.search(queryParameters: {
-        'pageIndex': currentPage,
-        'pageSize': pageSize,
-        'filters': jsonEncode(filter)
-      });
+      var response = await service.search(queryParameters.value);
 
-      list.assignAll(response);
+      list.assignAll(response.results as Iterable<Housekeeping>);
+      canLoadMore.value =
+          response.results.length == queryParameters.value.pageSize;
     } catch (e) {
+      canLoadMore.value = false;
       loading.value = false;
     } finally {
       loading.value = false;
@@ -89,7 +86,9 @@ class HousekeepingController extends GetxController {
   }
 
   Future<void> onLoadMore() async {
-    if (!canLoadMore.value) return;
+    if (!canLoadMore.value && isLoadingMore.value) return;
+
+    isLoadingMore.value = true;
     var filter = [];
 
     if (searchText.value.isNotEmpty) {
@@ -106,22 +105,19 @@ class HousekeepingController extends GetxController {
         'value': houseKeepingStatus.value
       });
     }
-    isLoadingMore.value = true;
     queryParameters.update((params) {
       params?.pageIndex = (params.pageIndex ?? 0) + 1;
     });
 
     try {
-      final response = await service.search(queryParameters: {
-        'pageIndex': currentPage,
-        'pageSize': pageSize,
-        'filters': jsonEncode(filter)
-      });
-      list.addAll(response);
-      canLoadMore.value = response.length == queryParameters.value.pageSize;
+      var response = await service.search(queryParameters.value);
+
+      list.addAll(response.results as Iterable<Housekeeping>);
+      canLoadMore.value =
+          response.results.length == queryParameters.value.pageSize;
+      isLoadingMore.value = false;
     } catch (e) {
       canLoadMore.value = false;
-      print("Error during onLoadMore: $e");
     } finally {
       isLoadingMore.value = false;
     }

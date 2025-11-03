@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:get/get.dart';
@@ -15,6 +16,7 @@ import 'package:staff_view_ui/utils/drawer.dart';
 import 'package:staff_view_ui/utils/theme.dart';
 import 'package:staff_view_ui/utils/widgets/button.dart';
 import 'package:staff_view_ui/utils/widgets/network_img.dart';
+import 'package:staff_view_ui/utils/widgets/no_data.dart';
 
 class HousekeepingScreen extends BaseList<Housekeeping> {
   HousekeepingScreen({super.key});
@@ -54,6 +56,83 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
 
   @override
   RxList<Housekeeping> get items => controller.list;
+
+  @override
+  Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.search();
+    });
+    return Scaffold(
+      appBar: AppBar(
+        leading: showDrawer.value ? null : leading(),
+        centerTitle: isCenterTitle,
+        automaticallyImplyLeading: showDrawer.value,
+        title: titleWidget(),
+        actions: actions(),
+      ),
+      drawer: showDrawer.value ? DrawerWidget() : null,
+      backgroundColor: backgroundColor,
+      floatingActionButton: fabButton
+          ? FloatingActionButton(
+              onPressed: onFabPressed,
+              shape: const CircleBorder(),
+              child: const Icon(CupertinoIcons.add),
+            )
+          : null,
+      body: Column(
+        children: [
+          showHeader
+              ? Container(color: AppTheme.greyBg, child: buildHeaderWidget())
+              : const SizedBox.shrink(),
+          Expanded(
+            child: Obx(
+              () {
+                if (isLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (items.isEmpty) {
+                  return RefreshIndicator(
+                      color: Theme.of(context).primaryColor,
+                      backgroundColor: Colors.white,
+                      onRefresh: onRefresh,
+                      // ignore: invalid_use_of_protected_member
+                      child: ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: const [
+                          SizedBox(
+                            height: 300,
+                            child: Center(child: NoData()),
+                          ),
+                        ],
+                      ));
+                }
+                return NotificationListener<ScrollNotification>(
+                  onNotification: (ScrollNotification notification) {
+                    if (notification is ScrollEndNotification &&
+                        notification.metrics.pixels >=
+                            notification.metrics.maxScrollExtent &&
+                        canLoadMore &&
+                        !isLoading) {
+                      onLoadMore();
+                    }
+                    return false;
+                  },
+                  child: RefreshIndicator(
+                    color: Theme.of(context).primaryColor,
+                    backgroundColor: Colors.white,
+                    onRefresh: onRefresh,
+                    // ignore: invalid_use_of_protected_member
+                    child: buildStickyList(items.value),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: buildBottomNavigationBar(),
+    );
+  }
 
   @override
   Widget titleWidget() {
@@ -150,11 +229,12 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                   borderRadius: BorderRadius.circular(4),
                   child: Container(
                     margin: controller.staffUser.value?.positionId ==
-                            PositionEnum.manager.value && controller.searchText.isEmpty
+                                PositionEnum.manager.value &&
+                            controller.searchText.isEmpty
                         ? const EdgeInsets.symmetric(vertical: 4)
                         : const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 4),
-                    padding:  controller.staffUser.value?.positionId ==
+                    padding: controller.staffUser.value?.positionId ==
                                 PositionEnum.manager.value &&
                             controller.searchText.isEmpty
                         ? const EdgeInsets.symmetric(vertical: 4)
@@ -192,7 +272,6 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
   @override
   Widget buildStickyList(List<Housekeeping> items) {
     final groupedItems = groupItems(items);
-
     return Container(
       color: bgColor,
       child: CustomScrollView(
@@ -200,7 +279,8 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
           final section = "${entry.key} | ${entry.value.first.blockName ?? ''}";
           final items = entry.value;
           bool isLastSection(String section) {
-            return section == groupedItems.entries.last.key;
+            return section ==
+                "${groupedItems.entries.last.key} | ${groupedItems.entries.last.value.last.blockName}";
           }
 
           var floorId = items.isNotEmpty && items.first.floorId != null
@@ -210,8 +290,8 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
           return SliverStickyHeader(
             header: buildStickyHeader(section, items.length, floorId!),
             sliver: SliverPadding(
-              padding: const EdgeInsets.only(
-                  top: 8, left: 12, right: 12, bottom: 16),
+              padding:   EdgeInsets.only(
+                  top: 8, left: 12, right: 12, bottom: controller.staffUser.value?.positionId == PositionEnum.manager.value && isLastSection(section) ? 64 : 12),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
@@ -221,11 +301,18 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                         runSpacing: 8.0,
                         children: [
                           for (var item in items) buildItem(item),
-                          if (isLoadingMore && isLastSection(section))
-                            const Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Center(child: CircularProgressIndicator()),
-                            ),
+                          Obx(() {
+                            if (isLoadingMore && isLastSection(section)) {
+                              return const Padding(
+                                padding:
+                                    EdgeInsets.all(12.0),
+                                child:
+                                    Center(child: CircularProgressIndicator()),
+                              );
+                            } else {
+                              return const SizedBox.shrink();
+                            }
+                          })
                         ],
                       );
                     }
@@ -313,7 +400,7 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
         _debounce = Timer(const Duration(milliseconds: 500), () async {
           controller.searchText.value = value;
           controller.list.clear();
-          controller.currentPage = 1;
+          controller.queryParameters.value.pageIndex = 1;
           await controller.search();
         });
       },
@@ -370,9 +457,10 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                             await controller.search();
                           },
                           child: Container(
+                            constraints: const BoxConstraints(
+                                minWidth: 100, maxWidth: 150),
                             padding: const EdgeInsets.symmetric(
                                 vertical: 4, horizontal: 8),
-                            width: 110,
                             child: const Row(children: [
                               Icon(
                                 Icons.layers_outlined,
@@ -389,10 +477,6 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
                         })
                       ],
                     );
-
-                    if (result != null) {
-                      print("Selected: $result");
-                    }
                   },
                 ),
               ],
@@ -413,30 +497,22 @@ class HousekeepingScreen extends BaseList<Housekeeping> {
       },
       value: item.valueId,
       child: Container(
+        constraints: const BoxConstraints(minWidth: 100, maxWidth: 150),
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        width: 110,
-        child: Row(children: [
-          NetworkImg(
-            src: item.image,
-            height: 16,
-          ),
-          const SizedBox(
-            width: 8,
-          ),
-          Expanded(
-            child: Text(item.nameEn ?? "",
-                maxLines: 1,
+        child: Row(
+          children: [
+            NetworkImg(src: item.image, height: 16),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                item.nameEn ?? "",
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 14)),
-          ),
-          const SizedBox(
-            width: 4,
-          ),
-          controller.houseKeepingStatus.value == item.valueId
-              ? const Icon(Icons.check,
-                  size: 16, textDirection: TextDirection.rtl)
-              : const SizedBox()
-        ]),
+              ),
+            ),
+            if (controller.houseKeepingStatus.value == item.valueId)
+              const Icon(Icons.check, size: 16),
+          ],
+        ),
       ),
     );
   }

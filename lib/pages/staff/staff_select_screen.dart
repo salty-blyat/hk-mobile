@@ -19,11 +19,12 @@ class StaffSelectScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     controller.searchText.value = '';
-    controller.getStaff();  
+    controller.getStaff();
     return Scaffold(
-      appBar: AppBar(leading: IconButton(
+      appBar: AppBar(
+        leading: IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: () => Get.back(result: controller.selectedStaff.value) ),
+            onPressed: () => Get.back(result: controller.selectedStaff.value)),
         title: Container(
           height: 40,
           decoration: BoxDecoration(
@@ -54,16 +55,16 @@ class StaffSelectScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-             onChanged: (value) {
+            onChanged: (value) {
               if (_debounce?.isActive ?? false) _debounce?.cancel();
               _debounce = Timer(const Duration(milliseconds: 500), () async {
                 controller.searchText.value = value;
                 controller.staff.clear();
                 controller.currentPage = 1;
+
                 controller.getStaff();
               });
             },
-           
           ),
         ),
       ),

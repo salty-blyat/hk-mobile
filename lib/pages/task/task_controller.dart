@@ -74,7 +74,7 @@ class TaskController extends GetxController {
   RxInt roomId = 0.obs;
   // changing status of the task
   final statusForm = FormGroup(
-      {'id': FormControl<int>(value: 0), 'note': FormControl<String>()});
+      {'id': FormControl<int>(value: 0), 'note': FormControl<String?>(value:null)});
 
   final Rx<int> taskStatus = 0.obs;
   final LookupController lookupController = Get.put(LookupController());
